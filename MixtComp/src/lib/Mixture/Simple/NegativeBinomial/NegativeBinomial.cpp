@@ -12,11 +12,11 @@
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include <IO/IO.h>
+#include <LinAlg/Math.h>
 
-#include <IO/mixt_IO.h>
-#include <Various/mixt_Constants.h>
-#include <Various/mixt_Enum.h>
-#include <LinAlg/mixt_Math.h>
+#include <Various/Enum.h>
+#include <Various/Constants.h>
 
 #include "NegativeBinomial.h"
 

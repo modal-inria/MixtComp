@@ -10,8 +10,8 @@
 #ifndef WEIBULLLIKELIHOOD_H
 #define WEIBULLLIKELIHOOD_H
 
-#include "LinAlg/mixt_LinAlg.h"
-#include "Data/mixt_AugmentedData.h"
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
 #include "WeibullStatistic.h"
 
 namespace mixt {
@@ -40,4 +40,4 @@ class WeibullLikelihood {
 
 } /* namespace mixt */
 
-#endif /* MIXT_MIXTURECOMPOSER_H */
+#endif /* WEIBULLLIKELIHOOD_H */

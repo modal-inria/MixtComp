@@ -8,10 +8,10 @@
  **/
 
 #include "WeibullStatistic.h"
-#include "../../../Statistic/mixt_RNG.h"
 #include <boost/math/distributions/weibull.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/weibull_distribution.hpp>
+#include <Statistic/RNG.h>
 
 namespace mixt {
 

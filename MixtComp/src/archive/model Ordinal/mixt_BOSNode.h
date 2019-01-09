@@ -10,7 +10,7 @@
 #ifndef MIXT_BOSNODE
 #define MIXT_BOSNODE
 
-#include "../../LinAlg/mixt_LinAlg.h"
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

@@ -10,12 +10,12 @@
 #ifndef WEIBULL_H
 #define WEIBULL_H
 
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
 #include <set>
 #include <utility>
 
-#include "Data/mixt_AugmentedData.h"
-#include "Data/mixt_ConfIntDataStat.h"
-#include "LinAlg/mixt_LinAlg.h"
+#include "Data/ConfIntDataStat.h"
 #include "WeibullLikelihood.h"
 #include "WeibullSampler.h"
 

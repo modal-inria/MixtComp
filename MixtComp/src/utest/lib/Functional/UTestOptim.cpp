@@ -13,7 +13,7 @@
 #include "cppoptlib/problem.h"
 #include "cppoptlib/solver/bfgssolver.h"
 
-#include "mixt_MixtComp.h"
+#include "MixtComp.h"
 
 using namespace mixt;
 using namespace cppoptlib;

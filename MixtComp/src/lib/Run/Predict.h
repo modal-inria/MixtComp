@@ -10,12 +10,12 @@
 #ifndef LIB_RUN_PREDICT_H
 #define LIB_RUN_PREDICT_H
 
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 #include <Manager/createAllMixtures.h>
-#include <Statistic/mixt_RNG.h>
-#include <Strategy/mixt_GibbsStrategy.h>
-#include <Various/mixt_Constants.h>
-#include <Various/mixt_Timer.h>
+#include <Statistic/RNG.h>
+#include <Strategy/GibbsStrategy.h>
+#include <Various/Constants.h>
+#include <Various/Timer.h>
 
 namespace mixt {
 

@@ -7,16 +7,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef SIMPLEmodel_H
-#define SIMPLEmodel_H
+#ifndef SIMPLEMIXTURE_H
+#define SIMPLEMIXTURE_H
 
-#include <Mixture/mixt_IMixture.h>
-#include <Data/mixt_AugmentedData.h>
+#include <Data/AugmentedData.h>
+#include <IO/IO.h>
 #include <IO/IOFunctions.h>
-#include <IO/mixt_IO.h>
 #include <IO/NamedAlgebra.h>
-#include <Various/mixt_Constants.h>
-#include <Param/mixt_ConfIntParamStat.h>
+#include <Mixture/IMixture.h>
+#include <Param/ConfIntParamStat.h>
+#include <Various/Constants.h>
 
 namespace mixt {
 
@@ -235,4 +235,4 @@ protected:
 
 }
 
-#endif /* MIXT_MIXTUREBRIDGE_H */
+#endif /* SIMPLEMIXTURE_H */

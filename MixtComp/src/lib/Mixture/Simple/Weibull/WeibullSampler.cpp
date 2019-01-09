@@ -7,8 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <Mixture/IMixture.h>
 #include "WeibullSampler.h"
-#include "../../mixt_IMixture.h"
 
 namespace mixt {
 

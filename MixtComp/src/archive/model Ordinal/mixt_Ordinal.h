@@ -10,15 +10,14 @@
 #ifndef MIXT_ORDINAL
 #define MIXT_ORDINAL
 
+#include <Data/AugmentedData.h>
+#include <Mixture/IMixture.h>
+#include <Param/ConfIntParamStat.h>
 #include "boost/regex.hpp"
 
 #include <algorithm>
 
-#include "Data/mixt_AugmentedData.h"
-#include "Data/mixt_ConfIntDataStat.h"
-#include "Param/mixt_ConfIntParamStat.h"
-#include "Mixture/mixt_IMixture.h"
-
+#include "Data/ConfIntDataStat.h"
 #include "../model Ordinal/mixt_BOSPath.h"
 l/mixt_BOSPath.h"
 

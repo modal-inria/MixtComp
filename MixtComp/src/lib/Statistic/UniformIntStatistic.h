@@ -9,8 +9,8 @@
 #define LIB_STATISTIC_UNIFORMINTSTATISTIC_H_
 
 
-#include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt
 {

@@ -7,15 +7,15 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_MULTINOMIALSTATISTIC_H
-#define MIXT_MULTINOMIALSTATISTIC_H
+#ifndef MULTINOMIALSTATISTIC_H
+#define MULTINOMIALSTATISTIC_H
 
 #include <iostream>
 #include <ctime>
 #include <boost/random.hpp>
-#include "../LinAlg/mixt_LinAlg.h"
-#include "../IO/mixt_IO.h"
-#include "../Various/mixt_Constants.h"
+#include <Various/Constants.h>
+#include "../LinAlg/LinAlg.h"
+#include "../IO/IO.h"
 
 namespace mixt {
 
@@ -89,4 +89,4 @@ private:
 
 } // namespace mixt
 
-#endif // MIXT_EXPONENTIALSTATISTIC_H
+#endif // MULTINOMIALSTATISTIC_H

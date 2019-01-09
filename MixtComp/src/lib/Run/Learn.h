@@ -10,11 +10,11 @@
 #ifndef LIB_RUN_LEARN_H
 #define LIB_RUN_LEARN_H
 
-#include <Composer/mixt_MixtureComposer.h>
-#include <Statistic/mixt_RNG.h>
-#include <Strategy/mixt_GibbsStrategy.h>
-#include <Strategy/mixt_SEMStrategy.h>
-#include <Various/mixt_Timer.h>
+#include <Composer/MixtureComposer.h>
+#include <Statistic/RNG.h>
+#include <Strategy/GibbsStrategy.h>
+#include <Strategy/SEMStrategy.h>
+#include <Various/Timer.h>
 
 namespace mixt {
 

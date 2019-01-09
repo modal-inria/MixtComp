@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <LinAlg/LinAlg.h>
 #include <iostream>
-#include <LinAlg/mixt_LinAlg.h>
 #include "names.h"
 
 namespace mixt {

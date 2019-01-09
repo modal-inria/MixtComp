@@ -7,12 +7,12 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_POISSONSTATISTIC_H
-#define MIXT_POISSONSTATISTIC_H
+#ifndef POISSONSTATISTIC_H
+#define POISSONSTATISTIC_H
 
 #include <boost/random/mersenne_twister.hpp>
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Statistic/mixt_UniformStatistic.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Statistic/UniformStatistic.h"
 
 namespace mixt {
 
@@ -64,4 +64,4 @@ private:
 
 } // namespace mixt
 
-#endif // MIXT_POISSONSTATISTIC_H
+#endif // POISSONSTATISTIC_H

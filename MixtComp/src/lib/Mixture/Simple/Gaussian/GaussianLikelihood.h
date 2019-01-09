@@ -7,11 +7,11 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIANLIKELIHOOD_H
-#define MIXT_GAUSSIANLIKELIHOOD_H
+#ifndef GAUSSIANLIKELIHOOD_H
+#define GAUSSIANLIKELIHOOD_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include <LinAlg/LinAlg.h>
+#include "../../../Data/AugmentedData.h"
 #include "../../../Statistic/NormalStatistic.h"
 
 namespace mixt
@@ -44,4 +44,4 @@ class GaussianLikelihood
 
 } /* namespace mixt */
 
-#endif /* MIXT_MIXTURECOMPOSER_H */
+#endif /* GAUSSIANLIKELIHOOD_H */

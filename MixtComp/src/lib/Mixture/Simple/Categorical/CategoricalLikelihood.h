@@ -7,11 +7,11 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CATEGORICALLIKELIHOOD_H
-#define MIXT_CATEGORICALLIKELIHOOD_H
+#ifndef CATEGORICALLIKELIHOOD_H
+#define CATEGORICALLIKELIHOOD_H
 
-#include "../../../Data/mixt_AugmentedData.h"
-#include "../../../LinAlg/mixt_LinAlg.h"
+#include "../../../Data/AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
 
 namespace mixt {
 
@@ -83,4 +83,4 @@ class CategoricalLikelihood {
 
 } /* namespace mixt */
 
-#endif /* MIXT_CATEGORICALLIKELIHOOD_H */
+#endif /* CATEGORICALLIKELIHOOD_H */

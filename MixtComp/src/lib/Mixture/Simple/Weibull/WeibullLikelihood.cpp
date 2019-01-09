@@ -8,7 +8,7 @@
  **/
 
 #include "WeibullLikelihood.h"
-#include "Various/mixt_Enum.h"
+#include "Various/Enum.h"
 
 namespace mixt {
 

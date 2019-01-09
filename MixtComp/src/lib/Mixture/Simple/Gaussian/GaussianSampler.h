@@ -8,11 +8,11 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIANSAMPLER_H
-#define MIXT_GAUSSIANSAMPLER_H
+#ifndef GAUSSIANSAMPLER_H
+#define GAUSSIANSAMPLER_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Data/AugmentedData.h"
 #include "../../../Statistic/NormalStatistic.h"
 
 
@@ -42,4 +42,4 @@ class GaussianSampler
 
 } // namespace mixt
 
-#endif /* MIXT_GAUSSIANSAMPLER_H */
+#endif /* GAUSSIANSAMPLER_H */

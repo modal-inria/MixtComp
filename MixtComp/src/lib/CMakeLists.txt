@@ -2,42 +2,42 @@
 # with "" prefix and CMakeLists deleted
 
 add_library(MixtComp
-    LinAlg/mixt_Math.cpp
-    LinAlg/mixt_Typedef.cpp
-    LinAlg/mixt_ConstIterator.h
-    LinAlg/mixt_Math.h
-    LinAlg/mixt_Typedef.h
-    LinAlg/mixt_EigenMatrixBaseAddons.h
-    LinAlg/mixt_LinAlg.h
-    LinAlg/mixt_Iterator.h
+    LinAlg/Math.cpp
+    LinAlg/Typedef.cpp
+    LinAlg/ConstIterator.h
+    LinAlg/Math.h
+    LinAlg/Typedef.h
+    LinAlg/EigenMatrixBaseAddons.h
+    LinAlg/LinAlg.h
+    LinAlg/Iterator.h
     LinAlg/names.cpp
     LinAlg/names.h
-    Composer/mixt_ClassDataStat.h
-    Composer/mixt_ClassDataStat.cpp
-    Composer/mixt_ClassSampler.cpp
-    Composer/mixt_ZClassInd.cpp
-    Composer/mixt_ClassSampler.h
-    Composer/mixt_MixtureComposer.cpp
-    Composer/mixt_ZClassInd.h
-    Composer/mixt_MixtureComposer.h
-    IO/mixt_IO.h
-    IO/mixt_MisValParser.h
+    Composer/ClassDataStat.h
+    Composer/ClassDataStat.cpp
+    Composer/ClassSampler.cpp
+    Composer/ZClassInd.cpp
+    Composer/ClassSampler.h
+    Composer/MixtureComposer.cpp
+    Composer/ZClassInd.h
+    Composer/MixtureComposer.h
+    IO/IO.h
+    IO/MisValParser.h
     IO/NamedAlgebra.h
-    IO/mixt_SpecialStr.h
-    IO/mixt_SpecialStr.cpp
+    IO/SpecialStr.h
+    IO/SpecialStr.cpp
     IO/IOFunctions.h
     IO/IOFunctions.cpp
-    Param/mixt_ConfIntParamStat.h
-    Various/mixt_Timer.cpp
-    Various/mixt_Enum.h
-    Various/mixt_Timer.h
-    Various/mixt_Various.cpp
-    Various/mixt_Constants.h
-    Various/mixt_Constants.cpp
-    Various/mixt_Various.h
+    Param/ConfIntParamStat.h
+    Various/Timer.cpp
+    Various/Enum.h
+    Various/Timer.h
+    Various/Various.cpp
+    Various/Constants.h
+    Various/Constants.cpp
+    Various/Various.h
     Manager/createAllMixtures.h
-    mixt_MixtComp.h
-    Mixture/mixt_IMixture.h
+    MixtComp.h
+    Mixture/IMixture.h
     Mixture/Simple/Weibull/WeibullLikelihood.h
     Mixture/Simple/Weibull/Weibull.h
     Mixture/Simple/Weibull/WeibullStatistic.h
@@ -76,48 +76,48 @@ add_library(MixtComp
     Mixture/Simple/Poisson/PoissonSampler.h
     Mixture/Simple/Poisson/PoissonSampler.cpp
     Mixture/Simple/SimpleMixture.h
-    Mixture/Rank/mixt_RankClass.h
-    Mixture/Rank/mixt_RankLikelihood.cpp
-    Mixture/Rank/mixt_RankMixture.h
-    Mixture/Rank/mixt_RankStat.h
-    Mixture/Rank/mixt_RankStat.cpp
-    Mixture/Rank/mixt_RankIndividual.h
-    Mixture/Rank/mixt_RankVal.h
-    Mixture/Rank/mixt_RankClass.cpp
-    Mixture/Rank/mixt_RankParser.cpp
-    Mixture/Rank/mixt_RankParser.h
-    Mixture/Rank/mixt_RankIndividual.cpp
-    Mixture/Rank/mixt_RankLikelihood.h
-    Mixture/Rank/mixt_RankVal.cpp
-    Mixture/Functional/mixt_FunctionalClass.h
-    Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h
-    Mixture/Functional/mixt_FunctionalClass.cpp
-    Mixture/Functional/mixt_Function.cpp
-    Mixture/Functional/mixt_FunctionalComputation.cpp
-    Mixture/Functional/mixt_FunctionalComputation.h
-    Mixture/Functional/mixt_FunctionalParser.h
-    Mixture/Functional/mixt_FunctionalParser.cpp
-    Mixture/Functional/mixt_FunctionalMixture.h
-    Mixture/Functional/mixt_Function.h
-    Statistic/mixt_ExponentialStatistic.h
+    Mixture/Rank/RankClass.h
+    Mixture/Rank/RankLikelihood.cpp
+    Mixture/Rank/RankMixture.h
+    Mixture/Rank/RankStat.h
+    Mixture/Rank/RankStat.cpp
+    Mixture/Rank/RankIndividual.h
+    Mixture/Rank/RankVal.h
+    Mixture/Rank/RankClass.cpp
+    Mixture/Rank/RankParser.cpp
+    Mixture/Rank/RankParser.h
+    Mixture/Rank/RankIndividual.cpp
+    Mixture/Rank/RankLikelihood.h
+    Mixture/Rank/RankVal.cpp
+    Mixture/Functional/FunctionalClass.h
+    Mixture/Functional/FunctionalSharedAlphaMixture.h
+    Mixture/Functional/FunctionalClass.cpp
+    Mixture/Functional/Function.cpp
+    Mixture/Functional/FunctionalComputation.cpp
+    Mixture/Functional/FunctionalComputation.h
+    Mixture/Functional/FunctionalParser.h
+    Mixture/Functional/FunctionalParser.cpp
+    Mixture/Functional/FunctionalMixture.h
+    Mixture/Functional/Function.h
+    Statistic/ExponentialStatistic.h
     Statistic/MultinomialStatistic.cpp
-    Statistic/mixt_RNG.h
-    Statistic/mixt_RNG.cpp
+    Statistic/RNG.h
+    Statistic/RNG.cpp
     Statistic/MultinomialStatistic.h
     Statistic/NormalStatistic.cpp
-    Statistic/mixt_UniformStatistic.cpp
+    Statistic/UniformStatistic.cpp
     Statistic/NormalStatistic.h
-    Statistic/mixt_ExponentialStatistic.cpp
-    Statistic/mixt_UniformStatistic.h
+    Statistic/ExponentialStatistic.cpp
+    Statistic/UniformStatistic.h
     Statistic/Functions.h
-    Statistic/mixt_Statistic.h
+    Statistic/Statistic.h
     Statistic/UniformIntStatistic.cpp
     Statistic/UniformIntStatistic.h
     Run/Predict.h
     Run/Learn.h
-    Data/mixt_AugmentedData.h
-    Data/mixt_ConfIntDataStat.h
-    Data/mixt_AugmentedData.cpp
-    Strategy/mixt_SEMStrategy.h
-    Strategy/mixt_GibbsStrategy.h
+    Data/AugmentedData.h
+    Data/ConfIntDataStat.h
+    Data/AugmentedData.cpp
+    Strategy/SEMStrategy.h
+    Strategy/GibbsStrategy.h
 )

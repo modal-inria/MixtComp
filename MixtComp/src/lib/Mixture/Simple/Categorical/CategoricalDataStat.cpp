@@ -8,7 +8,7 @@
  **/
 
 #include <Mixture/Simple/Categorical/CategoricalDataStat.h>
-#include "../../../Various/mixt_Constants.h"
+#include <Various/Constants.h>
 
 namespace mixt {
 

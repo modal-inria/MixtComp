@@ -14,7 +14,7 @@
 
 #include <Run/Learn.h>
 #include <Run/Predict.h>
-#include <Various/mixt_Constants.h>
+#include <Various/Constants.h>
 #include "JSONGraph.h"
 
 using namespace mixt;

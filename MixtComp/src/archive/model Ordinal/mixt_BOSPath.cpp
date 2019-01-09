@@ -9,7 +9,7 @@
 
 #include "../model Ordinal/mixt_BOSPath.h"
 
-#include "../../Various/mixt_Constants.h"
+#include <Various/Constants.h>
 
 namespace mixt {
 

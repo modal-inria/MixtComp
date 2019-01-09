@@ -11,10 +11,10 @@
 #define JSON_TRANSLATEJSONTOCPP_H
 
 #include <IO/NamedAlgebra.h>
+#include <LinAlg/LinAlg.h>
 #include "json.hpp"
 
 #include <iostream>
-#include <LinAlg/mixt_LinAlg.h>
 #include <LinAlg/names.h>
 
 namespace mixt {

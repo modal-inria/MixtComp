@@ -7,14 +7,14 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <Data/AugmentedData.h>
+#include <IO/IO.h>
+#include <LinAlg/LinAlg.h>
+#include <LinAlg/Math.h>
+#include <Various/Constants.h>
 #include <cmath>
 
-#include "Data/mixt_AugmentedData.h"
-#include "LinAlg/mixt_Math.h"
-#include "LinAlg/mixt_LinAlg.h"
-#include "Various/mixt_Constants.h"
-#include "IO/mixt_IO.h"
-#include "Various/mixt_Enum.h"
+#include "Various/Enum.h"
 
 #include "Gaussian.h"
 
