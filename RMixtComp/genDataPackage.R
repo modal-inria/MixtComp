@@ -10,7 +10,7 @@ var$Categorical1 <- RMixtComp:::categoricalParam1("Categorical1")
 var$nBinom1 <- RMixtComp:::nBinomParamRandom("nBinom1")
 var$Weibull1 <- RMixtComp:::weibullParam("Weibull1")
 var$Functional1 <- RMixtComp:::functionalInterPolyParam("Functional1")
-var$FunctionalSharedAlpha1 <- RMixtComp:::functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
+var$FunctionalSharedAlpha1 <- RMixtComp:::functionalSharedAlphaInterPolyParam("FunctionalSharedAlpha1")
 var$Rank1 <- RMixtComp:::rankParam("Rank1")
 
 resGenLearn <- RMixtComp:::dataGeneratorNewIO(200, 0.9, var)
