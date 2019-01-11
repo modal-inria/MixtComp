@@ -16,7 +16,7 @@ The learn alorithm used the SemStrategy, then the GibbsStrategy, while the predi
 
 # SemStrategy run
 
-Source [here](./MixtComp/src/lib/Strategy/mixt_SEMStrategy.cpp).
+Source [here](./MixtComp/src/lib/Strategy/SEMStrategy.cpp).
 
 The main difference between an SEM run and a Gibbs run is that estimations take place. Those estimation must be tracked, and they can also wrong. The SEMStrategy is similar, except that no estimation take place, and the parameters are fixed all along.
 
@@ -25,7 +25,7 @@ Things can go wrong at various points in the algorithm, for example there can be
 - initData is called to initialize all latent variables uniformly (observed constraints are satisfied, for example {1, 3, 5} for categorical data).
 - checkNbIndPerClass checks that there is at least one observation in each class (useless ?).
 - initParam initialize the parameters for the next step
-- initParamSubPartition initialize the parameters by generating a subpopulation, and performing an mStep on it. The (approximate) default number of observation per class for the initialization are defined [here](MixtComp/src/lib/Strategy/mixt_StrategyParam.h). A checkSampleCondition is performed. This step can fail, hence the test on the size of warnLog which might trigger "continue".
+- initParamSubPartition initialize the parameters by generating a subpopulation, and performing an mStep on it. The (approximate) default number of observation per class is given by the user. A checkSampleCondition is performed. This step can fail, hence the test on the size of warnLog which might trigger "continue".
 - writeParameters outputs the parameters, which is useful for debug, or to check if the numer of observations per class is correct for initialization.
 - initializeLatent performs the initialization of all latent variables, using the parameters previously estimated.
     - computeObservedProba asks each variable to compute the observed distributions if needed.
