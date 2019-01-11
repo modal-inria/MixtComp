@@ -278,7 +278,7 @@ public:
 		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
 
 		NamedVector<Index> dataCompleted { std::vector<std::string>(), zClassInd_.zi().data_ + minModality };
-		NamedMatrix<Real> dataStat { std::vector<std::string>(), std::vector<std::string>(), tik_ };
+		NamedMatrix<Real> dataStat { std::vector<std::string>(), paramName(), tik_ };
 
 		g.add_payload( { "variable", "data", "z_class" }, "completed", dataCompleted);
 		g.add_payload( { "variable", "data", "z_class" }, "stat", dataStat);
