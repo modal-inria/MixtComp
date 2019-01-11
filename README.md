@@ -23,6 +23,7 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 * [Algorithm description](MixtComp/docs/algoDesc.md)
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
+* [Solutions to common errors](MixtComp/docs/error.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
 
 # External tools
