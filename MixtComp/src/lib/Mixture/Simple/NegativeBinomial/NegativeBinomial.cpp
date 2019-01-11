@@ -67,10 +67,10 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 			param_(2 * k + 1) = pParam;
 
 			if ((1 - pParam < epsilon) | (pParam < epsilon)) {
-				warnLog += "Negative Binomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: " + std::to_string(k) + ". " + eol;
+				warnLog += "NegativeBinomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: " + std::to_string(k) + ". " + eol;
 			}
 		} catch (boost::exception &e) {
-			warnLog += "Negative Binomial model, parameter n divergence in class: " + std::to_string(k) + ". " + boost::diagnostic_information(e) + "." + eol;
+			warnLog += "NegativeBinomial model, parameter n divergence in class: " + std::to_string(k) + ". " + boost::diagnostic_information(e) + "." + eol;
 		}
 
 	}

@@ -84,7 +84,7 @@ public:
 			}
 
 			return "Error in variable: " + idName_
-					+ " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead."
+					+ " with Rank_ISR model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead."
 					+ eol;
 
 			itKEnd: ; // jumping here means that the return above is skipped, for the current class

@@ -54,7 +54,7 @@ public:
 		}
 
 		if (0 < classLog.size()) {
-			return "Error(s) in variable: " + idName_ + " with Functional model. The errors in the various classes are: " + eol + classLog;
+			return "Error(s) in variable: " + idName_ + " with Func_CS model. The errors in the various classes are: " + eol + classLog;
 		}
 
 		return "";

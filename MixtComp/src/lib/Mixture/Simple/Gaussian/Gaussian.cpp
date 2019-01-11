@@ -64,7 +64,7 @@ std::string Gaussian::mStep(const Vector<std::set<Index>>& classInd) {
 							+ epsilonStr
 							+ " in each class. It is not the case in class: "
 							+ std::to_string(k)
-							+ ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable will describe it better."
+							+ ". If some values are repeated often in this variable, maybe a Multinomial or a Poisson variable will describe it better."
 							+ eol;
 		}
 	}
