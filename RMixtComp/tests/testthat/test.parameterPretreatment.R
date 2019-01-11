@@ -364,4 +364,45 @@ test_that("changeClassNames works", {
                            "k: G7, s: 0, alpha1", "k: G8, s: 0, c: 0", "k: G9, s: 0", "k: G10, pi"))
 })
 
+
+
+test_that("formatOutputBasicMode works", {
+  dictionary <- list(z_class = list(old = c("setosa", "versicolor", "virginica"),
+                                    new = c("1", "2", "3")),
+                     categ1 = list(old = c("a", "b"), new = c("1", "2")))
+  
+  res0 <- list(algo = list(),
+               variable = list(type = list(z_class = "LatentClass", categ1 = "Multinomial"),
+                               data = list(z_class = list(completed = c(3, 3, 1, 2),
+                                                          stat = matrix(NA, nrow = 1, ncol = 3, dimnames = list(NULL, c("k: 1", "k: 2", "k: 3")))),
+                                           categ1 = list(completed = c(2, 1, 2))),
+                               param = list(z_class = list(stat = matrix(NA, nrow = 3, ncol = 3, dimnames = list(c("k: 1", "k: 2", "k: 3"), NULL)),
+                                                           log = matrix(NA, nrow = 3, ncol = 2, dimnames = list(c("k: 1", "k: 2", "k: 3"), NULL))),
+                                            categ1 = list(stat = matrix(NA, nrow = 6, ncol = 3, dimnames = list(c("k: 1, modality: 1", "k: 1, modality: 2", 
+                                                                                                                  "k: 2, modality: 1", "k: 2, modality: 2", 
+                                                                                                                  "k: 3, modality: 1", "k: 3, modality: 2"), NULL)),
+                                                          log = matrix(NA, nrow = 6, ncol = 2, dimnames = list(c("k: 1, modality: 1", "k: 1, modality: 2", 
+                                                                                                                 "k: 2, modality: 1", "k: 2, modality: 2", 
+                                                                                                                 "k: 3, modality: 1", "k: 3, modality: 2"), NULL)))
+                               )))
+  
+  
+  res <- formatOutputBasicMode(res0, dictionary)
+  
+  expect_equal(res$algo$dictionary, dictionary)
+  expect_equal(res$variable$data$z_class$completed, c("virginica", "virginica", "setosa", "versicolor"))
+  expect_equal(colnames(res$variable$data$z_class$stat), c("k: setosa", "k: versicolor", "k: virginica"))
+  expect_equal(res$variable$data$categ1$completed, c("b", "a", "b"))
+  expect_equal(rownames(res$variable$param$z_class$stat), c("k: setosa", "k: versicolor", "k: virginica"))
+  expect_equal(rownames(res$variable$param$z_class$log), c("k: setosa", "k: versicolor", "k: virginica"))
+  expect_equal(rownames(res$variable$param$categ1$stat), c("k: setosa, modality: a", "k: setosa, modality: b", 
+                                                           "k: versicolor, modality: a", "k: versicolor, modality: b", 
+                                                           "k: virginica, modality: a", "k: virginica, modality: b"))
+  expect_equal(rownames(res$variable$param$categ1$log), c("k: setosa, modality: a", "k: setosa, modality: b", 
+                                                          "k: versicolor, modality: a", "k: versicolor, modality: b", 
+                                                          "k: virginica, modality: a", "k: virginica, modality: b"))
+  
+})
+
+
 Sys.unsetenv("MC_DETERMINISTIC")
