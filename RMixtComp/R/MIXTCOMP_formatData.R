@@ -207,6 +207,7 @@ formatOutputBasicMode <- function(res, dictionary)
     varNames <- getVarNames(res, with.z_class = TRUE)
     
     res$variable$data$z_class$completed = refactorCategorical(res$variable$data$z_class$completed, res$algo$dictionary$z_class$new, res$algo$dictionary$z_class$old)
+    colnames(res$variable$data$z_class$stat) = changeClassName(colnames(res$variable$data$z_class$stat), res$algo$dictionary)
     
     for(varName in varNames)
     {
