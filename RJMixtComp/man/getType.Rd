@@ -2,10 +2,13 @@
 % Please edit documentation in R/MIXTCOMP_getter.R
 \name{getType}
 \alias{getType}
+\alias{getModel}
 \alias{getVarNames}
-\title{Getters}
+\title{Names and Types Getters}
 \usage{
 getType(outMixtComp, with.z_class = FALSE)
+
+getModel(outMixtComp, with.z_class = FALSE)
 
 getVarNames(outMixtComp, with.z_class = FALSE)
 }
@@ -18,7 +21,7 @@ getVarNames(outMixtComp, with.z_class = FALSE)
 a vector containing the type of models, names associated with each individual.
 }
 \description{
-Get the type of model, names for each variable
+getType returns the type output of a MixtComp object, getModel returns the model object, getVarNames returns the name for each variable
 }
 \examples{
 \donttest{
@@ -34,10 +37,13 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2)
 
 # get type
 type <- getType(resLearn)
+
+# get model object
+model <- getModel(resLearn)
 
 # get variable names
 varNames <- getVarNames(resLearn)
@@ -45,3 +51,13 @@ varNames <- getVarNames(resLearn)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getBIC}},
+  \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
+  \code{\link{getPartition}}
+}
+\author{
+Quentin Grimonprez
+}
+\concept{getter}

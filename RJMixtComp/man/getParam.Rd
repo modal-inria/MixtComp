@@ -31,10 +31,22 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2)
 
 # get param
 param <- getParam(resLearn, "Gaussian1")
 }
 
 }
+\seealso{
+\code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
+
+Other getter: \code{\link{getBIC}},
+  \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getPartition}},
+  \code{\link{getType}}
+}
+\author{
+Quentin Grimonprez
+}
+\concept{getter}
