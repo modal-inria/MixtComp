@@ -27,7 +27,9 @@ RMixtComp/RMCtest.xml
 RMixtComp/src/libOFiles
 RMixtComp/src/Makevars
 RMixtComp.Rcheck
-RJsonMixtComp/R/MIXTCOMP_*
-!RJsonMixtComp/inst/extdata/*.json
+RJMixtComp/R/MIXTCOMP_*
+RJMixtComp/inst/exeMixtComp/jmc
+RJMixtComp.Rcheck
+!RJMixtComp/inst/extdata/*.json
 /.metadata/
 RemoteSystemsTempFiles
