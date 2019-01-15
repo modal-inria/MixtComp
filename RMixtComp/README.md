@@ -11,7 +11,7 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
 
-Packages are required from Ubuntu repoitories: `sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev`
+Packages are required from Ubuntu repositories: `sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev`
 
 ```
 mkdir ~/R
@@ -30,10 +30,10 @@ Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rt
 Run in the current location:
 
 ```
-make clean
-make updatelib
-make all
+./build.sh
 ```
+
+It will copy MixtComp lib in the src folder and then install it.
 
 
 ## Testing procedures
@@ -50,22 +50,21 @@ library(devtools)
 load_all()
 test_dir("tests/testthat/")
 ```
-or
+or 
 ```
 library(methods); 
 library(devtools); 
 options(testthat.output_file = "RMCtest.xml"); 
 test(".", reporter = JunitReporter)
 ```
+but it requires the *xml2* package and generates a xml report file named *RMCtest.xml*.
 
-You can run tests via shell (it requires the *xml2* package):
+Via shell:
 ```
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCtest.xml"); test(".", reporter = JunitReporter)'
 ```
-It generates a xml report file named *RMCtest.xml*.
 
-
-In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing  `CRTL + SHIFT + T` OR tests are run during a R CMD check `CRTL + SHIFT + E`.
+In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing  `CRTL + SHIFT + T` or tests are run during a R CMD check `CRTL + SHIFT + E`.
 
 
 ### Test the C++ code from RMixtComp
@@ -74,11 +73,12 @@ It requires *RIinside* package. Tests are in the *src/test* folder. You can comp
 
 
 ### Writing new tests
-For your own testing procedure, you can use the data and MODEL provided in the package, you can load them in R:
+
+For your own testing procedure, you can use the data and model provided in the package, you can load them in R:
 ```
 data(simData)
 ```
 
-Or you can generate your own data using function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)): dataGeneratorNewIO.
+Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)).
 
-See the functions in files R/TEST_*.R for how to have a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with testthat.
+See functions in files R/TEST_*.R for creating a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with testthat.
