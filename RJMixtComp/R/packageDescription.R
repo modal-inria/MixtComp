@@ -2,46 +2,51 @@
 #' @import jsonlite
 #' 
 
-#' @title RMixtComp
+#' @title RJMixtComp
 #' @docType package
-#' @aliases RMixtComp-package
+#' @aliases RJMixtComp-package
 #' @name RJMixtComp-package
 #' @description  
-#' Statistics analysis with MixtComp
+#' Mixture Composer is a project to build mixture models with heterogeneous data sets. The conditional independence property enable composing all the data sets in a single mixture model.
 #'
 #' 
 #' @details
-#' Use JMixtComp
+#' Use JMixtComp library.
 #' 
 #' 
-#' @author Quentin Grimonprez
+#' @author 
+#' For RJMixtComp: Quentin Grimonprez
 #' 
 #' Maintainer: Quentin Grimonprez <quentin.grimonprez@@inria.fr>
+#' 
+#' For JMixtComp:
+#' Vincent Kubicki <vincent.kubicki@@inria.fr">
+#' Christophe Biernacki
+#' Quentin Grimonprez
+#' Serge Iovleff"
 #'  
 #' 
 #' @examples 
 #' \donttest{
 #' pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
-#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
+#' pathToModel <- system.file("extdata", "desc.json", package = "RJMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
-#' descriptor <- fromJSON(pathToDescriptor)
-#' strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
-#'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5, confidenceLevel = 0.95)
+#' model <- fromJSON(pathToModel)
+#' algo <- createAlgo()
 #' 
-#' resLearn <- JsonMixtCompLearn(data, descriptor, algo = strategy, nClass = 2,
-#'                               confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json")
-#' 
-#' 
-#' file.remove("./algo.json", "./descriptor.json", "./data.json")
-#' 
-#' resPredict <- JsonMixtCompPredict(data, descriptor, algo = strategy, nClass = 2,
-#'                                   confidenceLevel = 0.95, inputPath = ".", 
-#'                                   paramFile = "reslearn.json", outputFile = "respredict.json")
+#' resLearn <- JMixtCompLearn(data, model, algo = algo, nClass = 2,
+#'                            inputPath = ".", outputFile = "reslearn.json")
 #' 
 #' 
-#' file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json",
-#'             "respredict.json", "progress")
+#' file.remove("./algo.json", "./model.json", "./data.json")
+#' 
+#' resPredict <- JMixtCompPredict(data, model, algo = algo, nClass = 2, inputPath = ".",
+#'                                paramFile = "reslearn.json", outputFile = "respredict.json")
+#' 
+#' 
+#' file.remove("./algo.json", "./model.json", "./data.json", "reslearn.json",
+#'             "respredict.json")
 #' }
 #' 
 #' 

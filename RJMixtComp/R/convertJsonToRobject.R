@@ -1,4 +1,5 @@
 # @param x result from MixtComp read with fromJSON
+# @author Quentin Grimonprez
 convertOutput <- function(x)
 {
   x = lapply(x, convertJsonElement)
@@ -10,14 +11,14 @@ convertOutput <- function(x)
   return(x)
 }
 
-
+# @author Quentin Grimonprez
 convertJsonElement <- function(x)
 {
   if("ctype" %in% names(x))
   {
     x <- switch(x$ctype,
                 "Matrix" = {
-                  if((x$nrow == 0) | (x$ncol = 0))
+                  if((x$nrow == 0) | (x$ncol == 0))
                     return(matrix(nrow = x$nrow, ncol = x$ncol, dimnames = list(x$rowNames, x$colNames)))
                   
                   rownames(x$data) = x$rowNames

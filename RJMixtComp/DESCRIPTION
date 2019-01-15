@@ -1,14 +1,16 @@
 Package: RJMixtComp
 Type: Package
-Title: MixtComp analysis
-Version: 0.4
-Date: 2018-10-11
+Title: Mixture Composer
+Version: 0.5
+Date: 2019-01-15
 Author: Quentin Grimonprez
 Maintainer: Quentin Grimonprez <quentin.grimonprez@inria.fr>
-Description: MixtComp analysis by InriaTech.
+Description: Mixture Composer is a project to build mixture models with
+    heterogeneous data sets. The conditional independence property enable composing
+    all the data sets in a single mixture model.
 License: file LICENCE
-Copyright: Inria for RJsonMixtComp, Inria - Lille 1 for Mixtcomp
+Copyright: Inria for RJMixtComp, Inria - Université de Lille for JMixtcomp
 Imports: jsonlite
 Suggests: testthat
 Encoding: UTF-8
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

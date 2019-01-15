@@ -78,15 +78,9 @@ test_that("convertOutput converts well", {
   
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- fromJSON(pathToDescriptor)
-  algo <- list(nbBurnInIter = 50,
-               nbIter = 50,
-               nbGibbsBurnInIter = 20,
-               nbGibbsIter = 20,
-               nInitPerClass = 10,
-               nSemTry = 5,
-               confidenceLevel = 0.95)
+  algo <- createAlgo()
   
-  expect_silent(res <- JsonMixtCompLearn(data, descriptor, algo, nClass = 2, inputPath = ".", outputFile = "reslearn.json"))
+  expect_silent(res <- JMixtCompLearn(data, descriptor, algo, nClass = 2, inputPath = ".", outputFile = "reslearn.json"))
   
   res <- fromJSON("reslearn.json")
   out <- convertOutput(res)

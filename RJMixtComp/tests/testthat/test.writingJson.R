@@ -35,11 +35,11 @@ test_that("Creation of algo file", {
 })
 
 
-test_that("Creation of descriptor file", {
+test_that("Creation of model file", {
   
-  descriptor <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
-                           varPoisson = list(type = "Poisson"),
-                           varCategorical = "Multinomial")
+  model <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
+                varPoisson = list(type = "Poisson"),
+                varCategorical = "Multinomial")
   
   
   expectedJson <- '{
@@ -57,7 +57,7 @@ test_that("Creation of descriptor file", {
   }
 }'
   
-  descriptorJson <- createDescriptorJson(descriptor)
+  descriptorJson <- createModelJson(model)
   expect_true(descriptorJson == expectedJson)
 })
 

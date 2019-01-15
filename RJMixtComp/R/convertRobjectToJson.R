@@ -1,8 +1,8 @@
+# @author Quentin Grimonprez
 createAlgoJson <- function(nClass, nInd, mcStrategy, mode, ...)
 {
   unrequiredFields <- list(...)
-  toDelete <- names(unrequiredFields) %in% c("nClass", "nInd", "confidenceLevel", "mode", "nbBurnInIter",
-                                                "nbIter", "nbGibbsBurnInIter", "nbGibbsIter", "nInitPerClass", "nSemTry")
+  toDelete <- names(unrequiredFields) %in% names(createAlgo())
   unrequiredFields = unrequiredFields[!toDelete]
   
   algo = c(list(nClass = nClass, nInd = nInd), mcStrategy,
@@ -12,6 +12,7 @@ createAlgoJson <- function(nClass, nInd, mcStrategy, mode, ...)
 }
 
 # @param data a data.frame where each column corresponds to a variable 
+# @author Quentin Grimonprez
 createDataJson <- function(data)
 {
   data = formatData(data)
@@ -21,8 +22,9 @@ createDataJson <- function(data)
 
 
 # @param descriptor a data.frame where each column corresponds to a variable. Each column contains the model and eventually supplementary parameters
-createDescriptorJson <- function(descriptor)
+# @author Quentin Grimonprez
+createModelJson <- function(model)
 {
-  descriptor <- formatDesc(descriptor)
-  toJSON(descriptor, auto_unbox = TRUE, pretty = TRUE)
+  model <- formatModel(model)
+  toJSON(model, auto_unbox = TRUE, pretty = TRUE)
 }

@@ -4,12 +4,12 @@
 #' 
 #' 
 #' @param data a data.frame/matrix/list containing the data
-#' @param descriptor a list containing the model for each variable. The names of \emph{descriptor} must be in \emph{data}
+#' @param model a list containing the model for each variable. The names of \emph{model}'s element must be in \emph{data}
+#' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \link{createAlgo}).
 #' @param nClass the number of class of the mixture model.
-#' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param inputPath path of the folder to save the input files.
 #' @param outputFile path of the output json file to save.
-#' @param paramFile (only for JsonMixtCompPredict) path of the output json file of JsonMixtCompCluster function.
+#' @param paramFile (only for \emph{JMixtCompPredict}) path of the output json file of \emph{JMixtCompLearn} function.
 #' 
 #' @return A json file and a R list containing 3 lists :
 #' \describe{
@@ -18,45 +18,38 @@
 #'  \item{variable}{information about the estimated parameters (see \emph{Details}).}
 #' }
 #' 
-#' @details See external documentation for details about the input/output object of \emph{mixtCompLearn} and \emph{mixtCompPredict} functions.
+#' @details See external documentation for details about the input/output object of \emph{JMixtCompLearn} and \emph{JMixtCompPredict} functions.
 #' 
 #' 
 #' @examples 
 #' \donttest{
 #' pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
-#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
+#' pathToModel <- system.file("extdata", "desc.json", package = "RJMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
-#' descriptor <- fromJSON(pathToDescriptor)
+#' model <- fromJSON(pathToModel)
 #' 
-#' strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
-#'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5,
-#'                  confidenceLevel = 0.95)
+#' algo <- createAlgo()
 #' 
-#' resLearn <- JsonMixtCompLearn(data, descriptor, algo = strategy, nClass = 2,
-#'                               inputPath = ".", outputFile = "reslearn.json")
+#' resLearn <- JMixtCompLearn(data, model, algo = algo, nClass = 2,
+#'                            inputPath = ".", outputFile = "reslearn.json")
 #' 
 #' 
-#' file.remove("./algo.json", "./descriptor.json", "./data.json")
+#' file.remove("./algo.json", "./model.json", "./data.json")
 #' 
-#' resPredict <- JsonMixtCompPredict(data, descriptor, algo = strategy, nClass = 2,
+#' resPredict <- JMixtCompPredict(data, model, algo = algo, nClass = 2,
 #'                                   inputPath = ".", paramFile = "reslearn.json",
 #'                                   outputFile = "respredict.json")
 #' 
 #' 
-#' file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json",
-#'             "respredict.json", "progress")
+#' file.remove("./algo.json", "./model.json", "./data.json", "reslearn.json",
+#'             "respredict.json")
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' 
 #' @export
-JsonMixtCompLearn <- function(data, descriptor, algo = list(nbBurnInIter = 100,
-                                                            nbIter = 100,
-                                                            nbGibbsBurnInIter = 50,
-                                                            nbGibbsIter = 50,
-                                                            nInitPerClass = 10,
-                                                            nSemTry = 10, 
-                                                            confidenceLevel = 0.95), nClass, inputPath, outputFile)
+JMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, inputPath, outputFile)
 {
   
   algoFile <- paste0(inputPath,"/algo.json")
@@ -65,14 +58,14 @@ JsonMixtCompLearn <- function(data, descriptor, algo = list(nbBurnInIter = 100,
   dataFile <- paste0(inputPath,"/data.json")
   write(createDataJson(data), dataFile)
   
-  descriptorFile <- paste0(inputPath,"/descriptor.json")
-  write(createDescriptorJson(descriptor), descriptorFile)
+  modelFile <- paste0(inputPath,"/model.json")
+  write(createModelJson(model), modelFile)
   
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "jmc.exe", "jmc")
   pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJMixtComp")
   
-  system(paste(pathToJMixtComp, algoFile, dataFile, descriptorFile, outputFile))
+  system(paste(pathToJMixtComp, algoFile, dataFile, modelFile, outputFile))
   
   resLearn <- fromJSON(outputFile)
   
@@ -83,15 +76,9 @@ JsonMixtCompLearn <- function(data, descriptor, algo = list(nbBurnInIter = 100,
 }
 
 
-#' @rdname JsonMixtCompLearn
+#' @rdname JMixtCompLearn
 #' @export
-JsonMixtCompPredict <- function(data, descriptor, algo = list(nbBurnInIter = 100,
-                                                              nbIter = 100,
-                                                              nbGibbsBurnInIter = 50,
-                                                              nbGibbsIter = 50,
-                                                              nInitPerClass = 10,
-                                                              nSemTry = 10, 
-                                                              confidenceLevel = 0.95), nClass, inputPath, paramFile, outputFile)
+JMixtCompPredict <- function(data, model, algo = createAlgo(), nClass, inputPath, paramFile, outputFile)
 {
   algoFile <- paste0(inputPath,"/algo.json")
   write(createAlgoJson(nClass, nInd = nrow(data), algo, mode = "predict"), algoFile)
@@ -99,13 +86,13 @@ JsonMixtCompPredict <- function(data, descriptor, algo = list(nbBurnInIter = 100
   dataFile <- paste0(inputPath,"/data.json")
   write(createDataJson(data), dataFile)
   
-  descriptorFile <- paste0(inputPath,"/descriptor.json")
-  write(createDescriptorJson(descriptor), descriptorFile)
+  modelFile <- paste0(inputPath,"/model.json")
+  write(createModelJson(model), modelFile)
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "jmc.exe", "jmc")
   pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJMixtComp")
   
-  system(paste(pathToJMixtComp, algoFile, dataFile, descriptorFile, paramFile, outputFile))
+  system(paste(pathToJMixtComp, algoFile, dataFile, modelFile, paramFile, outputFile))
   
   resPredict <- fromJSON(outputFile)
   
