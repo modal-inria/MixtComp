@@ -124,7 +124,7 @@ Missing data are indicated by a \emph{?}. For partial data, a list of possible v
 A MixtComp object is a result of a single run of MixtComp algorithm. It is a list containing three elements \emph{mixture}, \emph{variable} and \emph{algo}. 
 If MixtComp fails to run, the list contains a single element: warnLog containing error messages.
 
-The \emph{mixture} contains
+The \emph{mixture} element contains
 \itemize{
   \item{BIC: value of BIC}
   \item{ICL: value of ICL}
@@ -166,9 +166,11 @@ output  \cr
 |        \tab      \tab |_ nbGibbsIter\cr
 |        \tab      \tab |_ nInitPerClass\cr
 |        \tab      \tab |_ nSemTry\cr
+|        \tab      \tab |_ ratioStableCriterion\cr
+|        \tab      \tab |_ nStableCriterion\cr
+|        \tab      \tab |_ confidenceLevel  \cr
 |        \tab      \tab |_ mode \cr
 |        \tab      \tab |_ nInd  \cr
-|        \tab      \tab |_ confidenceLevel  \cr
 |        \tab      \tab |_ nClass \cr
 | \cr
 |_______ \tab mixture \tab __ BIC \cr
@@ -264,7 +266,7 @@ Julien Jacques, Christophe Biernacki. \emph{Model-based clustering for multivari
 Allou Samé, Faicel Chamroukhi, Gérard Govaert, Patrice Aknin. \emph{Model-based clustering and segmentation of time series with change in regime}. Advances in Data Analysis and Classification, 2011, 5(4):301-321
 }
 \seealso{
-Other clustering packages : \code{Rmixmod}, \code{blockcluster}
+Other clustering packages: \code{Rmixmod}, \code{blockcluster}
 }
 \author{
 Quentin Grimonprez
