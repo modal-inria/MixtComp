@@ -70,13 +70,8 @@ extract_data_per_cluster <- function(dir) {
 #
 launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
   # Check if JsonMixtComp executable is available
-  paths = Sys.getenv("PATH")
-  if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
-    stop(
-      "JsonMixtComp executable cannot be found.
-      In order to be callable, 'JsonMixtComp' must be stored in any of the folder designated by the paths contained in the environement variable PATH"
-    )
-  }
+  pathToJsonMixtComp <- system.file("exe", "JsonMixtComp", package = "MixtCompRTools")
+
   path_input <- paste0(dir, "/mixtcomp_input.json")
   path_output <- paste0(dir, "/mixtcomp_output.json")
 
@@ -125,7 +120,7 @@ launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
   ###### Mixtcomp run
 
   cmd <-
-    paste("JsonMixtComp",
+    paste(pathToJsonMixtComp,
           path_input,
           path_output)
   system(cmd)
@@ -142,13 +137,7 @@ launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
 #
 launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
   # Check if JsonMixtComp executable is available
-  paths = Sys.getenv("PATH")
-  if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
-    stop(
-      "JsonMixtComp executable cannot be found.
-      In order to be callable, 'JsonMixtComp' must be stored in any of the folder designated by the paths contained in the environement variable PATH"
-    )
-  }
+  pathToJsonMixtComp <- system.file("exe", "JsonMixtComp", package = "MixtCompRTools")
 
   path_input <- paste0(test_dir, "/mixtcomp_input.json")
   path_output <- paste0(test_dir, "/mixtcomp_output.json")
@@ -196,7 +185,7 @@ launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
   ###### Mixtcomp run
 
   cmd <-
-    paste("JsonMixtComp",
+    paste(pathToJsonMixtComp,
           path_input,
           path_output)
   system(cmd)
