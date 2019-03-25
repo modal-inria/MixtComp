@@ -10,9 +10,9 @@ prune_hierarchy(dir, purity_strategy = list(var = NULL, threshold =
 \arguments{
 \item{dir}{A string, the path of the hierarchical clustering to prune}
 
-\item{purity_strategy}{a list of two elements, that defines which variable purity to check and according to which threshold (double between 0 and 1)}
+\item{purity_strategy}{a list of two elements (var and threshold), that defines which variable purity to check and according to which threshold (double between 0 and 1)}
 
-\item{cluster_size_strategy}{a list of one element that define the cluster size threshold.}
+\item{cluster_size_strategy}{a list of one element (threshold) that define the cluster size threshold.}
 }
 \description{
 - The purity of the clusters : if a cluster is purer than a certain threshold then the subclusters are not useful

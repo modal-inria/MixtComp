@@ -1,3 +1,4 @@
+# Author : Étienne Goffinet
 
 #' Aggregate the hierarchical clusters estimated
 #'

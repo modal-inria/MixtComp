@@ -9,13 +9,13 @@ launch_Mixtcomp_Hierarchical(data_path, descriptor_path, nClass, depth,
   threshold_purity = 2), mcStrategy = NULL, nCore = 1)
 }
 \arguments{
-\item{data_path}{A string}
+\item{data_path}{data file path}
 
-\item{descriptor_path}{A string}
+\item{descriptor_path}{descriptor file path}
 
-\item{nClass}{Integer between 0 and 10}
+\item{nClass}{Integer between 0 and 10: number of classes to compute at each node}
 
-\item{depth}{Positive integer}
+\item{depth}{depth of the hierarchy}
 
 \item{output_dir}{(optional) if not null, the results will be written in this directory.
 If Null, a directory with the name of the dataset will be created and used as output directory instead.}
@@ -24,12 +24,43 @@ If Null, a directory with the name of the dataset will be created and used as ou
 var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
 threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.}
 
-\item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
+\item{mcStrategy}{(optional) Additional parameters for mixtcomp launch list containing elements: (nbBurnInIter, nbIter, nbGibbsBurnInIter, nbGibbsIter). Default is 15 for all parameters.}
 
 \item{nCore}{number of cores for parallelization}
 }
 \description{
 Launch the Hierarchical Mixtcomp.
+}
+\details{
+Please clean the output_dir after a run fails
+}
+\examples{
+\dontrun{
+data_path <- "res/func/dat/dat.csv"
+dataTestPath <- "res/func/dat/data_predict.csv"
+descriptor_path <- "res/func/dat/desc.csv"
+
+res <- launch_Mixtcomp_Hierarchical(data_path, descriptor_path, nClass = 3, depth = 5,
+                                   output_dir = "res/func/out/",
+                                   strategy = list(var = NULL, threshold_nInd = 10,
+                                                   threshold_purity = 0.95), nCore = 3)
+
+
+resPred <- launch_Mixtcomp_Hierarchical_predict(data_path = dataTestPath,
+                                                param_dir = "res/func/out/dat/",
+                                                output_dir = "res/func/outPred/"
+
+# get partition
+partition <- aggregate_clusters("res/func/outPred/data_predict/")
+
+# get completed data
+compl <- aggregate_completed("res/func/outPred/data_predict/", var = "Degradation_type")
+
+}
+
+}
+\seealso{
+\link{launch_Mixtcomp_Hierarchical_predict} \link{aggregate_clusters} \link{prune_hierarchy}
 }
 \author{
 Etienne Goffinet
