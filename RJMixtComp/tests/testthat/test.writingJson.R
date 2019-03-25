@@ -10,10 +10,11 @@ test_that("Creation of algo file", {
                      nbGibbsIter = 100, 
                      nInitPerClass = 2,
                      nSemTry = 10,
-                     confidenceLevel = 0.95)
+                     confidenceLevel = 0.95,
+                     notes = "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also.")
   
   mode <- "learn"
-  notes <- "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
+  
   
   
   expectedJson <- '{
@@ -26,11 +27,13 @@ test_that("Creation of algo file", {
   "nInitPerClass": 2,
   "nSemTry": 10,
   "confidenceLevel": 0.95,
+  "ratioStableCriterion": 0.95,
+  "nStableCriterion": 10,
   "mode": "learn",
   "notes": "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
 }'
   
-  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, mode, notes = notes)
+  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, mode)
   expect_true(algoJson == expectedJson)
 })
 
