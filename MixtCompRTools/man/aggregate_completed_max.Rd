@@ -11,6 +11,9 @@ aggregate_completed_max(dir, var)
 
 \item{var}{String, The variable to be aggregated}
 }
+\value{
+completed data
+}
 \description{
 Aggregate the hierarchical clusters completed data
 }

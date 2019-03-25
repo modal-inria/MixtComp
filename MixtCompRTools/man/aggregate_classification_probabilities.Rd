@@ -12,7 +12,7 @@ aggregate_classification_probabilities(dir, depth)
 \item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 }
 \value{
-a plotly plot
+tik
 }
 \description{
 Aggregate the classification probabilities estimated in the nested clustering

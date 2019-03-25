@@ -14,7 +14,7 @@ aggregate_completed(dir, var, depth = NULL)
 \item{depth}{Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.}
 }
 \value{
-a plotly plot
+completed data
 }
 \description{
 Plot functional data by clusters
