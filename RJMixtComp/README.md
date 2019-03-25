@@ -4,7 +4,7 @@ This package uses JMixtComp. It requires packages *jsonlite* for managing json f
 
 ```
 install.packages("jsonlite", repos = "https://cran.rstudio.com")
-install.packages(c("roxygen2", "jsonlite"), repos = "https://cran.rstudio.com")
+install.packages(c("roxygen2", "testthat"), repos = "https://cran.rstudio.com")
 ```
 
 1. Run `./update.sh` for compiling JMixtComp and copying required files.
