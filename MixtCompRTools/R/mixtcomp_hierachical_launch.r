@@ -36,12 +36,17 @@ check_strategy <- function(strategy, resGetData) {
 extract_data_per_cluster <- function(dir) {
   MixtCompOutput <- fromJSON(paste0(dir, "/mixtcomp_output.json"))
   data <- read.csv(paste0(dir, "/data_mixtcomp.csv"),
-                   sep = ";",
-                   header = TRUE)
+                   sep = ";", header = TRUE)
 
-  for (i in 1:MixtCompOutput$mixture$nbCluster) {
-    idx_cluster <-
-      which(MixtCompOutput$variable$data$z_class$completed == i)
+  oldMC <- is.null(MixtCompOutput$algo)
+  nClass <- ifelse(oldMC, MixtCompOutput$mixture$nbCluster, MixtCompOutput$algo$nClass)
+
+  for (i in 1:nClass) {
+    if(oldMC)
+      idx_cluster <- which(MixtCompOutput$variable$data$z_class$completed == i)
+    else
+      idx_cluster <- which(MixtCompOutput$variable$data$z_class$completed$data == i)
+
     data_cluster <- data[idx_cluster, ]
     subdir <- paste0(dir, "/subcluster_", i)
     print(paste0(subdir, "/data_mixtcomp.csv"))
@@ -242,26 +247,30 @@ expand <- function(dir, nClass, strategy = NULL, mcStrategy = NULL, nCore = 1) {
     # If no subdirectories exist, create them, extract data into them and launch mixtcomp.
     if(!file.exists(paste0(dir, "/mixtcomp_output.json"))){return()}
 
-    MixtCompOutput <-
-      fromJSON(paste0(dir, "/mixtcomp_output.json"))
-    if(MixtCompOutput$mixture$warnLog!=""){return()}
+    MixtCompOutput <- fromJSON(paste0(dir, "/mixtcomp_output.json"))
+    oldMC <- is.null(MixtCompOutput$algo)
+    if(!is.null(MixtCompOutput$warnLog) || (!is.null(MixtCompOutput$mixture$warnLog) && (MixtCompOutput$mixture$warnLog != ""))){return()}
 
-    create_subdirectories(dir, MixtCompOutput$mixture$nbCluster)
+    nbCluster <- ifelse(is.null(MixtCompOutput$mixture$nbCluster), MixtCompOutput$algo$nClass, MixtCompOutput$mixture$nbCluster)
+    create_subdirectories(dir, nbCluster)
     extract_data_per_cluster(dir)
     subdirs = paste0(dir,
                      "/subcluster_",
-                     1:MixtCompOutput$mixture$nbCluster)
+                     1:nbCluster)
 
     # execute mixtcomp in parallel mode or not
+    launchFunc <- launch_mixtcomp
+    if(!oldMC)
+      launchFunc = launch_mixtcompNew
     if (nCore == 1) {
       for (subdir in subdirs) {
-        launch_mixtcomp(subdir, nClass,strategy = strategy, mcStrategy = mcStrategy)
+        launchFunc(subdir, nClass, strategy = strategy, mcStrategy = mcStrategy)
       }
     } else {
       cl <- makeCluster(length(subdirs))
       registerDoParallel(cl)
       foreach(subdir = subdirs, .packages = 'MixtCompRTools') %dopar% {
-        launch_mixtcomp(subdir, nClass, strategy = strategy, mcStrategy = mcStrategy)
+        launchFunc(subdir, nClass, strategy = strategy, mcStrategy = mcStrategy)
       }
       stopCluster(cl)
     }
@@ -282,6 +291,7 @@ expand <- function(dir, nClass, strategy = NULL, mcStrategy = NULL, nCore = 1) {
 #' threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.
 #' @param mcStrategy (optional) Additional parameters for mixtcomp launch list containing elements: (nbBurnInIter, nbIter, nbGibbsBurnInIter, nbGibbsIter). Default is 15 for all parameters.
 #' @param nCore number of cores for parallelization
+#' @param oldMC if TRUE use old MixtComp, else use JMixtComp
 #'
 #' @details Please clean the output_dir after a run fails
 #'
@@ -316,7 +326,7 @@ expand <- function(dir, nClass, strategy = NULL, mcStrategy = NULL, nCore = 1) {
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, depth, output_dir = NULL,
                                          strategy = list(var = NULL, threshold_nInd = 1, threshold_purity = 2),
-                                         mcStrategy = NULL, nCore = 1) {
+                                         mcStrategy = NULL, nCore = 1, oldMC = TRUE) {
   # Get directory of the data_path
 
   if (is.null(output_dir)) {
@@ -331,18 +341,22 @@ launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, dep
     dir.create(newDir)
     file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
     file.copy(data_path, paste0(newDir, "/data_mixtcomp.csv"))
-    launch_mixtcomp(dir = newDir, nClass = nClass, strategy = strategy, mcStrategy = mcStrategy)
+    if(oldMC)
+      launch_mixtcomp(dir = newDir, nClass = nClass, strategy = strategy, mcStrategy = mcStrategy)
+    else
+      launch_mixtcompNew(dir = newDir, nClass = nClass, strategy = strategy, mcStrategy = mcStrategy)
+
   }
   # run expand on it
   if (depth == 0) {
-    cat("Hierarchical clustering complete !")
+    cat("Hierarchical clustering completed !\n")
     return()
   }
 
   for (i in 1:depth) {
     expand(dir = newDir, nClass = nClass, strategy = strategy, mcStrategy = mcStrategy, nCore = nCore)
   }
-  cat("Hierarchical clustering complete !")
+  cat("Hierarchical clustering completed !\n")
   return()
 }
 
@@ -409,7 +423,8 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
   print(paste0("param_dir : ", param_dir))
 
   output_learn = fromJSON(paste0(param_dir,"/mixtcomp_output.json"))
-  nbCluster = output_learn$mixture$nbCluster
+
+  nbCluster <- ifelse(is.null(output_learn$mixture$nbCluster), output_learn$algo$nClass, output_learn$mixture$nbCluster)
   launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster, mcStrategy)
   data_predict = read.table(paste0(test_dir,"/data_predict.csv"),sep=";",stringsAsFactors = F,header = T)
   subdirs_list = list.dirs(recursive = F,param_dir)

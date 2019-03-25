@@ -6,7 +6,7 @@
 \usage{
 launch_Mixtcomp_Hierarchical(data_path, descriptor_path, nClass, depth,
   output_dir = NULL, strategy = list(var = NULL, threshold_nInd = 1,
-  threshold_purity = 2), mcStrategy = NULL, nCore = 1)
+  threshold_purity = 2), mcStrategy = NULL, nCore = 1, oldMC = TRUE)
 }
 \arguments{
 \item{data_path}{data file path}
@@ -27,6 +27,8 @@ threshold_purity (the maximal purity observed in the dataset above which the sub
 \item{mcStrategy}{(optional) Additional parameters for mixtcomp launch list containing elements: (nbBurnInIter, nbIter, nbGibbsBurnInIter, nbGibbsIter). Default is 15 for all parameters.}
 
 \item{nCore}{number of cores for parallelization}
+
+\item{oldMC}{if TRUE use old MixtComp, else use JMixtComp}
 }
 \description{
 Launch the Hierarchical Mixtcomp.
