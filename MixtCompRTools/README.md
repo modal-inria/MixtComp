@@ -6,3 +6,5 @@ This package uses *JsonMixtComp* (old MixtComp version) to perform hierarchical 
 install.packages(c("plotly", "doParallel", "RColorBrewer", "jsonlite", "foreach", "parallel"), repos = "https://cran.rstudio.com")
 install.packages(c("roxygen2", "testthat"), repos = "https://cran.rstudio.com")
 ```
+
+To install RJMixtComp see the [instructions](../RJMixtComp/README.md) in the [RJMixtComp fodler](../RJMixtComp/).
