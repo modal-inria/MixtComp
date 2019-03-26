@@ -51,9 +51,10 @@
 #' @export
 JMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, inputPath, outputFile)
 {
+  nInd <- ifelse(is.matrix(data), nrow(data), length(data[[1]]))
   
   algoFile <- paste0(inputPath,"/algo.json")
-  write(createAlgoJson(nClass, nInd = nrow(data), algo, mode = "learn"), algoFile)
+  write(createAlgoJson(nClass, nInd, algo, mode = "learn"), algoFile)
   
   dataFile <- paste0(inputPath,"/data.json")
   write(createDataJson(data), dataFile)
@@ -80,8 +81,10 @@ JMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, inputPath, 
 #' @export
 JMixtCompPredict <- function(data, model, algo = createAlgo(), nClass, inputPath, paramFile, outputFile)
 {
+  nInd <- ifelse(is.matrix(data), nrow(data), length(data[[1]]))
+  
   algoFile <- paste0(inputPath,"/algo.json")
-  write(createAlgoJson(nClass, nInd = nrow(data), algo, mode = "predict"), algoFile)
+  write(createAlgoJson(nClass, nInd, algo, mode = "predict"), algoFile)
   
   dataFile <- paste0(inputPath,"/data.json")
   write(createDataJson(data), dataFile)
