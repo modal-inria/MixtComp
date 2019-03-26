@@ -1,4 +1,4 @@
-context("Mixtcomp Hierarchical launch - Learn mode")
+context("Mixtcomp Hierarchical launch - oldMC")
 
 test_that("Mixtcomp Hierarchical launch - Learn mode", {
 
@@ -12,16 +12,16 @@ test_that("Mixtcomp Hierarchical launch - Learn mode", {
   # Launch Mixtcomp Learn
 
   launch_Mixtcomp_Hierarchical(data_path = "wdir/generated_data_training.csv",
-                                               descriptor_path = "wdir/descriptor.csv",
-                                               nClass = 2,
-                                               depth = 1,
-                                               mcStrategy = list(
-                                                 nbBurnInIter = 2,
-                                                 nbIter = 2,
-                                                 nbGibbsBurnInIter = 2,
-                                                 nbGibbsIter = 2
-                                               ),
-                                               nCore=8)
+                               descriptor_path = "wdir/descriptor.csv",
+                               nClass = 2,
+                               depth = 1,
+                               mcStrategy = list(
+                                 nbBurnInIter = 2,
+                                 nbIter = 2,
+                                 nbGibbsBurnInIter = 2,
+                                 nbGibbsIter = 2
+                               ),
+                               nCore=8)
 
   clusters = aggregate_clusters("wdir/generated_data_training/")
   expect_equal(length(table(clusters)),4)
@@ -29,14 +29,10 @@ test_that("Mixtcomp Hierarchical launch - Learn mode", {
 })
 
 
-context("Mixtcomp Hierarchical launch - Predict mode")
-
 test_that("Mixtcomp Hierarchical launch - Predict mode", {
 
   expect_true(file.exists(paste0(getwd(),"/wdir/generated_data_test.csv")))
-  expect_true(nrow(read.csv(paste0(getwd(),"/wdir/generated_data_test.csv")))==500)
-
-  # Launch Mixtcomp Learn
+  expect_true(nrow(read.csv(paste0(getwd(),"/wdir/generated_data_test.csv"))) == 500)
 
   launch_Mixtcomp_Hierarchical_predict(data_path = "wdir/generated_data_test.csv",
                                        param_dir = "wdir/generated_data_training",
@@ -48,9 +44,70 @@ test_that("Mixtcomp Hierarchical launch - Predict mode", {
                                        ))
 
   clusters = aggregate_clusters("wdir/generated_data_test/")
-  expect_equal(length(table(clusters)),4)
-  unlink("wdir/",recursive=T)
+  expect_equal(length(table(clusters)), 4)
+  unlink("wdir/", recursive = TRUE)
 })
+
+
+
+context("Mixtcomp Hierarchical launch - new MC")
+
+
+test_that("Mixtcomp Hierarchical launch - Learn mode - new MC", {
+
+  dir.create(paste0(getwd(),"/wdir"), showWarnings = FALSE)
+  set.seed(1)
+  generate_data(size = 1000, ratio_test_training = 0.5, path_dir_output = "wdir", correlation = FALSE, oldMC = FALSE)
+
+  dat <- read.table(paste0(getwd(),"/wdir/generated_data_training.csv"), sep = ";", header = TRUE)
+  expect_true(file.exists(paste0(getwd(),"/wdir/generated_data_training.csv")))
+  expect_true(nrow(dat) == 500)
+
+  # Launch Mixtcomp Learn
+  launch_Mixtcomp_Hierarchical(data_path = "wdir/generated_data_training.csv",
+                               descriptor_path = "wdir/descriptor.csv",
+                               nClass = 2, depth = 1,
+                               mcStrategy = list(nbBurnInIter = 2,
+                                                 nbIter = 2,
+                                                 nbGibbsBurnInIter = 2,
+                                                 nbGibbsIter = 2),
+                               strategy = list(var = "C1",
+                                               threshold_nInd = 1,
+                                               threshold_purity = 0.9),
+                               nCore = 2, oldMC = FALSE)
+
+  clusters = aggregate_clusters("wdir/generated_data_training/")
+  expect_equal(length(table(clusters)), 4)
+  expect_equal(dim(aggregate_classification_probabilities("wdir/generated_data_training/", depth = 2)), c(500, 4))
+  expect_equal(aggregate_completed("wdir/generated_data_training/", var = "C1", depth = NULL), dat$C1)
+  expect_equal(aggregate_completed("wdir/generated_data_training/", var = "C1", depth = 1), dat$C1)
+
+})
+
+
+test_that("Mixtcomp Hierarchical launch - Predict mode - new MC", {
+
+  expect_true(file.exists(paste0(getwd(),"/wdir/generated_data_test.csv")))
+  expect_true(nrow(read.csv(paste0(getwd(),"/wdir/generated_data_test.csv"))) == 500)
+
+
+  launch_Mixtcomp_Hierarchical_predict(data_path = "wdir/generated_data_test.csv",
+                                       param_dir = "wdir/generated_data_training",
+                                       mcStrategy = list(nbBurnInIter = 2,
+                                                         nbIter = 2,
+                                                         nbGibbsBurnInIter = 2,
+                                                         nbGibbsIter = 2))
+
+  clusters = aggregate_clusters("wdir/generated_data_test/")
+  expect_equal(length(table(clusters)), 4)
+  expect_equal(dim(aggregate_classification_probabilities("wdir/generated_data_test/", depth = 2)), c(500, 4))
+  expect_warning(aggregate_completed("wdir/generated_data_test/", var = "C1", depth = NULL), regexp = NA)
+  expect_warning(aggregate_completed("wdir/generated_data_test/", var = "C1", depth = 1), regexp = NA)
+  unlink("wdir/", recursive = TRUE)
+})
+
+
+
 
 context("Hierachical Strategy Effects")
 
@@ -105,3 +162,4 @@ test_that("Mixtcomp Strategy Effects", {
   unlink("wdir/",recursive=T)
 
 })
+

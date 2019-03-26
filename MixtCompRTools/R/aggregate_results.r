@@ -130,7 +130,7 @@ aggregate_completed <- function(dir, var, depth = NULL) {
 
       if (file.exists(paste0(subdir, "/mixtcomp_output.json"))) {
         next_output = fromJSON(paste0(subdir, "/mixtcomp_output.json"))
-        if(is.null(next_output$warnLog) && (is.null(next_output$mixture$warnLog) || (next_output$mixture$warnLog != ""))) {
+        if(is.null(next_output$warnLog) && (is.null(next_output$mixture$warnLog) || (next_output$mixture$warnLog == ""))) {
           data_completed[which(clusters == cluster)] = aggregate_completed(dir = subdir,
                                                                            var = var,
                                                                            depth = depth - 1)
@@ -180,7 +180,7 @@ aggregate_classification_probabilities <- function(dir, depth) {
       if (file.exists(paste0(subdir, "/mixtcomp_output.json"))) {
         next_output = fromJSON(paste0(subdir, "/mixtcomp_output.json"))
 
-        if(is.null(next_output$warnLog) && (is.null(next_output$mixture$warnLog) || (next_output$mixture$warnLog != ""))) {
+        if(is.null(next_output$warnLog) && (is.null(next_output$mixture$warnLog) || (next_output$mixture$warnLog == ""))) {
           probs_sub = aggregate_classification_probabilities(subdir, depth = depth - 1)
           probs_all_obs = matrix(0,
                                  ncol = ncol(probs_sub),

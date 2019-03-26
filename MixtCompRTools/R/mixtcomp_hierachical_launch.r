@@ -134,7 +134,7 @@ launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
 # Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 # the directory given by the dir param and with nClass number of clusters
 #
-# @param param_dir A string defining the path of the directory in which to fint the parameters hierarchical tree on which the hierarchical predict will be based
+# @param param_dir A string defining the path of the directory in which to find the parameters hierarchical tree on which the hierarchical predict will be based
 # @param test_dir A String
 # @param nClass Positive intege
 # @param mcStrategy Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
@@ -423,25 +423,38 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
   print(paste0("param_dir : ", param_dir))
 
   output_learn = fromJSON(paste0(param_dir,"/mixtcomp_output.json"))
+  oldMC <- is.null(output_learn$algo)
 
-  nbCluster <- ifelse(is.null(output_learn$mixture$nbCluster), output_learn$algo$nClass, output_learn$mixture$nbCluster)
-  launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster, mcStrategy)
-  data_predict = read.table(paste0(test_dir,"/data_predict.csv"),sep=";",stringsAsFactors = F,header = T)
-  subdirs_list = list.dirs(recursive = F,param_dir)
+  nbCluster <- ifelse(oldMC, output_learn$mixture$nbCluster, output_learn$algo$nClass)
 
-  if(length(subdirs_list)>0){
+  if(oldMC)
+    launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster, mcStrategy)
+  else
+    launch_mixtcompNew_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster, mcStrategy)
+
+  data_predict = read.table(paste0(test_dir,"/data_predict.csv"), sep = ";", stringsAsFactors = FALSE, header = TRUE)
+  subdirs_list = list.dirs(recursive = FALSE, param_dir)
+
+  if(length(subdirs_list) > 0){
     output_predict = fromJSON(paste0(test_dir,"/mixtcomp_output.json"))
-    completed_clusters = output_predict$variable$data$z_class$completed
+
+    if(oldMC)
+      completed_clusters = output_predict$variable$data$z_class$completed
+    else
+      completed_clusters = output_predict$variable$data$z_class$completed$data
+
     for(cluster in 1:nbCluster){
       next_param_dir = paste0(param_dir,"/subcluster_",cluster)
+
       if(file.exists(paste0(next_param_dir,"/mixtcomp_output.json"))){
         next_output_learn = fromJSON(paste0(next_param_dir,"/mixtcomp_output.json"))
-        if(next_output_learn$mixture$warnLog==""){
+
+        if(is.null(next_output_learn$warnLog) && (is.null(next_output_learn$mixture$warnLog) || (next_output_learn$mixture$warnLog == ""))) {
           next_test_dir = paste0(test_dir,"/subcluster_",cluster)
-          data_next_predict = data_predict[which(completed_clusters==cluster),]
+          data_next_predict = data_predict[which(completed_clusters == cluster),]
           dir.create(next_test_dir)
-          write.table(data_next_predict,paste0(next_test_dir,"/data_predict.csv"),sep = ";",na = "",row.names = F)
-          expand_predict(test_dir = next_test_dir,param_dir = next_param_dir)
+          write.table(data_next_predict, paste0(next_test_dir,"/data_predict.csv"), sep = ";", na = "", row.names = FALSE)
+          expand_predict(test_dir = next_test_dir, param_dir = next_param_dir)
         }
       }
     }
