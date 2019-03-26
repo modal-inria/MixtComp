@@ -1,5 +1,7 @@
 context("Test fonctionnel")
 
+Sys.setenv(MC_DETERMINISTIC = 42)
+
 test_that("Learn + predict", {
   pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
   pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
@@ -124,3 +126,5 @@ test_that("can predict with only one sample in the data set", {
   
   file.remove("./algo.json", "./model.json", "./data.json", "reslearn.json", "respredict.json")
 })
+
+Sys.unsetenv("MC_DETERMINISTIC")

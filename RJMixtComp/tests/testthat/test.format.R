@@ -1,5 +1,6 @@
 context("Test format")
 
+Sys.setenv(MC_DETERMINISTIC = 42)
 
 test_that("convert a matrix from json", {
   # named matrice
@@ -124,3 +125,4 @@ test_that("convertOutput converts well", {
   file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "progress")
 })
 
+Sys.unsetenv("MC_DETERMINISTIC")
