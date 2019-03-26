@@ -31,6 +31,7 @@ RMixtComp.Rcheck
 RJMixtComp/R/MIXTCOMP_*
 RJMixtComp/inst/exeMixtComp/jmc
 RJMixtComp.Rcheck
+RJMixtComp/RJMCtest.xml
 !RJMixtComp/inst/extdata/*.json
 MixtCompRTools.Rcheck
 /.metadata/
