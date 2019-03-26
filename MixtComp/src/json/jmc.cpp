@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
 		if (argc < 4) {
 			std::cout
-					<< "JMixtComp should be called with 4 parameters (paths to algo, data, desc, resLearn) in learn and 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with "
+					<< "JMixtComp should be called with 4 parameters (paths to algo, data, model, resLearn) in learn mode and 5 parameters (paths to algo, data, model, resLearn, resPredict) in predict mode. It has been called with "
 					<< argc - 1 << " parameters." << std::endl;
 			return 0;
 		}
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 		std::ifstream descStream(descFile);
 
 		if (algoStream.good() == false || dataStream.good() == false || descStream.good() == false) {
-			std::cout << "Check that algo: " << algoFile << ", data: " << dataFile << ", and desc: " << descFile << " paths are correct" << std::endl;
+			std::cout << "Check that algo: " << algoFile << ", data: " << dataFile << ", and model: " << descFile << " paths are correct" << std::endl;
 		} else {
 			nlohmann::json algoJSON;
 			algoStream >> algoJSON;
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
 				learn(algoG, dataG, descG, resG);
 			} else if (mode == "predict") {
 				if (argc != 6) {
-					std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters."
+					std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, model, resLearn, resPredict) in predict mode. It has been called with " << argc - 1 << " parameters."
 							<< std::endl;
 					return 0;
 				}
@@ -73,15 +73,21 @@ int main(int argc, char* argv[]) {
 				resFile = argv[5];
 
 				std::ifstream resLearnStream(resLearnFile);
-				nlohmann::json resLearnJSON;
-				resLearnStream >> resLearnJSON;
 
-				try {
-					JSONGraph paramG(resLearnJSON["variable"]["param"]);
-					predict(algoG, dataG, descG, paramG, resG);
-				} catch (const std::string& s) {
-					warnLog += s;
+				if (resLearnStream.good() == false) {
+					std::cout << "Check that resLearn: " << resLearnFile << " path is correct" << std::endl;
+				}else{
+					nlohmann::json resLearnJSON;
+					resLearnStream >> resLearnJSON;
+
+					try {
+						JSONGraph paramG(resLearnJSON["variable"]["param"]);
+						predict(algoG, dataG, descG, paramG, resG);
+					} catch (const std::string& s) {
+						warnLog += s;
+					}
 				}
+
 
 			} else {
 				warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
