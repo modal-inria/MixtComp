@@ -25,6 +25,7 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
 * [Solutions to common errors](MixtComp/docs/error.md)
+* [Run MixtComp in command line](MixtComp/docs/runJMC.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
