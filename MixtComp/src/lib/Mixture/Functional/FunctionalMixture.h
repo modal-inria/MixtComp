@@ -128,7 +128,7 @@ public:
 	 */
 	std::string setDataParam(RunMode mode) {
 		std::string warnLog;
-		NamedVector<Real> alpha, beta, sd;
+		NamedMatrix<Real> alpha, beta, sd;
 
 		std::vector<std::string> dataVecStr;
 		dataG_.get_payload( { }, idName_, dataVecStr); // get the raw vector of strings
@@ -165,18 +165,18 @@ public:
 			for (Index k = 0; k < nClass_; ++k) {
 				for (Index s = 0; s < nSub_; ++s) {
 					for (Index c = 0; c < 2; ++c) {
-						alphaCurr(s, c) = alpha.vec_(k * nSub_ * 2 + s * 2 + c);
+						alphaCurr(s, c) = alpha.mat_(k * nSub_ * 2 + s * 2 + c, 0);
 					}
 				}
 
 				for (Index s = 0; s < nSub_; ++s) {
 					for (Index c = 0; c < nCoeff_; ++c) {
-						betaCurr(s, c) = beta.vec_(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
+						betaCurr(s, c) = beta.mat_(k * nSub_ * nCoeff_ + s * nCoeff_ + c, 0);
 					}
 				}
 
 				for (Index s = 0; s < nSub_; ++s) {
-					sdCurr(s) = sd.vec_(k * nSub_ + s);
+					sdCurr(s) = sd.mat_(k * nSub_ + s, 0);
 				}
 
 				class_[k].setParam(alphaCurr, betaCurr, sdCurr);
