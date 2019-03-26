@@ -1,0 +1,10 @@
+{
+  "z_class": {
+    "type": "LatentClass",
+    "paramStr": ""
+  },
+  "Functional1": {
+    "type": "Func_CS",
+    "paramStr": "nSub: 2, nCoeff: 2"
+  }
+}

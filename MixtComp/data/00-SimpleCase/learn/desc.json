@@ -10,5 +10,14 @@
     "varCategorical": {
         "type": "Multinomial",
         "paramStr": ""
+    },
+    "varNegBinom": {
+        "type": "NegativeBinomial",
+        "paramStr": ""
+    },
+    "varWeibull": {
+        "type": "Weibull",
+        "paramStr": ""
     }
 }
+

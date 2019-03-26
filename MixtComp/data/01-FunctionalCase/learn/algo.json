@@ -1,0 +1,14 @@
+{
+  "nClass": 2,
+  "nInd": 200,
+  "nbBurnInIter": 50,
+  "nbIter": 50,
+  "nbGibbsBurnInIter": 50,
+  "nbGibbsIter": 50,
+  "nInitPerClass": 50,
+  "nSemTry": 20,
+  "confidenceLevel": 0.95,
+  "ratioStableCriterion": 0.95,
+  "nStableCriterion": 10,
+  "mode": "learn"
+}

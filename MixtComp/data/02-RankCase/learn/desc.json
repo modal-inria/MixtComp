@@ -1,0 +1,10 @@
+{
+  "z_class": {
+    "type": "LatentClass",
+    "paramStr": ""
+  },
+  "Rank1": {
+    "type": "Rank_ISR",
+    "paramStr": ""
+  }
+}

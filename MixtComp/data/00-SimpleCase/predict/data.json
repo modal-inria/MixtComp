@@ -1,5 +1,7 @@
 {
     "varGaussian":     ["1.0", "10.0"],
     "varPoisson":      ["3", "12"],
-    "varCategorical":  ["1", "2"]
+    "varCategorical":  ["1", "2"],
+    "varWeibull":      ["1.5", "10.5"],
+    "varNegBinom":     ["3", "11"]
 }
