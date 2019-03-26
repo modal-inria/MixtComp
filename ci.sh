@@ -4,9 +4,8 @@
 
 cd MixtComp
 ./clean.sh
-./buildRelease.sh
-#./buildDebug.sh
-#./valgrindRun.sh
+./buildDebug.sh
+./valgrindRun.sh
 cd ../RMixtComp
 make clean
 make updateLib
