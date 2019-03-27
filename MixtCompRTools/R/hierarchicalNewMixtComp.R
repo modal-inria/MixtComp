@@ -51,20 +51,23 @@ check_strategyNew <- function(strategy, data, model) {
     }
 
     idx_var = which(strategy$var == vars_in_resGetData)
-    var_strategy_type = model[[strategy$var]][1]
+    var_strategy_type = model[[strategy$var]]$type
     if(var_strategy_type != "Multinomial"){
       return(list("error", paste0("Variable ",strategy$var," is not indicated as Multinomial in the descriptor file")))
     }
-    data_var = data[[strategy$var]]
+    data_var = data[, strategy$var]
     data_var = data_var[which(data_var != "?")]
-    print(paste0("length data : ",length(data[[strategy$var]])))
+    print(paste0("length data : ", length(data[, strategy$var])))
     print(paste0("strategy nInd :", strategy$threshold_nInd))
-    print(paste0("purity : ",(max(table(data_var) / length(data_var)))))
+    print(paste0("purity : ", (max(table(data_var) / length(data_var)))))
     print(paste0("strategy purity : ", strategy$threshold_purity))
 
-    if (max(table(data_var) / length(data_var)) > strategy$threshold_purity){return(list("", "Strategy's terms not fulfilled"))}
+    if (max(table(data_var) / length(data_var)) > strategy$threshold_purity){return(list("", "Strategy's terms not fulfilled: purity's threshold attained"))}
   }
-  if( length(data[[strategy$var]]) < strategy$threshold_nInd ) {return(list("", "Strategy's terms not fulfilled"))}
+
+  nInd <- ifelse(is.matrix(data), nrow(data), length(data[[1]]))
+
+  if(nInd < strategy$threshold_nInd ) {return(list("", "Strategy's terms not fulfilled: not enough individuals"))}
 
   return(list("", ""))
 }
