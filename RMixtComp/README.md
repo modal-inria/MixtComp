@@ -29,9 +29,9 @@ Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\"
 ```
 from R:
 ```
-install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com\")"
+install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com\")
 # OPTIONAL: for testing purpose
-install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")"
+install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")
 ```
 
 ### Windows
