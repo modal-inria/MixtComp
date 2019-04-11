@@ -19,7 +19,6 @@ Aggregate the classification probabilities estimated in the nested clustering
 }
 \seealso{
 Other results aggregation: \code{\link{aggregate_clusters}},
-  \code{\link{aggregate_completed_max}},
   \code{\link{aggregate_completed}}
 }
 \concept{results aggregation}

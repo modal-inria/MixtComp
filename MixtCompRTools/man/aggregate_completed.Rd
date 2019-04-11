@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregate_results.r
 \name{aggregate_completed}
 \alias{aggregate_completed}
-\title{Plot functional data by clusters}
+\title{Aggregate the hierarchical clusters completed data}
 \usage{
 aggregate_completed(dir, var, depth = NULL)
 }
@@ -17,11 +17,10 @@ aggregate_completed(dir, var, depth = NULL)
 completed data
 }
 \description{
-Plot functional data by clusters
+Aggregate the hierarchical clusters completed data
 }
 \seealso{
 Other results aggregation: \code{\link{aggregate_classification_probabilities}},
-  \code{\link{aggregate_clusters}},
-  \code{\link{aggregate_completed_max}}
+  \code{\link{aggregate_clusters}}
 }
 \concept{results aggregation}

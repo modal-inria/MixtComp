@@ -3,12 +3,12 @@
 #' Aggregate the hierarchical clusters estimated
 #'
 #' @param dir String, a path to the directory in which are the subclusters to be aggregated
-#'
+#' @param depth Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.
 #' @family results aggregation
 #'
 #' @export
 #'
-aggregate_clusters <- function(dir) {
+aggregate_clusters <- function(dir, depth = NULL) {
   # Si le dossier contient un fichier output
   # Si le warnLog de ce fichier output est vide
   # l'indicatif du cluster est l'indicatif précédent suivi du cluster actuel
@@ -33,25 +33,31 @@ aggregate_clusters <- function(dir) {
   else
     clusters = output$variable$data$z_class$completed$data
 
-  existing_subdirs_in_dir = list.dirs(dir, recursive = FALSE)
-  if (length(existing_subdirs_in_dir) > 0) {
-    for (k in unique(clusters)) {
-      path_subdir = paste0(dir, "/subcluster_", k)
-      clusters[which(clusters == k)] = paste0(clusters[which(clusters == k)], "-", aggregate_clusters(path_subdir))
+  if(is.null(depth))
+    depth = Inf
+  continue <- depth != 0
+  if(continue)
+  {
+    existing_subdirs_in_dir = list.dirs(dir, recursive = FALSE)
+    if (length(existing_subdirs_in_dir) > 0) {
+      for (k in unique(clusters)) {
+        path_subdir = paste0(dir, "/subcluster_", k)
+        clusters[which(clusters == k)] = paste0(clusters[which(clusters == k)], "-", aggregate_clusters(path_subdir, depth = depth - 1))
+      }
     }
   }
   return(clusters)
 }
 
-#' Aggregate the hierarchical clusters completed data
-#'
-#' @param dir String, a path to the directory in which are the subclusters to be aggregated
-#' @param var String, The variable to be aggregated
-#'
-#' @return completed data
-#'
-#' @family results aggregation
-#'
+# Aggregate the hierarchical clusters completed data
+#
+# @param dir String, a path to the directory in which are the subclusters to be aggregated
+# @param var String, The variable to be aggregated
+#
+# @return completed data
+#
+# @family results aggregation
+#
 aggregate_completed_max <- function(dir, var) {
 
   print(dir)
@@ -90,7 +96,7 @@ aggregate_completed_max <- function(dir, var) {
   return(data_completed)
 }
 
-#' Plot functional data by clusters
+#' Aggregate the hierarchical clusters completed data
 #'
 #' @param dir String, path of the directory in which to finc the nested clustering
 #' @param var String, The name of the functional data to plot

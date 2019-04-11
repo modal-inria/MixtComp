@@ -398,6 +398,7 @@ launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, dep
 #'
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical_predict <- function(data_path, param_dir, output_dir = NULL, mcStrategy = NULL) {
+# oldMC is not a parameter, it is guessed from object saved in param_dir
 
   # Get directory of the data_path
   if (is.null(output_dir)) {
