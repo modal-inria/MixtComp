@@ -14,7 +14,7 @@ launch_mixtcompNew <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) 
   if(is.null(mcStrategy)){
     mcStrategy = RJMixtComp::createAlgo(nbBurnInIter = 15, nbIter = 15,
                                         nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
-                                        nInitPerClass = nInd/nClass)
+                                        nInitPerClass = nInd/nClass, ratioStableCriterion = 0.99, nStableCriterion = 15)
   }
 
 

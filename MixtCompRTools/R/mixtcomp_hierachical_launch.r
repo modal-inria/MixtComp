@@ -106,7 +106,7 @@ launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
     )
   } else {
     mcStrategy$nInitPerClass = length(resGetData$lm[[i]]$data) / nClass
-    mcStrategy$nSemTry = 20
+    mcStrategy$nSemTry = 10
   }
 
   arg_list_json <- toJSON(
