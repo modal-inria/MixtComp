@@ -46,6 +46,10 @@ aggregate_clusters <- function(dir, depth = NULL) {
       }
     }
   }
+
+  # remove extra -
+  clusters = gsub("-$", "", clusters)
+
   return(clusters)
 }
 
