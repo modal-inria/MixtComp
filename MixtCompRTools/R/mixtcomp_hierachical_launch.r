@@ -161,12 +161,12 @@ launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
       nbIter = 15,
       nbGibbsBurnInIter = 15,
       nbGibbsIter = 15,
-      nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
+      ratioInitialization = 0.1,
       nSemTry = 10
     )
   } else {
-    mcStrategy$nInitPerClass = length(resGetData$lm[[i]]$data) / nClass
-    mcStrategy$nSemTry = 20
+    mcStrategy$ratioInitialization = ifelse(is.null(mcStrategy$ratioInitialization), 0.1, mcStrategy$ratioInitialization)
+    mcStrategy$nSemTry = ifelse(is.null(mcStrategy$nSemTry), 10, mcStrategy$nSemTry)
   }
 
 
