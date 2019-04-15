@@ -11,8 +11,6 @@
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -130,8 +128,6 @@ gghistMisclassif <- function(z, misclassifrisk, classNames)
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters

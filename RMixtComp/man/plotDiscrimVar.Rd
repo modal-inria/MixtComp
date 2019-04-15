@@ -25,9 +25,6 @@ The discriminative power of variable j is defined by 1 - C(j)
 }
 \examples{
 \donttest{
-
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

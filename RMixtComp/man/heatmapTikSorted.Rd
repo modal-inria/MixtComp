@@ -22,8 +22,6 @@ they are sorted by decreasing order of their tik's
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

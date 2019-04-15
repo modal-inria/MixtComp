@@ -10,8 +10,6 @@
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -49,8 +47,6 @@ plotConvergence <- function(output, ...)
 #' 
 #' @examples
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #' 
 #' # define the algorithm's parameters

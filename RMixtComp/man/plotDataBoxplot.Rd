@@ -28,8 +28,6 @@ For functional data, three other parameters are available:
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

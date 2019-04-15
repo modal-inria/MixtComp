@@ -22,8 +22,6 @@ The similarities between classes k and g is defined by 1 - Sigma(k,g)
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

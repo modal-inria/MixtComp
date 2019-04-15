@@ -18,8 +18,6 @@ Plot BIC and ICL
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

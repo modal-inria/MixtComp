@@ -10,8 +10,6 @@
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -83,8 +81,6 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -162,8 +158,6 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters

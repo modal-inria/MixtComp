@@ -19,8 +19,6 @@ This function can be used to check the convergence and choose the parameters nbB
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

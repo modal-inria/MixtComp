@@ -10,9 +10,6 @@
 #' 
 #' @examples 
 #' \donttest{
-#' 
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -73,8 +70,6 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -130,8 +125,6 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters

@@ -23,8 +23,6 @@ Histgrams of err_i's can be plot for a specific class, all classes or every clas
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

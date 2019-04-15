@@ -22,8 +22,6 @@ The similarities between variables j and h is defined by Delta(j,h)
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters
