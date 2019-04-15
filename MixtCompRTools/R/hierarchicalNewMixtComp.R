@@ -86,7 +86,8 @@ launch_mixtcompNew_predict <- function(param_dir, test_dir, nClass, mcStrategy) 
   if(is.null(mcStrategy)){
     mcStrategy = RJMixtComp::createAlgo(nbBurnInIter = 15, nbIter = 15,
                                         nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
-                                        nInitPerClass = nInd/nClass)
+                                        nInitPerClass = max(floor(0.1/nClass * nInd), 20),
+                                        ratioStableCriterion = 0.99, nStableCriterion = 10)
   }
 
 
