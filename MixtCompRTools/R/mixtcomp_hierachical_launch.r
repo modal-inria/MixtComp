@@ -45,7 +45,14 @@ extract_data_per_cluster <- function(dir) {
     if(oldMC)
       idx_cluster <- which(MixtCompOutput$variable$data$z_class$completed == i)
     else
-      idx_cluster <- which(MixtCompOutput$variable$data$z_class$completed$data == i)
+    {
+      MixtCompOutput = RJMixtComp:::convertOutput(MixtCompOutput)
+      tik <- RJMixtComp::getTik(MixtCompOutput)
+      tik[is.na(tik)] = -Inf
+      part <- apply(tik, 1, which.max)
+      idx_cluster <- which(part == i)
+    }
+
 
     data_cluster <- data[idx_cluster, ]
     subdir <- paste0(dir, "/subcluster_", i)
