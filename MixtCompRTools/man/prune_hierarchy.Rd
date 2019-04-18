@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixtcomp_hierachical_launch.r
 \name{prune_hierarchy}
 \alias{prune_hierarchy}
-\title{Prune a hierarchical clsutering. The pruning can be done according to three different strategies}
+\title{Prune a hierarchical clustering. The pruning can be done according to three different strategies}
 \usage{
 prune_hierarchy(dir, purity_strategy = list(var = NULL, threshold =
   NULL), cluster_size_strategy = list(threshold = NULL))

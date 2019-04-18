@@ -405,7 +405,7 @@ launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, dep
 #'
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical_predict <- function(data_path, param_dir, output_dir = NULL, mcStrategy = NULL) {
-# oldMC is not a parameter, it is guessed from object saved in param_dir
+  # oldMC is not a parameter, it is guessed from object saved in param_dir
 
   # Get directory of the data_path
   if (is.null(output_dir)) {
@@ -449,7 +449,12 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
     if(oldMC)
       completed_clusters = output_predict$variable$data$z_class$completed
     else
-      completed_clusters = output_predict$variable$data$z_class$completed$data
+    {
+      output_predict = RJMixtComp:::convertOutput(output_predict)
+      tik <- RJMixtComp::getTik(output_predict)
+      tik[is.na(tik)] = -Inf
+      completed_clusters <- apply(tik, 1, which.max)
+    }
 
     for(cluster in 1:nbCluster){
       next_param_dir = paste0(param_dir,"/subcluster_",cluster)
@@ -469,7 +474,7 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
   }
 }
 
-#' Prune a hierarchical clsutering. The pruning can be done according to three different strategies
+#' Prune a hierarchical clustering. The pruning can be done according to three different strategies
 #'
 #'  - The purity of the clusters : if a cluster is purer than a certain threshold then the subclusters are not useful
 #'  - The size of the cluster : below a certain size, a cluster should not have been subclusterized.
