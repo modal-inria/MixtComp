@@ -31,7 +31,11 @@ aggregate_clusters <- function(dir, depth = NULL) {
   if(oldMC)
     clusters = output$variable$data$z_class$completed
   else
-    clusters = output$variable$data$z_class$completed$data
+  {
+    output = RJMixtComp:::convertOutput(output)
+    clusters = RJMixtComp::getPartition(output, empiric = FALSE)
+  }
+
 
   if(is.null(depth))
     depth = Inf
@@ -81,7 +85,10 @@ aggregate_completed_max <- function(dir, var) {
   if(oldMC)
     clusters = output$variable$data$z_class$completed
   else
-    clusters = output$variable$data$z_class$completed$data
+  {
+    output = RJMixtComp:::convertOutput(output)
+    clusters = RJMixtComp::getPartition(output, empiric = FALSE)
+  }
 
   if(oldMC)
     data_completed = output$variable$data[[var]]$completed
@@ -131,7 +138,10 @@ aggregate_completed <- function(dir, var, depth = NULL) {
     if(oldMC)
       clusters = output$variable$data$z_class$completed
     else
-      clusters = output$variable$data$z_class$completed$data
+    {
+      output = RJMixtComp:::convertOutput(output)
+      clusters = RJMixtComp::getPartition(output, empiric = FALSE)
+    }
 
     nbCluster <- ifelse(oldMC, output$mixture$nbCluster, output$algo$nClass)
     for (cluster in 1:nbCluster) {
@@ -182,7 +192,10 @@ aggregate_classification_probabilities <- function(dir, depth) {
     if(oldMC)
       clusters = output$variable$data$z_class$completed
     else
-      clusters = output$variable$data$z_class$completed$data
+    {
+      output = RJMixtComp:::convertOutput(output)
+      clusters = RJMixtComp::getPartition(output, empiric = FALSE)
+    }
 
     probs_completed = c()
     for (cluster in 1:nbCluster) {

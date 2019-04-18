@@ -47,9 +47,7 @@ extract_data_per_cluster <- function(dir) {
     else
     {
       MixtCompOutput = RJMixtComp:::convertOutput(MixtCompOutput)
-      tik <- RJMixtComp::getTik(MixtCompOutput)
-      tik[is.na(tik)] = -Inf
-      part <- apply(tik, 1, which.max)
+      part <- RJMixtComp::getPartition(MixtCompOutput, empiric = FALSE)
       idx_cluster <- which(part == i)
     }
 
@@ -451,9 +449,7 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
     else
     {
       output_predict = RJMixtComp:::convertOutput(output_predict)
-      tik <- RJMixtComp::getTik(output_predict)
-      tik[is.na(tik)] = -Inf
-      completed_clusters <- apply(tik, 1, which.max)
+      completed_clusters <- RJMixtComp::getPartition(output_predict, empiric = FALSE)
     }
 
     for(cluster in 1:nbCluster){
