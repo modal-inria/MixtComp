@@ -33,11 +33,11 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 {
   if(is.null(var))
     var = getVarNames(outMixtComp, with.z_class)
- 
+  
   mcVar <- getVarNames(outMixtComp, with.z_class = TRUE)
   if(any(!(var %in% mcVar)))
     stop("some elements of var are not in outMixtComp")
-    
+  
   completedData <- do.call(cbind, lapply(outMixtComp$variable$data[var], function(x){x$completed}))
   
   return(as.data.frame(completedData))
@@ -50,6 +50,7 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 #' @description Get the estimated class from MixtComp object
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
+#' @param empiric if TRUE, use the partition obtained at the end of the gibbs algorithm. If FALSE, use the partition obtained with the observed probabilities. 
 #'
 #' @return a vector containing the estimated class for each individual.
 #'
@@ -79,9 +80,17 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 #' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getPartition <- function(outMixtComp)
+getPartition <- function(outMixtComp, empiric = TRUE)
 {
-  return(outMixtComp$variable$data$z_class$completed)
+  if(empiric)
+    return(outMixtComp$variable$data$z_class$completed)
+  
+  
+  tik <- getTik(outMixtComp)
+  tik[is.na(tik)] = -Inf
+  part <- apply(tik, 1, which.max)
+  
+  return(part)
 }
 
 
@@ -148,7 +157,7 @@ getModel <- function(outMixtComp, with.z_class = FALSE)
   
   for(varName in names(model))
     model[[varName]] = list(type = model[[varName]], paramStr = outMixtComp$variable$param[[varName]]$paramStr)
-      
+  
   return(model)
 }
 
