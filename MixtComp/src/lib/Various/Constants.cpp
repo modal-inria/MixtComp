@@ -15,7 +15,7 @@
 
 namespace mixt {
 
-const std::string version = "2.0.0";
+const std::string version = "3.0.0";
 
 const char *deterministicEnvVar = "MC_DETERMINISTIC";
 
@@ -47,8 +47,8 @@ const Index nbGibbsIniISR = 100;
 
 const int nbSampleObserved = 10000;
 
-const Index maxIterationOptim = 15;
-const Real relTolOptim = 0.01;
+const Index maxIterationOptim = 50;
+const Real relTolOptim = 0.0001;
 
 const std::string rankPosSep = ",";
 
