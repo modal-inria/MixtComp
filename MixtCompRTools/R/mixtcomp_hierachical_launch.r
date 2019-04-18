@@ -452,7 +452,7 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
       completed_clusters <- RJMixtComp::getPartition(output_predict, empiric = FALSE)
     }
 
-    for(cluster in 1:nbCluster){
+    for(cluster in unique(completed_clusters)){
       next_param_dir = paste0(param_dir,"/subcluster_",cluster)
 
       if(file.exists(paste0(next_param_dir,"/mixtcomp_output.json"))){
