@@ -55,6 +55,25 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real
 	}
 }
 
+Vector<Real> Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Index i) const {
+	Vector<Real> jointLogProba(nSub_);
+	Vector<Real> currLogKappa(nSub_);
+	NormalStatistic normal;
+
+	logKappaMatrix(t_(i), alpha, currLogKappa);
+
+	for (Index s = 0; s < nSub_; ++s) {
+		Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
+		Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
+
+		Real logAPriori = currLogKappa(s);
+		jointLogProba(s) = logAPriori + logAPosteriori;
+	}
+
+	return jointLogProba;
+}
+
+
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
 
@@ -86,14 +105,23 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 	Matrix<Real> jointLogProba;
 	computeJointLogProba(alpha, beta, sd, jointLogProba);
 
-	for (Index s = 0; s < nSub_; ++s) {
-		w_(s).clear();
-	}
+	clearW();
 
 	Vector<Real> currProba;
 	for (Index i = 0; i < nTime_; ++i) {
 		currProba.logToMulti(jointLogProba.row(i));
 		w_(multi_.sample(currProba)).insert(i);
+	}
+}
+
+
+void Function::sampleW(Index t, const Vector<Real>& proba) {
+	w_(multi_.sample(proba)).insert(t);
+}
+
+void Function::clearW() {
+	for (Index s = 0; s < nSub_; ++s) {
+		w_(s).clear();
 	}
 }
 

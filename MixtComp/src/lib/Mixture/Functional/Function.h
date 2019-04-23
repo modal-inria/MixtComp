@@ -37,6 +37,11 @@ public:
 
 	void sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd);
 
+	/** sample W for time t using a multinomial law with probabilities proba */
+	void sampleW(Index t, const Vector<Real>& proba);
+
+	void clearW();
+
 	void removeMissingUniformSampling();
 
 	void removeMissingQuantile(const Vector<Real>& quantiles);
@@ -90,13 +95,15 @@ public:
 	 * a lot of initParam errors occur.
 	 */
 	void printSubRegT() const;
-private:
+
 	/**
 	 * Computes the joint proba, which can be used for both the completed and observed probability computation.
 	 * @return jointLogProba(i, s) where i is an individual, and s a subregression. jointLogProba(i, s) is log(p(x, w))
 	 * */
 	void computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const;
+	Vector<Real> computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Index i) const;
 
+private:
 	Index nTime_;
 	Index nSub_;
 

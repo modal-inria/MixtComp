@@ -267,6 +267,46 @@ public:
 	;
 
 	/**
+	 * Initialization of w_
+	 *
+	 * Compute P(w = s, x_i | z_i = k) * P(z_i = k) for each k.
+	 *
+	 * sample w according to  (sum_k P(w = s, x_i | z_i = k) * P(z_i = k))/(sum_s sum_k P(w = s, x_i | z_i = k) * P(z_i = k))
+	 *
+	 */
+	void sampleUnobservedAndLatentMarginalized(Index i, Vector<Real> const& prop) {
+		Index nClass = class_.size();
+		Vector<Real> logProp(nClass), proba(nSub_);
+		Vector<Real> dummy;
+
+		for(Index k = 0; k < prop.size(); ++k)
+			logProp(k) = std::log(prop[k]);
+
+
+		// clear w and fill it for all t
+		vecInd_(i).clearW();
+		for(Index t = 0; t < vecInd_(i).nTime(); ++t){
+
+			Matrix<Real> jointLogProba(nSub_, nClass);
+			int k = 0;
+			for (Index k = 0; k < nClass_; ++k) {
+				jointLogProba.col(k) = vecInd_(i).computeJointLogProba(class_[k].alpha(), class_[k].beta(), class_[k].sd(), t);
+				jointLogProba.col(k) += logProp(k);
+			}
+
+
+			for (Index s = 0; s < nSub_; ++s) {
+				proba(s) = dummy.logToMulti(jointLogProba.row(s));
+			}
+			dummy.logToMulti(proba);
+
+			vecInd_(i).sampleW(t, dummy);
+		}
+
+	}
+	;
+
+	/**
 	 * @param initObs element k contains the index of
 	 */
 	void initParam() {

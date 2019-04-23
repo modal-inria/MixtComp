@@ -133,6 +133,10 @@ public:
 	 * initialization, and a samplingStep is used.
 	 */
 	virtual void initData(Index ind) = 0;
+	/*
+	 * Initialization of missing / latent data with parameter knowledge
+	 */
+	virtual void sampleUnobservedAndLatentMarginalized(Index ind, Vector<Real> const& prop) = 0;
 
 	/**
 	 * Initialization of parameters.

@@ -542,7 +542,7 @@ std::string MixtureComposer::initializeLatent() {
 	for (Index i = 0; i < nInd_; ++i) { // TODO: could be parallelized over individuals
 		for (Index n = 0; n < nCompletedInitTry; ++n) {
 			for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-				(*it)->initData(i); // sampling performed without parameters knowledge, to be able to perform the eStepCompleted
+				(*it)->sampleUnobservedAndLatentMarginalized(i, prop_); // sampling performed with parameters knowledge
 			}
 			if (eStepCompleted(i))
 				goto stop;
