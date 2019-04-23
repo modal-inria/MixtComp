@@ -36,6 +36,7 @@ public:
 	Real lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const;
 
 	void sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd);
+	void sampleWMarginalized(const std::list<Matrix<Real> >& alpha, const std::list<Matrix<Real> >& beta, const std::list<Vector<Real> >& sd, const Vector<Real>& prop);
 
 	/** sample W for time t using a multinomial law with probabilities proba */
 	void sampleW(Index t, const Vector<Real>& proba);

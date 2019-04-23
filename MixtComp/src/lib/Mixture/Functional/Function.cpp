@@ -117,6 +117,38 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 	}
 }
 
+void Function::sampleWMarginalized(const std::list<Matrix<Real> >& alpha, const std::list<Matrix<Real> >& beta, const std::list<Vector<Real> >& sd, const Vector<Real>& prop) {
+	Index nClass = prop.size();
+	Vector<Real> dummy;
+	Vector<Real> proba(nSub_), logProp(nClass);
+
+	for (Index k = 0; k < nClass; ++k) {
+		logProp(k) = std::log(prop[k]);
+	}
+
+	clearW();
+
+	Matrix<Real> jointLogProba(nSub_, nClass);
+	std::list<Matrix<Real> >::const_iterator itAlpha, itBeta;
+	std::list<Vector<Real> >::const_iterator itSd;
+
+	for (Index i = 0; i < nTime_; ++i){
+		Index k = 0;
+
+		for(itAlpha = alpha.begin(), itBeta = beta.begin(), itSd = sd.begin(), k = 0; itAlpha != alpha.end() && itBeta != beta.end() && itSd != sd.end(); ++itAlpha, ++itBeta, ++itSd, ++k) {
+			jointLogProba.col(k) = computeJointLogProba(*itAlpha, *itBeta, *itSd, i);
+			jointLogProba.col(k) += logProp(k);
+		}
+
+		for (Index s = 0; s < nSub_; ++s) {
+			proba(s) = dummy.logToMulti(jointLogProba.row(s));
+		}
+		dummy.logToMulti(proba);
+
+		sampleW(i, dummy);
+	}
+
+}
 
 void Function::sampleW(Index t, const Vector<Real>& proba) {
 	w_(multi_.sample(proba)).insert(t);

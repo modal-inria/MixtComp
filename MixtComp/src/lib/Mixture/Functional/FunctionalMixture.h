@@ -276,32 +276,20 @@ public:
 	 */
 	void sampleUnobservedAndLatentMarginalized(Index i, Vector<Real> const& prop) {
 		Index nClass = class_.size();
-		Vector<Real> logProp(nClass), proba(nSub_);
+		Vector<Real> proba(nSub_);
 		Vector<Real> dummy;
 
-		for(Index k = 0; k < prop.size(); ++k)
-			logProp(k) = std::log(prop[k]);
+		std::list<Matrix<Real> > alpha, beta;
+		std::list<Vector<Real> > sd;
 
-
-		// clear w and fill it for all t
-		vecInd_(i).clearW();
-		for(Index t = 0; t < vecInd_(i).nTime(); ++t){
-
-			Matrix<Real> jointLogProba(nSub_, nClass);
-			int k = 0;
-			for (Index k = 0; k < nClass_; ++k) {
-				jointLogProba.col(k) = vecInd_(i).computeJointLogProba(class_[k].alpha(), class_[k].beta(), class_[k].sd(), t);
-				jointLogProba.col(k) += logProp(k);
-			}
-
-
-			for (Index s = 0; s < nSub_; ++s) {
-				proba(s) = dummy.logToMulti(jointLogProba.row(s));
-			}
-			dummy.logToMulti(proba);
-
-			vecInd_(i).sampleW(t, dummy);
+		for(Index k = 0; k < prop.size(); ++k) {
+			alpha.push_back(class_[k].alpha());
+			beta.push_back(class_[k].beta());
+			sd.push_back(class_[k].sd());
 		}
+
+
+		vecInd_[i].sampleWMarginalized(alpha, beta, sd, prop);
 
 	}
 	;
