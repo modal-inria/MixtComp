@@ -103,6 +103,11 @@ public:
 	void computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const;
 	Vector<Real> computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Index i) const;
 
+	/**
+	 * compute probability of x_[i] for the subregression s
+	 */
+	Real computeLogAPosterioriProba(const Matrix<Real>& beta, const Vector<Real>& sd, Index i, Index s, NormalStatistic& normal) const;
+
 private:
 	Index nTime_;
 	Index nSub_;

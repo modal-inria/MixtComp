@@ -45,10 +45,8 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real
 		logKappaMatrix(t_(i), alpha, currLogKappa);
 
 		for (Index s = 0; s < nSub_; ++s) {
-			Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
-			Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
-
 			Real logAPriori = currLogKappa(s);
+			Real logAPosteriori = computeLogAPosterioriProba(beta, sd, i, s, normal);
 
 			jointLogProba(i, s) = logAPriori + logAPosteriori;
 		}
@@ -63,16 +61,21 @@ Vector<Real> Function::computeJointLogProba(const Matrix<Real>& alpha, const Mat
 	logKappaMatrix(t_(i), alpha, currLogKappa);
 
 	for (Index s = 0; s < nSub_; ++s) {
-		Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
-		Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
-
 		Real logAPriori = currLogKappa(s);
+		Real logAPosteriori = computeLogAPosterioriProba(beta, sd, i, s, normal);
+
 		jointLogProba(s) = logAPriori + logAPosteriori;
 	}
 
 	return jointLogProba;
 }
 
+Real Function::computeLogAPosterioriProba(const Matrix<Real>& beta, const Vector<Real>& sd, Index i, Index s, NormalStatistic& normal) const {
+	Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
+	Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
+
+	return logAPosteriori;
+}
 
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
