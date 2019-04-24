@@ -57,6 +57,10 @@ public:
 		data_(i).sampleX(mu_(k), pi_(k));
 	}
 
+	void sampleUnobservedAndLatentMarginalized(Index ind, Vector<Real> const& prop) {
+		initData(ind);
+	}
+
 	/** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
 	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		if (degeneracyAuthorizedForNonBoundedLikelihood)
