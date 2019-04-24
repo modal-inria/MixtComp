@@ -4,10 +4,12 @@
 \alias{getPartition}
 \title{Get the estimated class from MixtComp object}
 \usage{
-getPartition(outMixtComp)
+getPartition(outMixtComp, empiric = TRUE)
 }
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.}
+
+\item{empiric}{if TRUE, use the partition obtained at the end of the gibbs algorithm. If FALSE, use the partition obtained with the observed probabilities.}
 }
 \value{
 a vector containing the estimated class for each individual.
