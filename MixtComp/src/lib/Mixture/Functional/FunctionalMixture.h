@@ -44,32 +44,6 @@ public:
 	}
 	;
 
-	/**
-	 * Initialization of w_
-	 *
-	 * Compute P(w = s, x_i | z_i = k) * P(z_i = k) for each k.
-	 *
-	 * sample w according to  (sum_k P(w = s, x_i | z_i = k) * P(z_i = k))/(sum_s sum_k P(w = s, x_i | z_i = k) * P(z_i = k))
-	 *
-	 */
-	void sampleUnobservedAndLatentMarginalized(Index i, Vector<Real> const& prop) {
-		Index nClass = class_.size();
-		Vector<Real> proba(nSub_);
-		Vector<Real> dummy;
-
-		std::list<Matrix<Real> > alpha, beta;
-		std::list<Vector<Real> > sd;
-
-		for(Index k = 0; k < prop.size(); ++k) {
-			alpha.push_back(class_[k].alpha());
-			beta.push_back(class_[k].beta());
-			sd.push_back(class_[k].sd());
-		}
-
-		vecInd_[i].sampleWMarginalized(alpha, beta, sd, prop);
-	}
-	;
-
 	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		std::string classLog;
 		for (Index k = 0; k < nClass_; ++k) {

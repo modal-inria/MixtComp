@@ -46,36 +46,13 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real
 
 		for (Index s = 0; s < nSub_; ++s) {
 			Real logAPriori = currLogKappa(s);
-			Real logAPosteriori = computeLogAPosterioriProba(beta, sd, i, s, normal);
-
+			Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
+			Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
 			jointLogProba(i, s) = logAPriori + logAPosteriori;
 		}
 	}
 }
 
-Vector<Real> Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Index i) const {
-	Vector<Real> jointLogProba(nSub_);
-	Vector<Real> currLogKappa(nSub_);
-	NormalStatistic normal;
-
-	logKappaMatrix(t_(i), alpha, currLogKappa);
-
-	for (Index s = 0; s < nSub_; ++s) {
-		Real logAPriori = currLogKappa(s);
-		Real logAPosteriori = computeLogAPosterioriProba(beta, sd, i, s, normal);
-
-		jointLogProba(s) = logAPriori + logAPosteriori;
-	}
-
-	return jointLogProba;
-}
-
-Real Function::computeLogAPosterioriProba(const Matrix<Real>& beta, const Vector<Real>& sd, Index i, Index s, NormalStatistic& normal) const {
-	Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
-	Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
-
-	return logAPosteriori;
-}
 
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
@@ -108,7 +85,9 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 	Matrix<Real> jointLogProba;
 	computeJointLogProba(alpha, beta, sd, jointLogProba);
 
-	clearW();
+	for (Index s = 0; s < nSub_; ++s) {
+		w_(s).clear();
+	}
 
 	Vector<Real> currProba;
 	for (Index i = 0; i < nTime_; ++i) {
@@ -117,48 +96,6 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 	}
 }
 
-void Function::sampleWMarginalized(const std::list<Matrix<Real> >& alpha, const std::list<Matrix<Real> >& beta, const std::list<Vector<Real> >& sd, const Vector<Real>& prop) {
-	Index nClass = prop.size();
-	Vector<Real> dummy;
-	Vector<Real> proba(nSub_), logProp(nClass);
-
-	for (Index k = 0; k < nClass; ++k) {
-		logProp(k) = std::log(prop[k]);
-	}
-
-	clearW();
-
-	Matrix<Real> jointLogProba(nSub_, nClass);
-	std::list<Matrix<Real> >::const_iterator itAlpha, itBeta;
-	std::list<Vector<Real> >::const_iterator itSd;
-
-	for (Index i = 0; i < nTime_; ++i){
-		Index k = 0;
-
-		for(itAlpha = alpha.begin(), itBeta = beta.begin(), itSd = sd.begin(), k = 0; itAlpha != alpha.end() && itBeta != beta.end() && itSd != sd.end(); ++itAlpha, ++itBeta, ++itSd, ++k) {
-			jointLogProba.col(k) = computeJointLogProba(*itAlpha, *itBeta, *itSd, i);
-			jointLogProba.col(k) += logProp(k);
-		}
-
-		for (Index s = 0; s < nSub_; ++s) {
-			proba(s) = dummy.logToMulti(jointLogProba.row(s));
-		}
-		dummy.logToMulti(proba);
-
-		sampleW(i, dummy);
-	}
-
-}
-
-void Function::sampleW(Index t, const Vector<Real>& proba) {
-	w_(multi_.sample(proba)).insert(t);
-}
-
-void Function::clearW() {
-	for (Index s = 0; s < nSub_; ++s) {
-		w_(s).clear();
-	}
-}
 
 void Function::removeMissingUniformSampling() {
 	for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run

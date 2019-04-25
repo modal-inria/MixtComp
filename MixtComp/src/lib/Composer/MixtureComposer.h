@@ -98,6 +98,8 @@ public:
 	 **/
 	void sampleZ();
 	void sampleZ(int i);
+	/** tik_ are filled with proportion and Z are sampled according to tik */
+	void sampleZProportion();
 
 	/** compute Tik */
 	void eStepCompleted();

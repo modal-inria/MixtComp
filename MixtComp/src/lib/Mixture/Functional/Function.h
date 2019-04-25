@@ -36,12 +36,6 @@ public:
 	Real lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const;
 
 	void sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd);
-	void sampleWMarginalized(const std::list<Matrix<Real> >& alpha, const std::list<Matrix<Real> >& beta, const std::list<Vector<Real> >& sd, const Vector<Real>& prop);
-
-	/** sample W for time t using a multinomial law with probabilities proba */
-	void sampleW(Index t, const Vector<Real>& proba);
-
-	void clearW();
 
 	void removeMissingUniformSampling();
 
@@ -102,12 +96,7 @@ public:
 	 * @return jointLogProba(i, s) where i is an individual, and s a subregression. jointLogProba(i, s) is log(p(x, w))
 	 * */
 	void computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const;
-	Vector<Real> computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Index i) const;
 
-	/**
-	 * compute probability of x_[i] for the subregression s
-	 */
-	Real computeLogAPosterioriProba(const Matrix<Real>& beta, const Vector<Real>& sd, Index i, Index s, NormalStatistic& normal) const;
 
 private:
 	Index nTime_;

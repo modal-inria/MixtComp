@@ -84,10 +84,6 @@ public:
 		sampler_.samplingStepNoCheck(ind, k);
 	}
 
-	void sampleUnobservedAndLatentMarginalized(Index ind, Vector<Real> const& prop) {
-		initData(ind);
-	}
-
 	/**
 	 * Estimate parameters by maximum likelihood
 	 */

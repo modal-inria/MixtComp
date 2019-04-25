@@ -55,6 +55,7 @@ public:
 	 * */
 	virtual void sampleUnobservedAndLatent(Index ind, Index k) = 0;
 
+
 	/**
 	 * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
 	 * is present at least one time in each class. This is invoked to avoid degeneracy.
@@ -133,10 +134,7 @@ public:
 	 * initialization, and a samplingStep is used.
 	 */
 	virtual void initData(Index ind) = 0;
-	/*
-	 * Initialization of missing / latent data with parameter knowledge
-	 */
-	virtual void sampleUnobservedAndLatentMarginalized(Index ind, Vector<Real> const& prop) = 0;
+
 
 	/**
 	 * Initialization of parameters.
