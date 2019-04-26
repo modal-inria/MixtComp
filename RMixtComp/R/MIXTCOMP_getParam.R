@@ -34,8 +34,8 @@
 #' @export
 getParam <- function(outMixtComp, var)
 {
-  if(!(var %in% getVarNames(outMixtComp)))
-    stop("Wrong varibale names.")
+  if(!(var %in% getVarNames(outMixtComp, with.z_class = TRUE)))
+    stop("Wrong variable names.")
   
   type <- outMixtComp$variable$type[[var]]
   type = ifelse(type == "Func_SharedAlpha_CS", "Func_CS", type)
