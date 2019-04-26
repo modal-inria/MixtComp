@@ -444,8 +444,7 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
     else
       completed_clusters = output_predict$variable$data$z_class$completed$data
 
-
-    for(cluster in unique(completed_clusters)){
+    for(cluster in sort(unique(completed_clusters))){
       next_param_dir = paste0(param_dir,"/subcluster_",cluster)
 
       if(file.exists(paste0(next_param_dir,"/mixtcomp_output.json"))){
