@@ -442,10 +442,8 @@ expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
     if(oldMC)
       completed_clusters = output_predict$variable$data$z_class$completed
     else
-    {
-      output_predict = RJMixtComp:::convertOutput(output_predict)
-      completed_clusters <- RJMixtComp::getPartition(output_predict, empiric = FALSE)
-    }
+      completed_clusters = output_predict$variable$data$z_class$completed$data
+
 
     for(cluster in unique(completed_clusters)){
       next_param_dir = paste0(param_dir,"/subcluster_",cluster)
