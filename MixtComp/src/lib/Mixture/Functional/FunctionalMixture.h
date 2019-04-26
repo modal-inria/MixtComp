@@ -266,6 +266,7 @@ public:
 	}
 	;
 
+
 	/**
 	 * @param initObs element k contains the index of
 	 */

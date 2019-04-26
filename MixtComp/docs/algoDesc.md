@@ -28,21 +28,21 @@ Things can go wrong at various points in the algorithm, for example there can be
 - initParamSubPartition initialize the parameters by generating a subpopulation, and performing an mStep on it. The (approximate) default number of observation per class is given by the user. A checkSampleCondition is performed. This step can fail, hence the test on the size of warnLog which might trigger "continue".
 - writeParameters outputs the parameters, which is useful for debug, or to check if the numer of observations per class is correct for initialization.
 - initializeLatent performs the initialization of all latent variables, using the parameters previously estimated.
-    - computeObservedProba asks each variable to compute the observed distributions if needed.
-    - setObservedProbaCache computes components of the observed probability for various components. The idea is that the log probabilities are used in various contexts, and a cache should be used to accelerate accesses.
-    - eStepObserved computes $t_{ik}$ based on observed initData, if an observation can not be assigned to any class, an error message is returned
+    - sampleZProportion initializes tik using the current proportion and samples Z 
+    - sampleUnobservedAndLatent samples all latent values using the parameters.
+    - eStepCompleted computes $t_{ik}$ based on observed initData, if an observation can not be assigned to any class, an error message is returned
     - sampleZ assigns classes
-    - sampleUnobservedAndLatent sample all latent values using the parameters
+    - sampleUnobservedAndLatent samples all latent values using the parameters
     - checkSampleCondition is performed, but it might not be useful, because the next step in the algorithm will be an eStep
-- SEM is called for burnin, a loop `for (Index iter = 0; iter < nIter; ++iter)` is performed. Each step contains:
+- SEM is called for burn-in, a loop `for (Index iter = 0; iter < nIter; ++iter)` is performed. Each step contains:
     - eStepCompleted, to compute the `t_{ik}` based on completed data
     - sampleZ, to sample the class of every individual
     - sampleUnobservedAndLatent to sample the latent variables
     - checkSampleCondition to check that an mStep could be performed from the completed data
     - mStep
-    - storeSemRun: do nothing in the burning
+    - storeSemRun: do nothing in the burn-in
 - SEM is called for run
-    - similar to SEM for burnin, except that storeSemRun will record the parameters at each iteration, and perform an estimation based on the mean / mode on the last iteration
+    - similar to SEM for burn-in, except that storeSemRun will record the parameters at each iteration, and perform an estimation based on the mean / mode on the last iteration
 - Note that the observed probability cache is not updated here, because it will be updated at the beginning of the GibbsStrategy.
 
 # GibbsStrategy run
@@ -51,13 +51,13 @@ The GibbsStrategy is similar to the SemStrategy, albeit a bit simpler. In partic
 
 - initData
 - initializeLatent
-- Gibbs for burnin
+- Gibbs for burn-in
     - eStepCompleted
     - sampleZ
     - sampleUnobservedAndLatent
-    - storeGibbsRun: do nothing in the burning
+    - storeGibbsRun: do nothing in the burn-in
 - Gibbs for run
-    - similar to SEM for burnin, except that storeGibbsRun will record the missing variables and class labels at each iteration, and perform an imputation based on the mean / mode on the last iteration
+    - similar to SEM for burn-in, except that storeGibbsRun will record the missing variables and class labels at each iteration, and perform an imputation based on the mean / mode on the last iteration
 
 The GibbsStrategy can go wrong, for example if an individual has a 0 probability in every class (there are `nSemTry_`). The difference with `SemStrategy` is that, once initialization has been performed, there can be no error, because parameters have already been estimated, therefor degeneracy is not a problem. This is why `GibbsStrategy::runGibbs` returns `void`, not a `std::string`.
 

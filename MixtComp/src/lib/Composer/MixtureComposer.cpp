@@ -139,6 +139,15 @@ void MixtureComposer::sampleZ() {
 	}
 }
 
+
+void MixtureComposer::sampleZProportion() {
+#pragma omp parallel for
+	for (Index i = 0; i < nInd_; ++i) {
+		tik_.row(i) = prop_;
+		sampleZ(i);
+	}
+}
+
 void MixtureComposer::sampleZ(int i) {
 	sampler_.sStepNoCheck(i);
 }
@@ -539,11 +548,11 @@ void MixtureComposer::computeObservedProba() {
 std::string MixtureComposer::initializeLatent() {
 	std::string warnLog;
 
+	sampleZProportion();
+
 	for (Index i = 0; i < nInd_; ++i) { // TODO: could be parallelized over individuals
 		for (Index n = 0; n < nCompletedInitTry; ++n) {
-			for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-				(*it)->initData(i); // sampling performed without parameters knowledge, to be able to perform the eStepCompleted
-			}
+			sampleUnobservedAndLatent(i);
 			if (eStepCompleted(i))
 				goto stop;
 		}

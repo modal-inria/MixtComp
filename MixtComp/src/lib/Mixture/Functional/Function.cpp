@@ -45,15 +45,14 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real
 		logKappaMatrix(t_(i), alpha, currLogKappa);
 
 		for (Index s = 0; s < nSub_; ++s) {
+			Real logAPriori = currLogKappa(s);
 			Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
 			Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
-
-			Real logAPriori = currLogKappa(s);
-
 			jointLogProba(i, s) = logAPriori + logAPosteriori;
 		}
 	}
 }
+
 
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
@@ -96,6 +95,7 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 		w_(multi_.sample(currProba)).insert(i);
 	}
 }
+
 
 void Function::removeMissingUniformSampling() {
 	for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run

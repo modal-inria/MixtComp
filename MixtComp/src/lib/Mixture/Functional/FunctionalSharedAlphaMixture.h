@@ -45,6 +45,7 @@ public:
 	}
 	;
 
+
 	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		std::string classLog;
 		for (Index k = 0; k < nClass_; ++k) {
