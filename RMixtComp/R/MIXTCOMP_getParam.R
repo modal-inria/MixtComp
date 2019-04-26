@@ -3,7 +3,7 @@
 #' @description Get the estimated parameter
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
-#' @param varName name of the variable to get parameter
+#' @param var name of the variable to get parameter
 #'
 #' @return the parameter of the variable
 #'
@@ -32,8 +32,11 @@
 #' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getParam <- function(outMixtComp, varName)
+getParam <- function(outMixtComp, var)
 {
+  if(!(var %in% getVarNames(outMixtComp)))
+    stop("Wrong varibale names.")
+  
   type <- outMixtComp$variable$type[[varName]]
   type = ifelse(type == "Func_SharedAlpha_CS", "Func_CS", type)
   
