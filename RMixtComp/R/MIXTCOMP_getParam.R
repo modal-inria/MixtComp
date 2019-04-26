@@ -37,7 +37,7 @@ getParam <- function(outMixtComp, var)
   if(!(var %in% getVarNames(outMixtComp)))
     stop("Wrong varibale names.")
   
-  type <- outMixtComp$variable$type[[varName]]
+  type <- outMixtComp$variable$type[[var]]
   type = ifelse(type == "Func_SharedAlpha_CS", "Func_CS", type)
   
   if(is.null(type))
@@ -49,14 +49,14 @@ getParam <- function(outMixtComp, var)
   nbClass <- length(outMixtComp$variable$param$z_class$stat[,1])
   
   param <- switch(type,
-                  "Multinomial" = getParamMultinomial(outMixtComp$variable$param[[varName]], nbClass),
-                  "Gaussian" = getParamNumerical(outMixtComp$variable$param[[varName]], nbClass, c("mean", "sd")),
-                  "Poisson" = getParamNumerical(outMixtComp$variable$param[[varName]], nbClass, "lambda"),
-                  "NegativeBinomial" = getParamNumerical(outMixtComp$variable$param[[varName]], nbClass, c("n", "p")),
-                  "Weibull" = getParamNumerical(outMixtComp$variable$param[[varName]], nbClass, c("k (shape)", "lambda (scale)")),
-                  "Rank_ISR" = getParamRank_ISR(outMixtComp$variable$param[[varName]], nbClass),
-                  "Func_CS" = getParamFunc_CS(outMixtComp$variable$param[[varName]], nbClass),
-                  "LatentClass" = getParamNumerical(outMixtComp$variable$param[[varName]], nbClass, "pi"),
+                  "Multinomial" = getParamMultinomial(outMixtComp$variable$param[[var]], nbClass),
+                  "Gaussian" = getParamNumerical(outMixtComp$variable$param[[var]], nbClass, c("mean", "sd")),
+                  "Poisson" = getParamNumerical(outMixtComp$variable$param[[var]], nbClass, "lambda"),
+                  "NegativeBinomial" = getParamNumerical(outMixtComp$variable$param[[var]], nbClass, c("n", "p")),
+                  "Weibull" = getParamNumerical(outMixtComp$variable$param[[var]], nbClass, c("k (shape)", "lambda (scale)")),
+                  "Rank_ISR" = getParamRank_ISR(outMixtComp$variable$param[[var]], nbClass),
+                  "Func_CS" = getParamFunc_CS(outMixtComp$variable$param[[var]], nbClass),
+                  "LatentClass" = getParamNumerical(outMixtComp$variable$param[[var]], nbClass, "pi"),
                   warning("Not yet implemented."))
   
   return(param)
