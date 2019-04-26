@@ -496,7 +496,7 @@ test_that("run cluster/predict R object",{
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
-  resGenPredict <- dataGeneratorNewIO(200, 0.9, var)
+  resGenPredict <- dataGeneratorNewIO(200, 0.95, var)
 
   algoPredict <- list(
     nClass = 2,
@@ -505,7 +505,7 @@ test_that("run cluster/predict R object",{
     nbIter = 50,
     nbGibbsBurnInIter = 50,
     nbGibbsIter = 50,
-    nInitPerClass = 200,
+    nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
     ratioStableCriterion = 0.95,
