@@ -19,11 +19,11 @@ a similarity matrix
 Compute the similarity between variables (or classes)
 }
 \details{
-The similarities between variables j and h is defined by 1 - Delta(j,h)
-Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
+The similarities between variables j and h is defined by Delta(j,h)
+\deqn{Delta(j,h)^2 = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}}
 
 The similarities between classes k and g is defined by 1 - Sigma(k,g)
-Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
+\deqn{Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2}
 }
 \examples{
 \donttest{
@@ -38,11 +38,20 @@ algo <- list(nbBurnInIter = 100,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
+# keep only 3 variables
+model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 simVar <- computeSimilarityVar(resLearn)
 simClass <- computeSimilarityClass(resLearn)
 }
 
+}
+\seealso{
+\code{\link{heatmapVar}} \code{\link{heatmapClass}}
+}
+\author{
+Quentin Grimonprez
 }

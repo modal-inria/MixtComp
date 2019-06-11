@@ -1,6 +1,7 @@
 
 # gaussian ----------------------------------------------------------------
 
+# @author Vincent Kubicki
 gaussianGenerator <- function(present, param) {
   x <- gaussianFullGenerator(param)
 
@@ -9,13 +10,13 @@ gaussianGenerator <- function(present, param) {
   return(xStr)
 }
 
-
+# @author Vincent Kubicki
 gaussianFullGenerator <- function(param)
 {
   rnorm(1, param$mean, param$sd)
 }
 
-
+# @author Vincent Kubicki
 gaussianHideData <- function(present, x, param)
 {
   if(!present)
@@ -39,6 +40,7 @@ gaussianHideData <- function(present, x, param)
 
 # poisson -----------------------------------------------------------------
 
+# @author Vincent Kubicki
 poissonGenerator <- function(present, param) {
   x <- poissonFullGenerator(param)
   
@@ -47,13 +49,13 @@ poissonGenerator <- function(present, param) {
   return(xStr)
 }
 
-
+# @author Vincent Kubicki
 poissonFullGenerator <- function(param)
 {
   rpois(1, lambda = param)
 }
 
-
+# @author Vincent Kubicki
 poissonHideData <- function(present, x, param)
 {
   if(!present)
@@ -79,6 +81,7 @@ poissonHideData <- function(present, x, param)
 
 # negative binomial -------------------------------------------------------
 
+# @author Vincent Kubicki, Quentin Grimonprez
 negativeBinomialGenerator <- function(present, param) {
   x <- negativeBinomialFullGenerator(param)
   
@@ -87,13 +90,13 @@ negativeBinomialGenerator <- function(present, param) {
   return(xStr)
 }
 
-
+# @author Vincent Kubicki, Quentin Grimonprez
 negativeBinomialFullGenerator <- function(param)
 {
   rnbinom(1, size = param$n, prob = param$p)
 }
 
-
+# @author Vincent Kubicki, Quentin Grimonprez
 negativeBinomialHideData <- function(present, x, param)
 {
   if(!present) {
@@ -116,16 +119,19 @@ negativeBinomialHideData <- function(present, x, param)
 
 # weibull -----------------------------------------------------------------
 
+# @author Vincent Kubicki
 weibullGenerator <- function(present, param) {
   x <- weibullFullGenerator(param)
   xStr <- weibullHideData(present, x, param)
   return(xStr)
 }
 
+# @author Vincent Kubicki
 weibullFullGenerator <- function(param) {
   rweibull(1, param$shape, param$scale)
 }
 
+# @author Vincent Kubicki
 weibullHideData <- function(present, x, param) {
   if(!present) {
     missType <- sample(3, size = 1)
@@ -146,6 +152,7 @@ weibullHideData <- function(present, x, param) {
 
 # multinomial -------------------------------------------------------------
 
+# @author Vincent Kubicki
 categoricalGenerator <- function(present, param) {
   x <- categoricalFullGenerator(param)
   
@@ -154,13 +161,13 @@ categoricalGenerator <- function(present, param) {
   return(xStr)
 }
 
-
+# @author Vincent Kubicki
 categoricalFullGenerator <- function(param)
 {
   which(rmultinom(1, 1, param) == 1)
 }
 
-
+# @author Vincent Kubicki
 categoricalHideData <- function(present, x, param)
 {
   if(!present)

@@ -4,17 +4,18 @@
 \alias{aggregate_clusters}
 \title{Aggregate the hierarchical clusters estimated}
 \usage{
-aggregate_clusters(dir)
+aggregate_clusters(dir, depth = NULL)
 }
 \arguments{
 \item{dir}{String, a path to the directory in which are the subclusters to be aggregated}
+
+\item{depth}{Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.}
 }
 \description{
 Aggregate the hierarchical clusters estimated
 }
 \seealso{
 Other results aggregation: \code{\link{aggregate_classification_probabilities}},
-  \code{\link{aggregate_completed_max}},
   \code{\link{aggregate_completed}}
 }
 \concept{results aggregation}

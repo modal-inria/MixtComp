@@ -7,11 +7,11 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_POISSONSAMPLER_H
-#define MIXT_POISSONSAMPLER_H
+#ifndef POISSONSAMPLER_H
+#define POISSONSAMPLER_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Data/AugmentedData.h"
 #include "PoissonStatistic.h"
 
 namespace mixt
@@ -39,4 +39,4 @@ class PoissonSampler
 
 } // namespace mixt
 
-#endif // MIXT_POISSONSAMPLER_H
+#endif // POISSONSAMPLER_H

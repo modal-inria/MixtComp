@@ -10,9 +10,9 @@
 #ifndef WEIBULLSTATISTIC_H
 #define WEIBULLSTATISTIC_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Statistic/mixt_UniformStatistic.h"
+#include "../../../Statistic/UniformStatistic.h"
 #include <boost/random/mersenne_twister.hpp>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

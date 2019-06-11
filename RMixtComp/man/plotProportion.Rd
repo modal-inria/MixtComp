@@ -18,8 +18,6 @@ Plot the mixture's proportions
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters
@@ -48,5 +46,8 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotDiscrimClass}},
   \code{\link{plotDiscrimVar}},
   \code{\link{plotParamConvergence}}
+}
+\author{
+Quentin Grimonprez
 }
 \concept{plot}

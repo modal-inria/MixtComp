@@ -11,4 +11,4 @@ genDataPackage.R
 Makefile
 build.sh
 updateLib.py
-src/lib/README.md
+README.md

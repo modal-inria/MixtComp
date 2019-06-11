@@ -7,13 +7,13 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_NORMALSTATISTIC_H
-#define MIXT_NORMALSTATISTIC_H
+#ifndef NORMALSTATISTIC_H
+#define NORMALSTATISTIC_H
 
 #include <boost/random.hpp>
-#include "../LinAlg/mixt_LinAlg.h"
-#include "mixt_UniformStatistic.h"
-#include "mixt_ExponentialStatistic.h"
+#include <Statistic/ExponentialStatistic.h>
+#include <Statistic/UniformStatistic.h>
+#include "../LinAlg/LinAlg.h"
 
 namespace mixt {
 
@@ -88,4 +88,4 @@ class NormalStatistic {
 
 } // namespace mixt
 
-#endif // MIXT_NORMALSTATISTIC_H
+#endif // NORMALSTATISTIC_H

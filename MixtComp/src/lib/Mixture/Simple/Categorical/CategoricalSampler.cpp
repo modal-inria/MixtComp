@@ -7,9 +7,9 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <Mixture/IMixture.h>
 #include "CategoricalSampler.h"
-#include "../../../Various/mixt_Constants.h"
-#include "../../mixt_IMixture.h"
+#include "../../../Various/Constants.h"
 
 namespace mixt
 {

@@ -12,7 +12,7 @@
 
 #include <Run/Learn.h>
 #include <Run/Predict.h>
-#include <mixt_MixtComp.h>
+#include <MixtComp.h>
 
 #include "RGraph.h"
 

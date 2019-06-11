@@ -11,7 +11,7 @@
 #define RMIXTCOMP_SRC_CPPTORVECTORTYPE
 
 #include <Rcpp.h>
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

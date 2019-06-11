@@ -25,8 +25,6 @@ The discriminative power of class k is defined by 1 - D(k)
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters

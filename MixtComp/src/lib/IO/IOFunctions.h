@@ -10,12 +10,12 @@
 #ifndef LIB_IO_IOFUNCTIONS_H
 #define LIB_IO_IOFUNCTIONS_H
 
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
 #include <string>
 #include <vector>
 
-#include "mixt_MisValParser.h"
-#include <Data/mixt_AugmentedData.h>
-#include <LinAlg/mixt_LinAlg.h>
+#include "MisValParser.h"
 
 namespace mixt {
 

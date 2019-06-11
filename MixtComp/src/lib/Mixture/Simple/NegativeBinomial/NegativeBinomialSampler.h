@@ -10,8 +10,8 @@
 #ifndef NEGATIVEBINOMIALSAMPLER_H
 #define NEGATIVEBINOMIALSAMPLER_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Data/AugmentedData.h"
 #include "NegativeBinomialStatistic.h"
 
 namespace mixt

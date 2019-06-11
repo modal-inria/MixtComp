@@ -31,8 +31,11 @@ algo <- list(nbBurnInIter = 100,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
+# keep only 3 variables
+model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")] 
+
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 # get criterion
 bic <- getBIC(resLearn)
@@ -40,3 +43,12 @@ icl <- getICL(resLearn)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
+  \code{\link{getPartition}}, \code{\link{getType}}
+}
+\author{
+Quentin Grimonprez
+}
+\concept{getter}

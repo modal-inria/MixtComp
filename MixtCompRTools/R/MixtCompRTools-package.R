@@ -4,6 +4,7 @@
 #' @import jsonlite
 #' @import foreach
 #' @import parallel
+#' @import RJMixtComp
 #' @importFrom graphics lines plot
 #' @importFrom utils read.table write.table read.csv
 #' @importFrom grDevices colorRampPalette

@@ -36,6 +36,7 @@
 # res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4)
 # }
 # 
+# @author Quentin Grimonprez
 # @export
 hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL", "lnObservedLikelihood", "lnCompletedLikelihood"), minClassSize = 5,
                                       nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
@@ -54,7 +55,11 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   
   
   if(verbose)
-    cat("### Hierarchical MixtComp\n")
+  {
+    cat(paste0("====== Run Hierarchical MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
+    cat(paste0("Data: ", algo$nInd, " individuals and ", length(model), " variables.\n"))
+  }
+    
   
   newRes = leaves = res = allCrit <- list()
   
@@ -67,6 +72,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   
   while((nbCurrentCluster != nClass) & (nbLeavesToCompute != 0))
   {
+    t1 <- proc.time()
     if(verbose)
     {
       cat(paste0("-- K = ", nbCurrentCluster + 1, "\n"))
@@ -182,6 +188,10 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
       warning(paste0("The hierarchy was stop earlier because all clustering on leaves produced error. Try to increase the nRun parameter."))
       nbLeavesToCompute = 0
     }
+    t2 <- proc.time()
+    
+    if(verbose)
+      cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
 
 
   }# end while
@@ -214,6 +224,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
 # @param algo
 #
 # @return mixtComp res
+# @author Quentin Grimonprez
 computeNewModel <- function(resParent, resChild, classParentOfChild, data, model, algo, nRun, nCore, verbose)
 {
   oldZ_class = resParent$variable$data$z_class$completed
@@ -236,5 +247,3 @@ computeNewModel <- function(resParent, resChild, classParentOfChild, data, model
   
   return(res)
 }
-
-

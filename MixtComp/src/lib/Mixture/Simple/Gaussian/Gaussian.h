@@ -10,11 +10,11 @@
 #ifndef GAUSSIAN_H
 #define GAUSSIAN_H
 
+#include <LinAlg/LinAlg.h>
 #include <vector>
 #include <set>
 
-#include "LinAlg/mixt_LinAlg.h"
-#include "Data/mixt_ConfIntDataStat.h"
+#include "Data/ConfIntDataStat.h"
 #include "GaussianLikelihood.h"
 #include "GaussianSampler.h"
 

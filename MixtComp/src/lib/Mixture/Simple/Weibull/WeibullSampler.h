@@ -10,8 +10,8 @@
 #ifndef WEIBULLSAMPLER_H
 #define WEIBULLSAMPLER_H
 
-#include "LinAlg/mixt_LinAlg.h"
-#include "Data/mixt_AugmentedData.h"
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
 #include "WeibullStatistic.h"
 
 namespace mixt {

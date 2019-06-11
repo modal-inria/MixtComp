@@ -1,5 +1,6 @@
 # input the model of variables of the data (given in a list or data.frame format)
 # model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
+# @author Quentin Grimonprez
 imputModel <- function(data)
 {
   if(is.matrix(data))
@@ -23,6 +24,7 @@ imputModel <- function(data)
 
 # imput the model of a given variable
 # model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
+# @author Quentin Grimonprez
 imputModelIntern <- function(variable, name)
 {
   switch(class(variable),
@@ -36,6 +38,7 @@ imputModelIntern <- function(variable, name)
 # format the model list for rmc function:
 # - add paramStr when missing
 # - ensure the list format of each element
+# @author Quentin Grimonprez
 formatModel <- function(model)
 {
   model = lapply(model, function(x){
@@ -51,6 +54,7 @@ formatModel <- function(model)
 }
 
 # add default hyperparameters
+# @author Quentin Grimonprez
 completeModel <- function(model, data = NULL)
 {
   
@@ -71,6 +75,7 @@ completeModel <- function(model, data = NULL)
 
 # format data.frame or matrix in list of character
 # keep list in list format
+# @author Quentin Grimonprez
 formatData <- function(data)
 {
   if(is.data.frame(data) || is.matrix(data))
@@ -86,6 +91,7 @@ formatData <- function(data)
 
 
 # in basic mode, data is a data.frame or a matrix
+# @author Quentin Grimonprez
 formatDataBasicMode <- function(data, model, dictionary = NULL)
 {
   createDictionary <- is.null(dictionary)
@@ -123,6 +129,7 @@ formatDataBasicMode <- function(data, model, dictionary = NULL)
 }
 
 # check the number of class given by the user in mixtCompPredict
+# @author Quentin Grimonprez
 checkNClass <- function(nClass, resLearn)
 {
   if(is.null(nClass))
@@ -152,6 +159,7 @@ checkNClass <- function(nClass, resLearn)
   return(nClass)
 }
 
+# @author Quentin Grimonprez
 completeAlgo <- function(algo)
 {
   algoDefault <- createAlgo()
@@ -161,7 +169,7 @@ completeAlgo <- function(algo)
   return(c(algo, algoDefault[missingNames]))
 }
 
-
+# @author Quentin Grimonprez
 changeClassName <- function(rowNames, dictionary)
 {
   for(i in seq_along(rowNames))
@@ -176,4 +184,38 @@ changeClassName <- function(rowNames, dictionary)
   }
 
   return(rowNames)
+}
+
+
+# in basic mode add dictionnaries of categories for Multinomial ans LatenClass models
+# change names in param, log...
+# @author Quentin Grimonprez
+formatOutputBasicMode <- function(res, dictionary)
+{
+  res$algo$dictionary = dictionary
+  
+  for(varName in setdiff(names(res$algo$dictionary), "z_class"))
+  {
+    res$variable$data[[varName]]$completed = refactorCategorical(res$variable$data[[varName]]$completed, res$algo$dictionary[[varName]]$new, res$algo$dictionary[[varName]]$old)
+    rownames(res$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(res$variable$param[[varName]]$stat)), res$algo$dictionary[[varName]]$old)
+    rownames(res$variable$param[[varName]]$log) = rownames(res$variable$param[[varName]]$stat)
+  }
+  
+  # this will not work for non simple model. It is not a problem because in basic mode only simple mdoels are considered
+  if("z_class" %in% names(res$algo$dictionary))
+  {
+    varNames <- getVarNames(res, with.z_class = TRUE)
+    
+    res$variable$data$z_class$completed = refactorCategorical(res$variable$data$z_class$completed, res$algo$dictionary$z_class$new, res$algo$dictionary$z_class$old)
+    colnames(res$variable$data$z_class$stat) = changeClassName(colnames(res$variable$data$z_class$stat), res$algo$dictionary)
+    
+    for(varName in varNames)
+    {
+      rowNames <- rownames(res$variable$param[[varName]]$stat)
+      rowNames = changeClassName(rowNames, res$algo$dictionary)
+      rownames(res$variable$param[[varName]]$stat) = rownames(res$variable$param[[varName]]$log) = rowNames
+    }
+  }
+  
+  return(res)
 }

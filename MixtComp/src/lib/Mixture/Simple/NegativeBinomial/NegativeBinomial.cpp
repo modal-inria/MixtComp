@@ -12,11 +12,11 @@
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include <IO/IO.h>
+#include <LinAlg/Math.h>
 
-#include <IO/mixt_IO.h>
-#include <Various/mixt_Constants.h>
-#include <Various/mixt_Enum.h>
-#include <LinAlg/mixt_Math.h>
+#include <Various/Enum.h>
+#include <Various/Constants.h>
 
 #include "NegativeBinomial.h"
 
@@ -67,10 +67,10 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 			param_(2 * k + 1) = pParam;
 
 			if ((1 - pParam < epsilon) | (pParam < epsilon)) {
-				warnLog += "Negative Binomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: " + std::to_string(k) + ". " + eol;
+				warnLog += "NegativeBinomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: " + std::to_string(k) + ". " + eol;
 			}
 		} catch (boost::exception &e) {
-			warnLog += "Negative Binomial model, parameter n divergence in class: " + std::to_string(k) + ". " + boost::diagnostic_information(e) + "." + eol;
+			warnLog += "NegativeBinomial model, parameter n divergence in class: " + std::to_string(k) + ". " + boost::diagnostic_information(e) + "." + eol;
 		}
 
 	}

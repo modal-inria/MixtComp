@@ -42,3 +42,6 @@ algo <- createAlgo()
 algo <- createAlgo(nbIter = 200)
 
 }
+\author{
+Quentin Grimonprez
+}

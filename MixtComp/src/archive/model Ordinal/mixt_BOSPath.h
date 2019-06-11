@@ -10,9 +10,9 @@
 #ifndef MIXT_BOSPATH
 #define MIXT_BOSPATH
 
+#include <LinAlg/LinAlg.h>
 #include <list>
 #include <utility>
-#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/MultinomialStatistic.h"
 #include "../model Ordinal/mixt_BOSNode.h"
 

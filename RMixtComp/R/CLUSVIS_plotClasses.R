@@ -36,7 +36,7 @@
 # # }
 # #
 # # @seealso \code{\link{plotComponentClusVis}} \code{\link{plotObservationsClusVis}}
-# #
+# # @author Matthieu Marbac
 # # @export
 # clusvisMixtComp <- function(resmixtcomp, sample.size = 5000, maxit = 10**3, nbrandomInit = 12, nbcpu = 1, estimateLogTik = FALSE){
 # 
@@ -89,6 +89,7 @@
 # #
 # # }
 # #
+# # @author Matthieu Marbac
 # # @export
 # plotComponentClusVis <- function(visInfo) {
 #   plotDensityClusVisu(visInfo, add.obs = FALSE, positionlegend = "bottomright",
@@ -97,6 +98,7 @@
 # 
 # ###################################################################################
 # # @rdname plotComponentClusVis
+# # @author Matthieu Marbac
 # # @export
 # plotObservationsClusVis <- function(visInfo) {
 #   plotDensityClusVisu(visInfo, add.obs = TRUE, positionlegend = "bottomright",
@@ -111,6 +113,7 @@
 # # Rows correspond to observations and column correspond to component
 # # Here, few types of data are allowed: continuous or categorical
 # # The other types of data must be implemented
+# # @author Matthieu Marbac
 # logmixcomp <- function(output){
 #   param <- output$variable$param
 #   x <- output$variable$data
@@ -141,6 +144,7 @@
 # # according to its "type", its parameters "p" for the "g" components
 # # Here, few types of data are allowed: continuous or categorical
 # # The other types of data must be implemented
+# # @author Matthieu Marbac
 # dlogsinglemixcomp <- function(x, p, type, g){
 #   dlog <- rep(0, g)
 #   if (type=="Gaussian"){
@@ -160,6 +164,7 @@
 # # for the variable of type "type" and parameters "p".
 # # Here, few types of data are allowed: continuous or categorical
 # # The other types of data must be implemented
+# # @author Matthieu Marbac
 # rsinglemixcomp <- function(p, type, z, g, Tseq=NULL){
 #   x <- 0
 #   if (type=="Gaussian"){
@@ -177,6 +182,7 @@
 # 
 # # This function generates a sample from the model defined by the object output returned
 # # by the R package Rmixtcomp
+# # @author Matthieu Marbac
 # rmixcomp <- function(output){
 #   z <- sample(1:output$algo$nClass, 1, prob=output$variable$param$z_class$stat[,1])
 #   x <- sapply(1:(length(output$variable$param)-1),
@@ -190,6 +196,7 @@
 # # This function generates a sample of the logarithm of probabilities of classification
 # # defined by the model and its parameters given by the object output returned
 # # by the R package Rmixtcomp
+# # @author Matthieu Marbac
 # rlogtikmixcomp <- function(output){
 #   x=rmixcomp(output)
 #   dlog <- rowSums(sapply(1:(length(output$variable$param)-1),

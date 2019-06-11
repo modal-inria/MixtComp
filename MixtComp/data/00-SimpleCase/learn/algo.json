@@ -1,11 +1,11 @@
 {
   "nClass": 2,
-  "nInd": 15,
+  "nInd": 200,
   "nbBurnInIter": 100,
   "nbIter": 100,
   "nbGibbsBurnInIter": 100,
   "nbGibbsIter": 100,
-  "nInitPerClass": 2,
+  "nInitPerClass": 20,
   "nSemTry": 10,
   "confidenceLevel": 0.95,
   "ratioStableCriterion": 0.9,

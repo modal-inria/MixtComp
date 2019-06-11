@@ -13,7 +13,7 @@
 #include "Rcpp.h"
 
 #include <iostream>
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 #include <LinAlg/names.h>
 #include <IO/NamedAlgebra.h>
 

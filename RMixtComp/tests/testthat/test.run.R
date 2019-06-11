@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
@@ -221,7 +222,7 @@ test_that("weibull model works",{
     nbIter = 100,
     nbGibbsBurnInIter = 100,
     nbGibbsIter = 100,
-    nInitPerClass = 100,
+    nInitPerClass = 200,
     nSemTry = 20,
     confidenceLevel = 0.95,
     ratioStableCriterion = 0.95,
@@ -401,7 +402,7 @@ test_that("run cluster/predict R object",{
     nbIter = 50,
     nbGibbsBurnInIter = 50,
     nbGibbsIter = 50,
-    nInitPerClass = 100,
+    nInitPerClass = 200,
     nSemTry = 20,
     confidenceLevel = 0.95,
     ratioStableCriterion = 0.95,
@@ -495,11 +496,11 @@ test_that("run cluster/predict R object",{
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
-  resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
+  resGenPredict <- dataGeneratorNewIO(200, 0.95, var)
 
   algoPredict <- list(
     nClass = 2,
-    nInd = 100,
+    nInd = 200,
     nbBurnInIter = 50,
     nbIter = 50,
     nbGibbsBurnInIter = 50,

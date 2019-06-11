@@ -2,6 +2,7 @@
 ### Confidence levels
 
 ## Get
+# @author Matthieu Marbac
 extractCIboundsOneVble = function(var, data, class, grl){
   out <- NULL
   type <- data$variable$type[[var]]
@@ -15,6 +16,7 @@ extractCIboundsOneVble = function(var, data, class, grl){
 }
 
 ## CI bounds for numerical variables (Gaussian or Poisson)
+# @author Matthieu Marbac
 extractCIGaussianVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,1], 3))
@@ -33,14 +35,14 @@ extractCIGaussianVble = function(var, data, class, grl){
   return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
-
+# @author Matthieu Marbac
 extractCIPoissonVble = function(var, data, class, grl){
   theta <- as.array(data$variable$param[[var]]$stat[class,1])
   if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
   return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
 }
 
-
+# @author Quentin Grimonprez, Matthieu Marbac
 extractCINegBinomialVble = function(var, data, class, grl){
   theta <- matrix(data$variable$param[[var]]$stat[,1], ncol = 2, byrow = TRUE)
   means = as.array(round(theta[,1]*(1-theta[,2])/theta[,2], 3))
@@ -59,7 +61,7 @@ extractCINegBinomialVble = function(var, data, class, grl){
   return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
-
+# @author Quentin Grimonprez, Matthieu Marbac
 extractCIWeibullVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,2]*gamma(1+1/theta[,1]), 3))
@@ -80,6 +82,7 @@ extractCIWeibullVble = function(var, data, class, grl){
 
 
 ## Categorical variables
+# @author Matthieu Marbac
 extractCIMultiVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$stat[,1], nrow=data$algo$nClass, byrow = TRUE)
   theta <- theta[class,, drop = FALSE]
@@ -107,6 +110,7 @@ extractCIMultiVble = function(var, data, class, grl){
 
 ## Functional variables
 # To compute the mean curve per component
+# @author Matthieu Marbac
 functionalmeanVal <- function(Tt, alpha, beta){
   weights <- alpha[,2] * Tt + alpha[,1]
   weights <- weights - max(weights)
@@ -122,9 +126,11 @@ functionalmeanVal <- function(Tt, alpha, beta){
 }
 
 # Tool function for assessing the quantile for the functional model
+# @author Matthieu Marbac
 objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil)**2
 
 # To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
+# @author Matthieu Marbac
 functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   weights <- alpha[,1] + alpha[,2] * Tt
   weights <- weights - max(weights)
@@ -147,6 +153,7 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   )
 }
 
+# @author Matthieu Marbac
 extractCIFunctionnalVble = function(var, data){
   Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = FALSE)
   param = data$variable$param[[var]]
@@ -183,6 +190,7 @@ extractCIFunctionnalVble = function(var, data){
 #### Boxplots
 
 ## Get
+# @author Matthieu Marbac
 extractBoxplotInfoOneVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE){
   out <- NULL
   type <- data$variable$type[[var]]
@@ -193,6 +201,7 @@ extractBoxplotInfoOneVble <- function(var, data, class=1:data$algo$nClass, grl=F
 }
 
 ## Numerical variables 
+# @author Matthieu Marbac
 extractBoundsBoxplotNumericalVble <- function(var, data, class = 1:data$algo$nClass, grl = FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
@@ -224,6 +233,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class = 1:data$algo$nCl
 }
 
 ## Categorical variables 
+# @author Matthieu Marbac
 extractBoundsBoxplotCategoricalVble <- function(var, data, class = 1:data$algo$nClass, grl = FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat

@@ -7,13 +7,13 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <IO/IO.h>
+#include <IO/SpecialStr.h>
+#include <LinAlg/LinAlg.h>
+#include <Various/Constants.h>
 #include <regex>
 
-#include "IO/mixt_IO.h"
-#include "IO/mixt_SpecialStr.h"
-#include "Various/mixt_Constants.h"
-#include "LinAlg/mixt_LinAlg.h"
-#include "Various/mixt_Enum.h"
+#include "Various/Enum.h"
 #include "Categorical.h"
 
 namespace mixt {

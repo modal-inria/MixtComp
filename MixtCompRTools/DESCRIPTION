@@ -1,14 +1,14 @@
 Package: MixtCompRTools
 Type: Package
-Date: 2018-10-11
+Date: 2019-03-25
 Title: Mixtcomp Tools in R
-Version: 0.4
+Version: 0.5
 Author: Etienne Goffinet, Quentin Grimonprez, Vincent Kubicki
 Maintainer: Etienne Goffinet <etienne.goffinet@inria.fr>
 Description: Add tools for MixtComp, essentially Hierarchical calls. Allow to launch MixtComp hierarchically, in both learn and predict mode.
 License: file LICENCE
 LazyData: true
-Imports: plotly, doParallel, RColorBrewer, jsonlite, foreach, parallel
+Imports: plotly, doParallel, RColorBrewer, jsonlite, foreach, parallel, RJMixtComp
 Suggests: testthat
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8

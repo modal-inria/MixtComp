@@ -9,7 +9,7 @@
 
 #include <Rcpp.h>
 
-#include "mixt_MixtComp.h"
+#include "MixtComp.h"
 #include "RGraph.h"
 
 using namespace mixt;

@@ -6,7 +6,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "mixt_MixtComp.h"
+#include "MixtComp.h"
 
 using namespace mixt;
 

@@ -26,3 +26,6 @@ summary(resLearn$res[[2]])
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{print.MixtComp}}
 }
+\author{
+Quentin Grimonprez
+}

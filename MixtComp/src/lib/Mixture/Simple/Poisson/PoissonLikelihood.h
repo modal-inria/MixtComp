@@ -7,11 +7,11 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_POISSONLIKELIHOOD_H
-#define MIXT_POISSONLIKELIHOOD_H
+#ifndef POISSONLIKELIHOOD_H
+#define POISSONLIKELIHOOD_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Data/AugmentedData.h"
 #include "PoissonStatistic.h"
 
 namespace mixt
@@ -44,4 +44,4 @@ class PoissonLikelihood
 
 } /* namespace mixt */
 
-#endif // MIXT_POISSONLIKELIHOOD_H
+#endif // POISSONLIKELIHOOD_H

@@ -1,9 +1,10 @@
 context("Test format")
 
+Sys.setenv(MC_DETERMINISTIC = 42)
 
 test_that("convert a matrix from json", {
   # named matrice
-  x <- list(colNames = c("varCategorical", "varGaussian", "varPoisson"), 
+  x <- list(colNames = c("varCategorical", "Gaussian1", "varPoisson"), 
             ctype ="Matrix",
             data = matrix(1:6, nrow = 2, ncol = 3),
             dtype = "Real",
@@ -78,15 +79,9 @@ test_that("convertOutput converts well", {
   
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- fromJSON(pathToDescriptor)
-  algo <- list(nbBurnInIter = 50,
-               nbIter = 50,
-               nbGibbsBurnInIter = 20,
-               nbGibbsIter = 20,
-               nInitPerClass = 10,
-               nSemTry = 5,
-               confidenceLevel = 0.95)
+  algo <- createAlgo()
   
-  expect_silent(res <- JsonMixtCompLearn(data, descriptor, algo, nClass = 2, inputPath = ".", outputFile = "reslearn.json"))
+  expect_silent(res <- JMixtCompLearn(data, descriptor, algo, nClass = 2, inputPath = ".", outputFile = "reslearn.json"))
   
   res <- fromJSON("reslearn.json")
   out <- convertOutput(res)
@@ -117,16 +112,17 @@ test_that("convertOutput converts well", {
   expect_equal(rownames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$rowNames)
   expect_equal(colnames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$colNames)
   expect_equal(out$variable$param$z_class$paramStr, res$variable$param$z_class$paramStr)
-  expect_equal(class(out$variable$param$varGaussian$stat), "matrix")
-  expect_equal(rownames(out$variable$param$varGaussian$stat), res$variable$param$varGaussian$stat$rowNames)
-  expect_equal(colnames(out$variable$param$varGaussian$stat), res$variable$param$varGaussian$stat$colNames)
-  expect_equal(out$variable$param$varGaussian$paramStr, res$variable$param$varGaussian$paramStr)
+  expect_equal(class(out$variable$param$Gaussian1$stat), "matrix")
+  expect_equal(rownames(out$variable$param$Gaussian1$stat), res$variable$param$Gaussian1$stat$rowNames)
+  expect_equal(colnames(out$variable$param$Gaussian1$stat), res$variable$param$Gaussian1$stat$colNames)
+  expect_equal(out$variable$param$Gaussian1$paramStr, res$variable$param$Gaussian1$paramStr)
   
   # variable$data
   expect_equivalent(out$variable$data$z_class$stat, res$variable$data$z_class$stat$data)
   expect_equal(out$variable$data$z_class$completed, res$variable$data$z_class$completed$data)
-  expect_equal(out$variable$data$varGaussian$completed, res$variable$data$varGaussian$completed$data)
+  expect_equal(out$variable$data$Gaussian1$completed, res$variable$data$Gaussian1$completed$data)
   
   file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "progress")
 })
 
+Sys.unsetenv("MC_DETERMINISTIC")

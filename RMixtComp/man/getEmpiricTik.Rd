@@ -55,4 +55,7 @@ Other getter: \code{\link{getBIC}},
   \code{\link{getCompletedData}}, \code{\link{getParam}},
   \code{\link{getPartition}}, \code{\link{getType}}
 }
+\author{
+Quentin Grimonprez
+}
 \concept{getter}

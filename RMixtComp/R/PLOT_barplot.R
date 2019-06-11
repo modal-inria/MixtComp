@@ -10,9 +10,6 @@
 #' 
 #' @examples 
 #' \donttest{
-#' 
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -73,8 +70,6 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -130,8 +125,6 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #' 
 #' @examples 
 #' \donttest{
-#' library(RMixtComp)
-#' 
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -149,6 +142,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #' }
 #' 
 #' @family plot
+#' @author Quentin Grimonprez
 #' @export
 plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)
 {
@@ -168,6 +162,7 @@ plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)
   p
 }
 
+# @author Quentin Grimonprez
 barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), text = NULL, ...)
 {
   p <- plot_ly(x = label,
@@ -190,6 +185,7 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
   p
 }
 
+# @author Matthieu Marbac
 ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), col.text = "white")
 {
   df = data.frame(var = factor(label, levels = label), discrim = value)

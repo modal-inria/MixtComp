@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 ordinalTestGenerator <- function() {
   ordinalTestParam <- list(nbMod = 5,
                            mu = 3,
@@ -12,6 +13,7 @@ ordinalTestGenerator <- function() {
   return(ordinalTestStr)
 }
 
+# @author Vincent Kubicki
 ordinalGenerator <- function(present,
                              param) {
   x <- ordinalFullGenerator(param)
@@ -23,6 +25,7 @@ ordinalGenerator <- function(present,
   return(xStr)
 }
 
+# @author Vincent Kubicki
 ordinalFullGenerator <- function(param) {
   nbMod <- param$nbMod
   seg <- c(1, nbMod) # initial segment is the input
@@ -42,12 +45,14 @@ ordinalFullGenerator <- function(param) {
   return(seg[1])
 }
 
+# @author Vincent Kubicki
 ySample <- function(seg) { # uniform sampling of y
   segVal <- seg[1]:seg[2]
   y <- segVal[sample(length(segVal), 1)]
   return(y) 
 }
 
+# @author Vincent Kubicki
 zSample <- function(param) {
   return(sample(x = 2,
                 size = 1,
@@ -55,6 +60,7 @@ zSample <- function(param) {
                          param$pi)))
 }
 
+# @author Vincent Kubicki
 segSample <- function(y,
                       z,
                       seg,
@@ -75,6 +81,7 @@ segSample <- function(y,
   return(seg)
 }
 
+# @author Vincent Kubicki
 allSeg <- function(y,
                    seg,
                    param,
@@ -107,6 +114,7 @@ allSeg <- function(y,
               distSeg = distSeg))
 }
 
+# @author Vincent Kubicki
 eSample <- function(z,
                     currSeg) {
   e <- -1
@@ -123,6 +131,7 @@ eSample <- function(z,
   return(e)
 }
 
+# @author Vincent Kubicki
 ordinalHideData <- function(present,
                             param,
                             x) {

@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez
 Sys.setenv(MC_DETERMINISTIC = 42)
 
 context("Launch hierarchical MixtComp")

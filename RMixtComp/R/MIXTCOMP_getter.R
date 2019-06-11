@@ -3,6 +3,7 @@
 #' @description Get the completed data from MixtComp object
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
+#' @param var Name of the variables for which to extract the completed data. Default is NULL (all variables are extracted)
 #' @param with.z_class if TRUE, z_class is returned with the data.
 #'
 #' @return  a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).
@@ -12,32 +13,32 @@
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' algo <- createAlgo()
 #' 
-#' #' # keep only 3 variables
+#' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' # get completedData
-#' getCompletedData <- completed(resLearn)
+#' completedData <- getCompletedData(resLearn)
+#' completedData2 <- getCompletedData(resLearn, var = "Gaussian1")
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getCompletedData <- function(outMixtComp, with.z_class = FALSE)
+getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 {
-  completedData <- do.call(cbind, lapply(outMixtComp$variable$data, function(x){x$completed}))
+  if(is.null(var))
+    var = getVarNames(outMixtComp, with.z_class)
   
-  if(!with.z_class)
-    completedData = completedData[,-which(colnames(completedData)=="z_class"), drop = FALSE]
+  mcVar <- getVarNames(outMixtComp, with.z_class = TRUE)
+  if(any(!(var %in% mcVar)))
+    stop("some elements of var are not in outMixtComp")
+  
+  completedData <- do.call(cbind, lapply(outMixtComp$variable$data[var], function(x){x$completed}))
   
   return(as.data.frame(completedData))
 }
@@ -49,6 +50,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' @description Get the estimated class from MixtComp object
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
+#' @param empiric if TRUE, use the partition obtained at the end of the gibbs algorithm. If FALSE, use the partition obtained with the observed probabilities. 
 #'
 #' @return a vector containing the estimated class for each individual.
 #'
@@ -75,11 +77,20 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' estimatedClass <- getPartition(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getPartition <- function(outMixtComp)
+getPartition <- function(outMixtComp, empiric = TRUE)
 {
-  return(outMixtComp$variable$data$z_class$completed)
+  if(empiric)
+    return(outMixtComp$variable$data$z_class$completed)
+  
+  
+  tik <- getTik(outMixtComp)
+  tik[is.na(tik)] = -Inf
+  part <- apply(tik, 1, which.max)
+  
+  return(part)
 }
 
 
@@ -122,6 +133,7 @@ getPartition <- function(outMixtComp)
 #' 
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getType <- function(outMixtComp, with.z_class = FALSE)
@@ -145,7 +157,7 @@ getModel <- function(outMixtComp, with.z_class = FALSE)
   
   for(varName in names(model))
     model[[varName]] = list(type = model[[varName]], paramStr = outMixtComp$variable$param[[varName]]$paramStr)
-      
+  
   return(model)
 }
 
@@ -200,6 +212,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' 
 #' @seealso \code{\link{heatmapTikSorted}}
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getEmpiricTik <- function(outMixtComp)
@@ -257,6 +270,7 @@ getTik <- function(outMixtComp, log = TRUE){
 #' icl <- getICL(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getBIC <- function(outMixtComp)

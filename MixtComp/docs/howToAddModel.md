@@ -8,7 +8,7 @@ The folder [mise à jour majeur](./MixtComp/docs/170616 - mise à jour majeure) 
 
 # Basic Concepts
 
-There is an `IMixture` interface class that describe all models. It is located in [mixt_IMixture.h](MixtComp/src/lib/Mixture/mixt_IMixture.h) file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
+There is an `IMixture` interface class that describe all models. It is located in [IMixture.h](MixtComp/src/lib/Mixture/IMixture.h) file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
 
 ```
 std::string MixtureComposer::checkSampleCondition(
@@ -141,7 +141,7 @@ As mentioned in `computeObservedProba`, the observed probability could be 0 even
 
 # How to register a model
 
-Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [mixt_MixtureManager.h](MixtComp/src/lib/Manager/mixt_MixtureManager.h). `MixtureManager::createMixtures` loop over all variables. `MixtureManager::createMixture` instantiate each model as a `IMixture*` pointer, using the name of the model as provided in the descriptor file.
+Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [MixtureManager.h](MixtComp/src/lib/Manager/MixtureManager.h). `MixtureManager::createMixtures` loop over all variables. `MixtureManager::createMixture` instantiate each model as a `IMixture*` pointer, using the name of the model as provided in the descriptor file.
 
 Hence a new model must be managed through a new entry in `MixtureManager::createMixture`. Here is an example of entry, for a numerical variable described by a Gaussian distribution:
 

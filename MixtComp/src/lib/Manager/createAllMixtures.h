@@ -11,16 +11,16 @@
 #ifndef LIB_MANAGER_CREATEALLMIXTURES_H
 #define LIB_MANAGER_CREATEALLMIXTURES_H
 
-#include <Composer/mixt_MixtureComposer.h>
+#include <Composer/MixtureComposer.h>
 #include <Mixture/Simple/SimpleMixture.h>
 #include <Mixture/Simple/Categorical/Categorical.h>
 #include <Mixture/Simple/Gaussian/Gaussian.h>
 #include <Mixture/Simple/NegativeBinomial/NegativeBinomial.h>
 #include <Mixture/Simple/Poisson/Poisson.h>
 #include <Mixture/Simple/Weibull/Weibull.h>
-#include <Mixture/Functional/mixt_FunctionalMixture.h>
-#include <Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h>
-#include <Mixture/Rank/mixt_RankMixture.h>
+#include <Mixture/Functional/FunctionalMixture.h>
+#include <Mixture/Functional/FunctionalSharedAlphaMixture.h>
+#include <Mixture/Rank/RankMixture.h>
 
 namespace mixt {
 
@@ -93,4 +93,4 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 
 } // namespace mixt
 
-#endif /* MIXT_MIXTUREMANAGER_H */
+#endif /* CREATEALLMIXTURES_H */

@@ -2,6 +2,7 @@
 # Sampling law is mixture model with 0.5 0.5 proportions
 # First class conditional law is N(5., 1.), rnorm(10, 5., 1.)
 # Second class conditional law is N(20., 2.), rnorm(10, 20., 2.)
+# @author Vincent Kubicki
 simpleNormalTest <- function() {
   
   Sys.setenv(MC_DETERMINISTIC = 42)

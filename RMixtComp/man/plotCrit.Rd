@@ -18,8 +18,6 @@ Plot BIC and ICL
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
  
 # define the algorithm's parameters
@@ -48,5 +46,8 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotDiscrimVar}},
   \code{\link{plotParamConvergence}},
   \code{\link{plotProportion}}
+}
+\author{
+Quentin Grimonprez
 }
 \concept{plot}

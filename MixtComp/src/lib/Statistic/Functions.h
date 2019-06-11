@@ -10,7 +10,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include "LinAlg/mixt_LinAlg.h"
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

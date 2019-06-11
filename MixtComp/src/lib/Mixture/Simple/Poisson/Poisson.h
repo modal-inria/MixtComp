@@ -10,11 +10,11 @@
 #ifndef POISSON_H
 #define POISSON_H
 
+#include <Data/AugmentedData.h>
 #include <vector>
 #include <set>
 
-#include "Data/mixt_AugmentedData.h"
-#include "Data/mixt_ConfIntDataStat.h"
+#include "Data/ConfIntDataStat.h"
 #include "PoissonLikelihood.h"
 #include "PoissonSampler.h"
 
@@ -60,4 +60,4 @@ private:
 
 } // namespace mixt
 
-#endif // MIXT_POISSON_K_H
+#endif // POISSON_H

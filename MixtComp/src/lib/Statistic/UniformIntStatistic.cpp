@@ -9,7 +9,7 @@
 
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
-#include "mixt_RNG.h"
+#include <Statistic/RNG.h>
 
 namespace mixt
 {

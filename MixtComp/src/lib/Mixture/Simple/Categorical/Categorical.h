@@ -11,10 +11,10 @@
 #ifndef CATEGORICAL_H
 #define CATEGORICAL_H
 
+#include <LinAlg/LinAlg.h>
 #include <vector>
 #include <set>
 
-#include "LinAlg/mixt_LinAlg.h"
 #include "CategoricalDataStat.h"
 #include "CategoricalSampler.h"
 #include "CategoricalLikelihood.h"

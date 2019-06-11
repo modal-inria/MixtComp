@@ -18,8 +18,6 @@ Plot the evolution of estimated parameters after the burn-in phase.
 }
 \examples{
 \donttest{
-library(RMixtComp)
-
 data(simData)
 
 # define the algorithm's parameters

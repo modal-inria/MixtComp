@@ -7,12 +7,12 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <LinAlg/Math.h>
+#include <Various/Constants.h>
 #include <cmath>
 #include <iostream>
 
-#include "Various/mixt_Constants.h"
-#include "Various/mixt_Enum.h"
-#include "LinAlg/mixt_Math.h"
+#include "Various/Enum.h"
 #include "Weibull.h"
 
 namespace mixt {

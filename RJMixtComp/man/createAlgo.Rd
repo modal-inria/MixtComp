@@ -6,7 +6,8 @@
 \usage{
 createAlgo(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50,
   nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20,
-  confidenceLevel = 0.95)
+  confidenceLevel = 0.95, ratioStableCriterion = 0.95,
+  nStableCriterion = 10)
 }
 \arguments{
 \item{nbBurnInIter}{Number of iterations of the burn-in part of the SEM algorithm.}
@@ -22,6 +23,10 @@ createAlgo(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50,
 \item{nSemTry}{Number of try of the algorithm for avoiding an error.}
 
 \item{confidenceLevel}{confidence level for confidence bounds for parameter estimation}
+
+\item{ratioStableCriterion}{stability partition required to stop earlier the SEM}
+
+\item{nStableCriterion}{number of iterations of partition stability to stop earlier the SEM}
 }
 \value{
 a list with the parameters values
@@ -36,4 +41,7 @@ algo <- createAlgo()
 # change some values
 algo <- createAlgo(nbIter = 200)
 
+}
+\author{
+Quentin Grimonprez
 }

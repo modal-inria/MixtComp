@@ -10,8 +10,8 @@
 #ifndef JSON_NAMES
 #define JSON_NAMES
 
+#include <LinAlg/LinAlg.h>
 #include <iostream>
-#include <LinAlg/mixt_LinAlg.h>
 
 namespace mixt {
 

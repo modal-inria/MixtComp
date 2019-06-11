@@ -8,9 +8,9 @@
  **/
 
 #include "Poisson.h"
-#include "../../../IO/mixt_IO.h"
-#include "../../../Various/mixt_Constants.h"
-#include "../../../Various/mixt_Enum.h"
+#include "../../../IO/IO.h"
+#include "../../../Various/Constants.h"
+#include "../../../Various/Enum.h"
 
 namespace mixt {
 

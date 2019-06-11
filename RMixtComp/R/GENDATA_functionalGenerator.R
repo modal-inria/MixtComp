@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 functionalGenerator <- function(present, param) {
   nSub <- nrow(param$alpha)
   nCoeff <- ncol(param$beta)
@@ -37,6 +38,7 @@ functionalGenerator <- function(present, param) {
   return(xStr)
 }
 
+# @author Vincent Kubicki
 logToMulti <- function(logIn) {
   max <- max(logIn);
   multiOut <- logIn - max

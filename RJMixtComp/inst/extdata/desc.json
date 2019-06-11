@@ -1,14 +1,23 @@
 {
-    "varGaussian": {
+    "Gaussian1": {
         "type": "Gaussian",
         "paramStr": "dummyStrTestGaussian"
     },
-    "varPoisson": {
+    "Poisson1": {
         "type": "Poisson",
         "paramStr": "dummyStrTestPoisson"
     },
-    "varCategorical": {
+    "Categorical1": {
         "type": "Multinomial",
+        "paramStr": ""
+    },
+    "nBinom1": {
+        "type": "NegativeBinomial",
+        "paramStr": ""
+    },
+    "Weibull1": {
+        "type": "Weibull",
         "paramStr": ""
     }
 }
+

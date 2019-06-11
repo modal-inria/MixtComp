@@ -10,15 +10,14 @@
 #ifndef LIB_MIXTURE_FUNCTIONAL_FUNCPROBLEM
 #define LIB_MIXTURE_FUNCTIONAL_FUNCPROBLEM
 
+#include <LinAlg/LinAlg.h>
 #include <set>
 
 #include "cppoptlib/meta.h"
 #include "cppoptlib/problem.h"
 #include "cppoptlib/solver/bfgssolver.h"
 
-#include <LinAlg/mixt_LinAlg.h>
-
-#include "mixt_Function.h"
+#include <Mixture/Functional/Function.h>
 
 namespace mixt {
 

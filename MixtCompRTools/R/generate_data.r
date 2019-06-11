@@ -53,7 +53,7 @@ functionalInterPolyGenerator <- function(present, param) {
 generate_data <- function(size = 2000,
                           ratio_test_training = 0.4,
                           path_dir_output = "",
-                          correlation = TRUE) {
+                          correlation = TRUE, oldMC = TRUE) {
   param <- list(
     x = c(0., 10., 20., 100),
     y = c(1., 10., 1., 50),
@@ -75,8 +75,8 @@ generate_data <- function(size = 2000,
                                mean = c(0, 5, 10, 100),
                                sd = 2)
 
-  data_categorical = sample(1:8, size = size, replace = T)
-  if (correlation == TRUE) {
+  data_categorical = sample(1:8, size = size, replace = TRUE)
+  if (correlation) {
     data_categorical = sort(data_categorical)
   }
 
@@ -88,8 +88,12 @@ generate_data <- function(size = 2000,
       nrow = 2,
       byrow = TRUE
     )), colnames(data))
-  descriptor[1, ] <-
-    c("Functional", "Gaussian_sjk", "Categorical_pjk")
+
+  if(oldMC)
+    descriptor[1, ] <- c("Functional", "Gaussian_sjk", "Categorical_pjk")
+  else
+    descriptor[1, ] <- c("Func_CS", "Gaussian", "Multinomial")
+
   descriptor[2, 1] <- rep("nSub: 5, nCoeff: 2", 1)
 
   # test/training management
@@ -107,7 +111,7 @@ generate_data <- function(size = 2000,
       paste0(path_dir_output, "/generated_data_test.csv"),
       sep = ";",
       na = "",
-      row.names = F
+      row.names = FALSE
     )
     data_training = data[((ratio_test_training * size) + 1):size,]
   }
@@ -117,7 +121,7 @@ generate_data <- function(size = 2000,
     paste0(path_dir_output, "/generated_data_training.csv") ,
     sep = ";",
     na = "",
-    row.names = F
+    row.names = FALSE
   )
 
   write.table(
@@ -125,6 +129,6 @@ generate_data <- function(size = 2000,
     file = paste0(path_dir_output, "/descriptor.csv"),
     sep = ";",
     na = "",
-    row.names = F
+    row.names = FALSE
   )
 }

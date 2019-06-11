@@ -4,10 +4,12 @@
 \alias{getCompletedData}
 \title{Get the completed data from MixtComp object}
 \usage{
-getCompletedData(outMixtComp, with.z_class = FALSE)
+getCompletedData(outMixtComp, var = NULL, with.z_class = FALSE)
 }
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.}
+
+\item{var}{Name of the variables for which to extract the completed data. Default is NULL (all variables are extracted)}
 
 \item{with.z_class}{if TRUE, z_class is returned with the data.}
 }
@@ -22,22 +24,17 @@ Get the completed data from MixtComp object
 data(simData)
  
 # define the algorithm's parameters
-algo <- list(nbBurnInIter = 100,
-             nbIter = 100,
-             nbGibbsBurnInIter = 50,
-             nbGibbsIter = 50,
-             nInitPerClass = 10,
-             nSemTry = 20,
-             confidenceLevel = 0.95)
+algo <- createAlgo()
 
-#' # keep only 3 variables
+# keep only 3 variables
 model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
 # run RMixtCompt for clustering
 resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 # get completedData
-getCompletedData <- completed(resLearn)
+completedData <- getCompletedData(resLearn)
+completedData2 <- getCompletedData(resLearn, var = "Gaussian1")
 }
 
 }
@@ -45,5 +42,8 @@ getCompletedData <- completed(resLearn)
 Other getter: \code{\link{getBIC}},
   \code{\link{getEmpiricTik}}, \code{\link{getParam}},
   \code{\link{getPartition}}, \code{\link{getType}}
+}
+\author{
+Quentin Grimonprez
 }
 \concept{getter}

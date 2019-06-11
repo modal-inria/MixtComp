@@ -10,7 +10,7 @@
 #ifndef LIB_IO_NAMEDALGEBRA_H
 #define LIB_IO_NAMEDALGEBRA_H
 
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

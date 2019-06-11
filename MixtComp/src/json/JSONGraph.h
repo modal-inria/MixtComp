@@ -15,7 +15,7 @@
 #include "json.hpp"
 #include <IO/NamedAlgebra.h>
 #include <IO/IOFunctions.h>
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 #include <translateCPPToJSON.h>
 #include <translateJSONToCPP.h>
 

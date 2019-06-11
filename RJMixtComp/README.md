@@ -1,6 +1,11 @@
-# Install RJsonMixtComp
+# Install RJMixtComp
 
-This package uses JsonMixtComp. It requires packages *roxygen2* for genetaring the documentation and *testthat* for unit testing.
+This package uses JMixtComp. It requires packages *jsonlite* for managing json files, *roxygen2* for generating the documentation and *testthat* for unit testing.
 
-1. run `./update.sh`
-2. Install the package using R CMD INSTALL
+```
+install.packages("jsonlite", repos = "https://cran.rstudio.com")
+install.packages(c("roxygen2", "testthat"), repos = "https://cran.rstudio.com")
+```
+
+1. Run `./update.sh` for compiling JMixtComp and copying required files.
+2. Install the package: `R CMD INSTALL --no-multiarch --with-keep.source .` or `CTRL + Shift + B` in RStudio.

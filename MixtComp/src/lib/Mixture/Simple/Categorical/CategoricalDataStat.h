@@ -7,11 +7,11 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CATEGORICALDATASTAT_H
-#define MIXT_CATEGORICALDATASTAT_H
+#ifndef CATEGORICALDATASTAT_H
+#define CATEGORICALDATASTAT_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include <LinAlg/LinAlg.h>
+#include "../../../Data/AugmentedData.h"
 
 namespace mixt {
 
@@ -50,4 +50,4 @@ private:
 
 } // namespace mixt
 
-#endif // MIXT_CATEGORICALDATASTAT_H
+#endif // CATEGORICALDATASTAT_H

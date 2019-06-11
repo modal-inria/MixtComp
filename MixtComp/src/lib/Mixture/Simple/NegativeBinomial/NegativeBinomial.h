@@ -13,8 +13,8 @@
 #include <vector>
 #include <set>
 
-#include "../../../Data/mixt_AugmentedData.h"
-#include "../../../Data/mixt_ConfIntDataStat.h"
+#include "../../../Data/AugmentedData.h"
+#include "../../../Data/ConfIntDataStat.h"
 #include "NegativeBinomialLikelihood.h"
 #include "NegativeBinomialSampler.h"
 

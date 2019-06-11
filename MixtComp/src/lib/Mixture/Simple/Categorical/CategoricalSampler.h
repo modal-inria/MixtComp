@@ -8,11 +8,11 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_CATEGORICALSAMPLER_H
-#define MIXT_CATEGORICALSAMPLER_H
+#ifndef CATEGORICALSAMPLER_H
+#define CATEGORICALSAMPLER_H
 
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Data/mixt_AugmentedData.h"
+#include "../../../LinAlg/LinAlg.h"
+#include "../../../Data/AugmentedData.h"
 #include "../../../Statistic/MultinomialStatistic.h"
 
 namespace mixt
@@ -39,4 +39,4 @@ class CategoricalSampler
 
 } // namespace mixt
 
-#endif /* MIXT_CATEGORICALSAMPLER_H */
+#endif /* CATEGORICALSAMPLER_H */

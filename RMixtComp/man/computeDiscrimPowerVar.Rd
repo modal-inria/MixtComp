@@ -60,3 +60,6 @@ plotDiscrimClass(resLearn)
 \seealso{
 \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 }
+\author{
+Matthieu Marbac
+}

@@ -7,8 +7,8 @@
  *  Authors:    Quentin GRIMONPREZ <quentin.grimonprez@inria.fr>
  **/
 
+#include <Mixture/IMixture.h>
 #include "NegativeBinomialSampler.h"
-#include "../../mixt_IMixture.h"
 
 namespace mixt
 {

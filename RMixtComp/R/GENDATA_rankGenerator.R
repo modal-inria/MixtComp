@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 rankGenerator <- function(present,
                           param) {
   x <- rankFullGenerator(param)
@@ -8,6 +9,7 @@ rankGenerator <- function(present,
   return(xStr)
 }
 
+# @author Vincent Kubicki
 rankFullGenerator <- function(param) {
   nbPos <- length(param$mu)
   muRanking <-  switchRepresentation(param$mu) # mu in ranking representation instead of ordering representation
@@ -44,6 +46,7 @@ rankFullGenerator <- function(param) {
   return(x)
 }
 
+# @author Vincent Kubicki
 switchRepresentation <- function(inRank) {
   nbMod <- length(inRank)
   outRank <- vector(mode = "integer", length = nbMod)
@@ -55,6 +58,7 @@ switchRepresentation <- function(inRank) {
   return(outRank)
 }
 
+# @author Vincent Kubicki
 rankHideData <- function(present,
                          x) {
   nbPos <- length(x)

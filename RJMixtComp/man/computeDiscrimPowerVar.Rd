@@ -19,14 +19,14 @@ the discriminative power
 Compute the discriminative power of each variable or classe
 }
 \details{
-The discriminative power of variable j is defined by 1 - Cj
-Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
+The discriminative power of variable j is defined by 1 - C(j)
+\deqn{C(j)=  - \sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) \log(P(Z_i=k|x_{ij})) / (n*\log(K))}
 
 A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
 
 
-The discriminative power of class k is defined by 1 - Dk
-Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
+The discriminative power of class k is defined by 1 - D(k)
+\deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 }
 \examples{
 \donttest{
@@ -41,11 +41,25 @@ algo <- list(nbBurnInIter = 100,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
+# keep only 3 variables
+model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 discVar <- computeDiscrimPowerVar(resLearn)
 discClass <- computeDiscrimPowerClass(resLearn)
+
+# graphic representation of discVar
+plotDiscrimVar(resLearn)
+# graphic representation of discClass
+plotDiscrimClass(resLearn)
 }
 
+}
+\seealso{
+\code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
+}
+\author{
+Matthieu Marbac
 }

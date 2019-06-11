@@ -11,9 +11,9 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/math/distributions/normal.hpp>
+#include <Statistic/RNG.h>
+#include <Various/Constants.h>
 #include "NormalStatistic.h"
-#include "../Various/mixt_Constants.h"
-#include "mixt_RNG.h"
 
 namespace mixt {
 

@@ -1,3 +1,4 @@
+# @author Matthieu Marbac
 functionalmeanValDegSup <- function(Tt, alpha, beta){
   weights <- alpha[,2] * Tt + alpha[,1]
   weights <- weights - max(weights)
@@ -7,8 +8,10 @@ functionalmeanValDegSup <- function(Tt, alpha, beta){
   sum(beta %*% (Tt**(0:(ncol(beta) -1))) * weights)
 }
 
+# @author Matthieu Marbac
 objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil)**2
 
+# @author Matthieu Marbac
 functionalboundValVbleDegSup <- function(Tt, borne, alpha, beta, sigma){
   weights <- alpha[,1] + alpha[,2] * Tt
   weights <- weights - max(weights)
@@ -27,6 +30,7 @@ functionalboundValVbleDegSup <- function(Tt, borne, alpha, beta, sigma){
   )
 }
 
+# @author Matthieu Marbac
 extractCIFunctionnalVbleDegSup <- function(var, data){
   Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = F)
   param = data$variable$param[[var]]
@@ -49,6 +53,7 @@ extractCIFunctionnalVbleDegSup <- function(var, data){
 }
 
 # Mean and 95%-level confidence intervals per class for a Functional Mixture
+# @author Matthieu Marbac
 plotFunctionalDataDegSup <- function(output, var, class.set=1:output$algo$nClass,add.obs=FALSE, ylim=NULL, xlim=NULL, ...){
   # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVbleDegSup(var, output)

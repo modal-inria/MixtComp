@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez
 context("getParam")
 
 

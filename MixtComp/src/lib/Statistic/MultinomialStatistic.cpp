@@ -7,8 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <Statistic/RNG.h>
 #include "MultinomialStatistic.h"
-#include "mixt_RNG.h"
 
 namespace mixt {
 

@@ -33,7 +33,7 @@ To install the necessary tools, user needs to install [cygwin](https://www.cygwi
 ## Compilation & tests
 
 Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
-Run `./utestDebug.sh` (resp. `utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
+Run `./utestDebug.sh` (resp. `./utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
 To clean the debug and release folders, run `./clean.sh`.
 
 
