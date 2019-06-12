@@ -8,7 +8,7 @@
 
 #include <IO/IOFunctions.h>
 #include <IO/NamedAlgebra.h>
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 
 
 namespace mixt {
@@ -40,7 +40,7 @@ public:
 
 	bool exist_payload(const std::vector<std::string> &path, const std::string &name) const;
 
-	void name_payload(const std::vector<std::string> &path, std::list<string> &l) const;
+	void name_payload(const std::vector<std::string> &path, std::list<std::string> &l) const;
 
 private:
 	/* Go To Functions */

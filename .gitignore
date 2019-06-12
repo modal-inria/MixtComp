@@ -20,6 +20,7 @@ MixtComp/debug
 MixtComp/report.xml
 MixtComp/data/*/learn/resLearn.json
 MixtComp/data/*/predict/resPredict.json
+pyMixtComp/build
 RMixtComp/R/RcppExports.R
 RMixtComp/src/lib
 RMixtComp/src/RcppExports.cpp

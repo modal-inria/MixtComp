@@ -35,7 +35,7 @@ configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(
     COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
     RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download
 )
 if(result)
     message(FATAL_ERROR "CMake step for googletest failed: ${result}")
@@ -43,7 +43,7 @@ endif()
 execute_process(
     COMMAND ${CMAKE_COMMAND} --build .
     RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download
 )
 if(result)
     message(FATAL_ERROR "Build step for googletest failed: ${result}")
@@ -54,8 +54,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 # googletest uses CMake, hence it is possible to simply add the subrirectory to the build
 add_subdirectory(
-    ${CMAKE_BINARY_DIR}/googletest-src
-    ${CMAKE_BINARY_DIR}/googletest-build
+    ${CMAKE_CURRENT_BINARY_DIR}/googletest-src
+    ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
     EXCLUDE_FROM_ALL
 )
 
@@ -69,12 +69,12 @@ endif()
 ## json
 
 configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
-include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann) # nlohmann is a header-only library
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/json-src/single_include/nlohmann) # nlohmann is a header-only library
 
 ## optim
 
 configure_file(CMakeLists.txt.in optim-download/CMakeLists.txt)
-include_directories(${CMAKE_BINARY_DIR}/optim-src/include) # CppNumericalSolvers is a header-only library
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/optim-src/include) # CppNumericalSolvers is a header-only library
 
 # compilation flags
 
@@ -92,3 +92,17 @@ add_subdirectory(lib)
 
 ## unit tests
 add_subdirectory(utest)
+
+
+# Expose MixtComp's definitions to other subprojects through cache variable.
+set(${PROJECT_NAME}_DEFINITIONS -DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/EigenMatrixBaseAddons.h\"
+    CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
+
+# Expose MixtComp's public includes to other subprojects through cache variable.
+set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
+                                 ${EIGEN3_INCLUDE_DIRS}
+                                 "${CMAKE_CURRENT_SOURCE_DIR}/lib/"
+                                 "${CMAKE_CURRENT_BINARY_DIR}/json-src/single_include/nlohmann"
+                                 "${CMAKE_CURRENT_BINARY_DIR}/optim-src/include"
+    CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+    
