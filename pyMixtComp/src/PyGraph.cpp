@@ -20,7 +20,7 @@ void PyGraph::set(const boost::python::dict &d) {
 }
 
 /* Getters */
-const boost::python::dict &PyGraph::getD() const {
+const boost::python::dict &PyGraph::get() const {
 	return d_;
 }
 
@@ -33,7 +33,7 @@ void PyGraph::addSubGraph(const std::vector<std::string> &path, Index currDepth,
                           boost::python::dict &currLevel, const std::string &name,
                           const PyGraph &p) {
 	if (currDepth == path.size())
-		currLevel[name] = p.getD();
+		currLevel[name] = p.get();
 	else {
 		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
 		if (!currLevel.has_key(path[currDepth]))

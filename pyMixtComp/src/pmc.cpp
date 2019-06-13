@@ -46,7 +46,7 @@ boost::python::dict pmc(boost::python::dict algoPy, boost::python::dict dataPy, 
 	  std::cout << s << std::endl;
 	}
 
-	return resPyG.getD();
+	return resPyG.get();
 }
 
 char const* greet( )
