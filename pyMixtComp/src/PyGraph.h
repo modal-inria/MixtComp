@@ -3,9 +3,9 @@
 
 #include <list>
 
-#include <Python.h>
 #include <boost/python.hpp>
-
+#include "translateCPPToPython.h"
+#include "translatePythonToCPP.h"
 #include <IO/IOFunctions.h>
 #include <IO/NamedAlgebra.h>
 #include <LinAlg/LinAlg.h>
@@ -38,6 +38,10 @@ public:
 	template <typename Type>
 	Type get_payload(const std::vector<std::string> &path, const std::string &name) const;
 
+	template <typename Type>
+	void get_payload(const std::vector<std::string> &path, const std::string &name, Type &p) const;
+
+
 	bool exist_payload(const std::vector<std::string> &path, const std::string &name) const;
 
 	void name_payload(const std::vector<std::string> &path, std::list<std::string> &l) const;
@@ -52,9 +56,6 @@ private:
 	template <typename Type>
 	void add_payload(const std::vector<std::string> &path, Index currDepth, boost::python::dict &currLevel,
 			const std::string &name, const Type &p);
-
-	template <typename Type>
-	void get_payload(const std::vector<std::string> &path, const std::string &name, Type &p) const;
 
 	/* Graph Functions */
 	void addSubGraph(const std::vector<std::string> &path, Index currDepth, boost::python::dict &currLevel,

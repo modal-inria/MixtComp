@@ -9,7 +9,11 @@
 #ifndef PYMIXTCOMP_SRC_TRANSLATECPPTOPYTHON_H
 #define PYMIXTCOMP_SRC_TRANSLATECPPTOPYTHON_H
 
+#include <iostream>
 #include <boost/python.hpp>
+#include <IO/NamedAlgebra.h>
+#include <LinAlg/LinAlg.h>
+#include <LinAlg/names.h>
 
 namespace mixt {
 

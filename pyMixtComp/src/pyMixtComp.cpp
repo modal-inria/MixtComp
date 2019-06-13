@@ -1,9 +1,11 @@
-#include <Python.h>
 #include <boost/python.hpp>
 
-#include <Run/Learn.h>
-
-using namespace mixt;
+#include "pmc.h"
 
 
-BOOST_PYTHON_MODULE(pyMixtComp) { }
+
+BOOST_PYTHON_MODULE(pyMixtComp)
+{
+	boost::python::def("greet", greet);
+	boost::python::def("pmc", pmc);
+}

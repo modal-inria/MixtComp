@@ -1,89 +1,57 @@
-#include <fstream>
-#include <iomanip>
 #include <iostream>
-
+#include <boost/python.hpp>
+#include "pmc.h"
 #include <Run/Learn.h>
 #include <Run/Predict.h>
-#include <Various/mixt_Constants.h>
+#include <Various/Constants.h>
 #include "PyGraph.h"
 
 using namespace mixt;
 
-int main(int argc, char* argv[]) {
-	try {
-		std::cout << "PyMixtComp" << std::endl;
 
-		if (argc < 4) {
-			std::cout << "PyMixtComp should be called with 4 parameters (paths to " <<
-					"algo, data, desc, resLearn) in learn and 5 parameters " <<
-					"(paths to algo, data, desc, resLearn, resPredict) in " <<
-					argc - 1 << " parameters." << std::endl;
-			return 0;
+boost::python::dict pmc(boost::python::dict algoPy, boost::python::dict dataPy, boost::python::dict descPy, boost::python::dict resLearnPy) {
+	PyGraph resPyG;
+
+	try {
+		std::string warnLog;
+
+		PyGraph algoPyG(algoPy);
+		PyGraph dataPyG(dataPy);
+		PyGraph descPyG(descPy);
+
+		PyGraph resLearnPyG(resLearnPy);
+
+		std::string mode = algoPyG.get_payload<std::string>( { }, "mode");
+
+		if (mode == "learn") {
+			learn(algoPyG, dataPyG, descPyG, resPyG);
+		} else if (mode == "predict") {
+			PyGraph resLearnPyG(resLearnPy);
+
+			try {
+				PyGraph paramPyG;
+				resLearnPyG.getSubGraph( { "variable", "param" }, paramPyG);
+				predict(algoPyG, dataPyG, descPyG, paramPyG, resPyG);
+			} catch (const std::string& s) {
+				warnLog += s;
+			}
+		} else {
+			warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
 		}
 
-		std::string warnLog;
-		std::string algoFile = argv[1];
-		std::string dataFile = argv[2];
-		std::string descFile = argv[3];
-		std::string resLearnFile = argv[4];
-
-		std::ifstream algoStream(algoFile);
-		std::ifstream dataStream(dataFile);
-		std::ifstream descStream(descFile);
-
-		if (algoStream.good() == false || dataStream.good() == false || descStream.good() == false) {
-			std::cout << "Check that algo: " << algoFile << ", data: " << dataFile << ", and desc: " << descFile << " paths are correct" << std::endl;
-		} else {
-			nlohmann::json algoJSON;
-			algoStream >> algoJSON;
-			JSONGraph algoG(algoJSON);
-
-			nlohmann::json dataJSON;
-			dataStream >> dataJSON;
-			JSONGraph dataG(dataJSON);
-
-			nlohmann::json descJSON;
-			descStream >> descJSON;
-			JSONGraph descG(descJSON);
-			std::string mode = algoG.get_payload<std::string>({}, "mode");
-			JSONGraph resG;
-			std::string resFile;
-
-			if (mode == "learn") {
-				resFile = resLearnFile;
-				learn(algoG, dataG, descG, resG);
-			} else if (mode == "predict") {
-				if (argc != 6) {
-					std::cout << "JMixtComp should be called with 5 parameters (paths to " <<
-							"algo, data, desc, resLearn, resPredict) in predict. It " <<
-							"has been called with " << argc - 1 << " parameters." << std::endl;
-					return 0;
-				}
-
-				resFile = argv[5];
-				std::ifstream resLearnStream(resLearnFile);
-				nlohmann::json resLearnJSON;
-				resLearnStream >> resLearnJSON;
-
-				try {
-					JSONGraph paramG(resLearnJSON["variable"]["param"]);
-					predict(algoG, dataG, descG, paramG, resG);
-				} catch (const std::string& s) {
-					warnLog += s;
-				}
-			} else {
-				warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
-			}
-			if (warnLog.size() > 0) {
-				resG.add_payload({}, "warnLog", warnLog);
-			}
-
-			std::ofstream o(resFile);
-			o << std::setw(4) << resG.getJ() << std::endl;
+		if (warnLog.size() > 0) {
+			resPyG.add_payload( { }, "warnLog", warnLog);
 		}
 	} catch (const std::string& s) {
-		std::cout << s << std::endl;
+	  std::cout << s << std::endl;
 	}
 
-  return 0;
+	return resPyG.getD();
 }
+
+char const* greet( )
+{
+    return "Hello world";
+}
+
+

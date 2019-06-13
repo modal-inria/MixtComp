@@ -25,9 +25,27 @@ const boost::python::dict &PyGraph::getD() const {
 }
 
 /* Graph Functions */
-void PyGraph::addSubGraph(const std::vector<std::string> &path, const std::string &name,
-                          const PyGraph &p) {
+void PyGraph::addSubGraph(const std::vector<std::string> &path, const std::string &name, const PyGraph &p) {
 	addSubGraph(path, 0, d_, name, p);
+}
+
+void PyGraph::addSubGraph(const std::vector<std::string> &path, Index currDepth,
+                          boost::python::dict &currLevel, const std::string &name,
+                          const PyGraph &p) {
+	if (currDepth == path.size())
+		currLevel[name] = p.getD();
+	else {
+		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
+		if (!currLevel.has_key(path[currDepth]))
+			nextLevel = boost::python::dict();
+		else if (nextLevel.check()) {
+			std::string askedPath;
+			for (Index i = 0; i < currDepth + 1; ++i)
+				askedPath += "/" + path[i];
+			throw(askedPath + " already exists and is not a python object.");
+		}
+		addSubGraph(path, currDepth + 1, nextLevel(), name, p);
+	}
 }
 
 void PyGraph::getSubGraph(const std::vector<std::string> &path, PyGraph &p) const {
@@ -35,6 +53,8 @@ void PyGraph::getSubGraph(const std::vector<std::string> &path, PyGraph &p) cons
 	go_to(path, d);
 	p.set(d);
 }
+
+
 
 /* Payload Functions */
 template <typename Type>
@@ -44,12 +64,46 @@ void PyGraph::add_payload(const std::vector<std::string> &path, const std::strin
 }
 
 template <typename Type>
+void PyGraph::add_payload(const std::vector<std::string> &path, Index currDepth,
+                          boost::python::dict &currLevel, const std::string &name, const Type &p) {
+	if (currDepth == path.size())
+		tranlateCPPToPython(p, currLevel[name]);
+	else {
+		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
+		if (!currLevel.has_key(path[currDepth]))
+			nextLevel = boost::python::dict();
+		else if (nextLevel.check()) {
+			std::string askedPath;
+			for (Index i = 0; i < currDepth + 1; ++i)
+				askedPath += "/" + path[i];
+			throw(askedPath + " path does not exist.");
+		}
+		add_payload(path, currDepth + 1, nextLevel(), name, p);
+	}
+}
+
+
+template <typename Type>
 Type PyGraph::get_payload(const std::vector<std::string> &path,
                           const std::string &name) const {
 	Type val;
 	get_payload(path, name, val);
 	return val;
 }
+
+template <typename Type>
+void PyGraph::get_payload(const std::vector<std::string> &path, const std::string &name,
+                          Type &p) const {
+	boost::python::dict d;
+	go_to(path, d);
+	if (!d.has_key(name)) {
+		std::string cPath;
+		completePath(path, name, cPath);
+		throw(cPath + " object does not exist.");
+	}
+	translatePythonToCPP(d[name], p);
+}
+
 
 bool PyGraph::exist_payload(const std::vector<std::string> &path,
                             const std::string &name) const {
@@ -65,7 +119,8 @@ void PyGraph::name_payload(const std::vector<std::string> &path,
 	for (Index i = 0; i < len(d); ++i) l.push_back(boost::python::extract<std::string>(d[i]));
 }
 
-/* Private Definitions */
+
+
 /* Go To Functions */
 void PyGraph::go_to(const std::vector<std::string> &path, boost::python::dict &d) const {
 	go_to(path, 0, d_, d);
@@ -87,56 +142,7 @@ void PyGraph::go_to(const std::vector<std::string> &path, Index currDepth,
 	}
 }
 
-/* Payload functions */
-template <typename Type>
-void PyGraph::add_payload(const std::vector<std::string> &path, Index currDepth,
-                          boost::python::dict &currLevel, const std::string &name, const Type &p) {
-	if (currDepth == path.size())
-		tranlateCPPToPython(p, currLevel[name]);
-	else {
-		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-		if (!currLevel.has_key(path[currDepth]))
-			nextLevel = boost::python::dict();
-		else if (nextLevel.check()) {
-			std::string askedPath;
-			for (Index i = 0; i < currDepth + 1; ++i)
-				askedPath += "/" + path[i];
-			throw(askedPath + " path does not exist.");
-		}
-		add_payload(path, currDepth + 1, nextLevel(), name, p);
-	}
-}
 
-template <typename Type>
-void PyGraph::get_payload(const std::vector<std::string> &path, const std::string &name,
-                          Type &p) const {
-	boost::python::dict d;
-	go_to(path, d);
-	if (!d.has_key(name)) {
-		std::string cPath;
-		completePath(path, name, cPath);
-		throw(cPath + " object does not exist.");
-	}
-	translatePythonToCPP(d[name], p);
-}
 
-/* Graph Functions */
-void PyGraph::addSubGraph(const std::vector<std::string> &path, Index currDepth,
-                          boost::python::dict &currLevel, const std::string &name,
-                          const PyGraph &p) {
-	if (currDepth == path.size())
-		currLevel[name] = p.getD();
-	else {
-		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-		if (!currLevel.has_key(path[currDepth]))
-			nextLevel = boost::python::dict();
-		else if (nextLevel.check()) {
-			std::string askedPath;
-			for (Index i = 0; i < currDepth + 1; ++i)
-				askedPath += "/" + path[i];
-			throw(askedPath + " already exists and is not a python object.");
-		}
-		addSubGraph(path, currDepth + 1, nextLevel(), name, p);
-	}
-}
+
 }  // namespace mixt
