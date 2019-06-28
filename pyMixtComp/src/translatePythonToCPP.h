@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <boost/python.hpp>
+#include <boost/python/dict.hpp>
 #include <IO/NamedAlgebra.h>
 #include <LinAlg/LinAlg.h>
 #include <LinAlg/names.h>
@@ -20,7 +21,7 @@ namespace mixt {
 
 template <typename OutType>
 void translatePythonToCPP(const boost::python::dict& in, OutType& out) {
-	out = in["data"];
+	out = boost::python::extract<OutType>(in);
 }
 
 template <typename T>
