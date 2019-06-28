@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <boost/python.hpp>
+#include <boost/python/dict.hpp>
 #include <IO/NamedAlgebra.h>
 #include <LinAlg/LinAlg.h>
 #include <LinAlg/names.h>
@@ -18,12 +19,13 @@
 namespace mixt {
 
 template <typename InType>
-void translateCPPToPython(const InType& in, boost::python::dict& out) {
-	out["data"] = in;
+void translateCPPToPython(const InType& in, const std::string& name, boost::python::dict& out) {
+	out[name] = in;
 }
 
 template <typename T>
-void translateCPPToPython(const NamedVector<T>& in, boost::python::dict& out) {
+void translateCPPToPython(const NamedVector<T>& in, const std::string& name, boost::python::dict& out) {
+	out[name] = boost::python::dict();
 	Index nrow = in.vec_.size();
 	const T* rawData = in.vec_.data();
 	std::vector<T> data(rawData, rawData + in.vec_.size());
@@ -36,7 +38,8 @@ void translateCPPToPython(const NamedVector<T>& in, boost::python::dict& out) {
 }
 
 template <typename T>
-void translateCPPToPython(const NamedMatrix<T>& in, boost::python::dict& out) {
+void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boost::python::dict& out) {
+	out[name] = boost::python::dict();
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
 	std::vector<std::vector<T>> data(nrow, std::vector<T>(ncol));
