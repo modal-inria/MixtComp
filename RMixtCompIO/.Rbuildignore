@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+.Rhistory
+Makefile
+build.sh
+updateLib.py
+README.md

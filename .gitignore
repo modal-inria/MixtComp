@@ -28,6 +28,14 @@ RMixtComp/RMCtest.xml
 RMixtComp/src/libOFiles
 RMixtComp/src/Makevars
 RMixtComp.Rcheck
+RMixtCompIO/R/RcppExports.R
+RMixtCompIO/src/lib
+RMixtCompIO/src/RcppExports.cpp
+RMixtCompIO/src/test/test
+RMixtCompIO/RMCtest.xml
+RMixtCompIO/src/libOFiles
+RMixtCompIO/src/Makevars
+RMixtCompIO.Rcheck
 RJMixtComp/R/MIXTCOMP_*
 RJMixtComp/inst/exeMixtComp/jmc
 RJMixtComp.Rcheck

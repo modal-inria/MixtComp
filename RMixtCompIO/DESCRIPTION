@@ -1,0 +1,21 @@
+Package: RMixtCompIO
+Type: Package
+Title: Mixture Composer
+Version: 0.1
+Date: 2019-07-01
+Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
+             person("Christophe", "Biernacki", role = "aut"),
+             person("Quentin", "Grimonprez", role = "aut"),
+             person("Matthieu", "Marbac-Lourdelle", role = "aut"),
+             person("Serge", "Iovleff", role = "ctb"))
+Copyright: Inria - Université de Lille
+License: Internal use
+Description: Mixture Composer is a project to build mixture models with
+    heterogeneous data sets. The conditional independence property enable composing
+    all the data sets in a single mixture model. This package contains the minimal R interface of the C++ library.
+URL: https://massiccc.lille.inria.fr/
+Imports: Rcpp, doParallel, foreach
+Suggests: Rmixmod, blockcluster, testthat, RInside, xml2
+LinkingTo: Rcpp, RcppEigen, BH
+RoxygenNote: 6.1.1
+Encoding: UTF-8
