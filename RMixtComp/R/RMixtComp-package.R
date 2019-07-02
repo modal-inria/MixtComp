@@ -1,12 +1,7 @@
-#' @import RMixtCompIO scales plotly
+#' @import RMixtCompIO RMixtCompUtilities
 #' @importFrom parallel detectCores
-#' @importFrom grDevices n2mfrow
-#' @importFrom graphics axis lines plot abline legend matplot par title
-#' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm qnbinom
-#' @importFrom ggplot2 ggplot aes aes_string ylim labs theme theme_minimal element_text element_blank 
-#' @importFrom ggplot2 geom_tile geom_text geom_bar geom_point geom_rect geom_ribbon geom_line geom_histogram scale_fill_gradient scale_fill_manual position_dodge scale_color_discrete
+#' @importFrom graphics plot
 #' @importFrom utils head
-#' 
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package

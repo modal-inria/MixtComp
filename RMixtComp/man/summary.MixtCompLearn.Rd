@@ -27,7 +27,7 @@ summary(resLearn, nClass = 3)
 
 }
 \seealso{
-\code{\link{mixtCompLearn}} \code{\link{print.MixtCompLearn}}
+\code{\link{mixtCompLearn}} \code{print.MixtCompLearn}
 }
 \author{
 Quentin Grimonprez

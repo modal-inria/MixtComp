@@ -14,7 +14,8 @@ Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
 URL: https://massiccc.lille.inria.fr/
-Imports: RMixtCompIO, plotly, ggplot2, scales
+Imports: RMixtCompIO
+Depends: RMixtCompUtilities
 Suggests: testthat, xml2, Rmixmod, blockcluster
 RoxygenNote: 6.1.1
 Encoding: UTF-8

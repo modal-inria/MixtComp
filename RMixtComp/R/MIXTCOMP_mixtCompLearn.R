@@ -255,7 +255,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     model <- imputModel(data)
   }else{
     mode <- "expert"
-    model <- formatModel(model)  
+    model <- RMixtCompUtilities:::formatModel(model)  
   }
   
   performHier <- performHierarchical(hierarchicalMode, mode, model)
@@ -289,14 +289,14 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   if(is.null(model))
     model = getModel(resLearn, with.z_class = FALSE)
   
-  model = formatModel(model)
+  model = RMixtCompUtilities:::formatModel(model)
   
   
   if(resLearn$algo$basicMode)
   {
     dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
   }else{
-    dataList <- formatData(data)
+    dataList <- RMixtCompUtilities:::formatData(data)
   }
   
   
@@ -304,7 +304,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   algo$nClass = checkNClass(nClass, resLearn)
   algo$mode = "predict"
   
-  algo = completeAlgo(algo)
+  algo = RMixtCompUtilities:::completeAlgo(algo)
   
   ## run predict
   if("MixtCompLearn" %in% class(resLearn))
@@ -346,14 +346,14 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
     }
     
   }else{
-    dataList <- formatData(data)
+    dataList <- RMixtCompUtilities:::formatData(data)
     model <- completeModel(model, dataList)
   }
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = completeAlgo(algo)
+  algo = RMixtCompUtilities:::completeAlgo(algo)
   
   nClass = unique(nClass)
   
@@ -417,13 +417,13 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   
   nClass <- max(nClass)
   
-  dataList <- formatData(data)
+  dataList <- RMixtCompUtilities:::formatData(data)
   model <- completeModel(model, dataList)
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = completeAlgo(algo)
+  algo = RMixtCompUtilities:::completeAlgo(algo)
   
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
   

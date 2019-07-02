@@ -44,8 +44,8 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   criterion = match.arg(criterion)
   
   
-  data = formatData(data)
-  model = formatModel(model)
+  data = RMixtCompUtilities:::formatData(data)
+  model = RMixtCompUtilities:::formatModel(model)
   
   nInd <- length(data[[1]])
   currentPartition <- rep("?", nInd)
