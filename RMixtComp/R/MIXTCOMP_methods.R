@@ -11,7 +11,7 @@
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' summary(resLearn$res[[2]])
@@ -72,7 +72,7 @@ summary.MixtComp <- function(object, ...)
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' summary(resLearn)
@@ -109,7 +109,7 @@ summary.MixtCompLearn <- function(object, nClass = NULL, ...)
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' print(resLearn$res[[2]])
@@ -192,7 +192,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' print(resLearn)
@@ -234,7 +234,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' plot(resLearn$res[[2]])
@@ -284,7 +284,7 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
 #' @examples 
 #' data(iris)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' # run RMixtComp in unsupervised clustering mode and in basic mode
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' plot(resLearn)

@@ -18,7 +18,7 @@
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' # get completedData
@@ -70,7 +70,7 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' # get class
@@ -119,7 +119,7 @@ getPartition <- function(outMixtComp, empiric = TRUE)
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2)
 #' 
 #' # get type
@@ -202,7 +202,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' # get tik
@@ -262,7 +262,7 @@ getTik <- function(outMixtComp, log = TRUE){
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")] 
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' # get criterion

@@ -75,7 +75,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' discVar <- computeDiscrimPowerVar(resLearn)
@@ -137,7 +137,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' # keep only 3 variables
 #' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 #' 
 #' simVar <- computeSimilarityVar(resLearn)
@@ -167,25 +167,6 @@ computeSimilarityClass <- function(outMixtComp)
     colnames(simil) = rownames(simil) = outMixtComp$algo$dictionary$z_class$old
   
   return(simil)
-}
-
-
-
-# rand index 
-rand.index <- function (partition1, partition2) 
-{
-  x <- abs(sapply(partition1, function(x) {x - partition1}))
-  x[x > 1] = 1
-  
-  y <- abs(sapply(partition2, function(x) {x - partition2}))
-  y[y > 1] = 1
-  
-  sg <- sum(abs(x - y))/2
-  bc <- choose(dim(x)[1], 2)
-  
-  randIndex <- 1 - sg/bc
-  
-  return(randIndex)
 }
 
 

@@ -24,7 +24,7 @@
 #' An element of the list is the model's name to use (see below for the list of available models). 
 #' For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 #' Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-#' For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
+#' For example: \code{model <- list(func1 = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
 #' If the model is NULL, data are supposed to be provided in data.frame or list with R format (numeric, factor, character, NA as missing value). 
 #' Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable and "Poisson" for integer variable.
 #' A summary of available models (and associated hyperparameters and missing format) can be accessed by calling the \link{availableModels} function.
@@ -223,14 +223,14 @@
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' # run RMixtComp in unsupervised clustering mode + data as matrix
 #' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 #' 
-#' # run RMixtCompt in supervised clustering mode + data as matrix
+#' # run RMixtComp in supervised clustering mode + data as matrix
 #' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, 
 #'                            nClass = 2:4)
 #' 
-#' # run RMixtCompt in predict mode + data as list
+#' # run RMixtComp in predict mode + data as list
 #' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised, algo,
 #'                               resLearn1, nClass = 2)
 #' 
@@ -466,37 +466,4 @@ performHierarchical <- function(hierarchicalMode, mode, model)
     return(TRUE)
   
   return(FALSE)
-}
-
-# @author Quentin Grimonprez
-rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
-{
-  nCore <- min(max(1, nCore), nRun)
-  
-  if(verbose)
-    cl <- makeCluster(nCore, outfile = "")
-  else
-    cl <- makeCluster(nCore)
-  
-  registerDoParallel(cl)
-  
-  res <- foreach(i = 1:nRun)%dopar%{
-    if(verbose)
-      cat(paste0("Start run ", i, " on thread number ", Sys.getpid(), "\n"))
-    
-    resTemp <- rmc(algo, data, model, resLearn)
-    
-    if(verbose)
-      cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
-    
-    return(resTemp)
-  }
-  
-  stopCluster(cl)
-  
-  logLikelihood <- sapply(res, function(x) {ifelse(is.null(x$warnLog), x$mixture$lnObservedLikelihood, -Inf)})
-  
-  indMax <- which.max(logLikelihood)
-  
-  return(res[[indMax]])
 }

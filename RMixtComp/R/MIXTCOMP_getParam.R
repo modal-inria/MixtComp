@@ -20,7 +20,7 @@
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
-#' # run RMixtCompt for clustering
+#' # run RMixtComp for clustering
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2)
 #' 
 #' # get param

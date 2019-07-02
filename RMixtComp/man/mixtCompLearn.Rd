@@ -50,7 +50,7 @@ The \emph{model} object is a named list containing the variables to use in the m
 An element of the list is the model's name to use (see below for the list of available models). 
 For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
+For example: \code{model <- list(func1 = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
 If the model is NULL, data are supposed to be provided in data.frame or list with R format (numeric, factor, character, NA as missing value). 
 Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable and "Poisson" for integer variable.
 A summary of available models (and associated hyperparameters and missing format) can be accessed by calling the \link{availableModels} function.
@@ -246,14 +246,14 @@ algo <- list(nbBurnInIter = 100,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
-# run RMixtCompt in unsupervised clustering mode + data as matrix
+# run RMixtComp in unsupervised clustering mode + data as matrix
 resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 
-# run RMixtCompt in supervised clustering mode + data as matrix
+# run RMixtComp in supervised clustering mode + data as matrix
 resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, 
                            nClass = 2:4)
 
-# run RMixtCompt in predict mode + data as list
+# run RMixtComp in predict mode + data as list
 resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised, algo,
                               resLearn1, nClass = 2)
 

@@ -123,14 +123,14 @@ test_that("completeModel adds hyperparameters for functional data",{
   ratioPresent <- 0.95
   
   var <- list()
-  var$z_class <- zParam()
+  var$z_class <- RMixtCompIO:::zParam()
   
-  var$func1 <- functionalInterPolyParam("func1")
-  var$func2 <- functionalInterPolyParam("func2")
-  var$func3 <- functionalInterPolyParam("func3")
-  var$func4 <- functionalInterPolyParam("func4")
+  var$func1 <- RMixtCompIO:::functionalInterPolyParam("func1")
+  var$func2 <- RMixtCompIO:::functionalInterPolyParam("func2")
+  var$func3 <- RMixtCompIO:::functionalInterPolyParam("func3")
+  var$func4 <- RMixtCompIO:::functionalInterPolyParam("func4")
   
-  data <- dataGeneratorNewIO(nInd, ratioPresent, var)$data
+  data <- RMixtCompIO:::dataGeneratorNewIO(nInd, ratioPresent, var)$data
   
   expect_warning(out <- completeModel(model, data))
   expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),

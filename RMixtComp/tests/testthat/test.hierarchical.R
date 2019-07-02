@@ -30,7 +30,7 @@ test_that("simple case", {
   partition = res$variable$data$z_class$completed
   
   expect_true(is.null(res$warnLog))
-  expect_gt(rand.index(partition, truePartition), 0.9)
+  expect_gt(RMixtCompIO:::rand.index(partition, truePartition), 0.9)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")

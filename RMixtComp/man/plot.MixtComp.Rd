@@ -22,7 +22,7 @@ Plot of a \emph{MixtComp} object
 \examples{
 data(iris)
 
-# run RMixtCompt in unsupervised clustering mode and in basic mode
+# run RMixtComp in unsupervised clustering mode and in basic mode
 resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 
 plot(resLearn$res[[2]])

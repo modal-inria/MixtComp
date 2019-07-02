@@ -44,7 +44,7 @@ algo <- list(nbBurnInIter = 100,
 # keep only 3 variables
 model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
-# run RMixtCompt for clustering
+# run RMixtComp for clustering
 resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 discVar <- computeDiscrimPowerVar(resLearn)

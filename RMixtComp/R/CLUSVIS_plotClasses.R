@@ -29,7 +29,7 @@
 # # # define the algorithm's parameters
 # # algo <- createAlgo()
 # #
-# # # run RMixtCompt in unsupervised clustering mode + data as matrix
+# # # run RMixtComp in unsupervised clustering mode + data as matrix
 # # res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 # #
 # # resvisu <- clusvisMixtComp(res)
@@ -73,7 +73,7 @@
 # # # define the algorithm's parameters
 # # algo <- createAlgo()
 # #
-# # # run RMixtCompt in unsupervised clustering mode + data as matrix
+# # # run RMixtComp in unsupervised clustering mode + data as matrix
 # # res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 # #
 # #
