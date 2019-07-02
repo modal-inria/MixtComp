@@ -132,8 +132,8 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
     cat("$variable$param\n")
     for(i in 1:nVarToPrint)
     {
-      cat(paste0("$variable$param$", nameVar[i]), ": \n")
-      print(x$variable$param[[nameVar[i]]])
+      cat(paste0("$variable$param$", nameVar[i], ": \n"))
+      print(x$variable$param[[nameVar[i]]]$stat)
     }
     if(nVarToPrint < nVar)
       cat("\t Other variables:", nameVar[-c(1:nVarToPrint)],"\n")
