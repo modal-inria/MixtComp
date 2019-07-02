@@ -20,14 +20,10 @@ MixtComp/debug
 MixtComp/report.xml
 MixtComp/data/*/learn/resLearn.json
 MixtComp/data/*/predict/resPredict.json
-RMixtComp/R/RcppExports.R
-RMixtComp/src/lib
-RMixtComp/src/RcppExports.cpp
-RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
-RMixtComp/src/libOFiles
-RMixtComp/src/Makevars
 RMixtComp.Rcheck
+RMixtCompUtilities/RMCUttest.xml
+RMixtCompUtilities.Rcheck
 RMixtCompIO/R/RcppExports.R
 RMixtCompIO/src/lib
 RMixtCompIO/src/RcppExports.cpp
@@ -35,8 +31,8 @@ RMixtCompIO/src/test/test
 RMixtCompIO/RMCtest.xml
 RMixtCompIO/src/libOFiles
 RMixtCompIO/src/Makevars
+RMixtCompIO/RMCIOtest.xml
 RMixtCompIO.Rcheck
-RJMixtComp/R/MIXTCOMP_*
 RJMixtComp/inst/exeMixtComp/jmc
 RJMixtComp.Rcheck
 RJMixtComp/RJMCtest.xml
