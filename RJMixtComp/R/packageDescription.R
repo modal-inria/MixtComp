@@ -1,5 +1,5 @@
 # packages to import for the NAMESPACE file
-#' @import jsonlite
+#' @import jsonlite RMixtCompUtilities
 #' 
 
 #' @title RJMixtComp
