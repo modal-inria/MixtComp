@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Simple test case for the new IO sytem
 # Sampling law is mixture model with 0.5 0.5 proportions
 # First class conditional law is N(5., 1.), rnorm(10, 5., 1.)

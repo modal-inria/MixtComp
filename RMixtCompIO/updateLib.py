@@ -1,5 +1,8 @@
 #! /usr/local/bin/python3
 
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 import glob
 import subprocess
 import sys
@@ -18,8 +21,8 @@ oList = [filename[4:-3] + 'o' for filename in cppList]
 oListStr = ' '.join(oList)
 fileContent = "LIB_OFILES = " + oListStr
 
-makevarsStr = r'''# MixtComp version 2.0  - 13 march 2017
-# Copyright (C) Inria - Lille 1 */
+makevarsStr = r'''# MixtComp version 4  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
 #
 #
 # Project:    MixtComp

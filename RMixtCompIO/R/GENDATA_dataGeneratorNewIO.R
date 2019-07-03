@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Generate a test case.
 # 
 # The var parameter must contain a list of sublists. There must be one sublist for each variable, and each must contains the following fields:

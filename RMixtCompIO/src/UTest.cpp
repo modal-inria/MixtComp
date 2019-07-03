@@ -1,9 +1,9 @@
-/* MixtComp version 2.0  - 13 march 2017
- * Copyright (C) Inria - Lille 1 */
+/* MixtComp version 4 - july 2019
+ * Copyright (C) Inria - Université de Lille - CNRS */
 
 /*
  *  Project:    MixtComp
- *  Created on: Nov 22, 2013
+ *  Created on: Nov 22, 2018
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 

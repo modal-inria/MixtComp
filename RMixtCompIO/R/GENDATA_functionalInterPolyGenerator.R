@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Generate a functional observation using an interpolating polynomial instead of the generating model.
 # This allows for a little more flexibility and convenience in specifying data than functionalGenerator
 # which is currently bugged anyway.

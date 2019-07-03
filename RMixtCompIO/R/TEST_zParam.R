@@ -1,5 +1,8 @@
-# This file contains functions to create the parameter object in the different examples and test of the package
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
 
+# This file contains functions to create the parameter object in the different examples and test of the package
+# @author Vincent Kubicki
 zParam <- function() {
   z_class <- list() # z_class must be the first variable in the list
   
@@ -15,6 +18,7 @@ zParam <- function() {
   return(z_class)
 }
 
+# @author Vincent Kubicki
 zParamFixedInit <- function() {
   z_class <- list() # z_class must be the first variable in the list
   

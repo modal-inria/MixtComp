@@ -8,7 +8,7 @@ Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vince
              person("Quentin", "Grimonprez", role = "aut"),
              person("Matthieu", "Marbac-Lourdelle", role = "aut"),
              person("Serge", "Iovleff", role = "ctb"))
-Copyright: Inria - Université de Lille
+Copyright: Inria - Université de Lille - CNRS
 License: Internal use
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
