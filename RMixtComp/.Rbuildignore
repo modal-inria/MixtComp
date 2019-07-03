@@ -7,4 +7,5 @@ out
 .cproject
 .project
 genDataPackage.R
+RMCtest.xml
 README.md
