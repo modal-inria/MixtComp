@@ -1,3 +1,6 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 #' Convergence of algorithm
 #' 
 #' Plot the evolution of the completed loglikelihood during the SEM algorithm. The vertical line denotes the end of the burn-in phase.

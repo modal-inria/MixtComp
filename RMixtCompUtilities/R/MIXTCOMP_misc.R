@@ -1,3 +1,6 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 #' @title Create algo object 
 #' 
 #' @description create an algo object required by \code{mixtCompLearn} and \code{mixtCompPredict}.

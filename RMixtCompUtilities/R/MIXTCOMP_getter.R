@@ -1,3 +1,6 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 #' @title Get the completed data from MixtComp object
 #'
 #' @description Get the completed data from MixtComp object

@@ -1,3 +1,6 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 #' Barplot of the discriminative power of the variables
 #' 
 #' @details The discriminative power of variable j is defined by 1 - C(j)

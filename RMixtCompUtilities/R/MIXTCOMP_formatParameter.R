@@ -1,3 +1,5 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
 
 # format the model list for rmc function:
 # - add paramStr when missing

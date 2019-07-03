@@ -1,3 +1,6 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 #' @import scales plotly
 #' @importFrom stats optimize pnorm qnbinom qnorm qpois qweibull
 #' @importFrom grDevices n2mfrow

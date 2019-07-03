@@ -1,6 +1,9 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
 ###################################################################################
 #
-# Functions for ClusVis: ssee with Matthieu to add it to ClusVis once RMixtComp is on CRAN
+# Functions for ClusVis: see with Matthieu to add it to ClusVis once RMixtComp is on CRAN
 #
 
 
