@@ -7,32 +7,48 @@ RMixtComp is available as an [Rstudio](https://www.rstudio.com/products/rstudio/
 
 ### R
 
-R must be installed, along with the following packages from the CRAN: *RcppEigen*, *BH*, *plotly*, *scales*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
+R must be installed, along with the following packages from the CRAN: *RcppEigen*, *BH*, *plotly*, *scales*, *doParallel*, *foreach* and packages from this epository: [RMixtCompIO](../RMixtCompIO) and [RMixtCompUtilities](../RMixtCompUtilities). Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
 
-Install R from terminal or download it from [R-project](https://www.r-project.org/):
-```
-sudo apt-get install r-base
-```
+1. Install R from terminal or download it from [R-project](https://www.r-project.org/):
+    ```
+    sudo apt-get install r-base
+    ```
 
-Those command lines can perform the installation automatically in the *~/R* directory.
-Add the following line to .bashrc file: export R_LIBS="~/R". This is not mandatory, if you have already defined a personal library.
+2. Install required R packages
 
-Packages are required from Ubuntu repositories: 
-```sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev```
+    Those command lines can perform the installation automatically in the *~/R* directory.
+    Add the following line to .bashrc file: export R_LIBS="~/R". This is not mandatory, if you have already defined a personal library.
 
-Install required R packages from terminal:
-```
-mkdir ~/R
-Rscript -e "install.packages(c(\"plotly\", \"scales\", \"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
-# OPTIONAL: for testing purpose
-Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
-```
-from R:
-```
-install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com\")
-# OPTIONAL: for testing purpose
-install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")
-```
+    Packages are required from Ubuntu repositories: 
+    ```sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev```
+    
+    Install required R packages from terminal:
+    ```
+    mkdir ~/R
+    Rscript -e "install.packages(c(\"plotly\", \"scales\", \"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
+    # OPTIONAL: for testing purpose
+    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
+    ```
+    from R:
+    ```
+    install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com\")
+    # OPTIONAL: for testing purpose
+    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")
+    ```
+
+3. Install [RMixtCompIO](../RMixtCompIO)
+
+    ```
+    cd ../RMixtCompIO
+    ./build.sh
+    ```
+
+4. Install [RMixtCompUtilities](../RMixtCompUtilities)
+
+    ```
+    cd ../RMixtCompUtilities
+    R CMD INSTALL  --no-multiarch --with-keep.source .
+    ```
 
 ### Windows
 
@@ -44,10 +60,8 @@ Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rt
 Run in the current location (./RMixtComp/ folder):
 
 ```
-./build.sh
+R CMD INSTALL  --no-multiarch --with-keep.source .
 ```
-
-It will copy MixtComp lib in the *src* folder and then install it.
 
 
 ## Testing procedures
@@ -94,6 +108,6 @@ For your own testing procedure, you can use the data and model provided in the p
 data(simData)
 ```
 
-Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)) for example.
+Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](../RMixtCompIO/R/GENDATA_dataGeneratorNewIO.R)) for example.
 
 See functions in files R/TEST_\*.R for creating a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with *testthat*.
