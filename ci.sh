@@ -12,9 +12,12 @@ make updateLib
 make all
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCIOtest.xml"); test(".", reporter = JunitReporter)'
 cd ../RMixtCompUtilities
+R CMD INSTALL  --no-multiarch --with-keep.source .
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCUttest.xml"); test(".", reporter = JunitReporter)'
 cd ../RMixtComp
+R CMD INSTALL  --no-multiarch --with-keep.source .
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCtest.xml"); test(".", reporter = JunitReporter)'
 cd ../RJMixtComp
 ./update.sh
+R CMD INSTALL  --no-multiarch --with-keep.source .
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RJMCtest.xml"); test(".", reporter = JunitReporter)'
