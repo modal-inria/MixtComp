@@ -1,5 +1,5 @@
-/* MixtComp version 2.0  - 13 march 2017
- * Copyright (C) Inria - Lille 1 */
+/* MixtComp version 4  - july 2019
+ * Copyright (C) Inria - Université de Lille - CNRS*/
 /*
  *  Project:    MixtComp
  *  Created on: December 11, 2014
