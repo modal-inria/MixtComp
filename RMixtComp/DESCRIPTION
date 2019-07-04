@@ -6,7 +6,8 @@ Date: 2019-07-02
 Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = "aut"),
-             person("Matthieu", "Marbac-Lourdelle", role = "aut"),
+             person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
+             person("Étienne", "Goffinet", role = "ctb"),
              person("Serge", "Iovleff", role = "ctb"))
 Copyright: Inria - Université de Lille - CNRS
 License: Internal use
