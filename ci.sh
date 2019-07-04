@@ -21,3 +21,6 @@ cd ../RJMixtComp
 ./update.sh
 R CMD INSTALL  --no-multiarch --with-keep.source .
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RJMCtest.xml"); test(".", reporter = JunitReporter)'
+cd ../RMixtCompHier
+R CMD INSTALL  --no-multiarch --with-keep.source .
+Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCHiertest.xml"); test(".", reporter = JunitReporter)'
