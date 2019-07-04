@@ -13,15 +13,15 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom stats aggregate rnorm runif setNames
 #'
-#' @title MixtCompRTools
+#' @title RMixtCompHier
 #' @docType package
-#' @aliases MixtCompRTools-package
-#' @name MixtCompRTools-package
+#' @aliases RMixtCompHier-package
+#' @name RMixtCompHier-package
 #'
 #' @description
-#' Add tools for MixtComp, essentially Hierarchical calls. Allow to launch MixtComp hierarchically, in both learn and predict mode.
+#' Allow to launch MixtComp hierarchically, in both learn and predict mode.
 #'
-#'
+#' @seealso \code{\link{launch_Mixtcomp_Hierarchical}}
 #'
 #'
 #' @keywords package

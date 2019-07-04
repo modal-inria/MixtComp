@@ -2,6 +2,6 @@
 # Copyright (C) Inria - Université de Lille - CNRS
 
 library(testthat)
-library(MixtCompRTools)
+library(RMixtCompHier)
 
-test_check("MixtCompRTools")
+test_check("RMixtCompHier")

@@ -1,7 +1,7 @@
-Package: MixtCompRTools
+Package: RMixtCompHier
 Type: Package
-Date: 2019-07-02
-Title: Mixtcomp Tools in R
+Date: 2019-07-04
+Title: Hierarchical Mixtcomp 
 Version: 0.5
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Étienne", "Goffinet", role = "aut"),
@@ -11,7 +11,7 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Serge", "Iovleff", role = "ctb"))
 Copyright: Inria - Université de Lille - CNRS
 License: Internal use
-Description: Add tools for MixtComp, essentially Hierarchical calls. Allow to launch MixtComp hierarchically, in both learn and predict mode.
+Description: Allow to launch MixtComp hierarchically, in both learn and predict mode.
 LazyData: true
 Imports: plotly, doParallel, RColorBrewer, jsonlite, foreach, parallel, RJMixtComp
 Suggests: testthat

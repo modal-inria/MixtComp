@@ -37,6 +37,6 @@ RJMixtComp/inst/exeMixtComp/jmc
 RJMixtComp.Rcheck
 RJMixtComp/RJMCtest.xml
 !RJMixtComp/inst/extdata/*.json
-MixtCompRTools.Rcheck
+RMixtCompHier.Rcheck
 /.metadata/
 RemoteSystemsTempFiles
