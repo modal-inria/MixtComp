@@ -21,4 +21,7 @@ Aggregate the classification probabilities estimated in the nested clustering
 Other results aggregation: \code{\link{aggregate_clusters}},
   \code{\link{aggregate_completed}}
 }
+\author{
+Étienne Goffinet
+}
 \concept{results aggregation}

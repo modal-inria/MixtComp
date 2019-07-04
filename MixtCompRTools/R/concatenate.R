@@ -1,3 +1,5 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
 
 # Concatenation of param element of 2 MixtComp output
 #
@@ -9,6 +11,7 @@
 #
 # @return a param output (in MixtComp format)
 #
+# @author Quentin Grimonprez
 concatenateParam <- function(resParent, resChild, classParentOfChild)
 {
   nbClassParent <- resParent$algo$nClass
@@ -35,6 +38,7 @@ concatenateParam <- function(resParent, resChild, classParentOfChild)
 # concatenation of two parameters output in one
 # paramParent = outPutMixtComp$variable$param$Variable
 # model = model associated with the variable ("Gaussian_sjk", ...)
+# @author Quentin Grimonprez
 concatenateParamOneModel <- function(paramParent, paramChild, classParentOfChild, model)
 {
   model = ifelse(model == "Func_SharedAlpha_CS", "Func_CS", model)
@@ -51,7 +55,7 @@ concatenateParamOneModel <- function(paramParent, paramChild, classParentOfChild
   return(out)
 }
 
-
+# @author Quentin Grimonprez
 concatenateParamZclass <- function(paramParent, paramChild, classParentOfChild)
 {
   param <- list(stat = rbind(paramParent$stat[-classParentOfChild, 1, drop = FALSE], paramParent$stat[classParentOfChild, 1] * paramChild$stat[, 1, drop = FALSE]), paramStr = "")
@@ -60,6 +64,7 @@ concatenateParamZclass <- function(paramParent, paramChild, classParentOfChild)
 }
 
 # models with 2 parameters: for gaussian, weibull, negative binomial
+# @author Quentin Grimonprez
 concatenateParamNumeric2Param <- function(paramParent, paramChild, classParentOfChild)
 {
   param <- rbind(paramParent$stat[-((2*classParentOfChild) - 1:0), 1, drop = FALSE], paramChild$stat[, 1, drop = FALSE])
@@ -68,6 +73,7 @@ concatenateParamNumeric2Param <- function(paramParent, paramChild, classParentOf
   return(out)
 }
 
+# @author Quentin Grimonprez
 concatenateParamPoisson <- function(paramParent, paramChild, classParentOfChild)
 {
   param <- rbind(paramParent$stat[-classParentOfChild, 1, drop = FALSE], paramChild$stat[, 1, drop = FALSE])
@@ -76,6 +82,7 @@ concatenateParamPoisson <- function(paramParent, paramChild, classParentOfChild)
   return(out)
 }
 
+# @author Quentin Grimonprez
 concatenateParamCategorical <- function(paramParent, paramChild, classParentOfChild)
 {
   nbModality <- as.numeric(gsub("nModality: ", "", paramParent$paramStr))
@@ -85,6 +92,7 @@ concatenateParamCategorical <- function(paramParent, paramChild, classParentOfCh
   return(out)
 }
 
+# @author Quentin Grimonprez
 concatenateParamFunctional <- function(paramParent, paramChild, classParentOfChild)
 {
   out <- list()
@@ -100,7 +108,7 @@ concatenateParamFunctional <- function(paramParent, paramChild, classParentOfChi
   return(out)
 }
 
-
+# @author Quentin Grimonprez
 concatenateParamRank <- function(paramParent, paramChild, classParentOfChild)
 {
   param <- c(paramParent$mu$stat[-classParentOfChild], paramChild$mu$stat)

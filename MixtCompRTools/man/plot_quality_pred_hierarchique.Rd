@@ -29,8 +29,11 @@ a plotly plot
 Plot quality of prediction by clusters
 }
 \seealso{
-Other visualisation: \code{\link{plot_categorical_hierarchique}},
+Other visualization: \code{\link{plot_categorical_hierarchique}},
   \code{\link{plot_functional_hierarchique}},
   \code{\link{plot_proportion_hierarchique}}
 }
-\concept{visualisation}
+\author{
+Étienne Goffinet
+}
+\concept{visualization}

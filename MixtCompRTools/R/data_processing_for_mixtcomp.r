@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Helper function for Mixtcomp Input formatting
 #
 # @param lm        list as container

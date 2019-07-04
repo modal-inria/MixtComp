@@ -24,8 +24,11 @@ a plotly plot
 Plot proportions by clusters
 }
 \seealso{
-Other visualisation: \code{\link{plot_categorical_hierarchique}},
+Other visualization: \code{\link{plot_categorical_hierarchique}},
   \code{\link{plot_functional_hierarchique}},
   \code{\link{plot_quality_pred_hierarchique}}
 }
-\concept{visualisation}
+\author{
+Étienne Goffinet
+}
+\concept{visualization}

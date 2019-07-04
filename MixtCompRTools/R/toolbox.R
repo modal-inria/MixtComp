@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 #' Convert a mixtcomp string into 2-columns matrix
 #'
 #' @param x a string containing a fonctional observation (cf example)

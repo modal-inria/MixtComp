@@ -1,3 +1,7 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
+# @author Étienne Goffinet
 context("Mixtcomp Hierarchical launch - oldMC")
 
 test_that("Mixtcomp Hierarchical launch - Learn mode", {

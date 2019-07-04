@@ -18,4 +18,7 @@ Aggregate the hierarchical clusters estimated
 Other results aggregation: \code{\link{aggregate_classification_probabilities}},
   \code{\link{aggregate_completed}}
 }
+\author{
+Étienne Goffinet
+}
 \concept{results aggregation}

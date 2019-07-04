@@ -27,8 +27,11 @@ a plotly plot
 Plot functional data by clusters
 }
 \seealso{
-Other visualisation: \code{\link{plot_categorical_hierarchique}},
+Other visualization: \code{\link{plot_categorical_hierarchique}},
   \code{\link{plot_proportion_hierarchique}},
   \code{\link{plot_quality_pred_hierarchique}}
 }
-\concept{visualisation}
+\author{
+Étienne Goffinet
+}
+\concept{visualization}

@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 #' Plot functional data by clusters
 #'
 #' @param clusters vector of the clusters associated with data
@@ -7,11 +10,11 @@
 #' @param max_nb_lines Positive integer, Defines the maximum number of lines to plot (default is 100)
 #' @param which_to_highlight String, the name of the cluster to highlight automatically in the plot
 #'
-#' @family visualisation
+#' @family visualization
 #' @return a plotly plot
 #'
 #' @export
-#'
+#' @author Étienne Goffinet
 plot_functional_hierarchique <- function(clusters, var, data_func, depth,
                                          max_nb_lines = 100, which_to_highlight = NULL) {
   clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
@@ -103,11 +106,11 @@ plot_functional_hierarchique <- function(clusters, var, data_func, depth,
 #' @param dictionary (optional) List, the dictionary in which are stored the real names of the categorical data levels
 #' @param order_by (optional) element among : size or purity, which define the order of the different cluster in the histogram.
 #' @param source  (optional) A string specifying the name of the source to be added to the plotly plot (in case the plot is used in a shiny app)
-#' @family visualisation
+#' @family visualization
 #' @return a plotly plot
 #'
 #' @export
-#'
+#' @author Étienne Goffinet
 plot_categorical_hierarchique <- function(clusters, var, data, depth,
                                           dictionary = NULL, order_by = NULL, source = NULL) {
   clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
@@ -168,11 +171,11 @@ plot_categorical_hierarchique <- function(clusters, var, data, depth,
 #' @param data the data to be plotted
 #' @param depth Positive Integer, maximum depth of the subclustering to plot
 #' @param order_by (optional) element among : size or purity, which define the order of the different cluster in the histogram.
-#' @family visualisation
+#' @family visualization
 #' @return a plotly plot
 #'
 #' @export
-#'
+#' @author Étienne Goffinet
 plot_proportion_hierarchique <- function(clusters, var, data,
                                          depth, order_by = NULL) {
   clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
@@ -228,11 +231,11 @@ plot_proportion_hierarchique <- function(clusters, var, data,
 #' @param data_observed Observed data to be compared with data_completed
 #' @param data_completed Completed data
 #' @param order_by (optional) element among : size, purity or quality, which define the order of the different cluster in the histogram.
-#' @family visualisation
+#' @family visualization
 #' @return a plotly plot
 #'
 #' @export
-#'
+#' @author Étienne Goffinet
 plot_quality_pred_hierarchique <- function(clusters, var, idx_test, data_observed,
                                            data_completed, depth, order_by = NULL) {
   clusters = substr(clusters, 1, (2 * (depth - 1) + 1))

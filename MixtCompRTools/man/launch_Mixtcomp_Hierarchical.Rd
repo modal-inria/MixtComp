@@ -65,5 +65,5 @@ compl <- aggregate_completed("res/func/outPred/data_predict/", var = "Degradatio
 \link{launch_Mixtcomp_Hierarchical_predict} \link{aggregate_clusters} \link{prune_hierarchy}
 }
 \author{
-Etienne Goffinet
+Étienne Goffinet
 }

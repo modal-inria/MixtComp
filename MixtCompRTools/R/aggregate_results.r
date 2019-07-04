@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Author : Étienne Goffinet
 
 #' Aggregate the hierarchical clusters estimated
@@ -6,8 +9,8 @@
 #' @param depth Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.
 #' @family results aggregation
 #'
+#' @author Étienne Goffinet
 #' @export
-#'
 aggregate_clusters <- function(dir, depth = NULL) {
   # Si le dossier contient un fichier output
   # Si le warnLog de ce fichier output est vide
@@ -63,7 +66,7 @@ aggregate_clusters <- function(dir, depth = NULL) {
 # @return completed data
 #
 # @family results aggregation
-#
+# @author Étienne Goffinet
 aggregate_completed_max <- function(dir, var) {
 
   print(dir)
@@ -112,7 +115,7 @@ aggregate_completed_max <- function(dir, var) {
 #'
 #' @family results aggregation
 #' @export
-#'
+#' @author Étienne Goffinet
 aggregate_completed <- function(dir, var, depth = NULL) {
 
   if(is.null(depth))
@@ -163,7 +166,7 @@ aggregate_completed <- function(dir, var, depth = NULL) {
 #' @family results aggregation
 #'
 #' @export
-#'
+#' @author Étienne Goffinet
 aggregate_classification_probabilities <- function(dir, depth) {
   print(dir)
 

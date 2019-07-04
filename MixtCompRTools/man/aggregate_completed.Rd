@@ -23,4 +23,7 @@ Aggregate the hierarchical clusters completed data
 Other results aggregation: \code{\link{aggregate_classification_probabilities}},
   \code{\link{aggregate_clusters}}
 }
+\author{
+Étienne Goffinet
+}
 \concept{results aggregation}

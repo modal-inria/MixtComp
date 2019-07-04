@@ -1,3 +1,6 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
 # Functions to use the current version of MixtComp with the hierarchical method of Étienne Goffinet
 # Author: Quentin Grimonprez (adaptation of Étienne Goffinet's code)
 
@@ -12,10 +15,10 @@ launch_mixtcompNew <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) 
 
   # algo
   if(is.null(mcStrategy)){
-    mcStrategy = RJMixtComp::createAlgo(nbBurnInIter = 15, nbIter = 15,
-                                        nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
-                                        nInitPerClass = max(floor(0.1/nClass * nInd), 20),
-                                        ratioStableCriterion = 0.99, nStableCriterion = 10)
+    mcStrategy = RMixtCompUtilities:::createAlgo(nbBurnInIter = 15, nbIter = 15,
+                                                 nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
+                                                 nInitPerClass = max(floor(0.1/nClass * nInd), 20),
+                                                 ratioStableCriterion = 0.99, nStableCriterion = 10)
   }
 
 
@@ -31,7 +34,7 @@ launch_mixtcompNew <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) 
 
 
   ## run
-  res <- RJMixtComp::JMixtCompLearn(data, model, algo = mcStrategy, nClass = nClass, inputPath = dir, outputFile = paste0(dir, "/mixtcomp_output.json"))
+  res <- JMixtCompLearn(data, model, algo = mcStrategy, nClass = nClass, inputPath = dir, outputFile = paste0(dir, "/mixtcomp_output.json"))
 
   if(!is.null(res$warnLog))
     print(res$warnLog)
@@ -85,10 +88,10 @@ launch_mixtcompNew_predict <- function(param_dir, test_dir, nClass, mcStrategy) 
 
   # algo
   if(is.null(mcStrategy)){
-    mcStrategy = RJMixtComp::createAlgo(nbBurnInIter = 15, nbIter = 15,
-                                        nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
-                                        nInitPerClass = max(floor(0.1/nClass * nInd), 20),
-                                        ratioStableCriterion = 0.99, nStableCriterion = 10)
+    mcStrategy = RMixtCompUtilities:::createAlgo(nbBurnInIter = 15, nbIter = 15,
+                                                 nbGibbsBurnInIter = 15, nbGibbsIter = 15, nSemTry = 10,
+                                                 nInitPerClass = max(floor(0.1/nClass * nInd), 20),
+                                                 ratioStableCriterion = 0.99, nStableCriterion = 10)
   }
 
 

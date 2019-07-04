@@ -1,5 +1,7 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
 
-
+# @author Étienne Goffinet
 check_strategy <- function(strategy, resGetData) {
 
   if(!is.null(strategy$var)){
@@ -32,7 +34,7 @@ check_strategy <- function(strategy, resGetData) {
 # During the expand phase, cut data according to clusters and copy to subfolder
 #
 # @param dir A String
-#
+# @author Étienne Goffinet
 extract_data_per_cluster <- function(dir) {
   MixtCompOutput <- fromJSON(paste0(dir, "/mixtcomp_output.json"))
   data <- read.csv(paste0(dir, "/data_mixtcomp.csv"),
@@ -72,7 +74,7 @@ extract_data_per_cluster <- function(dir) {
 # threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.
 # @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 #
-#
+# @author Étienne Goffinet
 launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
   # Check if JsonMixtComp executable is available
   pathToJsonMixtComp <- system.file("exe", "JsonMixtComp", package = "MixtCompRTools")
@@ -139,6 +141,7 @@ launch_mixtcomp <- function(dir, nClass, strategy = NULL, mcStrategy = NULL) {
 # @param nClass Positive intege
 # @param mcStrategy Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 #
+# @author Étienne Goffinet
 launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
   # Check if JsonMixtComp executable is available
   pathToJsonMixtComp <- system.file("exe", "JsonMixtComp", package = "MixtCompRTools")
@@ -200,7 +203,7 @@ launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
 # @param dir A directory
 # @param nClass A positive integer
 #
-#
+# @author Étienne Goffinet
 create_subdirectories <- function(dir, nClass) {
   if (!dir.exists(dir)) {
     stop(
@@ -231,7 +234,7 @@ create_subdirectories <- function(dir, nClass) {
 # @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 # @param nCore
 #
-#
+# @author Étienne Goffinet
 expand <- function(dir, nClass, strategy = NULL, mcStrategy = NULL, nCore = 1) {
   existing_subdirs_in_current_dir <- list.dirs(dir, recursive = FALSE)
   print("#######################")
@@ -323,7 +326,7 @@ expand <- function(dir, nClass, strategy = NULL, mcStrategy = NULL, nCore = 1) {
 #'
 #' @export
 #'
-#' @author Etienne Goffinet
+#' @author Étienne Goffinet
 launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, depth, output_dir = NULL,
                                          strategy = list(var = NULL, threshold_nInd = 1, threshold_purity = 2),
                                          mcStrategy = NULL, nCore = 1, oldMC = TRUE) {
@@ -396,7 +399,7 @@ launch_Mixtcomp_Hierarchical <- function(data_path, descriptor_path, nClass, dep
 #'
 #' @seealso \link{launch_Mixtcomp_Hierarchical} \link{aggregate_clusters}
 #'
-#' @author Etienne Goffinet
+#' @author Étienne Goffinet
 launch_Mixtcomp_Hierarchical_predict <- function(data_path, param_dir, output_dir = NULL, mcStrategy = NULL) {
   # oldMC is not a parameter, it is guessed from object saved in param_dir
 
@@ -416,7 +419,7 @@ launch_Mixtcomp_Hierarchical_predict <- function(data_path, param_dir, output_di
   expand_predict(newDir, param_dir, mcStrategy = mcStrategy)
 }
 
-
+# @author Étienne Goffinet
 expand_predict <- function(test_dir, param_dir, mcStrategy = NULL) {
 
   print(paste0("test_dir : ", test_dir))
