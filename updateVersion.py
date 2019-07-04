@@ -10,7 +10,7 @@ def changeHeader(directory, startPatternVersion, newLineVersion, startPatternCop
 			with open(fullName) as f:
 				lines = f.readlines()
 			toChange = False
-			
+
 			if len(lines) > 1:
 				if lines[0].startswith(startPatternVersion):
 					lines[0] = newLineVersion
@@ -26,10 +26,10 @@ def changeHeader(directory, startPatternVersion, newLineVersion, startPatternCop
 
 
 # change license cpp files
-startPatternVersion = "/* MixtComp " 
+startPatternVersion = "/* MixtComp "
 newLineVersion = "/* MixtComp version 4  - july 2019\n"
 startPatternCopyright = " * Copyright"
-newLineCopyright = " * Copyright (C) Inria - Université de Lille - CNRS*/\n"
+newLineCopyright = " * Copyright (C) Inria - Université de Lille - CNRS */\n"
 extension = (".h", ".cpp")
 
 directories = ["MixtComp/src/lib/", "MixtComp/src/utest/", "MixtComp/src/json/"]
@@ -40,16 +40,28 @@ for directory in directories:
 
 
 # change license R files
-startPatternVersion = "# MixtComp " 
+startPatternVersion = "# MixtComp "
 newLineVersion = "# MixtComp version 4  - july 2019\n"
 startPatternCopyright = "# Copyright"
 newLineCopyright = "# Copyright (C) Inria - Université de Lille - CNRS\n"
-extension = (".R")
+extension = (".R", ".r")
 
-directories = ["RMixtCompIO/R", "RMixtCompIO/src", "RMixtCompUtilities/R", "RMixtComp/R", "RJMixtComp/R"]
-
+directories = ["RMixtCompIO", "RMixtCompHier", "RMixtCompUtilities", "RMixtComp", "RJMixtComp"]
 
 for directory in directories:
 	changeHeader(directory, startPatternVersion, newLineVersion, startPatternCopyright, newLineCopyright, extension)
 
+
+
+# change license R files
+startPatternVersion = "/* MixtComp "
+newLineVersion = "/* MixtComp version 4  - july 2019\n"
+startPatternCopyright = " * Copyright"
+newLineCopyright = " * Copyright (C) Inria - Université de Lille - CNRS */\n"
+extension = (".h", ".cpp")
+
+directories = ["RMixtCompIO/src"]
+
+for directory in directories:
+	changeHeader(directory, startPatternVersion, newLineVersion, startPatternCopyright, newLineCopyright, extension)
 

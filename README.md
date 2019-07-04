@@ -15,7 +15,7 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 * **RMixtCompIO** R package linking MixtComp with Rcpp (internal use)
 * **RMixtCompUtilities** R package containing graphical, formatting functions and getters 
 * **RJMixtComp** R package using a JMixtComp executable 
-* **MixtCompRTools** R package containing the hierarchical MixtComp
+* **RMixtCompHier** R package containing the hierarchical version of MixtComp
 
 A description of the links between packages and external libraries can be found [here](architecture.md) for a text version and [here](graphArchitecture.png) for a visual version
 

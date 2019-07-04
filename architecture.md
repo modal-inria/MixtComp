@@ -16,7 +16,7 @@ Les fonctions C++ de *MixtComp* et *JMixtComp* sont testées en utilisant la lib
 Des packages R complémentaires existent :
 - **RMixtCompUtilities**, package en R contenant des fonctions graphiques, de formatage de données et des getters pour analyser les résultats des sorties *MixtComp*
 - **RMixtComp**, package en R chargeant *RMixtCompUtilities* et *RMixtCompIO*
-- **MixtCompRTools**, package en R implémentant une version hiérarchique de *MixtComp* (utilisée sur le contrat Alstom). Le package contient un ancien exécutable de *JMixtComp* (approximativement de la V2 de *MixtComp*) utilisé pour le contrat Alstom. Le package charge également *RJMixtComp* afin de pouvoir appliqué la même stratégie avec la version la plus récente de *MixtComp*.
+- **RMixtCompHier**, package en R implémentant une version hiérarchique de *MixtComp* (utilisée sur le contrat Alstom). Le package contient un ancien exécutable de *JMixtComp* (approximativement de la V2 de *MixtComp*) utilisé pour le contrat Alstom. Le package charge également *RJMixtComp* afin de pouvoir appliqué la même stratégie avec la version la plus récente de *MixtComp*.
 
 
 ## English
@@ -35,7 +35,7 @@ The C++ functions of *MixtComp* and *JMixtComp* are tested using the **GoogleTes
 Additional R packages exist:
 - **RMixtCompUtilities**, an R package containing getter, formatting, graphical functions to analyze the results of *MixtComp* outputs
 - **RMixtComp**, an R package loading *RMixtCompUtilities* and *RMixtCompIO*
-- **MixtCompRTools**, an R package implementing a hierarchical version of *MixtComp* (used on the Alstom contract). The package contains an old *JMixtComp* executable (approximately from *MixtComp*'s V2) used for the Alstom contract. The package also loads *RJMixtComp* in order to be able to apply the same strategy with the most recent version of *MixtComp*.
+- **RMixtCompHier**, an R package implementing a hierarchical version of *MixtComp* (used on the Alstom contract). The package contains an old *JMixtComp* executable (approximately from *MixtComp*'s V2) used for the Alstom contract. The package also loads *RJMixtComp* in order to be able to apply the same strategy with the most recent version of *MixtComp*.
 
 
 
