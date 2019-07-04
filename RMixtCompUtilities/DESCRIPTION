@@ -5,7 +5,7 @@ Version: 0.1
 Date: 2019-07-02
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
-             person("Quentin", "Grimonprez", c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
              person("Matthieu", "Marbac-Lourdelle", role = "aut"),
              person("Étienne", "Goffinet", role = "ctb"),
              person("Serge", "Iovleff", role = "ctb"))
