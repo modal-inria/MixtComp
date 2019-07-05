@@ -2,7 +2,6 @@
 
 Once you have add a model in C++ (check [Statistical model description](./howToAddModel.md)), some functions in different R packages need to be updated to use it.
 
-
 ## Documentation to update
 
 First of all, add the model in the following documentation:

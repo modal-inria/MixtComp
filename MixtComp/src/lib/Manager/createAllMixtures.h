@@ -49,6 +49,7 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 			if (idModel == "Multinomial") {
 				p_mixture = new SimpleMixture<Graph, Categorical>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
+			
 			else if (idModel == "Gaussian") {
 				p_mixture = new SimpleMixture<Graph, Gaussian>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
