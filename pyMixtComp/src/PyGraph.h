@@ -76,16 +76,25 @@ private:
 		if (currDepth == path.size())
 			translateCPPToPython(p, name, currLevel);
 		else {
-			boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-			if (!currLevel.has_key(path[currDepth]))
-				nextLevel = boost::python::dict();
-			else if (nextLevel.check()) {
-				std::string askedPath;
-				for (Index i = 0; i < currDepth + 1; ++i)
-					askedPath += "/" + path[i];
-				throw(askedPath + " path does not exist.");
+			if (!currLevel.has_key(path[currDepth]))// if next level does not exist, create it
+			{
+				boost::python::dict nextLevel;
+				currLevel[path[currDepth]] = nextLevel;
+				add_payload(path, currDepth + 1, nextLevel, name, p);
+			}else{
+				boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
+				if(nextLevel.check())
+				{
+					add_payload(path, currDepth + 1, nextLevel, name, p);
+				}else{
+					std::string askedPath;
+					for (Index i = 0; i < currDepth + 1; ++i) {
+						askedPath + "/" + path[i];
+					}
+					throw(askedPath + " already exists and is not a python object.");
+				}
+
 			}
-			add_payload(path, currDepth + 1, nextLevel(), name, p);
 		}
 	}
 
