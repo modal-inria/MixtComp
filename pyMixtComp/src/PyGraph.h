@@ -63,6 +63,7 @@ public:
 
 	void name_payload(const std::vector<std::string> &path, std::list<std::string> &l) const;
 
+
 private:
 	/* Go To Functions */
 	void go_to(const std::vector<std::string> &path, boost::python::dict &d) const;
@@ -73,27 +74,29 @@ private:
 	template <typename Type>
 	void add_payload(const std::vector<std::string> &path, Index currDepth, boost::python::dict &currLevel,
 			const std::string &name, const Type &p) {
-		if (currDepth == path.size())
+		if (currDepth == path.size()){
 			translateCPPToPython(p, name, currLevel);
-		else {
+		}else {
 			if (!currLevel.has_key(path[currDepth]))// if next level does not exist, create it
 			{
 				boost::python::dict nextLevel;
-				currLevel[path[currDepth]] = nextLevel;
 				add_payload(path, currDepth + 1, nextLevel, name, p);
+				currLevel[path[currDepth]] = nextLevel;
 			}else{
-				boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-				if(nextLevel.check())
-				{
+//				boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
+				boost::python::dict nextLevel(currLevel[path[currDepth]]);
+//				if(nextLevel.check())// check work with extract
+//				{
 					add_payload(path, currDepth + 1, nextLevel, name, p);
-				}else{
-					std::string askedPath;
-					for (Index i = 0; i < currDepth + 1; ++i) {
-						askedPath + "/" + path[i];
-					}
-					throw(askedPath + " already exists and is not a python object.");
-				}
-
+					currLevel[path[currDepth]] = nextLevel;
+//				}else{
+//					std::cout<<"pas check"<<std::endl;
+//					std::string askedPath;
+//					for (Index i = 0; i < currDepth + 1; ++i) {
+//						askedPath + "/" + path[i];
+//					}
+//					throw(askedPath + " already exists and is not a python object.");
+//				}
 			}
 		}
 	}
