@@ -1,8 +1,8 @@
 Package: RMixtCompIO
 Type: Package
 Title: Mixture Composer
-Version: 0.1
-Date: 2019-07-01
+Version: 4.0
+Date: 2019-07-10
 Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = "aut"),
