@@ -136,25 +136,74 @@ TEST(PyGraph, NamedVectorReal) {
 	EXPECT_EQ(dataOut, "[1. 2. 3.]");
 }
 
-//TEST(PyGraph, NamedMatrixReal) {
-//	std::string exp =
-//			R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";
-//	PyGraph gIn;
-//	gIn.set(exp);
-//
-//	Matrix<Real> vec;
-//	std::vector<std::string> rowNames;
-//	std::vector<std::string> colNames;
-//	NamedMatrix<Real> nm = { rowNames, colNames, vec };
-//	gIn.get_payload( { }, "A named matrix", nm);
-//
-//	PyGraph gOut;
-//	gOut.add_payload( { }, "A named matrix", nm);
-//	std::string comp = gOut.get();
-//
-//	ASSERT_EQ(exp, comp);
-//}
-//
+TEST(PyGraph, NamedMatrixReal) {
+	boost::python::dict exp;
+	exp["A named matrix"] = boost::python::dict();
+	exp["A named matrix"]["ctype"] = "Matrix";
+	exp["A named matrix"]["dtype"] = "Real";
+	exp["A named matrix"]["nrow"] = 4;
+	exp["A named matrix"]["ncol"] = 3;
+
+	std::vector<std::string> vec2 = {"1", "2", "3"};
+	boost::python::list colNamesTemp;
+	for(auto& s: vec2){
+		colNamesTemp.append(s);
+	}
+	boost::python::numpy::ndarray colNames = boost::python::numpy::array(colNamesTemp);
+	exp["A named matrix"]["colNames"] = colNames;
+
+	std::vector<std::string> vec3 = {"A", "B", "C", "D"};
+	boost::python::list rowNamesTemp;
+	for(auto& s: vec3){
+		rowNamesTemp.append(s);
+	}
+	boost::python::numpy::ndarray rowNames = boost::python::numpy::array(rowNamesTemp);
+	exp["A named matrix"]["rowNames"] = rowNames;
+
+	double mul_data[][3] = {{1.0,2.0,3.0}, {4.0,5.0,6.0}, {7.0,8.0,9.0}, {10.0,11.0,12.0}};
+
+	boost::python::tuple shape = boost::python::make_tuple(4, 3);
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(double)*3, sizeof(double));
+	boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<double>();
+	boost::python::numpy::ndarray data = boost::python::numpy::from_data(mul_data, dt, shape, stride, boost::python::object());
+	exp["A named matrix"]["data"] = data;
+
+
+	PyGraph gIn;
+	gIn.set(exp);
+
+	Matrix<Real> vec;
+	std::vector<std::string> rowNames2;
+	std::vector<std::string> colNames2;
+	NamedMatrix<Real> nm = { rowNames2, colNames2, vec };
+	gIn.get_payload( { }, "A named matrix", nm);
+
+	PyGraph gOut;
+	gOut.add_payload( { }, "A named matrix", nm);
+	boost::python::dict comp = gOut.getD();
+
+	ASSERT_TRUE(comp.has_key("A named matrix"));
+	boost::python::dict comp0 = boost::python::extract<boost::python::dict>(comp["A named matrix"]);
+	ASSERT_TRUE(comp0.has_key("data"));
+	ASSERT_TRUE(comp0.has_key("dtype"));
+	ASSERT_TRUE(comp0.has_key("nrow"));
+	ASSERT_TRUE(comp0.has_key("ncol"));
+	ASSERT_TRUE(comp0.has_key("ctype"));
+	ASSERT_TRUE(comp0.has_key("rowNames"));
+	ASSERT_TRUE(comp0.has_key("colNames"));
+	EXPECT_EQ(comp0["nrow"], 4);
+	EXPECT_EQ(comp0["ncol"], 3);
+	EXPECT_EQ(comp0["dtype"], "Real");
+	EXPECT_EQ(comp0["ctype"], "Matrix");
+
+	std::string rowNamesOut = boost::python::extract<std::string>(boost::python::str(comp0["rowNames"]));
+	EXPECT_EQ(rowNamesOut, "['A' 'B' 'C' 'D']");
+	std::string colNamesOut = boost::python::extract<std::string>(boost::python::str(comp0["colNames"]));
+	EXPECT_EQ(colNamesOut, "['1' '2' '3']");
+	std::string dataOut = boost::python::extract<std::string>(boost::python::str(comp0["data"]));
+	EXPECT_EQ(dataOut, "[[ 1.  2.  3.]\n [ 4.  5.  6.]\n [ 7.  8.  9.]\n [10. 11. 12.]]");
+}
+
 //TEST(PyGraph, VectorOfString) {
 //	std::string exp = R"-({"var1":["12.0","-35.90","205.72"]})-";
 //	PyGraph gIn;

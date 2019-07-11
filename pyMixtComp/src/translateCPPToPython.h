@@ -53,21 +53,32 @@ void translateCPPToPython(const NamedVector<T>& in, const std::string& name, boo
 template <typename T>
 void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boost::python::dict& out) {
 	out[name] = boost::python::dict();
+
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
-	std::vector<std::vector<T>> data(nrow, std::vector<T>(ncol));
 
-	for (Index i = 0; i < nrow; ++i) {
-		for (Index j = 0; j < ncol; ++j) {
-			data[i][j] = in.mat_(i, j);
-		}
+	boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<T>();
+	boost::python::tuple shape = boost::python::make_tuple(nrow, ncol);
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(T), sizeof(T)*nrow);
+	boost::python::object own;
+	out[name]["data"] = boost::python::numpy::from_data(in.mat_.data(), dt, shape, stride, own);
+
+
+	boost::python::list rowNames;
+	for(auto& s: in.rowNames_){
+		rowNames.append(s);
 	}
+	out[name]["rowNames"] = boost::python::numpy::array(rowNames);
 
-	out[name]["colNames"] = in.colNames_;
+	boost::python::list colNames;
+	for(auto& s: in.colNames_){
+		colNames.append(s);
+	}
+	out[name]["colNames"] = boost::python::numpy::array(colNames);
+
+
 	out[name]["ctype"] = "Matrix";
-	out[name]["data"] = data;
 	out[name]["dtype"] = names<T>::name;
-	out[name]["rowNames"] = in.rowNames_;
 	out[name]["ncol"] = ncol;
 	out[name]["nrow"] = nrow;
 }

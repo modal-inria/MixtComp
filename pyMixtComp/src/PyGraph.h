@@ -87,7 +87,7 @@ private:
 			}else{
 //				boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
 				boost::python::dict nextLevel(currLevel[path[currDepth]]);
-//				if(nextLevel.check())// check work with extract
+//				if(nextLevel.check())// check() works with extract
 //				{
 					add_payload(path, currDepth + 1, nextLevel, name, p);
 					currLevel[path[currDepth]] = nextLevel;
