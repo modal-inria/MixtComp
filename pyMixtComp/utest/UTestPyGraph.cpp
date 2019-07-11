@@ -264,20 +264,30 @@ TEST(PyGraph, name_payload) {
 //
 //	ASSERT_EQ(exp, comp);
 //}
-//
-//TEST(PyGraph, AddSubGraph) {
-//	std::string in = R"-({"var": "toto"})-";
-//	std::string sub = R"-({"var": "sub-toto"})-";
-//	std::string expected = R"-({"subG":{"var":"sub-toto"},"var":"toto"})-";
-//
-//	PyGraph gIn;
-//	gIn.set(in);
-//
-//	PyGraph subG;
-//	subG.set(sub);
-//
-//	gIn.addSubGraph({}, "subG", subG);
-//
-//	ASSERT_EQ(gIn.get(), expected);
-//}
+
+TEST(PyGraph, AddSubGraph) {
+	boost::python::dict in, sub, expected;
+	in["var"] = "toto";
+	sub["var"] = "sub-toto";
+	expected["subG"] = boost::python::dict();
+	expected["subG"]["var"] = "sub-toto";
+	expected["var"] = "toto";
+
+	PyGraph gIn;
+	gIn.set(in);
+
+	PyGraph subG;
+	subG.set(sub);
+
+	gIn.addSubGraph({}, "subG", subG);
+
+	boost::python::dict out = gIn.getD();
+	ASSERT_TRUE(out.has_key("var"));
+	ASSERT_TRUE(out.has_key("subG"));
+	boost::python::dict out0 = boost::python::extract<boost::python::dict>(out["subG"]);
+	ASSERT_TRUE(out0.has_key("var"));
+	ASSERT_EQ(out["var"], "toto");
+	ASSERT_EQ(out0["var"], "sub-toto");
+
+}
 
