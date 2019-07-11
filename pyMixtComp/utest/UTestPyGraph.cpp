@@ -205,31 +205,48 @@ TEST(PyGraph, NamedMatrixReal) {
 }
 
 //TEST(PyGraph, VectorOfString) {
-//	std::string exp = R"-({"var1":["12.0","-35.90","205.72"]})-";
+//	boost::python::dict exp;
+//	std::vector<std::string> vec = {"12.0","-35.90","205.72"};
+//	boost::python::list temp;
+//	for(auto& s: vec){
+//		temp.append(s);
+//	}
+//	boost::python::numpy::ndarray var1 = boost::python::numpy::array(temp);
+//	exp["var1"] = var1;
+//
 //	PyGraph gIn;
 //	gIn.set(exp);
+//	std::cout <<"ici"<<std::endl;
+//	std::vector<std::string> vec2;
+//	gIn.get_payload<std::vector<std::string> >( { }, "var1", vec2);
 //
-//	std::vector<std::string> vec;
-//	gIn.get_payload<std::vector<std::string>>( { }, "var1", vec);
+//	std::cout <<"la"<<std::endl;
 //
 //	PyGraph gOut;
-//	gOut.add_payload( { }, "var1", vec);
-//	std::string comp = gOut.get();
+//	gOut.add_payload( { }, "var1", vec2);
+//	std::cout <<"et la"<<std::endl;
 //
-//	ASSERT_EQ(exp, comp);
+//	boost::python::dict comp = gOut.getD();
+//
+//	ASSERT_TRUE(comp.has_key("var1"));
+//	std::string dataOut = boost::python::extract<std::string>(boost::python::str(comp["var1"]));
+//	EXPECT_EQ(dataOut, "['12.0' '-35.90' '205.72']");
 //}
-//
-//TEST(PyGraph, name_payload) {
-//	std::string exp = R"-({"var1":"12.0","varZ":"test"})-";
-//	PyGraph gIn;
-//	gIn.set(exp);
-//
-//	std::list<std::string> l;
-//	gIn.name_payload( { }, l);
-//
-//	ASSERT_EQ(itString(l), std::string("var1 varZ"));
-//}
-//
+
+TEST(PyGraph, name_payload) {
+	boost::python::dict exp;
+	exp["var1"] = "12.0";
+	exp["varZ"] = "test";
+
+	PyGraph gIn;
+	gIn.set(exp);
+
+	std::list<std::string> l;
+	gIn.name_payload( { }, l);
+
+	ASSERT_EQ(itString(l), std::string("var1 varZ"));
+}
+
 ///**
 // * This is used in the data output of the Functional model
 // */

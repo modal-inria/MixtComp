@@ -77,8 +77,12 @@ void PyGraph::name_payload(const std::vector<std::string> &path,
                            std::list<std::string> &l) const {
 	boost::python::dict d;
 	go_to(path, d);
-	for (Index i = 0; i < len(d); ++i)
-		l.push_back(boost::python::extract<std::string>(d[i]));
+
+	boost::python::list keys = d.keys();
+	for (int i = 0; i < len(keys); ++i) {
+		std::string key = boost::python::extract<std::string>(keys[i]);
+		l.push_back(key);
+	}
 }
 
 
