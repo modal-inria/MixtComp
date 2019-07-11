@@ -1,6 +1,6 @@
 /*
  *  Project:    MixtComp
- *  Created on: Jaunary 21, 2019
+ *  Created on: January 21, 2019
  *  Authors:    Leo Perard, Viencent Kubicki, Quentin Grimonprez
  **/
 
@@ -70,7 +70,8 @@ void PyGraph::name_payload(const std::vector<std::string> &path,
                            std::list<std::string> &l) const {
 	boost::python::dict d;
 	go_to(path, d);
-	for (Index i = 0; i < len(d); ++i) l.push_back(boost::python::extract<std::string>(d[i]));
+	for (Index i = 0; i < len(d); ++i)
+		l.push_back(boost::python::extract<std::string>(d[i]));
 }
 
 

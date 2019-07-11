@@ -15,6 +15,7 @@
 #include <IO/NamedAlgebra.h>
 #include <LinAlg/LinAlg.h>
 #include <LinAlg/names.h>
+#include <boost/python/numpy.hpp>
 
 namespace mixt {
 
@@ -23,19 +24,31 @@ void translateCPPToPython(const InType& in, const std::string& name, boost::pyth
 	out[name] = in;
 }
 
+
+
 template <typename T>
 void translateCPPToPython(const NamedVector<T>& in, const std::string& name, boost::python::dict& out) {
 	out[name] = boost::python::dict();
-	Index nrow = in.vec_.size();
-	const T* rawData = in.vec_.data();
-	std::vector<T> data(rawData, rawData + in.vec_.size());
 
-	out["ctype"] = "Vector";
-	out["data"] = data;
-	out["dtype"] = names<T>::name;
-	out["rowNames"] = in.rowNames_;
-	out["nrow"] = nrow;
+	Index nrow = in.vec_.size();
+
+	boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<T>();
+	boost::python::tuple shape = boost::python::make_tuple(nrow);
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(T));
+	boost::python::object own;
+	out[name]["data"] = boost::python::numpy::from_data(in.vec_.data(), dt, shape, stride, own);
+
+	boost::python::list rowNames;
+	for(auto& s: in.rowNames_){
+		rowNames.append(s);
+	}
+
+	out[name]["rowNames"] = boost::python::numpy::array(rowNames);
+	out[name]["nrow"] = nrow;
+	out[name]["dtype"] = names<T>::name;
+	out[name]["ctype"] = "Vector";
 }
+
 
 template <typename T>
 void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boost::python::dict& out) {
@@ -50,14 +63,15 @@ void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boo
 		}
 	}
 
-	out["colNames"] = in.colNames_;
-	out["ctype"] = "Matrix";
-	out["data"] = data;
-	out["dtype"] = names<T>::name;
-	out["rowNames"] = in.rowNames_;
-	out["ncol"] = ncol;
-	out["nrow"] = nrow;
+	out[name]["colNames"] = in.colNames_;
+	out[name]["ctype"] = "Matrix";
+	out[name]["data"] = data;
+	out[name]["dtype"] = names<T>::name;
+	out[name]["rowNames"] = in.rowNames_;
+	out[name]["ncol"] = ncol;
+	out[name]["nrow"] = nrow;
 }
+
 
 }  // namespace mixt
 

@@ -11,7 +11,7 @@
 #include "MixtComp.h"
 #include "pythonIO.h"
 #include <map>
-
+#include <boost/python/numpy.hpp>
 
 using namespace mixt;
 
@@ -81,23 +81,62 @@ TEST(PyGraph, combined) {
 	ASSERT_EQ(exp, comp);
 }
 
-//TEST(PyGraph, NamedVectorReal) {
-//	std::string exp = R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-";
-//	PyGraph gIn;
-//	gIn.set(exp);
-//
-//	Vector<Real> vec;
-//	std::vector<std::string> rowNames;
-//	NamedVector<Real> nv = { rowNames, vec };
-//	gIn.get_payload( { }, "A named vector", nv);
-//
-//	PyGraph gOut;
-//	gOut.add_payload( { }, "A named vector", nv);
-//	std::string comp = gOut.get();
-//
-//	ASSERT_EQ(exp, comp);
-//}
-//
+TEST(PyGraph, NamedVectorReal) {
+	boost::python::numpy::initialize();
+
+	boost::python::dict exp;
+	exp["A named vector"] = boost::python::dict();
+	exp["A named vector"]["ctype"] = "Vector";
+	std::vector<double> vec2 = {1.0,2.0,3.0};
+	boost::python::numpy::dtype dt = boost::python::numpy::dtype::get_builtin<double>();
+	boost::python::tuple shape = boost::python::make_tuple(vec2.size());
+	boost::python::tuple stride = boost::python::make_tuple(sizeof(double));
+	boost::python::object own;
+	boost::python::numpy::ndarray data = boost::python::numpy::from_data(&vec2[0], dt, shape, stride, own);
+	exp["A named vector"]["data"] = data;
+	exp["A named vector"]["dtype"] = "Real";
+	exp["A named vector"]["nrow"] = 3;
+	std::vector<std::string> vec3 = {"riri", "fifi", "loulou"};
+	boost::python::list rowNamesTemp;
+	for(auto& s: vec3){
+		rowNamesTemp.append(s);
+	}
+	boost::python::numpy::ndarray rowNames = boost::python::numpy::array(rowNamesTemp);
+	exp["A named vector"]["rowNames"] = rowNames;
+
+	PyGraph gIn;
+	gIn.set(exp);
+
+	Vector<Real> vec;
+	std::vector<std::string> rowNames2;
+
+	NamedVector<Real> nv = { rowNames2, vec };
+	gIn.get_payload( { }, "A named vector", nv);
+
+	PyGraph gOut;
+	gOut.add_payload( { }, "A named vector", nv);
+
+	boost::python::dict comp = gOut.get();
+
+	// it seems that ASSERT_EQ does not work with ndarray,
+	ASSERT_TRUE(comp.has_key("A named vector"));
+	boost::python::dict comp0 = boost::python::extract<boost::python::dict>(comp["A named vector"]);
+	ASSERT_TRUE(comp0.has_key("data"));
+	ASSERT_TRUE(comp0.has_key("dtype"));
+	ASSERT_TRUE(comp0.has_key("nrow"));
+	ASSERT_TRUE(comp0.has_key("ctype"));
+	ASSERT_TRUE(comp0.has_key("rowNames"));
+	EXPECT_EQ(comp0["nrow"], 3);
+	EXPECT_EQ(comp0["dtype"], "Real");
+	EXPECT_EQ(comp0["ctype"], "Vector");
+
+	std::string rowNamesOut = boost::python::extract<std::string>(boost::python::str(comp0["rowNames"]));
+	EXPECT_EQ(rowNamesOut, "['riri' 'fifi' 'loulou']");
+	std::string dataOut = boost::python::extract<std::string>(boost::python::str(comp0["data"]));
+	EXPECT_EQ(dataOut, "[1. 2. 3.]");
+
+}
+
 //TEST(PyGraph, NamedMatrixReal) {
 //	std::string exp =
 //			R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";

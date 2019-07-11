@@ -19,26 +19,32 @@
 
 namespace mixt {
 
+
 template <typename OutType>
-void translatePythonToCPP(const boost::python::dict& in, OutType& out) {
+void translatePythonToCPP(const boost::python::api::object_item& in, OutType& out) {
 	out = boost::python::extract<OutType>(in);
 }
 
+
 template <typename T>
-void translatePythonToCPP(const boost::python::dict& in, NamedVector<T>& out) {
-	Index nrow = in["nrow"];
+void translatePythonToCPP(const boost::python::api::object_item& in, NamedVector<T>& out) {
+	boost::python::dict d = boost::python::extract<boost::python::dict>(in);
+	Index nrow = boost::python::extract<Index>(in["nrow"]);
+
 	out.vec_.resize(nrow);
+	out.rowNames_.resize(nrow);
 
-	out.rowNames_ = in["rowNames"];
-
-	std::vector<T> dataRaw = in["data"];
-	for (Index i = 0; i < nrow; ++i) {
-		out.vec_(i) = dataRaw[i];
+	for(Index i = 0; i < nrow; ++i) {
+		out.rowNames_[i] =  boost::python::extract<std::string>(in["rowNames"][i]);
+		out.vec_(i) = boost::python::extract<T>(in["data"][i]);
 	}
 }
 
+
 template <typename T>
-void translatePythonToCPP(const boost::python::dict& in, NamedMatrix<T>& out) {
+void translatePythonToCPP(const boost::python::api::object_item& in, NamedMatrix<T>& out) {
+	std::cout<<"matrix"<<std::endl;
+
 	Index nrow = in["nrow"];
 	Index ncol = in["ncol"];
 	out.mat_.resize(nrow, ncol);
