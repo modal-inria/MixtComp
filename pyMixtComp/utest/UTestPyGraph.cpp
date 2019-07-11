@@ -19,14 +19,14 @@ TEST(PyGraph, constructor) {
 	Py_Initialize();
 	PyGraph g;
 
-	boost::python::dict d = g.get();
+	boost::python::dict d = g.getD();
 	boost::python::dict d0;
 
 	EXPECT_EQ(d, d0);
 
 	d0["toto"] = 3;
 	PyGraph g2(d0);
-	d = g2.get();
+	d = g2.getD();
 
 	EXPECT_EQ(d, d0);
 }
@@ -35,7 +35,7 @@ TEST(PyGraph, basicAdd0) {
 	Py_Initialize();
 	PyGraph g;
 	g.add_payload( { }, "toto", 12);
-	boost::python::dict comp = g.get();
+	boost::python::dict comp = g.getD();
 	boost::python::dict exp;
 	exp["toto"] = 12;
 	ASSERT_EQ(comp, exp);
@@ -44,7 +44,7 @@ TEST(PyGraph, basicAdd0) {
 TEST(PyGraph, basicAdd1) {
 	PyGraph g;
 	g.add_payload( { "complex", "path" }, "toto", 12);
-	boost::python::dict comp = g.get();
+	boost::python::dict comp = g.getD();
 
 	boost::python::dict exp;
 	exp["complex"] = boost::python::dict();
@@ -76,7 +76,7 @@ TEST(PyGraph, combined) {
 	g.add_payload( { "varA" }, "A nested real", 12.0);
 	g.add_payload( { "varA" }, "A nested string", "Hello World !");
 
-	boost::python::dict comp = g.get();
+	boost::python::dict comp = g.getD();
 
 	ASSERT_EQ(exp, comp);
 }
@@ -116,7 +116,7 @@ TEST(PyGraph, NamedVectorReal) {
 	PyGraph gOut;
 	gOut.add_payload( { }, "A named vector", nv);
 
-	boost::python::dict comp = gOut.get();
+	boost::python::dict comp = gOut.getD();
 
 	// it seems that ASSERT_EQ does not work with ndarray,
 	ASSERT_TRUE(comp.has_key("A named vector"));
@@ -134,7 +134,6 @@ TEST(PyGraph, NamedVectorReal) {
 	EXPECT_EQ(rowNamesOut, "['riri' 'fifi' 'loulou']");
 	std::string dataOut = boost::python::extract<std::string>(boost::python::str(comp0["data"]));
 	EXPECT_EQ(dataOut, "[1. 2. 3.]");
-
 }
 
 //TEST(PyGraph, NamedMatrixReal) {

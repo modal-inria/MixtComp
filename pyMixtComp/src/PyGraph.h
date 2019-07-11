@@ -24,7 +24,9 @@ public:
 	void set(const boost::python::dict &d);
 
 	/* Getters */
-	const boost::python::dict &get() const;
+	const boost::python::dict &getD() const;
+
+	std::string get() const;
 
 	/* Graph Functions */
 	void addSubGraph(const std::vector<std::string> &path, const std::string &name,
