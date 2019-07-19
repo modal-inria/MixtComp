@@ -204,6 +204,54 @@ TEST(PyGraph, NamedMatrixReal) {
 	EXPECT_EQ(dataOut, "[[ 1.  2.  3.]\n [ 4.  5.  6.]\n [ 7.  8.  9.]\n [10. 11. 12.]]");
 }
 
+TEST(PyGraph, AddVector) {
+	std::vector<std::string> vec = {"riri", "fifi", "loulou"};
+	PyGraph g;
+	g.add_payload( { "complex", "path" }, "toto", vec);
+	boost::python::dict comp = g.getD();
+
+	boost::python::dict exp;
+	boost::python::list pyList;
+	pyList.append("riri");
+	pyList.append("fifi");
+	pyList.append("loulou");
+
+	exp["complex"] = boost::python::dict();
+	exp["complex"]["path"] = boost::python::dict();
+	exp["complex"]["path"]["toto"] = pyList;
+
+	ASSERT_EQ(exp, comp);
+}
+
+TEST(PyGraph, AddVector2) {
+	std::vector<std::vector<int> > vec(2);
+	std::vector<int> vec2 = {1, 2, 3};
+	std::vector<int> vec3 = {4, 5, 6};
+
+	vec[0] = vec2;
+	vec[1] = vec3;
+
+	PyGraph g;
+	g.add_payload( { "complex", "path" }, "toto", vec);
+	boost::python::dict comp = g.getD();
+
+	boost::python::dict exp;
+	boost::python::list pyList, pyList2, pyList3;
+	for(int i = 1; i < 4; ++i)
+		pyList2.append(i);
+	pyList.append(pyList2);
+	for(int i = 4; i < 7; ++i)
+		pyList3.append(i);			;
+	pyList.append(pyList3);
+
+	exp["complex"] = boost::python::dict();
+	exp["complex"]["path"] = boost::python::dict();
+	exp["complex"]["path"]["toto"] = pyList;
+
+	ASSERT_EQ(exp, comp);
+
+}
+
 //TEST(PyGraph, VectorOfString) {
 //	boost::python::dict exp;
 //	std::vector<std::string> vec = {"12.0","-35.90","205.72"};
@@ -290,4 +338,3 @@ TEST(PyGraph, AddSubGraph) {
 	ASSERT_EQ(out0["var"], "sub-toto");
 
 }
-

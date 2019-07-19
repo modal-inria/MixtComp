@@ -17,11 +17,35 @@
 #include <LinAlg/names.h>
 #include <boost/python/numpy.hpp>
 
+
 namespace mixt {
 
 template <typename InType>
 void translateCPPToPython(const InType& in, const std::string& name, boost::python::dict& out) {
 	out[name] = in;
+}
+
+template <typename T>
+void translateCPPToPython(const std::vector<T>& in, const std::string& name, boost::python::dict& out) {
+	boost::python::list pyList;
+	for (Index i = 0; i < in.size(); ++i) {
+		pyList.append(in[i]);
+	}
+	out[name] = pyList;
+}
+
+
+template <typename T>
+void translateCPPToPython(const std::vector<std::vector<T> >& in, const std::string& name, boost::python::dict& out) {
+	boost::python::list pyList;
+	for (Index i = 0; i < in.size(); ++i) {
+		boost::python::list pyList2;
+		for (Index j = 0; j < in[i].size(); ++j) {
+			pyList2.append(in[i][j]);
+		}
+		pyList.append(pyList2);
+	}
+	out[name] = pyList;
 }
 
 
