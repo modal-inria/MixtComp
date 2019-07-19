@@ -11,7 +11,5 @@
 #include <boost/python.hpp>
 
 boost::python::dict pmc(boost::python::dict algoPy, boost::python::dict dataPy, boost::python::dict descPy, boost::python::dict resLearnPy);
-char const* greet();
-
 
 #endif /* SRC_PMC_H_ */

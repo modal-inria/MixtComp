@@ -4,7 +4,7 @@ add_executable(runUtestPy
 
 target_link_libraries(runUtestPy
     gtest_main
-    pyMixtComp
+    pyMixtCompLib
     MixtComp
     ${Boost_LIBRARIES} 
     ${PYTHON_LIBRARIES}

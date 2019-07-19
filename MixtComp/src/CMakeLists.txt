@@ -9,9 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## Boost
 
-# set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
 find_package(Boost 1.58 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
+
 
 ## openMP
 
@@ -99,10 +99,10 @@ set(${PROJECT_NAME}_DEFINITIONS -DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE
     CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
 # Expose MixtComp's public includes to other subprojects through cache variable.
-set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
-                                 ${EIGEN3_INCLUDE_DIRS}
-                                 "${CMAKE_CURRENT_SOURCE_DIR}/lib/"
-                                 "${CMAKE_CURRENT_BINARY_DIR}/json-src/single_include/nlohmann"
-                                 "${CMAKE_CURRENT_BINARY_DIR}/optim-src/include"
+set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} 
+                                 ${EIGEN3_INCLUDE_DIRS} 
+                                 "${CMAKE_CURRENT_SOURCE_DIR}/lib/" 
+                                 "${CMAKE_CURRENT_BINARY_DIR}/json-src/single_include/nlohmann" 
+                                 "${CMAKE_CURRENT_BINARY_DIR}/optim-src/include" 
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
-    
+

@@ -43,15 +43,10 @@ boost::python::dict pmc(boost::python::dict algoPy, boost::python::dict dataPy, 
 			resPyG.add_payload( { }, "warnLog", warnLog);
 		}
 	} catch (const std::string& s) {
-	  std::cout << s << std::endl;
+		std::cout << s << std::endl;
 	}
 
-	return resPyG.get();
-}
-
-char const* greet( )
-{
-    return "Hello world";
+	return resPyG.getD();
 }
 
 

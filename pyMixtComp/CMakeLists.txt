@@ -1,17 +1,32 @@
-# cf https://stackoverflow.com/questions/16398937/cmake-and-finding-other-projects-and-their-dependencies/16404000
 
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
+# boost
+find_package(Boost 1.58  COMPONENTS python numpy REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
-if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-  message(SEND_ERROR "In-source builds are not allowed.")
-endif ()
-
-set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_COLOR_MAKEFILE   ON)
+# python
+find_package(PythonInterp)
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
+
+# Compile MixtComp
 add_subdirectory(../MixtComp/src MixtComp) 
+
+# add MixtComp's include directories and definitions
+include_directories(${MixtComp_INCLUDE_DIRS})
+add_definitions(${MixtComp_DEFINITIONS})
+
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/")
+
+# add python interface code
 add_subdirectory(src) 
+
+# add test (google test is included via MixtComp)
+add_subdirectory(utest) 
+
+
