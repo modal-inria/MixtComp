@@ -60,7 +60,8 @@ void translateCPPToPython(const NamedVector<T>& in, const std::string& name, boo
 	boost::python::tuple shape = boost::python::make_tuple(nrow);
 	boost::python::tuple stride = boost::python::make_tuple(sizeof(T));
 	boost::python::object own;
-	out[name]["data"] = boost::python::numpy::from_data(in.vec_.data(), dt, shape, stride, own);
+	boost::python::numpy::ndarray vec = boost::python::numpy::from_data(in.vec_.data(), dt, shape, stride, own);
+	out[name]["data"] = vec.copy();// otherwise data are lost
 
 	boost::python::list rowNames;
 	for(auto& s: in.rowNames_){
@@ -85,7 +86,8 @@ void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boo
 	boost::python::tuple shape = boost::python::make_tuple(nrow, ncol);
 	boost::python::tuple stride = boost::python::make_tuple(sizeof(T), sizeof(T)*nrow);
 	boost::python::object own;
-	out[name]["data"] = boost::python::numpy::from_data(in.mat_.data(), dt, shape, stride, own);
+	boost::python::numpy::ndarray mat = boost::python::numpy::from_data(in.mat_.data(), dt, shape, stride, own);
+	out[name]["data"] = mat.copy();// otherwise data are lost
 
 
 	boost::python::list rowNames;
