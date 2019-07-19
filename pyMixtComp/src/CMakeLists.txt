@@ -1,23 +1,32 @@
 
-add_library(pyMixtCompLib
-  pmc.cpp
-  pmc.h
-  PyGraph.h
-  PyGraph.cpp
-  pythonIO.h
-  translateCPPToPython.h
-  translatePythonToCPP.h)  
+cmake_minimum_required(VERSION 3.5)
+
+# boost
+find_package(Boost 1.58  COMPONENTS python numpy REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+# python
+find_package(PythonInterp)
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 
-# Define the wrapper library that wraps our library
-add_library(pyMixtComp SHARED pyMixtComp.cpp )
+set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
 
-target_link_libraries(pyMixtComp 
-  pyMixtCompLib
-  MixtComp 
-  ${Boost_LIBRARIES} 
-  ${PYTHON_LIBRARIES})
+# Compile MixtComp
+add_subdirectory(../../MixtComp/src MixtComp) 
 
-# don't prepend wrapper library name with lib
-set_target_properties(pyMixtComp PROPERTIES PREFIX "" )
+# add MixtComp's include directories and definitions
+include_directories(${MixtComp_INCLUDE_DIRS})
+add_definitions(${MixtComp_DEFINITIONS})
+
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
+
+# add python interface code
+add_subdirectory(lib) 
+
+# add test (google test is included via MixtComp)
+add_subdirectory(utest) 
+
 

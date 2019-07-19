@@ -1,1 +1,2 @@
-git clean -dfx build
+git clean -dfx debug
+git clean -dfx release
