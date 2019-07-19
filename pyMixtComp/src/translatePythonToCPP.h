@@ -26,6 +26,13 @@ void translatePythonToCPP(const boost::python::api::object_item& in, OutType& ou
 
 
 template <typename T>
+void translatePythonToCPP(const boost::python::api::object_item& in, std::vector<T>& out) {
+    out = std::vector<T>(boost::python::stl_input_iterator<T>(in),
+	                     boost::python::stl_input_iterator<T>());
+}
+
+
+template <typename T>
 void translatePythonToCPP(const boost::python::api::object_item& in, NamedVector<T>& out) {
 	Index nrow = boost::python::extract<Index>(in["nrow"]);
 
