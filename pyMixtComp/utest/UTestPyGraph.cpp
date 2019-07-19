@@ -291,23 +291,34 @@ TEST(PyGraph, name_payload) {
 	ASSERT_EQ(itString(l), std::string("var1 varZ"));
 }
 
-///**
-// * This is used in the data output of the Functional model
-// */
-//TEST(PyGraph, VectorOfVectorOfReal) {
-//	std::string exp = R"-({"var1":[[1.0],[1.0,5.0,12.0],[0.0,-42.0]]})-";
-//	PyGraph gIn;
-//	gIn.set(exp);
-//
-//	std::vector<std::vector<Real>> temp;
-//	gIn.get_payload<std::vector<std::vector<Real>>>( { }, "var1", temp);
-//
-//	PyGraph gOut;
-//	gOut.add_payload( { }, "var1", temp);
-//	std::string comp = gOut.get();
-//
-//	ASSERT_EQ(exp, comp);
-//}
+/**
+ * This is used in the data output of the Functional model
+ */
+TEST(PyGraph, VectorOfVectorOfReal) {
+	boost::python::dict exp;
+	boost::python::list pyList, pyList1, pyList2, pyList3;
+	pyList1.append(1.0);
+	pyList2.append(1.0);
+	pyList2.append(5.0);
+	pyList2.append(12.0);
+	pyList3.append(0.0);
+	pyList3.append(-42.0);
+	pyList.append(pyList1);
+	pyList.append(pyList2);
+	pyList.append(pyList3);
+	exp["var1"] = pyList;
+	PyGraph gIn;
+	gIn.set(exp);
+
+	std::vector<std::vector<Real> > temp;
+	gIn.get_payload( { }, "var1", temp);
+
+	PyGraph gOut;
+	gOut.add_payload( { }, "var1", temp);
+	boost::python::dict comp = gOut.getD();
+
+	ASSERT_EQ(exp, comp);
+}
 
 TEST(PyGraph, AddSubGraph) {
 	boost::python::dict in, sub, expected;
