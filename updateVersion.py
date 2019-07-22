@@ -59,7 +59,7 @@ startPatternCopyright = " * Copyright"
 newLineCopyright = " * Copyright (C) Inria - Université de Lille - CNRS */\n"
 extension = (".h", ".cpp")
 
-directories = ["RMixtCompIO/src"]
+directories = ["RMixtCompIO/src", "RMixtCompIO/src/test"]
 
 for directory in directories:
 	changeHeader(directory, startPatternVersion, newLineVersion, startPatternCopyright, newLineCopyright, extension)
