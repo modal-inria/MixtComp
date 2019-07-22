@@ -15,7 +15,7 @@
 
 namespace mixt {
 
-const std::string version = "3.0.0";
+const std::string version = "4.0";
 
 const char *deterministicEnvVar = "MC_DETERMINISTIC";
 
