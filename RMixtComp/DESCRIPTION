@@ -3,9 +3,9 @@ Type: Package
 Title: Mixture Composer
 Version: 0.7
 Date: 2019-07-02
-Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
+Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
-             person("Quentin", "Grimonprez", role = "aut"),
+             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
              person("Étienne", "Goffinet", role = "ctb"),
              person("Serge", "Iovleff", role = "ctb"))
