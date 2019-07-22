@@ -8,6 +8,16 @@ MixtComp has the ability to natively manage missing data (completely or by inter
 
 Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 
+## Credits
+
+The following people contributed to the development of MixtComp: Vincent Kubicki, Christophe Biernacki, Quentin Grimonprez, Serge Iovleff, Matthieu Marbac-Lourdelle, Étienne Goffinet.
+
+Copyrigth Inria - Université de Lille - CNRS
+
+## Licence
+
+MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/licenses/agpl-3.0.en.html). For more details about the licences of MixtComp and its dependencies see the [LICENCE.md](LICENCE.md) file.
+
 ## Code organization
 
 * **MixtComp** MixtComp C++ library
