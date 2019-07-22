@@ -5,6 +5,7 @@
 **MixtComp** est écrit en C++ et a besoin de deux librairies externes pour fonctionner :
 - **Eigen** (http://eigen.tuxfamily.org), libraire d'algèbre linéaire, sous licence MPL2
 - **Boost** (https://www.boost.org/), une librarie C++ sous licence Boost (https://www.boost.org/users/license.html)
+- **CppOptimizationLibrary** (https://github.com/PatWie/CppNumericalSolvers) une librairie fournissant des solveurs sous licence MIT.
 
 Afin d'être appelé par différents languages, différentes interfaces ont été créées :
 - **JMixtComp**, fournissant un exécutable C++ avec des fichiers json en entrées/sorties, dépendant de la librairie **nlohmann/json** (https://github.com/nlohmann/json) sous licence MIT.
@@ -22,15 +23,16 @@ Des packages R complémentaires existent :
 ## English
 
 **MixtComp** is written in C++ and requires two external libraries to work:
-- **Eigen** (http://eigen.tuxfamily.org), a linear algebra library, under MPL2 license
-- **Boost** (https://www.boost.org/), a C++ library under Boost license (https://www.boost.org/users/license.html)
+- **Eigen** (http://eigen.tuxfamily.org), a linear algebra library, under MPL2 licence
+- **Boost** (https://www.boost.org/), a C++ library under Boost licence (https://www.boost.org/users/license.html)
+- **CppOptimizationLibrary** (https://github.com/PatWie/CppNumericalSolvers) a C++ library providing solvers under MIT licence.
 
 In order to be called by different languages, different interfaces have been created:
-- **JMixtComp**, providing a C++ executable with json files as input/output files. It depends on the **nlohmann/json** library (https://github.com/nlohmann/json) under MIT license.
+- **JMixtComp**, providing a C++ executable with json files as input/output files. It depends on the **nlohmann/json** library (https://github.com/nlohmann/json) under MIT licence.
 - **RJMixtComp**, an R package containing the executable *JMixtComp* and allowing to create the json input files, to launch the executable *JMixtComp* from R and to read the json output in R
-- **RMixtCompIO**, an R package interfacing *MixtComp*, it uses the R package/C++ library **Rcpp** (https://github.com/RcppCore/Rcpp) under GPL (>= 2) license. It contains C++ files using the *Rcpp* library to convert data from R format to standard C++ formats
+- **RMixtCompIO**, an R package interfacing *MixtComp*, it uses the R package/C++ library **Rcpp** (https://github.com/RcppCore/Rcpp) under GPL (>= 2) licence. It contains C++ files using the *Rcpp* library to convert data from R format to standard C++ formats
 
-The C++ functions of *MixtComp* and *JMixtComp* are tested using the **GoogleTest** library (https://github.com/google/googletest) under BSD3 license.
+The C++ functions of *MixtComp* and *JMixtComp* are tested using the **GoogleTest** library (https://github.com/google/googletest) under BSD3 licence.
 
 Additional R packages exist:
 - **RMixtCompUtilities**, an R package containing getter, formatting, graphical functions to analyze the results of *MixtComp* outputs
