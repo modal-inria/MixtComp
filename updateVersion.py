@@ -9,20 +9,19 @@ def changeHeader(directory, startPatternVersion, newLineVersion, startPatternCop
 			fullName = directory + '/' + filename
 			with open(fullName) as f:
 				lines = f.readlines()
-			toChange = False
-
-			if len(lines) > 1:
-				if lines[0].startswith(startPatternVersion):
-					lines[0] = newLineVersion
-					toChange = True
-				if lines[1].startswith(startPatternCopyright):
-					lines[1] = newLineCopyright
-					toChange = True
-				if toChange:
-					with open(fullName, "w") as f:
-						f.writelines(lines)
-				else:
-					print(directory + "/" + filename)
+				toChange = False
+				if len(lines) > 1:
+					if lines[0].startswith(startPatternVersion):
+						lines[0] = newLineVersion
+						toChange = True
+					if lines[1].startswith(startPatternCopyright):
+						lines[1] = newLineCopyright
+						toChange = True
+					if toChange:
+						with open(fullName, "w") as f:
+							f.writelines(lines)
+					else:
+						print(directory + "/" + filename)
 
 
 # change license cpp files
