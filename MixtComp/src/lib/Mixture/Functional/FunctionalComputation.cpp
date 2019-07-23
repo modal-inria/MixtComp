@@ -21,7 +21,7 @@
  **/
 
 #include <IO/IO.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <iostream>
 #include "Statistic/Statistic.h"
 #include "FunctionalClass.h"

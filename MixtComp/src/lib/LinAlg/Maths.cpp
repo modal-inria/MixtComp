@@ -20,7 +20,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Various/Constants.h>
 #include <cmath>
 #include <limits>

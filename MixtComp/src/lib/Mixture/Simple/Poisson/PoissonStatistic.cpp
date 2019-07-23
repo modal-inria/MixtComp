@@ -24,7 +24,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/math/distributions/poisson.hpp>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Statistic/RNG.h>
 #include <Various/Constants.h>
 #include "PoissonStatistic.h"

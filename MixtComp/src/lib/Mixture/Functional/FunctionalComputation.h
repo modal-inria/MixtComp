@@ -24,7 +24,7 @@
 #define FUNCTIONALCOMPUTATION
 
 #include <LinAlg/LinAlg.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <list>
 #include <set>
 

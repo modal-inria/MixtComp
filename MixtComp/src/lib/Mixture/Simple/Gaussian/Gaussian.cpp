@@ -23,7 +23,7 @@
 #include <Data/AugmentedData.h>
 #include <IO/IO.h>
 #include <LinAlg/LinAlg.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Various/Constants.h>
 #include <cmath>
 

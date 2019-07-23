@@ -26,7 +26,7 @@
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/exception/diagnostic_information.hpp>
 #include <IO/IO.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 
 #include <Various/Enum.h>
 #include <Various/Constants.h>

@@ -27,7 +27,7 @@
 #include <list>
 
 #include <Various/Timer.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Mixture/IMixture.h>
 #include <Various/Various.h>
 #include "MixtureComposer.h"

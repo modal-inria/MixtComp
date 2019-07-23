@@ -23,7 +23,7 @@
 #include <boost/random/negative_binomial_distribution.hpp>
 #include <boost/math/distributions/negative_binomial.hpp>
 #include <boost/math/special_functions/gamma.hpp>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Statistic/RNG.h>
 #include <Various/Constants.h>
 #include "NegativeBinomialStatistic.h"

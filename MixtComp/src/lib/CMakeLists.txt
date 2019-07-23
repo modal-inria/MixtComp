@@ -2,10 +2,10 @@
 # with "" prefix and CMakeLists deleted
 
 add_library(MixtComp
-    LinAlg/Math.cpp
+    LinAlg/Maths.cpp
     LinAlg/Typedef.cpp
     LinAlg/ConstIterator.h
-    LinAlg/Math.h
+    LinAlg/Maths.h
     LinAlg/Typedef.h
     LinAlg/EigenMatrixBaseAddons.h
     LinAlg/LinAlg.h

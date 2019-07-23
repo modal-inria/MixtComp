@@ -30,7 +30,7 @@
 
 #include <IO/IO.h>
 #include <IO/MisValParser.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <LinAlg/names.h>
 #include <LinAlg/Typedef.h>
 #include <Mixture/Functional/Function.h>
