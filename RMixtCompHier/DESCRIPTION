@@ -2,7 +2,7 @@ Package: RMixtCompHier
 Type: Package
 Date: 2019-07-04
 Title: Hierarchical Mixtcomp 
-Version: 0.5
+Version: 4.0.0
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Étienne", "Goffinet", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),

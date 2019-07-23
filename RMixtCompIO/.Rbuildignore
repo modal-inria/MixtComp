@@ -5,3 +5,4 @@ Makefile
 build.sh
 updateLib.py
 RMCIOtest.xml
+README.md

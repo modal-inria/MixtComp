@@ -34,9 +34,9 @@
 #' MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
 #' 
 #'  
-#' Online SaaS version: \url{https://massiccc.lille.inria.fr/}
+#' Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
 #' 
-#' This package containtains plots, getters and format functions to simplify the use of RMixtComp.
+#' This package containtains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO}.
 #' 
 #' @details
 #' \link{createAlgo} gives you default values for required parameters.
@@ -50,29 +50,8 @@
 #' Graphics functions are \link{plot.MixtComp}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence}, 
 #' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
 #' 
-#' @examples 
-#' \donttest{
-#' library(RMixtComp)
-#' data(simData)
-#'  
-#' # define the algorithm's parameters: you can use createAlgo function
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
 #' 
-#' # run RMixtComp for learning
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
-#' 
-#' # run RMixtComp for predicting
-#' resPred <- mixtCompPredict(simData$dataPredict$matrix, simData$model$unsupervised, algo, resLearn)
-#' 
-#' }
-#' 
-#' @seealso \code{RMixtComp} \code{Rmixmod}, \code{blockcluster}
+#' @seealso \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @keywords package
 NULL

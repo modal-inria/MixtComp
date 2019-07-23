@@ -1,8 +1,8 @@
 Package: RMixtCompUtilities
 Type: Package
-Title: Utility functions for RMixtComp
-Version: 0.1
-Date: 2019-07-02
+Title: Utility Functions for RMixtCompIO
+Version: 4.0.0
+Date: 2019-07-22
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
@@ -11,11 +11,11 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Serge", "Iovleff", role = "ctb"))
 Copyright: Inria - Université de Lille - CNRS
 License: AGPL-3
-Description: Mixture Composer is a project to build mixture models with
-    heterogeneous data sets. The conditional independence property enable composing
-    all the data sets in a single mixture model.
+Description: Mixture Composer (MixtComp) is a project to build mixture models with
+    heterogeneous data sets. This package contains graphics, getters and some utility 
+    functions to facilitate the analysis of MixtComp output.
 URL: https://massiccc.lille.inria.fr/
 Imports: plotly, ggplot2, scales
-Suggests: testthat, xml2, RMixtComp, Rmixmod, blockcluster
+Suggests: testthat, xml2, RMixtCompIO, Rmixmod, blockcluster
 RoxygenNote: 6.1.1
 Encoding: UTF-8

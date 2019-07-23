@@ -6,7 +6,7 @@ It has been engineered around the idea of easy and quick integration of all new 
 
 MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
 
-Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
+Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/)
 
 ## Credits
 
@@ -44,13 +44,13 @@ A description of the links between packages and external libraries can be found 
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
 
-## External tools
+## Other tools (for MixtComp dev team)
 
 * [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
 * [Mailing-list](https://sympa.inria.fr/sympa/info/mixtcomp-dev)
 * [Continuous integration server](https://ci.inria.fr/mixtcomp/)
 
-## Branches
+## Branches (for MixtComp dev team)
 
 There are two branches tested on the ci server (using the [ci.sh](ci.sh) file):
 * **master** this branch is protected, MixtComp must *always* work on it.

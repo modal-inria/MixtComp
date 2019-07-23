@@ -102,6 +102,40 @@ To perform a (semi-)supervised clustering, user can add a variable named `z_clas
 Missing data are indicated by a \emph{?}. For partial data, a list of possible values can be provided by \emph{{a_1,\dots,a_j}}, where \emph{a_i} denotes a class number.
 }
 
+\section{MixtComp object}{
+
+A MixtComp object is a result of a single run of MixtComp algorithm. It is a list containing three elements \emph{mixture}, \emph{variable} and \emph{algo}. 
+If MixtComp fails to run, the list contains a single element: warnLog containing error messages.
+
+The \emph{mixture} element contains
+\itemize{
+  \item{BIC: value of BIC}
+  \item{ICL: value of ICL}
+  \item{nbFreeParameters: number of free parameters of the mixture}
+  \item{lnObservedLikelihood: observed loglikelihood}
+  \item{lnCompletedLikelihood: completed loglikelihood}
+  \item{IDClass: entropy used to compute the discriminative power}
+  \item{delta: similarities between variables}
+  \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
+  \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
+  \item{runTime: list containing the total execution time in seconds and the execution time of some subpart.} 
+  \item{lnProbaGivenClass: log-proportion + log-probability of x_i for each class}
+}
+
+
+The \emph{algo} list contains a copy of \emph{algo} parameter with extra elements: nInd, nClass, mode ("learn" or "predict").
+
+
+The \emph{variable} list contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
+Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
+The \emph{type} list contains the model used for each variable. 
+
+Each list of the \emph{data} list contains the completed data in the \emph{completed} element and some statistics about them (\emph{stat}). 
+
+The estimated parameter can be found in the \emph{stat} element in the \emph{param} list (see Section \emph{View of an output object}). 
+For more details about the parameters of each model, you can refer to \link{rnorm}, \link{rpois}, \link{rweibull}, \link{rnbinom}, \link{rmultinom}, or references in the \emph{References} section.
+}
+
 \section{View of a MixtComp object}{
 
 Example of output object with variables named "categorical", "gaussian", "rank", "functional", "poisson", "nBinom" and "weibull" with respectively
