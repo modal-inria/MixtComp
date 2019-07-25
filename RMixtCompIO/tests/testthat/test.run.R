@@ -240,7 +240,7 @@ test_that("multinomial model works",{
 test_that("weibull model works",{
   set.seed(42)
 
-  nInd <- 1000
+  nInd <- 1200
   ratioPresent <- 0.95
 
   var <- list()
@@ -257,7 +257,7 @@ test_that("weibull model works",{
     nbIter = 100,
     nbGibbsBurnInIter = 100,
     nbGibbsIter = 100,
-    nInitPerClass = 200,
+    nInitPerClass = 300,
     nSemTry = 20,
     confidenceLevel = 0.95,
     ratioStableCriterion = 0.95,
