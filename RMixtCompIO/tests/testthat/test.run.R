@@ -275,7 +275,7 @@ test_that("weibull model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
-  expect_gte(rand.index(partition, resGen$z), 0.9)
+  expect_gte(rand.index(partition, resGen$z), 0.85)
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   

@@ -51,7 +51,7 @@ public:
 	MixtureComposer(const Graph& algo) :
 			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
 					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
-					zClassInd_), completedProbabilityCache_(nInd_), lastPartition_(nInd_), initialNIter_(0), nConsecutiveStableIterations_(0) {
+					zClassInd_), completedProbabilityCache_(nInd_), initialNIter_(0), lastPartition_(nInd_), nConsecutiveStableIterations_(0) {
 #ifdef MC_VERBOSE
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 #endif
