@@ -126,7 +126,7 @@ weibullParam <- function(name) {
   weibull$paramStr <- ""
   weibull$generator <- weibullGenerator
   weibull$param <- list()
-  weibull$param[[1]] <- list(shape = 2.0, scale = 0.5)
+  weibull$param[[1]] <- list(shape = 2.0, scale = 1.0)
   weibull$param[[2]] <- list(shape = 4.0, scale = 3.0)
   
   return(weibull)
