@@ -13,7 +13,8 @@ Copyright: Inria - Université de Lille - CNRS
 License: AGPL-3
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. This package contains the minimal R interface of the C++ MixtComp library.
-URL: https://massiccc.lille.inria.fr/
+URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
+BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: Rcpp, doParallel, foreach
 Suggests: Rmixmod, blockcluster, testthat, RInside, xml2
 LinkingTo: Rcpp, RcppEigen, BH
