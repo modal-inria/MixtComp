@@ -35,17 +35,13 @@ Range<int>::Range(int min, int max, bool hasRange) :
 		hasRange_(hasRange) {
 }
 
+
 template<>
-Range<std::size_t>::Range(std::size_t min, std::size_t max, bool hasRange) :
+Range<Index>::Range(Index min, Index max, bool hasRange) :
 		min_(min), max_(max), range_(max - min + 1), // used to store the number of modalities, for example,
 		hasRange_(hasRange) {
 }
 
-template<>
-Range<std::ptrdiff_t>::Range(std::ptrdiff_t min, std::ptrdiff_t max, bool hasRange) :
-		min_(min), max_(max), range_(max - min + 1), // used to store the number of modalities, for example,
-		hasRange_(hasRange) {
-}
 
 template<>
 void AugmentedData<Vector<Real> >::removeMissingSample(Index i) {
@@ -216,44 +212,5 @@ void AugmentedData<Vector<std::size_t> >::removeMissingSample(Index i) {
 	}
 }
 
-template<>
-void AugmentedData<Vector<std::ptrdiff_t> >::removeMissingSample(Index i) {
-	if (misData_(i).first != present_) {
-		int sampleVal = 0;
-		int nbModalities = dataRange_.range_;
-
-		switch (misData_(i).first) // (iterator on map)->(mapped element).(MisType)
-		{
-		case present_: {
-		}
-			break;
-
-		case missing_: {
-			Vector<Real> modalities(nbModalities);
-			modalities = 1. / nbModalities;
-			sampleVal = multi_.sample(modalities);
-		}
-			break;
-
-		case missingFiniteValues_: {
-			Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-			Vector<Real> modalities(nbModalities);
-			modalities = 0.;
-			for (std::vector<std::ptrdiff_t>::const_iterator itParam = misData_(i).second.begin(); itParam != misData_(i).second.end(); ++itParam) {
-				modalities[*itParam] = proba;
-			}
-			sampleVal = multi_.sample(modalities);
-		}
-			break;
-
-		default: // other types of intervals not present in integer data
-		{
-			throw("AugmentedData<Vector<std::ptrdiff_t> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
-		}
-			break;
-		}
-		data_(i) = sampleVal;
-	}
-}
 
 } // namespace mixt
