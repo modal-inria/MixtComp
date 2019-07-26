@@ -1,6 +1,6 @@
 Package: RMixtCompUtilities
 Type: Package
-Title: Utility Functions for RMixtCompIO
+Title: Utility Functions for MixtComp Outputs
 Version: 4.0.0
 Date: 2019-07-22
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
