@@ -9,8 +9,8 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
              person("Étienne", "Goffinet", role = "ctb"),
              person("Serge", "Iovleff", role = "ctb"))
-Copyright: Inria - Université de Lille - CNRS
-License: AGPL-3
+Copyright: Inria - Université de Lille - CNRS; Patrick Wieschollek & the respective contributors for CppOptimizationLibrary
+License: AGPL-3 | file LICENCE
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets and partially missing data management. 
     It includes models for real, categorical, couting, functional and ranking data.
