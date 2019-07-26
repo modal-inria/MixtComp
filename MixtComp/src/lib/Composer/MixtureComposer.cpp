@@ -166,7 +166,7 @@ void MixtureComposer::sampleZ(int i) {
 }
 
 void MixtureComposer::eStepCompleted() {
-	bool correct[nInd_]; // std::vector<bool> causes errors in parallel writes: https://stackoverflow.com/questions/33617421/write-concurrently-vectorbool and http://www.cplusplus.com/reference/vector/
+	bool *correct = new bool[nInd_];// std::vector<bool> causes errors in parallel writes: https://stackoverflow.com/questions/33617421/write-concurrently-vectorbool and http://www.cplusplus.com/reference/vector/. https://stackoverflow.com/questions/11379433/c-forbids-variable-size-array/11379442#11379442
 
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
@@ -200,6 +200,8 @@ void MixtureComposer::eStepCompleted() {
 				+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
 		throw(warnLog);
 	}
+
+	delete[] correct;
 
 //	std::cout << "MixtureComposer::eStepCompleted" << std::endl;
 //	std::cout << "lnCompProba: " << completedProbabilityCache_.sum() << std::endl;
