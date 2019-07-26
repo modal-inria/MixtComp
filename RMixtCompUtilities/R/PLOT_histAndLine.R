@@ -105,6 +105,9 @@ plotlyhistMisclassif <- function(z, misclassifrisk, classNames, ...){
   histerrors
 }
 
+# to avoid note during R CMD check
+globalVariables("..count..")
+
 # @author Quentin Grimonprez
 gghistMisclassif <- function(z, misclassifrisk, classNames)
 {

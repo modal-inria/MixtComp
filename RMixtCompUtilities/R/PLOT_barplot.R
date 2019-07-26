@@ -204,11 +204,11 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
 # @author Matthieu Marbac
 ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), col.text = "white")
 {
-  df = data.frame(var = factor(label, levels = label), discrim = value)
+  df = data.frame(var = factor(label, levels = label), discrim = value, roundedDiscrim = round(value, 2))
   ggplot(data = df, aes_string(x = "var", y = "discrim", fill = "var")) +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = col_numeric("Blues", domain = c(0,100))(ceiling(value*100))) + 
-    geom_text(aes(label = round(discrim, 2)), vjust = 1.6, color = col.text, size = 5) +
+    geom_text(aes_string(label = "roundedDiscrim"), vjust = 1.6, color = col.text, size = 5) +
     theme_minimal() +
     ylim(ylim[1], ylim[2]) +
     labs(title = main, x = xlab, y = ylab) +

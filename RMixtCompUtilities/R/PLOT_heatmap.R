@@ -240,7 +240,7 @@ heatmapTikSorted <- function(output, pkg = c("ggplot2", "plotly"), ...){
 # @author Quentin Grimonprez
 ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "", legendName = "Value", addValues = FALSE)
 {
-  meltedX = data.frame(ind = factor(rep(yname, ncol(dat)), levels = yname), key = factor(rep(xname, each = nrow(dat)), levels = xname), value = as.numeric(dat))
+  meltedX = data.frame(ind = factor(rep(yname, ncol(dat)), levels = yname), key = factor(rep(xname, each = nrow(dat)), levels = xname), value = as.numeric(dat), roundedValue = round(as.numeric(dat), 2))
   
   p <- ggplot(data = meltedX, aes_string(x = "key", y = "ind", fill = "value")) + 
     geom_tile() +
@@ -255,7 +255,7 @@ ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "
   
   if(addValues)
   {
-    p = p + geom_text(aes(label = round(value, 2)), color = "red", size = 4)
+    p = p + geom_text(aes_string(label = "roundedValue"), color = "red", size = 4)
   }
   
   return(p)
