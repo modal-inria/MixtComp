@@ -1,0 +1,19 @@
+Package: RMixtCompHier
+Type: Package
+Date: 2019-07-04
+Title: Hierarchical Mixtcomp 
+Version: 4.0.0
+Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
+             person("Étienne", "Goffinet", role = "aut"),
+             person("Christophe", "Biernacki", role = "aut"),
+             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
+             person("Serge", "Iovleff", role = "ctb"))
+Copyright: Inria - Université de Lille - CNRS
+License: AGPL-3
+Description: Allow to launch MixtComp hierarchically, in both learn and predict mode.
+LazyData: true
+Imports: plotly, doParallel, RColorBrewer, jsonlite, foreach, parallel, RJMixtComp
+Suggests: testthat
+RoxygenNote: 6.1.1
+Encoding: UTF-8

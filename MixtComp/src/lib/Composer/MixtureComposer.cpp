@@ -1,5 +1,18 @@
-/* MixtComp version 2.0  - 13 march 2017
- * Copyright (C) Inria - Lille 1 */
+/* MixtComp version 4  - july 2019
+ * Copyright (C) Inria - Université de Lille - CNRS*/
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ **/
 
 /*
  *  Project:    MixtComp
@@ -14,7 +27,7 @@
 #include <list>
 
 #include <Various/Timer.h>
-#include <LinAlg/Math.h>
+#include <LinAlg/Maths.h>
 #include <Mixture/IMixture.h>
 #include <Various/Various.h>
 #include "MixtureComposer.h"
@@ -153,7 +166,7 @@ void MixtureComposer::sampleZ(int i) {
 }
 
 void MixtureComposer::eStepCompleted() {
-	bool correct[nInd_]; // std::vector<bool> causes errors in parallel writes: https://stackoverflow.com/questions/33617421/write-concurrently-vectorbool and http://www.cplusplus.com/reference/vector/
+	bool *correct = new bool[nInd_];// std::vector<bool> causes errors in parallel writes: https://stackoverflow.com/questions/33617421/write-concurrently-vectorbool and http://www.cplusplus.com/reference/vector/. https://stackoverflow.com/questions/11379433/c-forbids-variable-size-array/11379442#11379442
 
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
@@ -187,6 +200,8 @@ void MixtureComposer::eStepCompleted() {
 				+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
 		throw(warnLog);
 	}
+
+	delete[] correct;
 
 //	std::cout << "MixtureComposer::eStepCompleted" << std::endl;
 //	std::cout << "lnCompProba: " << completedProbabilityCache_.sum() << std::endl;

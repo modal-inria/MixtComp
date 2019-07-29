@@ -6,14 +6,28 @@ It has been engineered around the idea of easy and quick integration of all new 
 
 MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
 
-Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
+Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/)
+
+## Credits
+
+The following people contributed to the development of MixtComp: Vincent Kubicki, Christophe Biernacki, Quentin Grimonprez, Serge Iovleff, Matthieu Marbac-Lourdelle, Étienne Goffinet.
+
+Copyrigth Inria - Université de Lille - CNRS
+
+## Licence
+
+MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/licenses/agpl-3.0.en.html). For more details about the licences of MixtComp and its dependencies see the [LICENCE.md](LICENCE.md) file.
 
 ## Code organization
 
 * **MixtComp** MixtComp C++ library
-* **RMixtComp** R package linking MixtComp with Rcpp (internal use)
-* **RJMixtComp** R package using JMixtComp (for customers)
-* **MixtCompRTools** R package containing the hierarchical MixtComp
+* **RMixtComp** Main R package loading *RMixtCompIO* and *RMixtCompUtilities*
+* **RMixtCompIO** R package linking MixtComp with Rcpp (internal use)
+* **RMixtCompUtilities** R package containing graphical, formatting functions and getters 
+* **RJMixtComp** R package using a JMixtComp executable 
+* **RMixtCompHier** R package containing the hierarchical version of MixtComp
+
+A description of the links between packages and external libraries can be found [here](architecture.md) for a text version and [here](graphArchitecture.png) for a visual version
 
 ## Documentation
 
@@ -30,13 +44,13 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
 
-## External tools
+## Other tools (for MixtComp dev team)
 
 * [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
 * [Mailing-list](https://sympa.inria.fr/sympa/info/mixtcomp-dev)
 * [Continuous integration server](https://ci.inria.fr/mixtcomp/)
 
-## Branches
+## Branches (for MixtComp dev team)
 
 There are two branches tested on the ci server (using the [ci.sh](ci.sh) file):
 * **master** this branch is protected, MixtComp must *always* work on it.

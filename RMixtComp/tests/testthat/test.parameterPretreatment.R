@@ -1,3 +1,19 @@
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+
 # @author Quentin Grimonprez
 context("Pretreatment functions of mixtCompLearn's parameters")
 
@@ -77,42 +93,6 @@ test_that("imputModel returns an error with a matrix", {
 
 
 
-test_that("formatModel does not change well formated data", {
-  desc <- list(var1 = list(type = "Gaussian", paramStr = ""),
-               var2 = list(type = "CorReg", paramStr = "ouais"),
-               var3 = list(type = "Multinomial", paramStr = "CorReg"))
-  
-  outDesc <- formatModel(desc)
-  expect_equal(outDesc, desc)
-})
-
-
-test_that("formatModel adds paramStr when missing", {
-  desc <- list(var1 = list(type = "Gaussian"),
-               var2 = list(type = "CorReg", paramStr = "ouais"),
-               var3 = list(type = "Multinomial"))
-  
-  outDesc <- formatModel(desc)
-  expect_equal(outDesc$var2, desc$var2)
-  expect_equal(outDesc$var1, list(type = "Gaussian", paramStr = ""))
-  expect_equal(outDesc$var3, list(type = "Multinomial", paramStr = ""))
-  
-})
-
-
-test_that("formatModel puts type in a list format", {
-  desc <- list(var1 = "Gaussian",
-               var2 = list(type = "CorReg", paramStr = "ouais"),
-               var3 = "Multinomial")
-  
-  outDesc <- formatModel(desc)
-  expect_equal(outDesc$var1, list(type = "Gaussian", paramStr = ""))
-  expect_equal(outDesc$var2, desc$var2)
-  expect_equal(outDesc$var3, list(type = "Multinomial", paramStr = ""))
-  
-})
-
-
 test_that("completeModel adds hyperparameters for functional data",{
   
   model <- list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
@@ -123,14 +103,14 @@ test_that("completeModel adds hyperparameters for functional data",{
   ratioPresent <- 0.95
   
   var <- list()
-  var$z_class <- zParam()
+  var$z_class <- RMixtCompIO:::zParam()
   
-  var$func1 <- functionalInterPolyParam("func1")
-  var$func2 <- functionalInterPolyParam("func2")
-  var$func3 <- functionalInterPolyParam("func3")
-  var$func4 <- functionalInterPolyParam("func4")
+  var$func1 <- RMixtCompIO:::functionalInterPolyParam("func1")
+  var$func2 <- RMixtCompIO:::functionalInterPolyParam("func2")
+  var$func3 <- RMixtCompIO:::functionalInterPolyParam("func3")
+  var$func4 <- RMixtCompIO:::functionalInterPolyParam("func4")
   
-  data <- dataGeneratorNewIO(nInd, ratioPresent, var)$data
+  data <- RMixtCompIO:::dataGeneratorNewIO(nInd, ratioPresent, var)$data
   
   expect_warning(out <- completeModel(model, data))
   expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
@@ -139,34 +119,6 @@ test_that("completeModel adds hyperparameters for functional data",{
   
 })
 
-
-test_that("formatData converts data.frame into a list format", {
-  dat <- data.frame(x1 = 1:10, x2 = 10:1)
-  dataOut <- formatData(dat)
-  
-  expect_equal(names(dataOut), colnames(dat))
-  expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
-  expect_true(all(sapply(dataOut, is.character)))
-})
-
-test_that("formatData converts matrix into a list format", {
-  dat <- matrix(c(1:10, 10:1), ncol = 2, dimnames = list(NULL, c("x1", "x2")))
-  dataOut <- formatData(dat)
-  
-  expect_equal(names(dataOut), colnames(dat))
-  expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
-  expect_true(all(sapply(dataOut, is.character)))
-})
-
-test_that("formatData keeps list in list format", { 
-  dat <- list(x1 = 1:10, x2 = 10:1)
-  dataOut <- formatData(dat)
-  
-  expect_true(is.list(dataOut))
-  expect_equal(names(dataOut), names(dat))
-  expect_equal(class(dataOut$x1), "character")
-  expect_equal(class(dataOut$x2), "character")
-})
 
 test_that("formatDataBasicMode works with data.frame", {
   dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = letters[1:20])
@@ -290,32 +242,6 @@ test_that("checkNClass works with mixtCompLearn object", {
   expect_equal(out, 2)
 })
 
-test_that("completeAlgo adds missing elements", {
-  algo <- list()
-  outAlgo <- completeAlgo(algo)
-  expectedAlgo <- createAlgo()
-  
-  expect_setequal(names(outAlgo), names(expectedAlgo))
-  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
-  
-  
-  algo <- list(nbIter = 100)
-  outAlgo <- completeAlgo(algo)
-  expectedAlgo <- createAlgo(nbIter = 100)
-  
-  expect_setequal(names(outAlgo), names(expectedAlgo))
-  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
-})
-
-test_that("completeAlgo keeps unrequired fields", {
-  algo <- list(nbIter = 100 , mode = "learn")
-  outAlgo <- completeAlgo(algo)
-  expectedAlgo <- c(createAlgo(nbIter = 100), list(mode = "learn"))
-  
-  expect_setequal(names(outAlgo), names(expectedAlgo))
-  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
-})
-
 test_that("performHierarchical works", {
   model <- list("a" = list(type = "Gaussian"))
   mode <- "basic"
@@ -337,8 +263,6 @@ test_that("performHierarchical works", {
     out <- performHierarchical(hierarchicalMode, mode, model)
     expect_false(out)
   }
-  
-  
   
   model$b = list(type = "Func_CS")
   out <- performHierarchical(hierarchicalMode = "no", mode, model)

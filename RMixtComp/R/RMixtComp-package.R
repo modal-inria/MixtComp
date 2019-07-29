@@ -1,15 +1,23 @@
-#' @useDynLib RMixtComp
-#' @import Rcpp doParallel scales plotly
-#' @importFrom grDevices n2mfrow
-#' @importFrom graphics axis lines plot abline legend matplot par title
-#' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm qnbinom
-#' @importFrom stats rbinom rmultinom rnorm rpois runif rweibull rnbinom
-#' @importFrom parallel makeCluster detectCores stopCluster
-#' @importFrom foreach foreach %dopar%
-#' @importFrom ggplot2 ggplot aes aes_string ylim labs theme theme_minimal element_text element_blank 
-#' @importFrom ggplot2 geom_tile geom_text geom_bar geom_point geom_rect geom_ribbon geom_line geom_histogram scale_fill_gradient scale_fill_manual position_dodge scale_color_discrete
+# MixtComp version 4.0  - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+ 
+
+#' @import RMixtCompIO RMixtCompUtilities
+#' @importFrom parallel detectCores
+#' @importFrom graphics plot
 #' @importFrom utils head
-#' 
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package

@@ -6,9 +6,6 @@ out
 .Rhistory
 .cproject
 .project
-progress
 genDataPackage.R
-Makefile
-build.sh
-updateLib.py
+RMCtest.xml
 README.md

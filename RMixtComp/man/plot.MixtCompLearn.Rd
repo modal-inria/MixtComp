@@ -24,7 +24,7 @@ Plot of a \emph{MixtCompLearn} object
 \examples{
 data(iris)
 
-# run RMixtCompt in unsupervised clustering mode and in basic mode
+# run RMixtComp in unsupervised clustering mode and in basic mode
 resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 
 plot(resLearn)
@@ -33,17 +33,6 @@ plot(resLearn, nClass = 3)
 }
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
-
-Other plot: \code{\link{heatmapClass}},
-  \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
-  \code{\link{histMisclassif}},
-  \code{\link{plot.MixtComp}},
-  \code{\link{plotConvergence}}, \code{\link{plotCrit}},
-  \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
-  \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}},
-  \code{\link{plotParamConvergence}},
-  \code{\link{plotProportion}}
 }
 \author{
 Quentin Grimonprez

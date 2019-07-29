@@ -1,16 +1,20 @@
 Package: RJMixtComp
 Type: Package
-Title: Mixture Composer
-Version: 0.5
-Date: 2019-01-15
-Author: Quentin Grimonprez
-Maintainer: Quentin Grimonprez <quentin.grimonprez@inria.fr>
+Title: R Interface of JMixtComp
+Version: 4.0.0
+Date: 2019-07-02
+Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
+             person("Étienne", "Goffinet", role = "ctb"),
+             person("Christophe", "Biernacki", role = "aut"),
+             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
+             person("Serge", "Iovleff", role = "ctb"))
 Description: Mixture Composer is a project to build mixture models with
-    heterogeneous data sets. The conditional independence property enable composing
-    all the data sets in a single mixture model.
-License: file LICENCE
-Copyright: Inria for RJMixtComp, Inria - Université de Lille for JMixtcomp
+    heterogeneous data sets.
+License: AGPL-3
+Copyright: Inria - Université de Lille - CNRS
 Imports: jsonlite
+Depends: RMixtCompUtilities
 Suggests: testthat
 Encoding: UTF-8
 RoxygenNote: 6.1.1

@@ -1,58 +1,24 @@
+# MixtComp version 4 - july 2019
+# Copyright (C) Inria - Université de Lille - CNRS 
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+ 
+
 # @author Quentin Grimonprez
 context("run functions")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-test_that("rmcMultiRun works", {
-  set.seed(42)
-  
-  nInd <- 1000
-  
-  var <- list()
-  var$z_class <- zParam()
-  var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
-  var$Gaussian1 <- gaussianParam("Gaussian1")
-  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 1)
-  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 1)
-  
-  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
-  
-  algo <- list(
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
-    nInitPerClass = 100,
-    nSemTry = 20,
-    nInitPerClass = 100,
-    confidenceLevel = 0.95,
-    nClass = 4,
-    ratioStableCriterion = 0.95,
-    nStableCriterion = 10,
-    mode = "learn",
-    nInd = 1000
-  )
-  
-  resLearn <- rmcMultiRun(algo, resGen$data, resGen$desc, list(), nRun = 1) 
-  
-  if(!is.null(resLearn$warnLog))
-    print(resLearn$warnLog)
-  
-  expect_equal(resLearn$warnLog, NULL)
-  
-  expect_equal(names(resLearn), c("mixture", "variable", "algo"))
-  
-  
-  resLearn <- rmcMultiRun(algo, resGen$data, resGen$desc, list(), nCore = 2, nRun = 5) 
-  
-  if(!is.null(resLearn$warnLog))
-    print(resLearn$warnLog)
-  
-  expect_equal(resLearn$warnLog, NULL)
-  
-  expect_equal(names(resLearn), c("mixture", "variable", "algo"))
-  
-})
 
 
 test_that("mixtCompLearn works in basic mode + predict", {
@@ -69,7 +35,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
@@ -85,7 +51,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
@@ -105,7 +71,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
@@ -126,7 +92,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
   expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
@@ -149,7 +115,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
@@ -158,7 +124,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   dat$z_class = NULL
   expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
-  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list())
 })
@@ -233,13 +199,13 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   nInd <- 1000
   
   var <- list()
-  var$z_class <- zParam()
+  var$z_class <- RMixtCompIO:::zParam()
   var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
-  var$Gaussian1 <- gaussianParam("Gaussian1")
+  var$Gaussian1 <- RMixtCompIO:::gaussianParam("Gaussian1")
   var$Gaussian1$param[[3]] <- list(mean = -2, sd = 1)
   var$Gaussian1$param[[4]] <- list(mean = 2, sd = 1)
   
-  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
+  resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.9, var)
   
   algo <- list(
     nbBurnInIter = 100,
@@ -261,7 +227,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), resGen$z), 0.85)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
@@ -316,13 +282,13 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   nInd <- 1000
   
   var <- list()
-  var$z_class <- zParam()
+  var$z_class <- RMixtCompIO:::zParam()
   var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
-  var$Gaussian1 <- gaussianParam("Gaussian1")
+  var$Gaussian1 <- RMixtCompIO:::gaussianParam("Gaussian1")
   var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.5)
   var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.5)
   
-  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
+  resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.9, var)
   
   algo <- list(
     nbBurnInIter = 100,
@@ -343,7 +309,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), resGen$z), 0.85)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
@@ -462,7 +428,7 @@ test_that("mixtCompLearn works in hierarchicalMode",{
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn$res[[1]]), simData$dataLearn$data.frame$z_class), 0.9)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn$res[[1]]), simData$dataLearn$data.frame$z_class), 0.9)
   expect_lte(norm(getTik(resLearn$res[[1]], log = FALSE) - getEmpiricTik(resLearn$res[[1]]))/resLearn$algo$nInd, 0.1)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))

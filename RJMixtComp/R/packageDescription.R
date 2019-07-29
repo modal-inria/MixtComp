@@ -1,7 +1,5 @@
-# packages to import for the NAMESPACE file
-#' @import jsonlite
+#' @import jsonlite RMixtCompUtilities
 #' 
-
 #' @title RJMixtComp
 #' @docType package
 #' @aliases RJMixtComp-package
@@ -23,7 +21,7 @@
 #' Vincent Kubicki <vincent.kubicki@@inria.fr">
 #' Christophe Biernacki
 #' Quentin Grimonprez
-#' Serge Iovleff"
+#' Serge Iovleff
 #'  
 #' 
 #' @examples 

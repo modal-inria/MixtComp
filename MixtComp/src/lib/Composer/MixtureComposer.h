@@ -1,5 +1,18 @@
-/* MixtComp version 2.0  - 13 march 2017
- * Copyright (C) Inria - Lille 1 */
+/* MixtComp version 4  - july 2019
+ * Copyright (C) Inria - Université de Lille - CNRS*/
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
+ **/
 
 /*
  *  Project:    MixtComp
@@ -38,7 +51,7 @@ public:
 	MixtureComposer(const Graph& algo) :
 			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
 					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
-					zClassInd_), completedProbabilityCache_(nInd_), lastPartition_(nInd_), initialNIter_(0), nConsecutiveStableIterations_(0) {
+					zClassInd_), completedProbabilityCache_(nInd_), initialNIter_(0), lastPartition_(nInd_), nConsecutiveStableIterations_(0) {
 #ifdef MC_VERBOSE
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 #endif

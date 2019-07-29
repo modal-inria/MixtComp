@@ -19,7 +19,7 @@ Summary of a \emph{MixtCompLearn} object
 \examples{
 data(iris)
 
-# run RMixtCompt in unsupervised clustering mode and in basic mode
+# run RMixtComp in unsupervised clustering mode and in basic mode
 resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 
 summary(resLearn)
@@ -27,7 +27,7 @@ summary(resLearn, nClass = 3)
 
 }
 \seealso{
-\code{\link{mixtCompLearn}} \code{\link{print.MixtCompLearn}}
+\code{\link{mixtCompLearn}} \code{print.MixtCompLearn}
 }
 \author{
 Quentin Grimonprez
