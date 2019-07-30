@@ -7,7 +7,7 @@
 getCompletedData(outMixtComp, var = NULL, with.z_class = FALSE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp}.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
 \item{var}{Name of the variables for which to extract the completed data. Default is NULL (all variables are extracted)}
 
@@ -20,22 +20,37 @@ a matrix with the data completed by MixtComp (z_class is in the first column and
 Get the completed data from MixtComp object
 }
 \examples{
-\donttest{
-data(simData)
- 
-# define the algorithm's parameters
-algo <- createAlgo()
+require(RMixtCompIO) # for learning a mixture model
+dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+                  
+# add missing values
+dataLearn$var1[12] = "?"
+dataLearn$var2[72] = "?"
+                  
+model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+              var2 = list(type = "Poisson", paramStr = ""))
 
-# keep only 3 variables
-model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+algo <- list(
+  nClass = 2,
+  nInd = 100,
+  nbBurnInIter = 100,
+  nbIter = 100,
+  nbGibbsBurnInIter = 100,
+  nbGibbsIter = 100,
+  nInitPerClass = 3,
+  nSemTry = 20,
+  confidenceLevel = 0.95,
+  ratioStableCriterion = 0.95,
+  nStableCriterion = 10,
+  mode = "learn"
+)
 
-# run RMixtComp for clustering
-resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
+resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 # get completedData
 completedData <- getCompletedData(resLearn)
-completedData2 <- getCompletedData(resLearn, var = "Gaussian1")
-}
+completedData2 <- getCompletedData(resLearn, var = "var1")
 
 }
 \seealso{

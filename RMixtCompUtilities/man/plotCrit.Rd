@@ -17,7 +17,9 @@ plotCrit(output, pkg = c("ggplot2", "plotly"), ...)
 Plot BIC and ICL
 }
 \examples{
-\donttest{
+\dontrun{
+require(RMixtComp)
+
 data(simData)
  
 # define the algorithm's parameters

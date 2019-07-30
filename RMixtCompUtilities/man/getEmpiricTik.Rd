@@ -10,7 +10,7 @@ getEmpiricTik(outMixtComp)
 getTik(outMixtComp, log = TRUE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp}.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
 \item{log}{if TRUE, log(tik) are returned}
 }
@@ -24,28 +24,33 @@ Get the a posteriori probability to belong to each class for each individual
 \emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns an estimation based on the sampled z_i during the algorithm.
 }
 \examples{
-\donttest{
-data(simData)
- 
-# define the algorithm's parameters
-algo <- list(nbBurnInIter = 100,
-             nbIter = 100,
-             nbGibbsBurnInIter = 50,
-             nbGibbsIter = 50,
-             nInitPerClass = 10,
-             nSemTry = 20,
-             confidenceLevel = 0.95)
+require(RMixtCompIO) # for learning a mixture model
+dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+                  
+model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+              var2 = list(type = "Poisson", paramStr = ""))
 
-# keep only 3 variables
-model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+algo <- list(
+  nClass = 2,
+  nInd = 100,
+  nbBurnInIter = 100,
+  nbIter = 100,
+  nbGibbsBurnInIter = 100,
+  nbGibbsIter = 100,
+  nInitPerClass = 3,
+  nSemTry = 20,
+  confidenceLevel = 0.95,
+  ratioStableCriterion = 0.95,
+  nStableCriterion = 10,
+  mode = "learn"
+)
 
-# run RMixtComp for clustering
-resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
+resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 # get tik
 tikEmp <- getEmpiricTik(resLearn)
 tik <- getTik(resLearn, log = FALSE)
-}
 
 }
 \seealso{

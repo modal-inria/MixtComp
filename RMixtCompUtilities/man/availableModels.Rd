@@ -21,6 +21,10 @@ a data.frame containing models implemented in MixtComp
 \description{
 Get information about models implemented in MixtComp
 }
+\examples{
+availableModels()
+
+}
 \seealso{
 \code{mixtCompLearn}
 }

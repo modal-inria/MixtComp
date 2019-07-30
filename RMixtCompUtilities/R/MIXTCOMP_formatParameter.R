@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
  
 
-# format the model list for rmc function:
+# format the model list for rmc/rmcMultiRun functions:
 # - add paramStr when missing
 # - ensure the list format of each element
 # @author Quentin Grimonprez
