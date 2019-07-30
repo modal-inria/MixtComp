@@ -74,11 +74,11 @@ simpleNormalTest <- function() {
   
   resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
   
-  print("learn")
+  # print("learn")
   partition <- resLearn$variable$data$z_class$completed
-  paste0("rand: ", rand.index(partition, zLearn)) # expected 0.9 rand
-  print("contengency: ")
-  print(table(zLearn, partition))
+  # paste0("rand: ", rand.index(partition, zLearn)) # expected 0.9 rand
+  # print("contengency: ")
+  # print(table(zLearn, partition))
   
   algoPredict <- list(
     nClass = 2,
@@ -111,11 +111,14 @@ simpleNormalTest <- function() {
   
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   
-  print("predict")
-  partition <- resPredict$variable$data$z_class$completed
-  paste0("rand: ", rand.index(partition, zPredict)) # expected 0.9 rand
-  print("contengency: ")
-  print(table(zPredict, partition))
+  # print("predict")
+  partitionPred <- resPredict$variable$data$z_class$completed
+  # paste0("rand: ", rand.index(partition, zPredict)) # expected 0.9 rand
+  # print("contengency: ")
+  # print(table(zPredict, partition))
   
   Sys.unsetenv("MC_DETERMINISTIC")
+  
+  return(list(learn = list(rand = rand.index(partition, zLearn), confmat = table(zLearn, partition)),
+              predict = list(rand = rand.index(partitionPred, zPredict), confmat = table(zPredict, partitionPred))))
 }

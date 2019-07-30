@@ -71,8 +71,8 @@ test_that("gaussian model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("poisson model works",{
@@ -120,8 +120,8 @@ test_that("poisson model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("NegativeBinomial model works",{
@@ -169,8 +169,8 @@ test_that("NegativeBinomial model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("multinomial model works",{
@@ -233,8 +233,8 @@ test_that("multinomial model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("weibull model works",{
@@ -279,8 +279,8 @@ test_that("weibull model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("functional model works",{
@@ -325,8 +325,8 @@ test_that("functional model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 
@@ -372,8 +372,8 @@ test_that("functional model with shared alpha works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 test_that("rank model works",{
@@ -418,8 +418,8 @@ test_that("rank model works",{
   empiricTik <- resLearn$variable$data$z_class$stat
   expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
   
-  confMatSampled <- table(resGen$z, partition)
-  print(confMatSampled)
+  # confMatSampled <- table(resGen$z, partition)
+  # print(confMatSampled)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")
