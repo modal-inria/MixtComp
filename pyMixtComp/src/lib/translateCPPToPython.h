@@ -67,8 +67,8 @@ void translateCPPToPython(const NamedVector<T>& in, const std::string& name, boo
 	for(auto& s: in.rowNames_){
 		rowNames.append(s);
 	}
+	out[name]["rowNames"] = rowNames;
 
-	out[name]["rowNames"] = boost::python::numpy::array(rowNames);
 	out[name]["nrow"] = nrow;
 	out[name]["dtype"] = names<T>::name;
 	out[name]["ctype"] = "Vector";
@@ -89,19 +89,17 @@ void translateCPPToPython(const NamedMatrix<T>& in, const std::string& name, boo
 	boost::python::numpy::ndarray mat = boost::python::numpy::from_data(in.mat_.data(), dt, shape, stride, own);
 	out[name]["data"] = mat.copy();// otherwise data are lost
 
-
 	boost::python::list rowNames;
 	for(auto& s: in.rowNames_){
 		rowNames.append(s);
 	}
-	out[name]["rowNames"] = boost::python::numpy::array(rowNames);
+	out[name]["rowNames"] = rowNames;
 
 	boost::python::list colNames;
 	for(auto& s: in.colNames_){
 		colNames.append(s);
 	}
-	out[name]["colNames"] = boost::python::numpy::array(colNames);
-
+	out[name]["colNames"] = colNames;
 
 	out[name]["ctype"] = "Matrix";
 	out[name]["dtype"] = names<T>::name;

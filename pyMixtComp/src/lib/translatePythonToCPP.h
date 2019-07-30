@@ -49,9 +49,11 @@ void translatePythonToCPP(const boost::python::api::object_item& in, NamedVector
 	out.rowNames_.resize(nrow);
 
 	for(Index i = 0; i < nrow; ++i) {
-		out.rowNames_[i] =  boost::python::extract<std::string>(in["rowNames"][i]);
 		out.vec_(i) = boost::python::extract<T>(in["data"][i]);
 	}
+
+	out.rowNames_ = std::vector<std::string>(boost::python::stl_input_iterator<std::string>(in["rowNames"]),
+	                                         boost::python::stl_input_iterator<std::string>());
 }
 
 
@@ -65,16 +67,15 @@ void translatePythonToCPP(const boost::python::api::object_item& in, NamedMatrix
 	out.colNames_.resize(ncol);
 
 	for (Index j = 0; j < ncol; ++j) {
-		out.colNames_[j] =  boost::python::extract<std::string>(in["colNames"][j]);
-
 		for (Index i = 0; i < nrow; ++i) {
 			out.mat_(i, j) = boost::python::extract<T>(in["data"][i][j]);
 		}
 	}
 
-	for (Index i = 0; i < nrow; ++i) {
-		out.rowNames_[i] = boost::python::extract<std::string>(in["rowNames"][i]);
-	}
+	out.rowNames_ = std::vector<std::string>(boost::python::stl_input_iterator<std::string>(in["rowNames"]),
+	                                         boost::python::stl_input_iterator<std::string>());
+	out.colNames_ = std::vector<std::string>(boost::python::stl_input_iterator<std::string>(in["colNames"]),
+	                                         boost::python::stl_input_iterator<std::string>());
 }
 
 }  // namespace mixt
