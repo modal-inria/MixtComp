@@ -6,9 +6,9 @@ Date: 2019-07-30
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Serge", "Iovleff", role = "ctb"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
-             person("Étienne", "Goffinet", role = "ctb"),
-             person("Serge", "Iovleff", role = "ctb"))
+             person("Étienne", "Goffinet", role = "ctb"))
 Copyright: Inria - Université de Lille - CNRS; Patrick Wieschollek & the respective contributors for CppOptimizationLibrary
 License: AGPL-3
 Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
