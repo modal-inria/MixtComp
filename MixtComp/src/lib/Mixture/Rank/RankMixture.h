@@ -212,7 +212,7 @@ public:
 			paramG_.get_payload( { idName_ }, "paramStr", paramStr_); // overwrite paramStr_ obtained from desc
 
 			for (Index k = 0; k < nClass_; ++k) {
-				NamedMatrix<Real> rank;
+				NamedMatrix<int> rank;
 				paramG_.get_payload( { idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "rank", rank);
 				rank.mat_ -= minModality;
 				mu_(k).setNbPos(rank.mat_.cols());
