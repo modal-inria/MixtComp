@@ -24,7 +24,6 @@
 
 #include "gtest/gtest.h"
 #include "MixtComp.h"
-#include "jsonIO.h"
 
 using namespace mixt;
 
