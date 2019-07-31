@@ -18,8 +18,8 @@ MixtComp/log
 MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
-MixtComp/data/*/learn/resLearn.json
-MixtComp/data/*/predict/resPredict.json
+JMixtComp/data/*/learn/resLearn.json
+JMixtComp/data/*/predict/resPredict.json
 JMixtComp/release
 JMixtComp/debug
 JMixtComp/reportJMC.xml
