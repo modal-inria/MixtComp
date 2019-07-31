@@ -6,6 +6,10 @@ cd MixtComp
 ./clean.sh
 ./buildDebug.sh
 ./valgrindRun.sh
+cd ../JMixtComp
+./clean.sh
+./buildDebug.sh
+./valgrindRun.sh
 cd ../RMixtCompIO
 make clean
 make updateLib
