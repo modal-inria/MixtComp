@@ -21,6 +21,7 @@ MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/license
 ## Code organization
 
 * **MixtComp** MixtComp C++ library
+* **JMixtComp** C++ executable using JSON files
 * **RMixtComp** Main R package loading *RMixtCompIO* and *RMixtCompUtilities*
 * **RMixtCompIO** R package linking MixtComp with Rcpp (internal use)
 * **RMixtCompUtilities** R package containing graphical, formatting functions and getters 
@@ -39,7 +40,7 @@ A description of the links between packages and external libraries can be found 
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
 * [Solutions to common errors](MixtComp/docs/error.md)
-* [Run MixtComp in command line](MixtComp/docs/runJMC.md)
+* [Run MixtComp in command line](JMixtComp/docs/runJMC.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
