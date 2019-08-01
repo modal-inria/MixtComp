@@ -5,10 +5,12 @@
 cd MixtComp
 ./clean.sh
 ./buildDebug.sh
+cd debug/ && make runUtest && cd ..
 ./valgrindRun.sh
 cd ../JMixtComp
 ./clean.sh
 ./buildDebug.sh
+cd debug/ && make runUtestJMC && cd ..
 ./valgrindRun.sh
 cd ../RMixtCompIO
 make clean
