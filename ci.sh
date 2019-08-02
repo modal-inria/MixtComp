@@ -15,8 +15,7 @@ cd debug/ && make runUtestJMC && cd ..
 cd ../pyMixtComp
 ./clean.sh
 ./buildDebug.sh
-cd debug/ && make runUtestPy && cd ..
-./valgrindRun.sh
+./utestDebug.sh
 cd ../RMixtCompIO
 make clean
 make updateLib
