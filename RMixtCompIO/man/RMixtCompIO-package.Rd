@@ -18,7 +18,6 @@ Online SaaS version: \url{https://massiccc.lille.inria.fr/}
 The main function is \link{rmcMultiRun} that runs a SEM algorithm to learn a mixture model.
 }
 \examples{
-\donttest{
 dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
                   
@@ -26,7 +25,7 @@ dataPredict <- list(var1 = as.character(c(rnorm(10, -2, 0.8), rnorm(10, 2, 0.8))
                     var2 = as.character(c(rnorm(10, 2), rpois(10, 8))))
                   
 model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))#' 
+              var2 = list(type = "Poisson", paramStr = ""))
 
 algo <- list(
   nClass = 2,
@@ -44,26 +43,15 @@ algo <- list(
 )
 
 
-# define the algorithm's parameters
-algo <- list(nClass = , 
-             nInd = ,
-             nbBurnInIter = 100,
-             nbIter = 100,
-             nbGibbsBurnInIter = 50,
-             nbGibbsIter = 50,
-             nInitPerClass = 10,
-             nSemTry = 20,
-             confidenceLevel = 0.95)
-
 # run RMixtComp in unsupervised clustering mode + data as matrix
 resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 
 # run RMixtCompt in predict mode + data as list
 algo$nInd = 20
-resPredict <- rmcMultiRun(algo, data, model, resLearn)
+algo$mode = "predict"
+resPredict <- rmcMultiRun(algo, dataPredict, model, resLearn)
 
-}
 
 }
 \seealso{

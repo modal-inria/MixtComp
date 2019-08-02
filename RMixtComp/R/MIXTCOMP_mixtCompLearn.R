@@ -227,7 +227,6 @@
 #' Allou Samé, Faicel Chamroukhi, Gérard Govaert, Patrice Aknin. \emph{Model-based clustering and segmentation of time series with change in regime}. Advances in Data Analysis and Classification, 2011, 5(4):301-321
 #'                    
 #' @examples 
-#' \donttest{
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
@@ -240,19 +239,20 @@
 #'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtComp in unsupervised clustering mode + data as matrix
-#' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
+#' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
+#'                            nClass = 2:4)
 #' 
 #' # run RMixtComp in supervised clustering mode + data as matrix
-#' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, 
+#' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised[1:3], algo, 
 #'                            nClass = 2:4)
 #' 
 #' # run RMixtComp in predict mode + data as list
-#' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised, algo,
+#' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised[1:3], algo,
 #'                               resLearn1, nClass = 2)
 #' 
-#' }
 #' 
-#' @seealso Other clustering packages: \code{Rmixmod}, \code{blockcluster}
+#' 
+#' @seealso Graphical and utility functions in \code{RMixtCompUtilities}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
 #' @author Quentin Grimonprez
 #' @export
 mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes", "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)

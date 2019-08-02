@@ -1,0 +1,2 @@
+- MixtComp C++ library (src/lib) is licensed under AGPL-3 licence
+- CppOptimizationLibrary C++ library (src/optim) is licensed under MIT licence (see src/optim/LICENSE or visit https://github.com/PatWie/CppNumericalSolvers/blob/master/LICENSE) 

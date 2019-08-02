@@ -60,7 +60,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' @description Compute the discriminative power of each variable or classe
 #'
 #'
-#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp}.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
 #'
 #' @return the discriminative power
 #' 
@@ -76,32 +76,38 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' 
 #'
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' # run RMixtComp for clustering
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
 #' 
 #' discVar <- computeDiscrimPowerVar(resLearn)
 #' discClass <- computeDiscrimPowerClass(resLearn)
 #' 
-#' # graphic representation of discVar
+#' # graphic representation of discriminant variables
 #' plotDiscrimVar(resLearn)
-#' # graphic representation of discClass
+#' # graphic representation of discriminant classes
 #' plotDiscrimClass(resLearn)
-#' }
 #' 
 #' @author Matthieu Marbac
 #' @seealso \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
@@ -126,7 +132,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' @description Compute the similarity between variables (or classes)
 #'
 #'
-#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp}.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
 #'
 #' @return a similarity matrix
 #' 
@@ -138,27 +144,32 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' \deqn{Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2}
 #'
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' # run RMixtComp for clustering
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #' 
 #' simVar <- computeSimilarityVar(resLearn)
 #' simClass <- computeSimilarityClass(resLearn)
-#' }
 #' 
 #' @author Quentin Grimonprez
 #' @seealso \code{\link{heatmapVar}} \code{\link{heatmapClass}}
@@ -203,6 +214,10 @@ computeSimilarityClass <- function(outMixtComp)
 #'
 #' @seealso \code{mixtCompLearn}
 #' @author Quentin Grimonprez
+#' 
+#' @examples 
+#' availableModels()
+#' 
 #' @export
 availableModels <- function()
 {

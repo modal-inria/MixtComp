@@ -17,20 +17,34 @@ plotParamConvergence(output, var, ...)
 Plot the evolution of estimated parameters after the burn-in phase.
 }
 \examples{
-\donttest{
-data(simData)
+require(RMixtCompIO) # for learning a mixture model
+dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+                  
+model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+              var2 = list(type = "Poisson", paramStr = ""))
 
-# define the algorithm's parameters
-algo <- createAlgo()
+algo <- list(
+  nClass = 2,
+  nInd = 100,
+  nbBurnInIter = 100,
+  nbIter = 100,
+  nbGibbsBurnInIter = 100,
+  nbGibbsIter = 100,
+  nInitPerClass = 3,
+  nSemTry = 20,
+  confidenceLevel = 0.95,
+  ratioStableCriterion = 0.95,
+  nStableCriterion = 10,
+  mode = "learn"
+)
 
-# run RMixtComp in unsupervised clustering mode + data as matrix
-res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
+resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 # plot
-plotParamConvergence(res, "Gaussian1")
-plotParamConvergence(res, "Poisson1")
+plotParamConvergence(resLearn, "var1")
+plotParamConvergence(resLearn, "var2")
 
-}
 
 }
 \seealso{

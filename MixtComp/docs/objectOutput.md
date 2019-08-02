@@ -80,6 +80,9 @@ A copy of algo parameter.
 - **nbGibbsIter** Number of iterations of the Gibbs algorithm.
 - **nInitPerClass** Number of individuals used to initialize each cluster.
 - **nSemTry** Number of try of the algorithm for avoiding an error.
+- **confidenceLevel** Confidence level for confidence bounds for parameter estimation.
+- **ratioStableCriterion** Stability partition required to stop earlier the SEM .
+- **nStableCriterion** Number of iterations of partition stability to stop earlier the SEM.
 - **nInd** number of samples in the dataset
 - **nClass** number of class of the mixture
 - **mode** "predict" for mixtCompPredict or "learn" for mixtCompLearn

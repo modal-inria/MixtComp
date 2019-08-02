@@ -23,13 +23,13 @@
 #' @aliases RMixtComp-package
 #' @name RMixtComp-package
 #' @description  
-#' MixtComp (Mixture Composer) is a model-based clustering package for mixed data originating from the Modal team (Inria Lille).
+#' MixtComp (Mixture Composer, \url{https://github.com/modal-inria/MixtComp}) is a model-based clustering package for mixed data.
 #' 
 #' It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption. 
 #' Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced models (Func_CS and Rank_ISR).
-#' MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
+#' MixtComp has the ability to natively manage missing data (completely or by interval).
 #' 
-#' Online SaaS version: \url{https://massiccc.lille.inria.fr/}
+#' Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
 #' 
 #' 
 #' @details
@@ -38,18 +38,22 @@
 #' 
 #' Read the help page of \link{mixtCompLearn} for available models and data format. A summary of these information can be accessed with the function \link{availableModels}.
 #' 
+#' All utility functions (getters, graphical) are in the \code{RMixtCompUtilities} package.
+#' 
+#' In order to have an overview of the output, you can use \link{print.MixtCompLearn}, \link{summary.MixtCompLearn} and \link{plot.MixtCompLearn} functions,
+#' 
 #' Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam},
 #'  \link{getTik}, \link{getEmpiricTik}, \link{getPartition}, \link{getType}, \link{getModel}, \link{getVarNames}.
 #' 
-#' Datasets with running examples are provided: \link{titanic}, \link{CanadianWeather}, \link{prostate}, \link{simData}.
 #' 
 #' You can compute discriminative powers and similarities with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 
 #' Graphics functions are \link{plot.MixtComp}, \link{plot.MixtCompLearn}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence}, 
 #' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
 #' 
+#' Datasets with running examples are provided: \link{titanic}, \link{CanadianWeather}, \link{prostate}, \link{simData}.
+#' 
 #' @examples 
-#' \donttest{
 #' data(simData)
 #'  
 #' # define the algorithm's parameters: you can use createAlgo function
@@ -61,15 +65,22 @@
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
-#' # run RMixtComp for learning
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
+#' # run RMixtComp for learning using only 3 variables
+#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
+#'                           nClass = 2:4)
+#' 
+#' summary(resLearn)
+#' plot(resLearn)
 #' 
 #' # run RMixtComp for predicting
-#' resPred <- mixtCompPredict(simData$dataPredict$matrix, simData$model$unsupervised, algo, resLearn)
+#' resPred <- mixtCompPredict(simData$dataPredict$matrix, simData$model$unsupervised[1:3], algo,
+#'                            resLearn)
 #' 
-#' }
+#' partitionPred <- getPartition(resPred)
+#' print(resPred)
 #' 
-#' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
+#' 
+#' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}} \code{RMixtCompUtilities}, \code{RMixtCompIO}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @keywords package
 NULL

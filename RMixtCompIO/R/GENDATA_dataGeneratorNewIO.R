@@ -46,7 +46,7 @@ dataGeneratorNewIO <- function(
     nIndClass[z[i]] <- nIndClass[z[i]] + 1
   }
   
-  cat("Number of observation per class: ", nIndClass, "\n")
+  # cat("Number of observation per class: ", nIndClass, "\n")
 
   dataStr <- vector("list", nbVar)
   for (j in 1:nbVar) {

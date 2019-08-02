@@ -73,8 +73,8 @@ test_that("Hard coded simple test", {
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, zLearn), 0.9)
   
-  confMatSampledLearn <- table(zLearn, partition)
-  print(confMatSampledLearn)
+  # confMatSampledLearn <- table(zLearn, partition)
+  # print(confMatSampledLearn)
   
   algoPredict <- list(
     nClass = 2,

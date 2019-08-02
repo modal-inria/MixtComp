@@ -212,7 +212,6 @@ globalVariables('i')
 #'
 #'
 #' @examples 
-#' \donttest{
 #' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
 #'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
 #'                   
@@ -220,7 +219,7 @@ globalVariables('i')
 #'                     var2 = as.character(c(rnorm(10, 2), rpois(10, 8))))
 #'                   
 #' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-#'               var2 = list(type = "Poisson", paramStr = ""))#' 
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
 #' algo <- list(
 #'   nClass = 2,
@@ -238,30 +237,19 @@ globalVariables('i')
 #' )
 #' 
 #' 
-#' # define the algorithm's parameters
-#' algo <- list(nClass = , 
-#'              nInd = ,
-#'              nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
-#' 
 #' # run RMixtComp in unsupervised clustering mode + data as matrix
 #' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #' 
 #' 
 #' # run RMixtCompt in predict mode + data as list
 #' algo$nInd = 20
-#' resPredict <- rmcMultiRun(algo, data, model, resLearn)
+#' algo$mode = "predict"
+#' resPredict <- rmcMultiRun(algo, dataPredict, model, resLearn)
 #' 
-#' }
 #' 
 #' @author Quentin Grimonprez
 #' @export
-rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
+rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 1, verbose = FALSE)
 {
   nCore <- min(max(1, nCore), nRun)
   

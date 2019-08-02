@@ -1,4 +1,4 @@
-cd ../MixtComp/
+cd ../JMixtComp/
 ./clean.sh
 ./buildRelease.sh
-cp release/json/jmc ../RJMixtComp/inst/exeMixtComp/jmc
+cp release/lib/jmc ../RJMixtComp/inst/exeMixtComp/jmc
