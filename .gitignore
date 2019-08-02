@@ -20,7 +20,7 @@ MixtComp/debug
 MixtComp/report.xml
 pyMixtComp/release
 pyMixtComp/debug
-pyMixtComp/report.xml
+pyMixtComp/reportPy.xml
 JMixtComp/data/*/learn/resLearn.json
 JMixtComp/data/*/predict/resPredict.json
 JMixtComp/release
