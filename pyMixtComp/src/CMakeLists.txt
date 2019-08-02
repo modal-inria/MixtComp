@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 
 project(pyMixtComp)
 
+# C++11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # boost
 find_package(Boost 1.58  COMPONENTS python numpy REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
