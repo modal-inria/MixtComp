@@ -27,6 +27,7 @@ MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/license
 * **RMixtCompUtilities** R package containing graphical, formatting functions and getters 
 * **RJMixtComp** R package using a JMixtComp executable 
 * **RMixtCompHier** R package containing the hierarchical version of MixtComp
+* **pytMixtComp** minimal Python interface
 
 A description of the links between packages and external libraries can be found [here](architecture.md) for a text version and [here](graphArchitecture.png) for a visual version
 
@@ -40,7 +41,7 @@ A description of the links between packages and external libraries can be found 
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
 * [Solutions to common errors](MixtComp/docs/error.md)
-* [Run MixtComp in command line](JMixtComp/docs/runJMC.md)
+* [Run MixtComp in command line](JMixtComp/README.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
