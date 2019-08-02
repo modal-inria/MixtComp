@@ -1,5 +1,14 @@
 # PyMixtComp
 
+## Requirements
+
+pyMixtComp requires python and the *numpy* package. See [MixtComp's README](../MixtComp/README.md) for MixtComp's requirements.
+
+```
+sudo apt install python-pip
+pip install numpy
+```
+
 ## Compile PyMixtComp
 
 Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
