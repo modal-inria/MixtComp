@@ -11,7 +11,7 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Serge", "Iovleff", role = "ctb"))
 Copyright: Inria - Université de Lille - CNRS
 License: AGPL-3
-Description: Mixture Composer is a project to build mixture models with
+Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
     heterogeneous data sets and partially missing data management. 
     It includes 8 models for real, categorical, counting, functional and ranking data.
 URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
