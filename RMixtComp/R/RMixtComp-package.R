@@ -18,6 +18,8 @@
 #' @importFrom parallel detectCores
 #' @importFrom graphics plot
 #' @importFrom utils head
+#' @importFrom ggplot2 ggplot aes_string labs geom_point geom_line
+#' @importFrom plotly plot_ly add_trace layout %>%
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package

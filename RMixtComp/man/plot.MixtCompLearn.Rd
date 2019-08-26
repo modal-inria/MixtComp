@@ -33,6 +33,8 @@ plot(resLearn, nClass = 3)
 }
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
+
+Other plot: \code{\link{plotCrit}}
 }
 \author{
 Quentin Grimonprez
