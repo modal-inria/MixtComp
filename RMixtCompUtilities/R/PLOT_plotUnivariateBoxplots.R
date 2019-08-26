@@ -16,7 +16,7 @@
 
 #' Boxplot per class
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param var name of the variable
 #' @param grl if TRUE plot the general distribution of the data
 #' @param ... other parameters (see \emph{Details})

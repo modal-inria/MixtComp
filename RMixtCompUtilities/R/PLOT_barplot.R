@@ -19,7 +19,7 @@
 #' @details The discriminative power of variable j is defined by 1 - C(j)
 #' \deqn{C(j)=  -\sum_{k=1}^K \sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*\log(K))}
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param ylim vector of length 2 defining the range of y-axis
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
@@ -89,28 +89,38 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' @details The discriminative power of class k is defined by 1 - D(k)
 #' \deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param ylim vector of length 2 defining the range of y-axis
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- createAlgo()
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # run RMixtComp in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' # plot
-#' plotDiscrimClass(res)
-#' plotDiscrimClass(res$res[[2]])
-#' }
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
+#' plotDiscrimClass(resLearn)
 #' 
 #' @seealso \code{\link{computeDiscrimPowerClass}}
 #' 
@@ -145,27 +155,38 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 
 #' Plot the mixture's proportions 
 #'
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- createAlgo()
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' # run RMixtComp in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #' 
 #' # plot
-#' plotProportion(res)
-#' plotProportion(res$res[[2]])
-#' }
+#' plotProportion(resLearn)
+#' 
 #' 
 #' @family plot
 #' @author Quentin Grimonprez

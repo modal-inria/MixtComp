@@ -36,7 +36,7 @@
 #'  
 #' Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
 #' 
-#' This package contains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO} packages. It is recommended to use RMixtComp which is more user-friendly.
+#' This package contains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO} packages. It is recommended to use \code{RMixtComp} (instead of \code{RMixtCompIO}) which is more user-friendly.
 #' 
 #' @details
 #' \link{createAlgo} gives you default values for required parameters.
@@ -50,10 +50,10 @@
 #' You can compute discriminative powers and similarities with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 
 #' Graphics functions are \link{plot.MixtComp}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence}, 
-#' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
+#' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}.
 #' 
 #' 
-#' @seealso \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod}, \code{blockcluster}
+#' @seealso \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod}, \code{blockcluster} packages
 #' 
 #' @keywords package
 NULL

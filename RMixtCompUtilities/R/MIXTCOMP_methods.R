@@ -25,14 +25,31 @@
 #' @method summary MixtComp
 #' 
 #' @examples 
-#' \donttest{
-#' data(iris)
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' summary(resLearn$res[[2]])
-#' }
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
+#' summary(resLearn)
 #' 
 #' @seealso \code{mixtCompLearn} \code{\link{print.MixtComp}}
 #' @author Quentin Grimonprez
@@ -86,14 +103,31 @@ summary.MixtComp <- function(object, ...)
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(iris)
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' print(resLearn$res[[2]])
-#' }
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
+#' print(resLearn)
 #' 
 #' @method print MixtComp
 #' 
@@ -168,14 +202,31 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(iris)
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
 #' 
-#' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
 #' 
-#' plot(resLearn$res[[2]])
-#' }
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
+#' plot(resLearn)
 #' 
 #' @method plot MixtComp
 #' 

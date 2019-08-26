@@ -20,7 +20,7 @@
 #' err_i = 1 - max_{k={1,\ldots,K}} P(Z_i=k|x_i)
 #' Histgrams of err_i's can be plot for a specific class, all classes or every class
 #'
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
@@ -148,34 +148,35 @@ gghistMisclassif <- function(z, misclassifrisk, classNames)
 }
 
 
-#' Plot BIC and ICL 
-#'
-#' @param output \emph{MixtCompLearn} object
-#' @param pkg "ggplot2" or "plotly". Package used to plot
-#' @param ... arguments to be passed to plot_ly
-#' 
-#' @examples 
-#' \dontrun{
-#' require(RMixtComp)
-#' 
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- createAlgo()
-#' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
-#' 
-#' # run RMixtComp in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
-#' 
-#' # plot
-#' plotCrit(res)
-#' }
-#' 
-#' @family plot
-#' @author Quentin Grimonprez
-#' @export
+# Plot BIC and ICL 
+#
+# @param output \emph{MixtCompLearn} object
+# @param pkg "ggplot2" or "plotly". Package used to plot
+# @param ... arguments to be passed to plot_ly
+# 
+# @examples 
+# \dontrun{
+# # Not run:
+# require(RMixtComp)
+# 
+# data(simData)
+#  
+# # define the algorithm's parameters
+# algo <- createAlgo()
+# 
+# # keep only 3 variables
+# model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+# 
+# # run RMixtComp in unsupervised clustering mode + data as matrix
+# res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+# 
+# # plot
+# plotCrit(res)
+# }
+# 
+# @family plot
+# @author Quentin Grimonprez
+# @export
 plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
@@ -200,7 +201,7 @@ plotlyCrit <- function(crit, nClass, ...)
       add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
       layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
   }
-
+  
   
   p
 }
@@ -211,7 +212,7 @@ ggplotCrit <- function(crit, nClass)
   df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), Criterion = rep(c("BIC", "ICL"), each = length(nClass)))
   
   p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
-      labs(title = "Criterion", x = "Number of classes", y = "value")
+    labs(title = "Criterion", x = "Number of classes", y = "value")
   
   if(length(nClass) == 1)
     p = p + geom_point(aes_string(shape = "Criterion"), size = 3)

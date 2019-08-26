@@ -19,7 +19,7 @@
 #' @details The similarities between variables j and h is defined by Delta(j,h)
 #' \deqn{Delta(j,h) = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}}
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly. For pkg = "ggplot2", addValues = TRUE prints similarity values on the heatmap
 #' 
@@ -100,7 +100,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' @details The similarities between classes k and g is defined by 1 - Sigma(k,g)
 #' \deqn{Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2}
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly. For pkg = "ggplot2", addValues = TRUE prints similarity values on the heatmap
 #' 
@@ -188,7 +188,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' @details Observation are sorted according to the hard partition then for each component
 #' they are sorted by decreasing order of their tik's
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 

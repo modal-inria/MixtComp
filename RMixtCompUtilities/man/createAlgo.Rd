@@ -32,7 +32,7 @@ createAlgo(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50,
 a list with the parameters values
 }
 \description{
-create an algo object required by \code{mixtCompLearn} and \code{mixtCompPredict}.
+create an algo object required by \code{mixtCompLearn} and \code{mixtCompPredict} from \code{RMixtComp}.
 }
 \examples{
 # default values

@@ -7,7 +7,7 @@
 plotParamConvergence(output, var, ...)
 }
 \arguments{
-\item{output}{object returned by function \emph{mixtCompLearn}}
+\item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
 
 \item{var}{name of the variable}
 
@@ -52,7 +52,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
   \code{\link{histMisclassif}},
   \code{\link{plot.MixtComp}},
-  \code{\link{plotConvergence}}, \code{\link{plotCrit}},
+  \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
   \code{\link{plotDiscrimVar}},

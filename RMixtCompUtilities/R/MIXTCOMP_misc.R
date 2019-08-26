@@ -16,7 +16,7 @@
 
 #' @title Create algo object 
 #' 
-#' @description create an algo object required by \code{mixtCompLearn} and \code{mixtCompPredict}.
+#' @description create an algo object required by \code{mixtCompLearn} and \code{mixtCompPredict} from \code{RMixtComp}.
 #'
 #' @param nbBurnInIter Number of iterations of the burn-in part of the SEM algorithm.
 #' @param nbIter Number of iterations of the SEM algorithm.

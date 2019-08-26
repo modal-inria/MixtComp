@@ -17,7 +17,7 @@
 #' Mean and 95\%-level confidence intervals per class
 #' 
 #' 
-#' @param output object returned by function \emph{mixtCompLearn}
+#' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param var name of the variable
 #' @param class class to plot
 #' @param grl if TRUE plot the CI for the dataset and not only classes
