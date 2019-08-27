@@ -71,6 +71,8 @@
 #' 
 #' 
 #' @section Data format:
+#' See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/dataFormat.md}.
+#' 
 #' - Gaussian data:
 #' Gaussian data are real values with the dot as decimal separator.
 #' Missing data are indicated by a \emph{?}. Partial data can be provided through intervals denoted by 
@@ -215,6 +217,7 @@
 #'
 #' }                  
 #'
+#' See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/objectOutput.md}
 #'
 #' @section MixtCompLearn object:
 #' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),

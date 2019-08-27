@@ -81,6 +81,8 @@ Estimates from the burn-in phase are not shown in output.
 }
 \section{Data format}{
 
+See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/dataFormat.md}.
+
 - Gaussian data:
 Gaussian data are real values with the dot as decimal separator.
 Missing data are indicated by a \emph{?}. Partial data can be provided through intervals denoted by 
@@ -224,7 +226,9 @@ output  \cr
          \tab          \tab          \tab |           \tab |_ paramStr \cr
          \tab          \tab          \tab |_ ...
 
-}
+}                  
+
+See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/objectOutput.md}
 }
 
 \section{MixtCompLearn object}{
