@@ -135,7 +135,8 @@ plotLog <- function(paramLog, nbCluster, var, ...)
   nrowParam <- nrow(paramLog)
   nbParamPerClass <- nrowParam/nbCluster
   
-  par(mfrow = n2mfrow(nbParamPerClass))
+  oldPar <- par(mfrow = n2mfrow(nbParamPerClass))
+  on.exit(par(oldPar))
   for(i in 1:nbParamPerClass)
   {
     ind <- nbParamPerClass*(1:nbCluster) + (i-nbParamPerClass)
@@ -145,6 +146,6 @@ plotLog <- function(paramLog, nbCluster, var, ...)
     matplot(t(paramLog[ind,]), type = "l", main = paste0(var, ": ", name), xlab = "Iteration", ylab = name)
     legend("left", paste0("class ", 1:nbCluster), lty = 1:5, col = 1:6)
   }
-  par(mfrow = c(1, 1))
+  
 }
 
