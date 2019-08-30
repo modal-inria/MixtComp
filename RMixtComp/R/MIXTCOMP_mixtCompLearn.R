@@ -233,25 +233,25 @@
 #' data(simData)
 #'  
 #' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
+#' algo <- list(nbBurnInIter = 50,
+#'              nbIter = 50,
 #'              nbGibbsBurnInIter = 50,
 #'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
+#'              nInitPerClass = 20,
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtComp in unsupervised clustering mode + data as matrix
 #' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
-#'                            nClass = 2:4)
+#'                            nClass = 2:3, nRun = 2, nCore = 1)
 #' 
 #' # run RMixtComp in supervised clustering mode + data as matrix
 #' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised[1:3], algo, 
-#'                            nClass = 2:4)
+#'                            nClass = 2:3, nRun = 2, nCore = 1)
 #' 
 #' # run RMixtComp in predict mode + data as list
 #' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised[1:3], algo,
-#'                               resLearn1, nClass = 2)
+#'                               resLearn1, nClass = 2, nCore = 1)
 #' 
 #' 
 #' 

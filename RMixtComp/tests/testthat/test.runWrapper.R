@@ -202,8 +202,8 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   var$z_class <- RMixtCompIO:::zParam()
   var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
   var$Gaussian1 <- RMixtCompIO:::gaussianParam("Gaussian1")
-  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 1)
-  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 1)
+  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.75)
+  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.75)
   
   resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.9, var)
   
@@ -303,7 +303,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 5, nCore = 2, verbose = TRUE) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 5, nCore = 1, verbose = TRUE) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -422,7 +422,7 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   )
   
 
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 3, nRun = 2, verbose = TRUE) 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 3, nRun = 2, nCore = 1, verbose = TRUE) 
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -527,7 +527,7 @@ test_that("summary works + run without paramStr for functional", {
   data("simData")
   simData$model$unsupervised$Functional1$paramStr = ""
   
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), nClass = 2, nRun = 1, hierarchicalMode = "no") 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), nClass = 2, nRun = 1, nCore = 1, hierarchicalMode = "no") 
   
   expect_equal(resLearn$variable$param$Functional1$paramStr, "nSub: 2, nCoeff: 2")
   
