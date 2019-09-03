@@ -196,14 +196,14 @@ test_that("plot in basic mode + predict works with z_class as character", {
 test_that("mixtCompLearn works + mixtCompPredict", {
   set.seed(42)
   
-  nInd <- 1000
+  nInd <- 2000
   
   var <- list()
   var$z_class <- RMixtCompIO:::zParam()
   var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
   var$Gaussian1 <- RMixtCompIO:::gaussianParam("Gaussian1")
-  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.75)
-  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.75)
+  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.5)
+  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.5)
   
   resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.9, var)
   
@@ -221,13 +221,13 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = "LatentClass", Gaussian1 = "Gaussian")
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL", verbose = FALSE) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL", verbose = FALSE, nRun = 3, nCore = 1) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), resGen$z), 0.85)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), resGen$z), 0.9)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
@@ -235,7 +235,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
   expect_equal(resLearn$criterion, "ICL")
-  expect_equal(resLearn$nRun, 1)
+  expect_equal(resLearn$nRun, 3)
   expect_equal(dim(resLearn$crit), c(2, 1))
   expect_equal(resLearn$nClass, 4)
   expect_equal(resLearn$algo$mode, "learn")
@@ -253,9 +253,9 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   expect_equivalent(getType(resLearn), "Gaussian")
   expect_equivalent(getVarNames(resLearn), "Gaussian1")
   expect_warning(getTik(resLearn), regexp = NA)
-  expect_equal(dim(getEmpiricTik(resLearn)), c(1000, 4))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(2000, 4))
   expect_warning(getEmpiricTik(resLearn), regexp = NA)
-  expect_equal(dim(getTik(resLearn)), c(1000, 4))
+  expect_equal(dim(getTik(resLearn)), c(2000, 4))
   expect_warning(disc <- computeDiscrimPowerClass(resLearn), regexp = NA)
   expect_equal(length(disc), 4)
   expect_warning(disc <- computeDiscrimPowerVar(resLearn), regexp = NA)
@@ -414,8 +414,8 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   algo <- list(
     nbBurnInIter = 50,
     nbIter = 50,
-    nbGibbsBurnInIter = 25,
-    nbGibbsIter = 25,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
     nSemTry = 10,
     nInitPerClass = 100,
     confidenceLevel = 0.95
@@ -428,7 +428,7 @@ test_that("mixtCompLearn works in hierarchicalMode",{
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn$res[[1]]), simData$dataLearn$data.frame$z_class), 0.9)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn$res[[1]]), simData$dataLearn$data.frame$z_class), 0.85)
   expect_lte(norm(getTik(resLearn$res[[1]], log = FALSE) - getEmpiricTik(resLearn$res[[1]]))/resLearn$algo$nInd, 0.1)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
