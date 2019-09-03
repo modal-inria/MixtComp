@@ -38,17 +38,17 @@ Datasets with running examples are provided: \link{titanic}, \link{CanadianWeath
 data(simData)
  
 # define the algorithm's parameters: you can use createAlgo function
-algo <- list(nbBurnInIter = 100,
-             nbIter = 100,
+algo <- list(nbBurnInIter = 50,
+             nbIter = 50,
              nbGibbsBurnInIter = 50,
              nbGibbsIter = 50,
-             nInitPerClass = 10,
+             nInitPerClass = 20,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
 # run RMixtComp for learning using only 3 variables
 resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
-                          nClass = 2:4)
+                          nClass = 2:3, nRun = 2, nCore = 1)
 
 summary(resLearn)
 plot(resLearn)

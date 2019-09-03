@@ -1,4 +1,7 @@
-v4.0 2019-07-10
+v4.0.1 2019-08-29
+- Do not use foreach and %dopar% when the number of core is 1
+
+v4.0.0 2019-07-10
 - RMixtCompIO version number now follows MixtComp number version
 
 v0.1 2019-17-01

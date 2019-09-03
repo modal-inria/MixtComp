@@ -253,27 +253,45 @@ rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 
 {
   nCore <- min(max(1, nCore), nRun)
   
-  if(verbose)
-    cl <- makeCluster(nCore, outfile = "")
-  else
-    cl <- makeCluster(nCore)
-  
-  registerDoParallel(cl)
-  
-  res <- foreach(i = 1:nRun)%dopar%{
+  if(nCore > 1)
+  {
     if(verbose)
-      cat(paste0("Start run ", i, " on thread number ", Sys.getpid(), "\n"))
+      cl <- makeCluster(nCore, outfile = "")
+    else
+      cl <- makeCluster(nCore)
     
-    resTemp <- rmc(algo, data, model, resLearn)
-    class(resTemp) = "MixtComp"
+    registerDoParallel(cl)
     
-    if(verbose)
-      cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
+    res <- foreach(i = 1:nRun)%dopar%{
+      if(verbose)
+        cat(paste0("Start run ", i, " on thread number ", Sys.getpid(), "\n"))
+      
+      resTemp <- rmc(algo, data, model, resLearn)
+      class(resTemp) = "MixtComp"
+      
+      if(verbose)
+        cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
+      
+      return(resTemp)
+    }
     
-    return(resTemp)
+    stopCluster(cl)
+  }else{
+    
+    res <- list()
+    for(i in 1:nRun)
+    {
+      if(verbose)
+        cat(paste0("Start run ", i, "\n"))
+      
+      res[[i]] <- rmc(algo, data, model, resLearn)
+      class(res[[i]]) = "MixtComp"
+      
+      if(verbose)
+        cat(paste0("Run ", i, " DONE \n"))
+    }
   }
-  
-  stopCluster(cl)
+
   
   logLikelihood <- sapply(res, function(x) {ifelse(is.null(x$warnLog), x$mixture$lnObservedLikelihood, -Inf)})
   
