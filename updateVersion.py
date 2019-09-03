@@ -23,6 +23,7 @@ def changeHeader(directory, startPatternVersion, newLineVersion, startPatternCop
 					else:
 						print(directory + "/" + filename)
 
+#### Do not forget to change the version number in the variable version in the Various/Constants.cpp file
 
 # change license cpp files
 startPatternVersion = "/* MixtComp "
