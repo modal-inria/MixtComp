@@ -1,5 +1,8 @@
+v4.0.1 2019-09-04
+- change some parameters in examples and tests
+
 v4.0.0 2019-07-22
-- change version numbeR
+- change version number
 
 v0.7 2019-07-02
 - move rmc and rmcMultiRun to RMixtCompIO package
