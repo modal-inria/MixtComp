@@ -14,7 +14,7 @@
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
-\item{...}{Not used.}
+\item{...}{extra parameter for \link{plotDataCI}}
 }
 \description{
 Plot of a \emph{MixtComp} object

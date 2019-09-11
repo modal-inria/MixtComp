@@ -199,7 +199,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @param x \emph{MixtComp} object
 #' @param nVarMaxToPlot number of variables to display
 #' @param pkg "ggplot2" or "plotly". Package used to plot
-#' @param ... Not used.
+#' @param ... extra parameter for \link{plotDataCI}
 #' 
 #' @examples 
 #' require(RMixtCompIO) # for learning a mixture model
@@ -254,7 +254,7 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
     p$proportion = plotProportion(x, pkg = pkg)
     
     for(i in 1:nVarToPrint)
-      p[[nameDiscVar[i]]] = plotDataCI(x, nameDiscVar[i], pkg = pkg)
+      p[[nameDiscVar[i]]] = plotDataCI(x, nameDiscVar[i], pkg = pkg, ...)
     
   }
   
