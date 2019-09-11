@@ -54,7 +54,7 @@ extractCIGaussianVble = function(var, data, class, grl){
 # @author Matthieu Marbac
 extractCIPoissonVble = function(var, data, class, grl){
   theta <- as.array(data$variable$param[[var]]$stat[class,1])
-  if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
+  if (grl)  theta <- c(theta, mean(data$variable$data[[var]]$completed))
   return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
 }
 
