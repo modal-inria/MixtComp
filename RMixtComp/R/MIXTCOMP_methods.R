@@ -106,7 +106,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 #' @param nVarMaxToPlot number of variables to display
 #' @param nClass number of classes of the model to plot
 #' @param pkg "ggplot2" or "plotly". Package used to plot
-#' @param ... Not used.
+#' @param ... extra parameter for \link{plotDataCI}
 #' 
 #' @examples 
 #' data(iris)
