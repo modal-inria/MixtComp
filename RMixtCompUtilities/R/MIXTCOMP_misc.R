@@ -232,3 +232,66 @@ availableModels <- function()
              "reference" = c("", "", "", "", "", "https://hal.inria.fr/hal-00743384", "https://arxiv.org/abs/1312.6967", "https://arxiv.org/abs/1312.6967")
              )
 }
+
+
+
+
+# delete log from mixtcomp output and completed data in order to gain disk space
+#
+# @param outMixtComp mixtComp or mixtCompLearn object
+# @param completed if TRUE delete completed data
+# @param log if TRUE delete logs of parameters estimation
+#
+# @return outMixtComp without some elements
+#
+# @details
+# Some functions such as plotConvergence or plotDataCI will not work on a reduced output
+reduceRMixtCompOutput <- function(outMixtComp, completed = TRUE, log = TRUE)
+{
+  outMixtComp = reduceRMixtCompOutputIntern(outMixtComp, completed, log)
+    
+  if("MixtCompLearn" %in% class(outMixtComp))
+  {
+    for(i in outMixtComp$nClass)
+    {
+      outMixtComp$res[[i]] = reduceRMixtCompOutputIntern(outMixtComp$res[[i]], completed, log)
+    }
+  }
+
+  
+  return(outMixtComp)
+}
+
+reduceRMixtCompOutputIntern <- function(outMixtComp, completed = TRUE, log = TRUE)
+{
+  for(nomVar in names(outMixtComp$variable$param))
+  {
+    if((nomVar != "z_class") & completed)
+    {
+      outMixtComp$variable$data[[nomVar]]$completed = NULL
+      outMixtComp$variable$data[[nomVar]]$data = NULL
+      outMixtComp$variable$data[[nomVar]]$time = NULL
+    }
+    
+    if(log)
+    {
+      if(outMixtComp$variable$type[[nomVar]] %in% c("LatentClass", "Gaussian", "Multinomial", "Poisson", "Weibull", "NegativeBinomial"))
+        outMixtComp$variable$param[[nomVar]]$log = NULL
+      
+      if(outMixtComp$variable$type[[nomVar]] %in% "Rank_ISR")
+      {
+        outMixtComp$variable$param[[nomVar]]$mu$log = NULL
+        outMixtComp$variable$param[[nomVar]]$pi$log = NULL
+      }
+      
+      if(outMixtComp$variable$type[[nomVar]] %in% c("Func_CS", "Func_SharedAlpha_CS"))
+      {
+        outMixtComp$variable$param[[nomVar]]$alpha$log = NULL
+        outMixtComp$variable$param[[nomVar]]$beta$log = NULL
+        outMixtComp$variable$param[[nomVar]]$sd$log = NULL
+      }
+    }
+  }
+  
+  return(outMixtComp)
+}
