@@ -17,16 +17,17 @@ plotCrit(output, pkg = c("ggplot2", "plotly"), ...)
 Plot BIC and ICL
 }
 \examples{
-data(simData)
+data(iris)
  
 # define the algorithm's parameters
 algo <- createAlgo()
 
 # keep only 3 variables
-model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+model <- list(Petal.Width = "Gaussian", Petal.Length = "Gaussian",
+              Sepal.Width = "Gaussian", Sepal.Length = "Gaussian")
 
 # run RMixtComp in unsupervised clustering mode + data as matrix
-res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+res <- mixtCompLearn(iris, model, algo, nClass = 1:4)
 
 # plot
 plotCrit(res)
