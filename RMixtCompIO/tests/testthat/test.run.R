@@ -286,7 +286,7 @@ test_that("weibull model works",{
 test_that("functional model works",{
   set.seed(42)
 
-  nInd <- 200
+  nInd <- 400
   ratioPresent <- 0.95
 
   var <- list()
@@ -301,8 +301,8 @@ test_that("functional model works",{
     nInd = nInd,
     nbBurnInIter = 50,
     nbIter = 50,
-    nbGibbsBurnInIter = 50,
-    nbGibbsIter = 50,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
     nInitPerClass = 50,
     nSemTry = 20,
     confidenceLevel = 0.95,

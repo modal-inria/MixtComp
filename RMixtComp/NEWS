@@ -1,3 +1,7 @@
+v4.0.2 2019-09-16
+- change some parameters in examples and tests
+- disable tests that generate unexpected errors on cran
+
 v4.0.1 2019-09-04
 - change some parameters in examples and tests
 

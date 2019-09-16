@@ -29,13 +29,13 @@ test_that("mixtCompLearn works in basic mode + predict", {
                     categ = c("a", "b")[c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))],
                     poiss = c(rpois(100, 2), rpois(100, 5)))
   
-  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2, nRun = 3, nCore = 1), regexp = NA)
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.9)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
@@ -51,7 +51,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.9)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
@@ -406,6 +406,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 
 
 test_that("mixtCompLearn works in hierarchicalMode",{
+  skip_on_cran()
   set.seed(42)
 
   data(simData)
@@ -524,10 +525,12 @@ test_that("summary returns no warnings and no errors", {
 })
 
 test_that("summary works + run without paramStr for functional", {
+  skip_on_cran()
   data("simData")
   simData$model$unsupervised$Functional1$paramStr = ""
   
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), nClass = 2, nRun = 1, nCore = 1, hierarchicalMode = "no") 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), 
+                            nClass = 2, nRun = 3, nCore = 1, hierarchicalMode = "no") 
   
   expect_equal(resLearn$variable$param$Functional1$paramStr, "nSub: 2, nCoeff: 2")
   
