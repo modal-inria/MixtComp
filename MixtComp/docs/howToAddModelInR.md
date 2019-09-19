@@ -6,7 +6,7 @@ Once you have add a model in C++ (check [Statistical model description](./howToA
 
 First of all, add the model in the following documentation:
 
-* [gitlab README](../../README.md)
+* [main README](../../README.md)
 * [Data format](./dataFormat.md)
 * [Output object](./objectOutput.md)
 
