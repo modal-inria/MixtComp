@@ -24,13 +24,13 @@ MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/license
 ## Code organization
 
 * **MixtComp** MixtComp C++ library
-* **JMixtComp** C++ executable using JSON files
+* **JMixtComp** C++ executable using JSON files as input/output
 * **RMixtComp** Main R package loading *RMixtCompIO* and *RMixtCompUtilities*
-* **RMixtCompIO** R package linking MixtComp with Rcpp
-* **RMixtCompUtilities** R package containing graphical, formatting functions and getters
+* **RMixtCompIO** R package linking MixtComp C++ library with Rcpp
+* **RMixtCompUtilities** R package containing graphical, formatting and getter functions
 * **RJMixtComp** R package using a JMixtComp executable 
 * **RMixtCompHier** R package containing a hierarchical version of MixtComp
-* **pytMixtComp** minimal Python interface
+* **pyMixtComp** Minimal python interface
 
 A description of the links between packages and external libraries can be found [here](architecture.md) in a text version and [here](graphArchitecture.png) in a visual version
 
