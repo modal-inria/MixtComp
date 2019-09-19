@@ -29,7 +29,7 @@
 # output
 
 - algo (copy of the input SGraph)
-- mixture (see https://gitlab.inria.fr/kubicki/MixtComp/blob/master/MixtComp/docs/objectOutput.md)
+- mixture (see [file](./objectOutput.md))
 - variable
     - type
         - type of var 1
