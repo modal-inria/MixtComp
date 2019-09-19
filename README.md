@@ -6,7 +6,10 @@ It has been engineered around the idea of easy and quick integration of all new 
 
 MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
 
-Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/)
+Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/).
+
+CRAN package: [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RMixtComp)](https://cran.r-project.org/package=RMixtComp)
+[![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp?color=blue)](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp)
 
 ## Credits
 
@@ -23,13 +26,13 @@ MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/license
 * **MixtComp** MixtComp C++ library
 * **JMixtComp** C++ executable using JSON files
 * **RMixtComp** Main R package loading *RMixtCompIO* and *RMixtCompUtilities*
-* **RMixtCompIO** R package linking MixtComp with Rcpp (internal use)
-* **RMixtCompUtilities** R package containing graphical, formatting functions and getters 
+* **RMixtCompIO** R package linking MixtComp with Rcpp
+* **RMixtCompUtilities** R package containing graphical, formatting functions and getters
 * **RJMixtComp** R package using a JMixtComp executable 
-* **RMixtCompHier** R package containing the hierarchical version of MixtComp
+* **RMixtCompHier** R package containing a hierarchical version of MixtComp
 * **pytMixtComp** minimal Python interface
 
-A description of the links between packages and external libraries can be found [here](architecture.md) for a text version and [here](graphArchitecture.png) for a visual version
+A description of the links between packages and external libraries can be found [here](architecture.md) in a text version and [here](graphArchitecture.png) in a visual version
 
 ## Documentation
 
