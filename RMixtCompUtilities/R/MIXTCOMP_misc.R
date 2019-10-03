@@ -39,7 +39,7 @@
 #' 
 #' @author Quentin Grimonprez
 #' @export
-createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterion = 0.95, nStableCriterion = 10)
+createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterion = 0.99, nStableCriterion = 20)
 {
   list(nbBurnInIter = nbBurnInIter,
        nbIter = nbIter,
