@@ -6,8 +6,8 @@
 \usage{
 createAlgo(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50,
   nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20,
-  confidenceLevel = 0.95, ratioStableCriterion = 0.95,
-  nStableCriterion = 10)
+  confidenceLevel = 0.95, ratioStableCriterion = 0.99,
+  nStableCriterion = 20)
 }
 \arguments{
 \item{nbBurnInIter}{Number of iterations of the burn-in part of the SEM algorithm.}
