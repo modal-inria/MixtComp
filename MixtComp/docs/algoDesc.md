@@ -1,16 +1,16 @@
 # Description of the algorithms
 
-This file contains a brief description of the SEM and Gibbs algorithms as implemented in the [Strategy](MixtComp/src/lib/Strategy) folder.
+This file contains a brief description of the SEM and Gibbs algorithms as implemented in the [Strategy](../src/lib/Strategy) folder.
 
-## R interface
+## Overview
 
-See [mixtCompCluster.cpp](RMixtComp/src/mixtCompCluster.cpp) for the entry point to the learning algorithm, and [mixtCompPredict.cpp](RMixtComp/src/mixtCompPredict.cpp) for the entry point to the predict algorithm.
+See [Learn.h](../src/lib/Run/Learn.h) for the entry point to the learning algorithm, and [Predict.h](../src/lib/Run/Predict.h) for the entry point to the predict algorithm.
 
-The learn alorithm used the SemStrategy, then the GibbsStrategy, while the predict algorithm just uses the GibbsStrategy.
+The learn algorithm uses the SemStrategy, then the GibbsStrategy, while the predict algorithm just uses the GibbsStrategy.
 
 ## SemStrategy run
 
-Source [here](MixtComp/src/lib/Strategy/SEMStrategy.cpp).
+Source [here](../src/lib/Strategy/SEMStrategy.h).
 
 The main difference between an SEM run and a Gibbs run is that estimations take place. Those estimation must be tracked, and they can also wrong. The SEMStrategy is similar, except that no estimation take place, and the parameters are fixed all along.
 
@@ -40,6 +40,8 @@ Things can go wrong at various points in the algorithm, for example there can be
 - Note that the observed probability cache is not updated here, because it will be updated at the beginning of the GibbsStrategy.
 
 ## GibbsStrategy run
+
+Source [here](../src/lib/Strategy/GibbsStrategy.h).
 
 The GibbsStrategy is similar to the SemStrategy, albeit a bit simpler. In particular, there is no management of the parameters, which are fixed. storeGibbsRun is similar to storeSemRun, but keeps track of data evolution instead of parameters evolution.
 

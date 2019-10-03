@@ -26,4 +26,4 @@ jmc algo.json data.json desc.json resLearn.json resPredict.json
 
 ## Examples
 
-Datasets can be found in the [data folder](data) and command lines are avaible in the [runTestDebug.sh](runTestDebug.sh) and [runTestRelease.sh](runTestRelease.sh) files.
+Datasets can be found in the [data folder](data) and command lines are avalaible in the [runTestDebug.sh](runTestDebug.sh) and [runTestRelease.sh](runTestRelease.sh) files.

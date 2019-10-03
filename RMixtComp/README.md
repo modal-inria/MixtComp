@@ -3,7 +3,7 @@
 
 RMixtComp is the main package. It loads [RMixtCompIO](../RMixtCompIO) and [RMixtCompUtilities](../RMixtCompUtilities) that contains the MixtComp C++ library and utility functions. 
 
-RMixtComp is available as an [Rstudio](https://www.rstudio.com/products/rstudio/download/#download) project ([RMixtComp.Rproj](RMixtComp/RMixtComp.Rproj)) to facilite development and testing.
+RMixtComp is available as an [Rstudio](https://www.rstudio.com/products/rstudio/download/#download) project ([RMixtComp.Rproj](RMixtComp.Rproj)) to facilite development and testing.
 
 ## Requirements
 

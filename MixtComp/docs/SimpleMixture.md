@@ -1,12 +1,12 @@
 # Simple Mixture
 
-A simple model is a model which has a simple internal structure and which use is widespread. For example, the Gaussian model is a simple model. All the simple models in MixtComp share a similar structure. Their data is stored in an [AugmentedData](MixtComp/src/lib/Data/AugmentedData.h) instance, and the various computation are distributed among similar helper classes.
+A simple model is a model which has a simple internal structure and which use is widespread. For example, the Gaussian model is a simple model. All the simple models in MixtComp share a similar structure. Their data is stored in an [AugmentedData](../src/lib/Data/AugmentedData.h) instance, and the various computation are distributed among similar helper classes.
 
-A counter-example is the [Rank](MixtComp/src/lib/Mixture/Rank/RankMixture.h) model. It is much more complicated than a Gaussian model, and could not even use an `AugmentedData` instance to represent its data.
+A counter-example is the [Rank](../src/lib/Mixture/Rank/RankMixture.h) model. It is much more complicated than a Gaussian model, and could not even use an `AugmentedData` instance to represent its data.
 
 So, as a rule a thumb, if your model is a canonical model, teached in undergrate courses, try to implement it as a Simple Mixture. Otherwise, entirely derive the model from IMixture.
 
-All simple models share the same architecture. At the core resides the `SimpleMixture` template class located at [SimpleMixture.h](MixtComp/src/lib/Mixture/Simple/SimpleMixture.h).
+All simple models share the same architecture. At the core resides the `SimpleMixture` template class located at [SimpleMixture.h](../src/lib/Mixture/Simple/SimpleMixture.h).
 
 ## General description
 
@@ -17,7 +17,7 @@ template<typename Graph, typename Model>
 class SimpleMixture: public IMixture
 ```
 
-The template arguments `Graph` is common to all mixture models used in MixtComp, and is used to perform IO operations (see [How to add a model](howToAddModel.md) for a description). What's more peculiar to `SimpleMixture` is its `Model` template argument. It points to a class that defines everything needed for a simple model. So let's take the Gaussian model as an example, and get into the details. The entry point is [Gaussian.h](MixtComp/src/lib/Mixture/Simple/Gaussian/Gaussian.h).
+The template arguments `Graph` is common to all mixture models used in MixtComp, and is used to perform IO operations (see [How to add a model](howToAddModel.md) for a description). What's more peculiar to `SimpleMixture` is its `Model` template argument. It points to a class that defines everything needed for a simple model. So let's take the Gaussian model as an example, and get into the details. The entry point is [Gaussian.h](../src/lib/Mixture/Simple/Gaussian/Gaussian.h).
 
 The last lines of `SimpleMixture` contains declarations such as: `typename Model::Sampler sampler_;` or `typename Model::DataStat dataStat_;`. Those declarations indicate that `Model` is expected to provide the required typedefs. This is the case, as the first lines in the declaration of `Gaussian` (which can be used as a `Model` template argument) contains:
 
@@ -28,7 +28,7 @@ typedef GaussianSampler Sampler;
 typedef GaussianLikelihood Likelihood;
 ```
 
-From that, we can deduce that `Model::Sampler` corresponds to `GaussianSampler`, for the Gaussian model. In turn, `GaussianSampler` is declared in [GaussianSampler.h](MixtComp/src/lib/Mixture/Simple/Gaussian/GaussianSampler.h). It will provide everything `SimpleMixture` expects from a `Model::Sampler`. Which means a `samplingStepNoCheck` method. `samplingStepNoCheck` is called from the `SimpleMixture::sampleUnobservedAndLatent` method:
+From that, we can deduce that `Model::Sampler` corresponds to `GaussianSampler`, for the Gaussian model. In turn, `GaussianSampler` is declared in [GaussianSampler.h](../src/lib/Mixture/Simple/Gaussian/GaussianSampler.h). It will provide everything `SimpleMixture` expects from a `Model::Sampler`. Which means a `samplingStepNoCheck` method. `samplingStepNoCheck` is called from the `SimpleMixture::sampleUnobservedAndLatent` method:
 
 ```cpp
 void sampleUnobservedAndLatent(Index ind, Index k) {
@@ -55,7 +55,7 @@ case missing_: {
 break;
 ```
 
-Note that creating a `NormalStatistic` instance is not a `SimpleMixture` requirement, as all the code for sampling from a normal distribution could have been written in the `GaussianSampler` class. However, it is such a low level statistical tool that it is highly likely to be used in several models. This is indeed the case, as the [Functional](MixtComp/src/lib/Mixture/Functional) uses it too.
+Note that creating a `NormalStatistic` instance is not a `SimpleMixture` requirement, as all the code for sampling from a normal distribution could have been written in the `GaussianSampler` class. However, it is such a low level statistical tool that it is highly likely to be used in several models. This is indeed the case, as the [Functional](../src/lib/Mixture/Functional) uses it too.
 
 The `GaussianLikelihood` class also takes advantages of `NormalStatistic`. It also contains a member `NormalStatistic normal_;`. But the purpose is a bit different. Here it is used to perform computations of probabilities. As in:
 

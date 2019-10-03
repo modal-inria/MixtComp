@@ -49,7 +49,7 @@ make updateLib
 make all
 ```
 
-The target *updateLib* copies the MixtComp library C++ folder from [MixtComp/src/lib](../MixtComp/src/lib) folder to [src/lib folder](src/lib)
+The target *updateLib* copies the MixtComp library C++ folder from [MixtComp/src/lib](../MixtComp/src/lib) folder to [src/lib folder](src/lib).
 
 ## Testing procedures
 
@@ -91,7 +91,7 @@ For your own testing procedure, you can use the data and model provided in the p
 data(simData)
 ```
 
-Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](/R/GENDATA_dataGeneratorNewIO.R)) for example.
+Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)) for example.
 
 See functions in files R/TEST_\*.R for creating a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with *testthat*.
 

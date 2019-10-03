@@ -2,15 +2,15 @@
 
 ## Abstract
 
-One of MixtComp strengths is the ability to add models. The `IMixture` interface is rich (16 methods), as functions are provided for every aspect of model management. Some methods are useful for every models, while others are only here to provide functionality in specific cases. The page [Algorithm Description](MixtComp/docs/algoDesc.md) provides further information on where the various methods are called from.
+One of MixtComp strengths is the ability to add models. The `IMixture` interface is rich (16 methods), as functions are provided for every aspect of model management. Some methods are useful for every models, while others are only here to provide functionality in specific cases. The page [Algorithm Description](./algoDesc.md) provides further information on where the various methods are called from.
 
-The file [recap.ods](./MixtComp/docs/180308 - Initialization/recap.ods) provides a recap of the operations used by various methods in initialization.
+The file [recap.ods](./180308%20-%20Initialization/recap.ods) provides a recap of the operations used by various methods in initialization.
 
-The folder [mise à jour majeur](./MixtComp/docs/170616 - mise à jour majeure) provides in-depth description of the initialization process.
+The folder [mise à jour majeure](./170616%20-%20mise%20à%20jour%20majeure) provides in-depth description of the initialization process.
 
 ## Basic Concepts
 
-There is an `IMixture` interface class that describe all models. It is located in [IMixture.h](MixtComp/src/lib/Mixture/IMixture.h) file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
+There is an `IMixture` interface class that describe all models. It is located in [IMixture.h](../src/lib/Mixture/IMixture.h) file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
 
 ```cpp
 std::string MixtureComposer::checkSampleCondition(
@@ -142,7 +142,7 @@ As mentioned in `computeObservedProba`, the observed probability could be 0 even
 
 ## How to register a model
 
-Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [MixtureManager.h](MixtComp/src/lib/Manager/MixtureManager.h). `createAllMixtures` loop over all variables and instantiate each model as an `IMixture*` pointer, using the name of the model `paramStr` as provided in the descriptor file.
+Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [createAllMixtures.h](../src/lib/Manager/createAllMixtures.h). `createAllMixtures` loop over all variables and instantiate each model as an `IMixture*` pointer, using the name of the model `paramStr` as provided in the descriptor file.
 
 Hence a new model must be managed through a new entry in `MixtureManager::createMixture`. Here is an example of entry, for a numerical variable described by a Gaussian distribution:
 
@@ -171,6 +171,11 @@ std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep
 }
 ```
 
-The simple models are then defined in different classes. For the Gaussian model, look in the file [Gaussian.h](MixtComp/src/lib/Mixture/Gaussian.h).
+The simple models are then defined in different classes. For the Gaussian model, look in the file [Gaussian.h](../src/lib/Mixture/Simple/Gaussian/Gaussian.h).
 
 The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
+
+## Make it avalaible in the R package
+
+See the file [howToAddModelInR.md](howToAddModelInR.md).
+
