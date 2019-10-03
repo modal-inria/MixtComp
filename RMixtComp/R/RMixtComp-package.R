@@ -40,7 +40,7 @@
 #' 
 #' Read the help page of \link{mixtCompLearn} for available models and data format. A summary of these information can be accessed with the function \link{availableModels}.
 #' 
-#' All utility functions (getters, graphical) are in the \code{RMixtCompUtilities} package.
+#' All utility functions (getters, graphical) are in the \code{\link{RMixtCompUtilities-package}} package.
 #' 
 #' In order to have an overview of the output, you can use \link{print.MixtCompLearn}, \link{summary.MixtCompLearn} and \link{plot.MixtCompLearn} functions,
 #' 
@@ -54,6 +54,9 @@
 #' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
 #' 
 #' Datasets with running examples are provided: \link{titanic}, \link{CanadianWeather}, \link{prostate}, \link{simData}.
+#' 
+#' 
+#' Documentation about input and output format is available: \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/dataFormat.md} and \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/objectOutput.md}.
 #' 
 #' @examples 
 #' data(simData)
@@ -82,7 +85,7 @@
 #' print(resPred)
 #' 
 #' 
-#' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}} \code{RMixtCompUtilities}, \code{RMixtCompIO}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
+#' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}} \code{\link{RMixtCompUtilities-package}}, \code{\link{RMixtCompIO-package}}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @keywords package
 NULL
