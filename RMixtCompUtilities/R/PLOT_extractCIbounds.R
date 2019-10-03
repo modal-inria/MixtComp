@@ -242,7 +242,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class = 1:data$algo$nCl
     if (any(tmp==0)) tmp[which(tmp==0)] <- 1
     if (any(tmp>length(obs))) tmp[which(tmp>length(obs))] <- length(obs)
     thresholds <- rbind(thresholds, obs[tmp])
-    rownames(thresholds)[nrow(thresholds)] <- "general"
+    rownames(thresholds)[nrow(thresholds)] <- "all"
   }
   
   return(thresholds)
@@ -275,7 +275,7 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class = 1:data$algo$n
     obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
     obs <- obs/sum(obs)
     probs <- rbind(probs, obs)
-    rownames(probs)[nrow(probs)] <- "general"
+    rownames(probs)[nrow(probs)] <- "all"
   }
   return(list(levels = levels, probs = probs))
 }

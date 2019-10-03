@@ -71,7 +71,7 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
   type <- ifelse(type %in% c("Gaussian", "Weibull", "Poisson", "NegativeBinomial"), "Numerical", type)
   
   switch(type,
-         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$algo$nClass, grl = grl)),
+         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$algo$nClass, grl = grl), main = var),
          "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, class = 1:output$algo$nClass, grl),
          "Func_CS" = plotFunctionalData(output, var, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, ...),
@@ -80,15 +80,16 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
 
 # here bounds is a matrix
 # @author Matthieu Marbac
-plotBoxplotperClass <- function(bounds){
+plotBoxplotperClass <- function(bounds, ...){
   # Définition des paramètres du graphiques
   plot(NA,
-       xlim=range(as.numeric(bounds)),
-       ylim=c(0.2, nrow(bounds) + .8 ),
-       xlab="value",
-       ylab="class",
+       xlim = range(as.numeric(bounds)),
+       ylim = c(0.2, nrow(bounds) + .8 ),
+       xlab = "value",
+       ylab = "class",
        yaxt = "n",
-       lab=c(10, nrow(bounds), 5))
+       lab = c(10, nrow(bounds), 5),
+       ...)
   ytick <- 1:nrow(bounds)
   axis(side = 2, at = ytick, labels = rownames(bounds))
   # Boucle sur les classes
