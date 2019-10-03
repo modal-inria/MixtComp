@@ -115,7 +115,7 @@ The format is detailled below according to the model.
 - **LatentClass**
 
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* is a matrix with the same number of columns as the number of class.
-For each sample, it contains the $`t_{ik}`$ (probability of $`x_i`$ to belong to class $`k`$) estimated with the imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+For each sample, it contains the $`t_{ik}`$ (probability of $`x_i`$ to belong to class *k*) estimated with the imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
 - **Gaussian/Poisson/NegativeBinomial/Weibull**
 
@@ -147,25 +147,25 @@ A list of 3 elements: *stat*, *log*, *paramStr*.
 
 - **Gaussian**
 
-The *stat* matrix has 2*nClass rows. For a class $`k`$, parameters are mean ($`\mu_k`$) and sd ($`\sigma_k`$). The distribution function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are mean ($`\mu_k`$) and sd ($`\sigma_k`$). The distribution function is defined by:
 
 - **Poisson**
 
-The *stat* matrix has nClass rows. For a class $`k`$, the parameter is lambda ($`\lambda_k`$). The probability function is defined by:
+The *stat* matrix has nClass rows. For a class *k*, the parameter is lambda ($`\lambda_k`$). The probability function is defined by:
 
 - **NegativeBinomial**
 
-The *stat* matrix has 2*nClass rows. For a class $`k`$, parameters are n ($`n_k`$) and p ($`p_k`$). The probability function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are n ($`n_k`$) and p ($`p_k`$). The probability function is defined by:
 
 - **Weibull**
 
-The *stat* matrix has 2*nClass rows. For a class $`j`$, parameters are k/shape ($`k_j`$) and lambda/scale ($`\lambda_j`$). The distribution function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *j*, parameters are k/shape ($`k_j`$) and lambda/scale ($`\lambda_j`$). The distribution function is defined by:
 
 - **Multinomial**
 
 *paramStr* contains "nModality: J" where J is the number of modalities.
 
-The *stat* matrix has J*nClass rows. For a class $`k`$, parameters are probabilities to belong to modality $J$.
+The *stat* matrix has J\*nClass rows. For a class *k*, parameters are probabilities to belong to modality $J$.
 
 - **Rank_ISR**
 
@@ -173,9 +173,9 @@ The *stat* matrix has J*nClass rows. For a class $`k`$, parameters are probabili
 
 Two lists (named *mu* and *pi*) of 2 elements: *stat*, *log*.
 
-For *pi*, *stat* is a matrix with nClass rows. For a class $`k`$, parameter is pi ($`pi_k`$).
+For *pi*, *stat* is a matrix with nClass rows. For a class *k*, parameter is pi ($`pi_k`$).
 
-For *mu*, *stat* is a list with nClass elements. For a class $`k`$, a list is returned with the mode of the parameter ($`\mu_k`$), and the frequency of the mode during the SEM algorithm after the burnin phase.
+For *mu*, *stat* is a list with nClass elements. For a class *k*, a list is returned with the mode of the parameter ($`\mu_k`$), and the frequency of the mode during the SEM algorithm after the burnin phase.
 
 - **Func_CS** and **Func_SharedAlpha_CS**
 
@@ -183,8 +183,8 @@ For *mu*, *stat* is a list with nClass elements. For a class $`k`$, a list is re
 
 Three lists (named *alpha*, *beta* and *sd*) of 2 elements: *stat*, *log*.
 
-For *alpha*, *stat* is a matrix with 2\*S\*nClass rows. For a class $`k`$ and a subregression $`s`$, parameters areestimated coefficients of a logistic regression controlling the transition between subregressions.
+For *alpha*, *stat* is a matrix with 2\*S\*nClass rows. For a class *k* and a subregression *s*, parameters areestimated coefficients of a logistic regression controlling the transition between subregressions.
 
-For *beta*, *stat* is a matrix with S\*C\*nClass rows. For a class $`k`$ and a subregression $`s`$, parameters are estimated coefficient of the regression.
+For *beta*, *stat* is a matrix with S\*C\*nClass rows. For a class *k* and a subregression *s*, parameters are estimated coefficient of the regression.
 
-For *sd*, *stat* is a matrix with S*nClass rows. For a class $`k`$ and a subregression $`s`$, the parameter is the standard deviation of the residuals of the regression.
+For *sd*, *stat* is a matrix with S\*nClass rows. For a class *k* and a subregression *s*, the parameter is the standard deviation of the residuals of the regression.
