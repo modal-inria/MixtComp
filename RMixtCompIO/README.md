@@ -97,4 +97,4 @@ See functions in files R/TEST_\*.R for creating a parameter object for each type
 
 ### Test the C++ code from RMixtCompIO
 
-It requires *RIinside* package. Tests are in the *src/test* folder. You can compile and run it from Eclipse.
+It requires *RInside* package. Tests are in the *src/test* folder. You can compile and run it from Eclipse.
