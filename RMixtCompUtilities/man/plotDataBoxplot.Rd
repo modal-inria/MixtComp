@@ -4,7 +4,8 @@
 \alias{plotDataBoxplot}
 \title{Boxplot per class}
 \usage{
-plotDataBoxplot(output, var, grl = TRUE, ...)
+plotDataBoxplot(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"),
+  ...)
 }
 \arguments{
 \item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
@@ -12,6 +13,8 @@ plotDataBoxplot(output, var, grl = TRUE, ...)
 \item{var}{name of the variable}
 
 \item{grl}{if TRUE plot the general distribution of the data}
+
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
 \item{...}{other parameters (see \emph{Details})}
 }

@@ -21,6 +21,7 @@
 #' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param var name of the variable
 #' @param grl if TRUE plot the general distribution of the data
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... other parameters (see \emph{Details})
 #'
 #' 
@@ -64,7 +65,7 @@
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDataBoxplot <- function(output, var, grl = TRUE, ...)
+plotDataBoxplot <- function(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"), ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -74,10 +75,10 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
   type <- ifelse(type %in% c("Gaussian", "Weibull", "Poisson", "NegativeBinomial"), "Numerical", type)
   
   switch(type,
-         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$algo$nClass, grl = grl), var),
-         "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, class = 1:output$algo$nClass, grl),
-         "Func_CS" = plotFunctionalData(output, var, ...),
-         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, ...),
+         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, pkg = pkg),
+         "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, pkg = pkg, class = 1:output$algo$nClass, grl),
+         "Func_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
+         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))
 }
 
@@ -88,7 +89,7 @@ plotBoxplotperClass <- function(bounds, var, pkg = c("ggplot2", "plotly"), ...){
   
   p <- switch(pkg, 
               "ggplot2" = ggplotBoxplotperClass(bounds, var),
-              "plotly" = ggplotBoxplotperClass(bounds, var))
+              "plotly" = plotlyBoxplotperClass(bounds, var))
   
   p
 }
@@ -116,4 +117,103 @@ ggplotBoxplotperClass  <- function(bounds, var)
   
   p
 }
+
+
+plotlyBoxplotperClass <- function(bounds, var){
+  labelClass <- factor(rownames(bounds), levels = rownames(bounds))
+  
+  df = as.data.frame(bounds)
+  df$class = labelClass
+  df$classlo = 1:nrow(df) - 0.1
+  df$classup = 1:nrow(df) + 0.1
+  df$classmid = 1:nrow(df) 
+  
+  p <- plot_ly() 
+  for(i in 1:length(labelClass)){
+    # horizontal
+    p <- add_trace(p,
+                   x = c(df$`quantil. 0.05`[i], df$`quantil. 0.25`[i]), 
+                   y = rep(df$classmid[i], 2),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   hoverinfo = "text",
+                   text = c(paste0("5% quantile: ", round(df$`quantil. 0.05`[i], 3)),
+                            paste0("25% quantile: ", round(df$`quantil. 0.25`[i], 3))),
+                   showlegend = FALSE)
+    
+    p <- add_trace(p,
+                   x = c(df$`quantil. 0.75`[i], df$`quantil. 0.95`[i]), 
+                   y = rep(df$classmid[i], 2),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   hoverinfo = "text",
+                   text = c(paste0("75% quantile: ", round(df$`quantil. 0.75`[i], 3)),
+                            paste0("95% quantile: ", round(df$`quantil. 0.95`[i], 3))),
+                   showlegend = FALSE)
+    
+    p <- add_trace(p,
+                   x = c(df$`quantil. 0.25`[i], df$`quantil. 0.75`[i]), 
+                   y = rep(df$classup[i], 2),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   showlegend = FALSE,
+                   hoverinfo = "skip")
+    
+    p <- add_trace(p,
+                   x = c(df$`quantil. 0.25`[i], df$`quantil. 0.75`[i]), 
+                   y = rep(df$classlo[i], 2),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   showlegend = FALSE,
+                   hoverinfo = "skip")
+    
+    
+    # vertical
+    p <- add_trace(p,
+                   x = rep(df$`quantil. 0.5`[i], 2), 
+                   y = c(df$classlo[i], df$classup[i]),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   hoverinfo = "text",
+                   text = paste0("50% quantile: ", round(df$`quantil. 0.5`[i], 3)),
+                   showlegend = FALSE)   
+    
+    p <- add_trace(p,
+                   x = rep(df$`quantil. 0.25`[i], 2), 
+                   y = c(df$classlo[i], df$classup[i]),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   hoverinfo = "text",
+                   text = paste0("25% quantile: ", round(df$`quantil. 0.25`[i], 3)),
+                   showlegend = FALSE)   
+    
+    p <- add_trace(p,
+                   x = rep(df$`quantil. 0.75`[i], 2), 
+                   y = c(df$classlo[i], df$classup[i]),
+                   type = "scatter",
+                   mode = "lines",
+                   color = df$class[i],
+                   hoverinfo = "text",
+                   text = paste0("75% quantile: ", round(df$`quantil. 0.75`[i], 3)),
+                   showlegend = FALSE)   
+    
+  }
+  p = layout(p, 
+             title =  paste0("Boxplot per class for variable ", var), 
+             xaxis = list(zeroline = FALSE, title = var),
+             yaxis = list(zeroline = FALSE, 
+                          ticktext = df$class, 
+                          tickvals = df$classmid,
+                          tickmode = "array"))
+  
+
+  p
+}
+
 
