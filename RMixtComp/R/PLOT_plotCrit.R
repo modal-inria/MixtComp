@@ -73,11 +73,8 @@ ggplotCrit <- function(crit, nClass)
   df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), Criterion = rep(c("BIC", "ICL"), each = length(nClass)))
   
   p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
-    labs(title = "Criterion", x = "Number of classes", y = "value")
-  
-  if(length(nClass) == 1)
-    p = p + geom_point(aes_string(shape = "Criterion"), size = 3)
-  else
-    p = p + geom_line()
+    labs(title = "Criterion", x = "Number of classes", y = "value") + 
+    geom_line() + 
+    geom_point(aes_string(shape = "Criterion"), size = 2)
   p
 }
