@@ -52,17 +52,9 @@ plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
 # @author Quentin Grimonprez
 plotlyCrit <- function(crit, nClass, ...)
 {
-  if(length(nClass) == 1)
-  {
-    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "markers", symbol = 1, name = "BIC", size = 2, ...) %>%
-      add_trace(x = nClass, y = crit[2,], name = "ICL", symbol = 2, size = 2)%>%
-      layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
-  }else{
-    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines", name = "BIC", ...) %>%
-      add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
-      layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
-  }
-  
+  p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines+markers", name = "BIC", ...) %>%
+    add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
+    layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
   
   p
 }
