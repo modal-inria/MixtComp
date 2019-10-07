@@ -16,7 +16,7 @@ plotDataBoxplot(output, var, grl = TRUE, ...)
 \item{...}{other parameters (see \emph{Details})}
 }
 \description{
-Boxplot per class
+Display a boxplot (5%-25%-50%-75%-95% quantile) for the given variable for all classes
 }
 \details{
 For functional data, three other parameters are available:

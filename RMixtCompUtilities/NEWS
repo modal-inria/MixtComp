@@ -1,2 +1,10 @@
+v4.0.1 2019-10-07
+- can use grl = TRUE in plot.MixtComp
+- bug correctin in extractCIPoissonVble when grl = TRUE
+- plotDataBoxplot using ggplot2
+
+v4.0.0 2019-08-27
+- On CRAN, Now
+
 v0.1 2019-07-02
 - Extract plot and getter functions from RMixtComp
