@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Quentin Grimonprez
 context("run functions")
@@ -177,7 +177,8 @@ test_that("plot in basic mode + predict works with z_class as character", {
     expect_warning(plotParamConvergence(resLearn, name), regexp = NA)
     expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
     expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
-    expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+    expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"), regexp = NA)
+    expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"), regexp = NA)
   }
   
   expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
@@ -371,11 +372,13 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
     {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
-      expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"), regexp = NA)
     }else{
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
-      expect_warning(plotDataBoxplot(resLearn, name))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"))
     }
   }
   expect_warning(plotCrit(resLearn, pkg = "ggplot2"), regexp = NA)
@@ -408,7 +411,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 test_that("mixtCompLearn works in hierarchicalMode",{
   skip_on_cran()
   set.seed(42)
-
+  
   data(simData)
   model <- simData$model$unsupervised[c("Gaussian1", "Functional1")]
   
@@ -422,9 +425,9 @@ test_that("mixtCompLearn works in hierarchicalMode",{
     confidenceLevel = 0.95
   )
   
-
+  
   resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 3, nRun = 2, nCore = 1, verbose = TRUE) 
-
+  
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
@@ -484,11 +487,13 @@ test_that("mixtCompLearn works in hierarchicalMode",{
     {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
-      expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"), regexp = NA)
     }else{
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
-      expect_warning(plotDataBoxplot(resLearn, name))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"))
     }
   }
   expect_warning(plotCrit(resLearn, pkg = "ggplot2"), regexp = NA)

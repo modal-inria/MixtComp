@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
@@ -22,7 +22,7 @@ Sys.setenv(MC_DETERMINISTIC = 42)
 
 test_that("run cluster/predict R object",{
   set.seed(42)
-
+  
   var <- list()
   var$z_class <- RMixtCompIO:::zParam()
   var$Poisson1 <- RMixtCompIO:::poissonParam("Poisson1")
@@ -33,9 +33,9 @@ test_that("run cluster/predict R object",{
   var$Functional1 <- RMixtCompIO:::functionalInterPolyParam("Functional1")
   var$functionalSharedAlpha1 <- RMixtCompIO:::functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
   var$Rank1 <- RMixtCompIO:::rankParam("Rank1")
-
+  
   resGenLearn <- RMixtCompIO:::dataGeneratorNewIO(200, 0.9, var)
-
+  
   algoLearn <- list(
     nClass = 2,
     nInd = 200,
@@ -50,12 +50,12 @@ test_that("run cluster/predict R object",{
     nStableCriterion = 10,
     mode = "learn"
   )
-
+  
   dataLearn <- resGenLearn$data
   desc <- resGenLearn$desc
-
+  
   resLearn <- RMixtCompIO:::rmc(algoLearn, dataLearn, desc, list()) # run RMixtComp for clustering
-
+  
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
@@ -97,7 +97,7 @@ test_that("run cluster/predict R object",{
                            Functional1 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
                            functionalSharedAlpha1 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2"),
                            Rank1 = list(type = "Rank_ISR", paramStr = "nModality: 4")))
-
+  
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
   w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading
@@ -114,7 +114,7 @@ test_that("run cluster/predict R object",{
   expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
-
+  
   for(name in getVarNames(resLearn))
   {
     expect_warning(plotParamConvergence(resLearn, name), regexp = NA)
@@ -123,11 +123,13 @@ test_that("run cluster/predict R object",{
     {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
-      expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"), regexp = NA)
     }else{
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
-      expect_warning(plotDataBoxplot(resLearn, name))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"))
+      expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"))
     }
   }
   expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
@@ -138,7 +140,7 @@ test_that("run cluster/predict R object",{
   file.remove("Rplots.pdf")
   
   resGenPredict <- RMixtCompIO:::dataGeneratorNewIO(200, 0.95, var)
-
+  
   algoPredict <- list(
     nClass = 2,
     nInd = 200,
@@ -153,11 +155,11 @@ test_that("run cluster/predict R object",{
     nStableCriterion = 10,
     mode = "predict"
   )
-
+  
   dataPredict <- resGenPredict$data
-
+  
   resPredict <- RMixtCompIO:::rmc(algoPredict, dataPredict, desc, resLearn)
-
+  
   expect_equal(resPredict$warnLog, NULL)
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
