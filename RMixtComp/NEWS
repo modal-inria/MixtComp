@@ -1,5 +1,6 @@
 v4.0.3 2019-10-07
-- plotCrit's improvment 
+- plotCrit's improvment
+- remove skip_on_cran
 
 v4.0.2 2019-09-16
 - change some parameters in examples and tests
