@@ -54,7 +54,7 @@ plotlyCrit <- function(crit, nClass, ...)
 {
   p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines+markers", name = "BIC", ...) %>%
     add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
-    layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
+    layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes", range = range(nClass)), yaxis = list(title = "Value"))
   
   p
 }
@@ -67,6 +67,7 @@ ggplotCrit <- function(crit, nClass)
   p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
     labs(title = "Criterion", x = "Number of classes", y = "value") + 
     geom_line() + 
-    geom_point(aes_string(shape = "Criterion"), size = 2)
+    geom_point(aes_string(shape = "Criterion"), size = 2) + 
+    scale_x_continuous(breaks = pretty_breaks()(nClass))
   p
 }
