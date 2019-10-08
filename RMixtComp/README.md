@@ -5,7 +5,14 @@ RMixtComp is the main package. It loads [RMixtCompIO](../RMixtCompIO) and [RMixt
 
 RMixtComp is available as an [Rstudio](https://www.rstudio.com/products/rstudio/download/#download) project ([RMixtComp.Rproj](RMixtComp.Rproj)) to facilite development and testing.
 
-## Requirements
+You can download it from CRAN in an R console:
+
+```
+install.packages("RMixtComp", repos = "https://cran.rstudio.com")
+```
+
+
+## Requirements 
 
 ### R
 

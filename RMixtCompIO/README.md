@@ -2,6 +2,12 @@
 
 RMixtCompIO is the minimal R interface of the MixtComp C++ library. It is recommended to use [RMixtComp](../RMixtComp) which is more versatile and convenient to use. The version number of RMixtCompIO follows that of MixtComp C++ library. 
 
+You can download it from CRAN in an R console:
+
+```
+install.packages("RMixtCompIO", repos = "https://cran.rstudio.com")
+```
+
 ## Requirements
 
 ### R
@@ -24,13 +30,13 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
     Install required R packages from terminal:
     ```
     mkdir ~/R
-    Rscript -e "install.packages(c(\"plotly\", \"scales\", \"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
+    Rscript -e "install.packages(c(\"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
     Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
     ```
     from R:
     ```
-    install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
+    install.packages(c("BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for testing purpose
     install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")
     ```
@@ -86,12 +92,7 @@ In Rstudio, if packages *devtools* and *testthat* are installed, you can run the
 
 ### Write new tests
 
-For your own testing procedure, you can use the data and model provided in the package, you can load them in R:
-```
-data(simData)
-```
-
-Or you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)) for example.
+For your own testing procedure, you can generate your own data using dataGeneratorNewIO function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)) for example.
 
 See functions in files R/TEST_\*.R for creating a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with *testthat*.
 
