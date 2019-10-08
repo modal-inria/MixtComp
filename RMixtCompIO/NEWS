@@ -1,3 +1,6 @@
+v4.0.2 2019-10-08
+- correct variable name in a function 
+
 v4.0.1 2019-08-29
 - Do not use foreach and %dopar% when the number of core is 1
 
