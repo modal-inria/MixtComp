@@ -139,11 +139,11 @@ nBinomParam <- function(name) {
   nBinom <- list()
   nBinom$name <- name
   nBinom$type <- "NegativeBinomial"
-  gaussian$paramStr <- ""
+  nBinom$paramStr <- ""
   nBinom$generator <- negativeBinomialGenerator
   nBinom$param <- list()
-  nBinom$param[[1]] <- list(n = 2.0, p = 0.5)
-  nBinom$param[[2]] <- list(n = 10.0, p = 0.8)
+  nBinom$param[[1]] <- list(n = 3.0, p = 0.7)
+  nBinom$param[[2]] <- list(n = 20.0, p = 0.8)
   
   return(nBinom)
 }
