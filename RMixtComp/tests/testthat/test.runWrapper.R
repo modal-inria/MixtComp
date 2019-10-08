@@ -409,7 +409,6 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 
 
 test_that("mixtCompLearn works in hierarchicalMode",{
-  skip_on_cran()
   set.seed(42)
   
   data(simData)
@@ -530,11 +529,10 @@ test_that("summary returns no warnings and no errors", {
 })
 
 test_that("summary works + run without paramStr for functional", {
-  skip_on_cran()
   data("simData")
   simData$model$unsupervised$Functional1$paramStr = ""
   
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[-4], algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), 
                             nClass = 2, nRun = 3, nCore = 1, hierarchicalMode = "no") 
   
   expect_equal(resLearn$variable$param$Functional1$paramStr, "nSub: 2, nCoeff: 2")
