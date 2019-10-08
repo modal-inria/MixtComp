@@ -5,7 +5,7 @@
 \title{Plot of a \emph{MixtComp} object}
 \usage{
 \method{plot}{MixtComp}(x, nVarMaxToPlot = 3, pkg = c("ggplot2",
-  "plotly"), ...)
+  "plotly"), plotData = c("CI", "Boxplot"), ...)
 }
 \arguments{
 \item{x}{\emph{MixtComp} object}
@@ -13,6 +13,8 @@
 \item{nVarMaxToPlot}{number of variables to display}
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
+
+\item{plotData}{"CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}}
 
 \item{...}{extra parameter for \link{plotDataCI}}
 }

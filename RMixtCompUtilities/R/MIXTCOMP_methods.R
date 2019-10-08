@@ -199,6 +199,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @param x \emph{MixtComp} object
 #' @param nVarMaxToPlot number of variables to display
 #' @param pkg "ggplot2" or "plotly". Package used to plot
+#' @param plotData "CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}
 #' @param ... extra parameter for \link{plotDataCI}
 #' 
 #' @examples 
@@ -234,9 +235,14 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @family plot
 #' @author Quentin Grimonprez
 #' @export
-plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ...)
+plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), plotData = c("CI", "Boxplot"), ...)
 {
   pkg = match.arg(pkg)
+  plotData = match.arg(plotData)
+  
+  plotDataFunction = switch(plotData, 
+                            "CI" = plotDataCI,
+                            "Boxplot" = plotDataBoxplot)
   
   p <- list()
   
@@ -254,7 +260,7 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
     p$proportion = plotProportion(x, pkg = pkg)
     
     for(i in 1:nVarToPrint)
-      p[[nameDiscVar[i]]] = plotDataCI(x, nameDiscVar[i], pkg = pkg, ...)
+      p[[nameDiscVar[i]]] = plotDataFunction(x, nameDiscVar[i], pkg = pkg, ...)
     
   }
   
