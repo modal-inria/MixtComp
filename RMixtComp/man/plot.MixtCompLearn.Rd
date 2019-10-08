@@ -5,7 +5,7 @@
 \title{Plot of a \emph{MixtCompLearn} object}
 \usage{
 \method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 3, nClass = NULL,
-  pkg = c("ggplot2", "plotly"), ...)
+  pkg = c("ggplot2", "plotly"), plotData = c("CI", "Boxplot"), ...)
 }
 \arguments{
 \item{x}{\emph{MixtCompLearn} object}
@@ -15,6 +15,8 @@
 \item{nClass}{number of classes of the model to plot}
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
+
+\item{plotData}{"CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}}
 
 \item{...}{extra parameter for \link{plotDataCI}}
 }

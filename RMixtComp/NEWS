@@ -1,5 +1,6 @@
-v4.0.3 2019-10-07
+v4.0.3 2019-10-08
 - plotCrit's improvment
+- add plotData parameter to plot.MixtCompLearn 
 - remove skip_on_cran
 
 v4.0.2 2019-09-16
