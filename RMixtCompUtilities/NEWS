@@ -1,8 +1,8 @@
-v4.0.1 2019-10-07
+v4.1.0 2019-10-08
 - can use grl = TRUE in plot.MixtComp
 - add plotData parameter in plot.MixtComp
 - bug correction in extractCIPoissonVble when grl = TRUE
-- plotDataBoxplot using ggplot2 and plotly
+- plotDataBoxplot uses ggplot2 and plotly
 
 v4.0.0 2019-08-27
 - On CRAN, Now
