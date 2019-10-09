@@ -118,7 +118,7 @@ test_that("Hard coded simple test", {
   algoPredict$nClass = 3
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   expect_named(resPredict, "warnLog")
-  expect_equal(resPredict$warnLog, "The nClass parameter provides in algo is different from the one in resLearn.")
+  expect_equal(resPredict$warnLog, "The nClass parameter provides in algo is different from the one in resLearn.\n")
   
 })
 
