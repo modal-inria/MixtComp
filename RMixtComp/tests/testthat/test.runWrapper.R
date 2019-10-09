@@ -206,7 +206,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.5)
   var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.5)
   
-  resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.9, var)
+  resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.95, var)
   
   algo <- list(
     nbBurnInIter = 100,
