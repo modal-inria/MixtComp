@@ -573,7 +573,8 @@ std::string MixtureComposer::initializeLatent() {
 		}
 
 		warnLog += "MixtureComposer::initializeLatent, problem with observation " + std::to_string(i)
-				+ ", impossible to initialize latent values. Individual is too different from rest of population and has too many latent variables (for example, missing values).";
+				+ ", impossible to initialize latent values. Individual is too different from rest of population and has too many latent variables (for example, missing values)."
+				+ eol;
 
 		stop: ;
 	}

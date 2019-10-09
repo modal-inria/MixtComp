@@ -228,7 +228,7 @@ public:
 		Index nClass = stat.mat_.rows();
 
 		if(nClass != nClass_)
-			warnLog += "The nClass parameter provides in algo is different from the one in resLearn.";
+			warnLog += "The nClass parameter provides in algo is different from the one in resLearn." + eol;
 
 		for (Index i = 0; i < nClass; ++i) {
 			prop_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
