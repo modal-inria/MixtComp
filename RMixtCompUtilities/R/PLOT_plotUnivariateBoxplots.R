@@ -108,7 +108,7 @@ ggplotBoxplotperClass  <- function(bounds, var)
 
   p <- ggplot() +
     geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.25`", xmax = "`quantil. 0.75`", ymin = "classlo", ymax = "classup", fill = "class"), color = "black", alpha = 0.5) + 
-    geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.5`", xmax = "`quantil. 0.5`", ymin = "classlo", ymax = "classup"), color = "black")  + 
+    geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.5`", xmax = "`quantil. 0.5`", ymin = "classlo", ymax = "classup"), color = "black", size = 1)  + 
     geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.05`", xmax = "`quantil. 0.25`", ymin = "classmid", ymax = "classmid"), color = "black")  + 
     geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.75`", xmax = "`quantil. 0.95`", ymin = "classmid", ymax = "classmid"), color = "black") +
     labs(title = paste0("Boxplot per class for variable ", var), x = var, y = element_blank()) +
@@ -179,6 +179,7 @@ plotlyBoxplotperClass <- function(bounds, var){
                    type = "scatter",
                    mode = "lines",
                    color = df$class[i],
+                   line = list(width = 3),
                    hoverinfo = "text",
                    text = paste0("50% quantile: ", round(df$`quantil. 0.5`[i], 3)),
                    showlegend = FALSE)   
