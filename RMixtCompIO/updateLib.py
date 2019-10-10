@@ -10,7 +10,7 @@ import sys
 if sys.version_info[0] < 3 and sys.version_info[1] < 5:
     raise Exception("Python 3.5 or a more recent version is required.")
 
-print("Note that updateLib.py updates the src/lib subdirectory. To update the optim directory, get the sources from https://github.com/PatWie/CppNumericalSolvers and directly commit a new version.")
+print("Note that updateLib.py updates the src/lib subdirectory.")
 
 libSource = "../MixtComp/src/lib"
 
