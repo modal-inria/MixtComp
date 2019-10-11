@@ -268,7 +268,7 @@ public:
 	void exportDataParam() const {
 		NamedMatrix<int> exportData(nInd_, nbPos_, false);
 		for (Index i = 0; i < nInd_; ++i) {
-			exportData.mat_.row(i) = data_(i).x().o();
+			exportData.mat_.row(i) = data_(i).x().o() + minModality;
 		}
 		outG_.add_payload( { "variable", "data", idName_ }, "completed", exportData);
 
