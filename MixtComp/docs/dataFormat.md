@@ -6,6 +6,8 @@ RMixtComp requires 3 R objects: algo (a list), data (a list, a data.frame or a m
 
 ## Data
 
+Data must have one of the following format. Each variable must be named.
+
 ### JSON data
 
 ```json
@@ -33,7 +35,7 @@ data <- data.frame(
 
 data <- matrix(c(elem11, elem12, elem13, elem14,
                  elem21, elem22, elem23, elem24,
-                 elem31, elem32, elem33, elem34), ncl = 3, dimnames = list(NULL, c("varName1", "varName2", "varName3")))
+                 elem31, elem32, elem33, elem34), ncol = 3, dimnames = list(NULL, c("varName1", "varName2", "varName3")))
 ```
 
 ## Descriptor (model)
@@ -125,6 +127,8 @@ In the RMixtComp, *nInd* can be omitted and *nClass* is copied from from mixtCom
 
 ## Models
 
+Eight models are available in (R)MixtComp
+
 ### Overview
 
 | Available models    | Data type                    | Restrictions  | Hyperparameters |
@@ -138,9 +142,8 @@ In the RMixtComp, *nInd* can be omitted and *nClass* is copied from from mixtCom
 | Func_CS             | Functional                   |               | yes             |
 | Func_SharedAlpha_CS | Functional                   |               | yes             |
 
-### Details
 
-Eight models are available in (R)MixtComp
+### Details
 
 #### Gaussian
 
@@ -176,7 +179,7 @@ f_k(x) = \frac{\Gamma(x+n_k)}{x! \Gamma(n_k)} p_k^{n_k}(1-p_k)^x
 
 #### Multinomial
 
-For categorical data. For a class *k*, the model has *M* parameters $`p_{k,j},\, j=1,...,M`$, where *M* is the number of modalities, corresponding to the probabilities to belong to the modality `j`. $`p_{k,j},\, j=1,...,M`$ must verify $`\sum_{j=1}^M p_{k,j} = 1`$.
+For categorical data. For a class *k*, the model has *M* parameters `p_{k,j},\, j=1,...,M`, where *M* is the number of modalities, corresponding to the probabilities to belong to the modality `j`. `p_{k,j},\, j=1,...,M` must verify `\sum_{j=1}^M p_{k,j} = 1`.
 
 The density mass function is defined by:
 
@@ -191,7 +194,7 @@ The hyperparameter *M* does not require to be specified, it can be guess from th
   
 #### Rank_ISR
 
-For ranking data. For a class *k*, the two parameters are the central rank ($`\mu_k`$) and the probability of making a wrong comparison ($`\pi_k`$). See the [article](https://hal.inria.fr/hal-00743384) for more details. Ranks have their size *M* as hyperparameter. But it does not require to be specified, it can be guess from the data. If tou want to specify it, add `"nModality: M"` in the appropriate field of the description object.
+For ranking data. For a class *k*, the two parameters are the central rank (`\mu_k`) and the probability of making a wrong comparison (`\pi_k`). See the [article](https://hal.inria.fr/hal-00743384) for more details. Ranks have their size *M* as hyperparameter. But it does not require to be specified, it can be guess from the data. If tou want to specify it, add `"nModality: M"` in the appropriate field of the description object.
   
 #### Func_CS and Func_SharedAlpha_CS
 
@@ -199,7 +202,7 @@ For functional data. Between individuals, functional data can have different len
 
 These hyperparameters must be specified by `"nSub: S, nCoeff: C"` in the appropriate field of the descriptor object. See the [article](https://arxiv.org/abs/1312.6967) for more details.
 
-For a class *k* and a subregression *s*, parameters are $`\alpha_{k,s,0}`$ and $`\alpha_{k,s,1}`$ the estimated coefficients of a logistic regression controlling the transition between subregressions, $`\beta_{k,s,1},...,\beta_{k,s,C}`$ the estimated coefficient of the polynomial regression and $`\sigma_{k,s}`$ the standard deviation of the residuals of the regression.
+For a class *k* and a subregression *s*, parameters are `\alpha_{k,s,0}` and `\alpha_{k,s,1}` the estimated coefficients of a logistic regression controlling the transition between subregressions, `\beta_{k,s,1},...,\beta_{k,s,C}` the estimated coefficient of the polynomial regression and `\sigma_{k,s}` the standard deviation of the residuals of the regression.
 
 *Func_SharedAlpha_CS* is a variant of the *Func_CS* model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
 
@@ -236,7 +239,7 @@ data <- matrix(c("2.1", "-0.26", "?", "[0.56:1.28]", "1.21", "[-inf:-0.11]", "[-
 
 Weibull data are real positive values with the dot as decimal separator.
 Missing data are indicated by a `?`. Partial data can be provided through intervals denoted by
-`[a:b]` where `a` and `b` are positive reals (`b` can be +inf).
+`[a:b]` where `a` and `b` are positive reals (`b` can be `+inf`).
 
 #### JSON real positive data
 
@@ -263,7 +266,7 @@ data <- matrix(c("2.1", "0.26", "?", "[0.56:1.28]", "1.21", "[0:5.11]", "[1.65:+
 ### Counting data: Poisson & NegativeBinomial
 
 Counting data are positive integer. Missing data are indicated by a `?`. Partial data can be provided through intervals denoted by
-`[a:b]` where `a` and `b` are positive integers (`b` can be +inf).
+`[a:b]` where `a` and `b` are positive integers (`b` can be `+inf`).
 
 #### JSON counting data
 
@@ -322,12 +325,12 @@ data <- list(
 )
 
 data <- data.frame(
-  varCat1 = c("1", "2", "?", "3", "{2,3}")),
+  varCat1 = c("1", "2", "?", "3", "{2,3}"),
   varCat2 = c("3", "1", "2", "{1,2}", "3")
 )
 
 data <- matrix(c("1", "2", "?", "3", "{2,3}",
-                 "3", "1", "2", "{1,2}", "3")), ncol = 2, dimnames = list(NULL, c("varCat1", "varCat2")))
+                 "3", "1", "2", "{1,2}", "3"), ncol = 2, dimnames = list(NULL, c("varCat1", "varCat2")))
 ```
 
 ### Rank data
@@ -348,25 +351,25 @@ A totally missing rank is spedified by a sequence of `?` separated by commas, e.
 
 #### R rank data
 
-```json
+```r
 data <- list(
   varRank1 = c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3},4,{1,3}")
 )
 
 data <- data.frame(
-  varRank1 = c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3},4,{1,3}"))
+  varRank1 = c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3},4,{1,3}")
 )
 
-data <- matrix(c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3},4,{1,3}")), ncol = 1, dimnames = list(NULL, c("varRank1")))
+data <- matrix(c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3},4,{1,3}"), ncol = 1, dimnames = list(NULL, c("varRank1")))
 ```
 
 ### Functional data: Func_CS & Func_SharedAlpha_CS
 
-The format of a fonctional data is: `time_1:value_1,..., time_j:value_j`. Between individuals, functional data can have different length and different time values.
-In the case of a functional model, `nSub: i, nCoeff: k` must be indicated in the third row of the descriptor file.
-*i* is the number of subregressions in a functional data and k the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Totally missing data are not supported. Time points with missing values must not be included. 
+The format of a functional data is: `time_1:value_1,..., time_j:value_j`. Between individuals, functional data can have different length and different time values.
+In the case of a functional model, `nSub: S, nCoeff: C` must be indicated in the third row of the descriptor file.
+*S* is the number of subregressions in a functional data and *C* the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Totally missing data are not supported. Time points with missing values must not be included. 
 
-For example if you have a time vector of `1 2 3 4 5 6 8 12` and a value vector of `0.8 0.6 0.88 0.42 0.62 0.75 0.72 0.66` for one individual, the MixtComp format is `1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66`
+For example if you have a time vector `1 2 3 4 5 6 8 12` and a value vector `0.8 0.6 0.88 0.42 0.62 0.75 0.72 0.66` for one individual, the MixtComp format is `1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66`.
 
 #### JSON functional data
 
@@ -384,10 +387,10 @@ data <- list(
 )
 
 data <- data.frame(
-  varFunc1 = c("1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66", "1:0.5,2:0.4,4:0.32", "3:-0.8,5:-0.6,6:-0.88,8:-0.42,10:0.62"))
+  varFunc1 = c("1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66", "1:0.5,2:0.4,4:0.32", "3:-0.8,5:-0.6,6:-0.88,8:-0.42,10:0.62")
 )
 
-data <- matrix(c("1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66", "1:0.5,2:0.4,4:0.32", "3:-0.8,5:-0.6,6:-0.88,8:-0.42,10:0.62")), ncol = 1, dimnames = list(NULL, c("varFunc1")))
+data <- matrix(c("1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66", "1:0.5,2:0.4,4:0.32", "3:-0.8,5:-0.6,6:-0.88,8:-0.42,10:0.62"), ncol = 1, dimnames = list(NULL, c("varFunc1")))
 ```
 
 #### JSON functional descriptor
