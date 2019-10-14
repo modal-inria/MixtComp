@@ -35,9 +35,11 @@ Graphics functions are \link{plot.MixtComp}, \link{plot.MixtCompLearn}, \link{he
 Datasets with running examples are provided: \link{titanic}, \link{CanadianWeather}, \link{prostate}, \link{simData}.
 
 
-Documentation about input and output format is available: \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/dataFormat.md} and \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/objectOutput.md}.
+Documentation about input and output format is available: \code{vignette("dataFormat")} and \code{vignette("mixtCompOutput")}.
 }
 \examples{
+
+
 data(simData)
  
 # define the algorithm's parameters: you can use createAlgo function

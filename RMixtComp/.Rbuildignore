@@ -9,3 +9,5 @@ out
 genDataPackage.R
 RMCtest.xml
 README.md
+^doc$
+^Meta$

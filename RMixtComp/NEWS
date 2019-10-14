@@ -1,7 +1,8 @@
-v4.0.3 2019-10-08
+v4.1.0 2019-10-14
 - plotCrit's improvment
-- add plotData parameter to plot.MixtCompLearn 
+- add plotData parameter to plot.MixtCompLearn (following the update of RMixtCompUtilities)
 - remove skip_on_cran
+- add vignettes
 
 v4.0.2 2019-09-16
 - change some parameters in examples and tests
