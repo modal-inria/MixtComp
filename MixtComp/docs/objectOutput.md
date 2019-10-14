@@ -98,8 +98,8 @@ A copy of algo parameter.
 - **delta** entropy used to compute the similarities between variables (see code of heatmapVbles)
 - **completedProbabilityLogBurnIn** evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
 - **completedProbabilityLogRun** evolution of the completed log-probability after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
-- **runTime** execution time in seconds
-- **lnProbaGivenClass** log-(probability of each sample for each class times the proportion): $`\log(\pi_k)+\log(P(X_i|z_i=k))`$
+- **runTime** a list containing the execution time in seconds of different part of the algorithm
+- **lnProbaGivenClass** log-probability of each sample for each class times the proportion): `\log(\pi_k)+\log(P(X_i|z_i=k))`
 
 ## variable
 
@@ -123,7 +123,7 @@ For each sample, it contains the $`t_{ik}`$ (probability of $`x_i`$ to belong to
 
 - **Multinomial**
 
-*stat*is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
+*stat* is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
 - **Rank_ISR**
 
@@ -143,48 +143,48 @@ For the meaning of the parameters, user can refer to the documentation [data for
 - **LatentClass**
 
 A list of 3 elements: *stat*, *log*, *paramStr*.
-*log* is matrix containing the estimated proportion during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated proportion. The median proportions are the returned proportions. *paramStr* contains "".
+*log* is matrix containing the estimated proportion during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated proportion. The median proportions are the returned proportions. *paramStr* contains `""`.
 
 - **Gaussian**
 
-The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are mean ($`\mu_k`$) and sd ($`\sigma_k`$). The distribution function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are mean (`\mu_k`) and sd (`\sigma_k`).
 
 - **Poisson**
 
-The *stat* matrix has nClass rows. For a class *k*, the parameter is lambda ($`\lambda_k`$). The probability function is defined by:
+The *stat* matrix has nClass rows. For a class *k*, the parameter is lambda (`\lambda_k`).
 
 - **NegativeBinomial**
 
-The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are n ($`n_k`$) and p ($`p_k`$). The probability function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are n (`n_k`) and p (`p_k`).
 
 - **Weibull**
 
-The *stat* matrix has 2\*nClass rows. For a class *j*, parameters are k/shape ($`k_j`$) and lambda/scale ($`\lambda_j`$). The distribution function is defined by:
+The *stat* matrix has 2\*nClass rows. For a class *j*, parameters are k (shape) (`k_j`) and lambda (scale) (`\lambda_j`). 
 
 - **Multinomial**
 
-*paramStr* contains "nModality: J" where J is the number of modalities.
+*paramStr* contains `"nModality: J"` where *J* is the number of modalities.
 
-The *stat* matrix has J\*nClass rows. For a class *k*, parameters are probabilities to belong to modality $J$.
+The *stat* matrix has J\*nClass rows. For a class *k*, parameters are probabilities to belong to modality *J*.
 
 - **Rank_ISR**
 
-*paramStr* contains "nModality: J" where J is the length of the rank (number of sorted objects).
+*paramStr* contains `"nModality: J"` where *J* is the length of the rank (number of sorted objects).
 
 Two lists (named *mu* and *pi*) of 2 elements: *stat*, *log*.
 
-For *pi*, *stat* is a matrix with nClass rows. For a class *k*, parameter is pi ($`pi_k`$).
+For *pi*, *stat* is a matrix with nClass rows. For a class *k*, parameter is pi (`pi_k`).
 
-For *mu*, *stat* is a list with nClass elements. For a class *k*, a list is returned with the mode of the parameter ($`\mu_k`$), and the frequency of the mode during the SEM algorithm after the burnin phase.
+For *mu*, *stat* is a list with nClass elements. For a class *k*, a list is returned with the mode of the parameter (`\mu_k`), and the frequency of the mode during the SEM algorithm after the burn-in phase.
 
 - **Func_CS** and **Func_SharedAlpha_CS**
 
-*paramStr* contains "nSub: S, nCoeff: C" where S is the number of sub-regressions and C the number of coefficients of each regression.
+*paramStr* contains `"nSub: S, nCoeff: C"` where *S* is the number of subregressions and *C* the number of coefficients of each regression.
 
 Three lists (named *alpha*, *beta* and *sd*) of 2 elements: *stat*, *log*.
 
-For *alpha*, *stat* is a matrix with 2\*S\*nClass rows. For a class *k* and a subregression *s*, parameters areestimated coefficients of a logistic regression controlling the transition between subregressions.
+For *alpha*, *stat* is a matrix with 2\*S\*nClass rows. For a class *k* and a subregression *s*, parameters are the estimated coefficients of a logistic regression controlling the transition between subregressions.
 
-For *beta*, *stat* is a matrix with S\*C\*nClass rows. For a class *k* and a subregression *s*, parameters are estimated coefficient of the regression.
+For *beta*, *stat* is a matrix with S\*C\*nClass rows. For a class *k* and a subregression *s*, parameters are the estimated coefficient of the regression.
 
 For *sd*, *stat* is a matrix with S\*nClass rows. For a class *k* and a subregression *s*, the parameter is the standard deviation of the residuals of the regression.
