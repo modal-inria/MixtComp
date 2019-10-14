@@ -2,7 +2,6 @@
 ^\.Rproj\.user$
 ^./*.csv$
 ^./*.json$
-out
 .Rhistory
 .cproject
 .project
