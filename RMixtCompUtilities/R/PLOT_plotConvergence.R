@@ -143,7 +143,7 @@ plotLog <- function(paramLog, nbCluster, var, ...)
     name <- rownames(paramLog)[ind[1]]
     name <- gsub("^[^,]*, ", "", name)
     
-    matplot(t(paramLog[ind,]), type = "l", main = paste0(var, ": ", name), xlab = "Iteration", ylab = name)
+    matplot(t(paramLog[ind,, drop = FALSE]), type = "l", main = paste0(var, ": ", name), xlab = "Iteration", ylab = name)
     legend("left", paste0("class ", 1:nbCluster), lty = 1:5, col = 1:6)
   }
   
