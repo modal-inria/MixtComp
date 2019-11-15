@@ -320,6 +320,8 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   
   
   algo$nInd = length(dataList[[1]])
+  if(algo$nInd == 0)
+    stop("The dataset has no row.")
   algo$nClass = checkNClass(nClass, resLearn)
   algo$mode = "predict"
   
@@ -370,6 +372,8 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
   }
   
   algo$nInd = length(dataList[[1]])
+  if(algo$nInd == 0)
+    stop("The dataset has no row.")
   algo$mode = "learn"
   
   algo = RMixtCompUtilities:::completeAlgo(algo)
@@ -440,6 +444,8 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   model <- completeModel(model, dataList)
   
   algo$nInd = length(dataList[[1]])
+  if(algo$nInd == 0)
+    stop("The dataset has no row.")
   algo$mode = "learn"
   
   algo = RMixtCompUtilities:::completeAlgo(algo)

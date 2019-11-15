@@ -1,25 +1,25 @@
-# MixtComp version 4 - july 2019
-# Copyright (C) Inria - Université de Lille - CNRS 
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
+# # MixtComp version 4 - july 2019
+# # Copyright (C) Inria - Université de Lille - CNRS 
 # 
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
-
-###################################################################################
-#
-# Functions for ClusVis: see with Matthieu to add it to ClusVis once RMixtComp is on CRAN
-#
-
-
+# # This program is free software: you can redistribute it and/or modify
+# # it under the terms of the GNU Affero General Public License as
+# # published by the Free Software Foundation, either version 3 of the
+# # License, or (at your option) any later version.
+# # This program is distributed in the hope that it will be useful,
+# # but WITHOUT ANY WARRANTY; without even the implied warranty of
+# # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# # GNU Affero General Public License for more details.
+# # 
+# # You should have received a copy of the GNU Affero General Public License
+# # along with this program.  If not, see <https://www.gnu.org/licenses/>
+#  
+# 
+# ###################################################################################
+# #
+# # Functions for ClusVis: see with Matthieu to add it to ClusVis once RMixtComp is on CRAN
+# #
+# 
+# 
 # # @title Run clusvis for MixtComp output
 # #
 # # @description This function estimates the parameters used for visualization of model-based clustering performs with R package ClusVis
@@ -37,10 +37,9 @@
 # # See \link{plotComponentClusVis} and \link{plotObservationsClusVis} for graphics outputs.
 # #
 # # @examples
-# # \donttest{
 # # library(RMixtComp)
 # #
-# # data(simData)
+# # data(titanic)
 # #
 # # # define the algorithm's parameters
 # # algo <- createAlgo()
@@ -49,7 +48,6 @@
 # # res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 # #
 # # resvisu <- clusvisMixtComp(res)
-# # }
 # #
 # # @seealso \code{\link{plotComponentClusVis}} \code{\link{plotObservationsClusVis}}
 # # @author Matthieu Marbac
