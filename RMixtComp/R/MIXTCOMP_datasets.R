@@ -154,7 +154,7 @@ NULL
 #'             precav = apply(CanadianWeather$precav, 2, 
 #'                            function(x) createFunctional(CanadianWeather$time, x)))
 #' 
-#' # create model with 3 subregressions ans 2 coefficients per regression
+#' # create model with 4 subregressions ans 2 coefficients per regression
 #' model <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
 #'               precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"))
 #' 
