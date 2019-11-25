@@ -45,6 +45,9 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 	Real confidenceLevel = algo.template get_payload<Real>( { }, "confidenceLevel");
 	Index nInd = algo.template get_payload<Index>( { }, "nInd");
 
+	if(nInd < 1)
+		warnLog += "The dataset is empty." + eol;
+
 	std::list<std::string> varNames;
 	desc.name_payload( { }, varNames);
 #ifdef MC_VERBOSE
