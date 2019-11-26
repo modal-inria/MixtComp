@@ -17,7 +17,7 @@
 #' @useDynLib RMixtCompIO
 #' @import Rcpp doParallel
 #' @importFrom parallel makeCluster stopCluster
-#' @importFrom foreach foreach %dopar%
+#' @importFrom foreach foreach %dopar% registerDoSEQ
 #' @importFrom stats rbinom rmultinom rnbinom rnorm rpois runif rweibull
 #' 
 #' @title RMixtCompIO
