@@ -1,3 +1,3 @@
 [submodule "RMixtCompIO/src/optim"]
 	path = RMixtCompIO/src/optim
-	url = https://github.com/PatWie/CppNumericalSolvers
+	url = https://github.com/modal-inria/CppNumericalSolvers
