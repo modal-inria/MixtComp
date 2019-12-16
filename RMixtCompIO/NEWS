@@ -1,7 +1,7 @@
-v4.0.2 2019-10-26
+v4.0.2 2019-12-16
 - correct variable name in a function 
 - typo in error message
-- use reggisterDoSeq when the number of cores is 1
+- use registerDoSeq when the number of cores is 1
 
 v4.0.1 2019-08-29
 - Do not use foreach and %dopar% when the number of core is 1

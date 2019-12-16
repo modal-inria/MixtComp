@@ -4,8 +4,15 @@
 \alias{rmcMultiRun}
 \title{Learn and predict a Mixture Model}
 \usage{
-rmcMultiRun(algo, data, model, resLearn = list(), nRun = 1,
-  nCore = 1, verbose = FALSE)
+rmcMultiRun(
+  algo,
+  data,
+  model,
+  resLearn = list(),
+  nRun = 1,
+  nCore = 1,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}

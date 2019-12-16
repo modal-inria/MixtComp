@@ -2,14 +2,14 @@ Package: RMixtCompIO
 Type: Package
 Title: Mixture Models with Heterogeneous and (Partially) Missing Data
 Version: 4.0.2
-Date: 2019-11-26
+Date: 2019-12-16
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
              person("Serge", "Iovleff", role = "ctb"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
              person("Étienne", "Goffinet", role = "ctb"), 
-             person("Patrick", "Patrick Wieschollek", role = "ctb", comment = "for CppOptimizationLibrary"),
+             person("Patrick", "Wieschollek", role = "ctb", comment = "for CppOptimizationLibrary"),
              person("Tobias", "Wood", role = "ctb", comment = "for CppOptimizationLibrary"))
 Copyright: Inria - Université de Lille - CNRS; Patrick Wieschollek, Tobias Wood & the respective contributors for CppOptimizationLibrary
 License: AGPL-3
@@ -22,5 +22,5 @@ BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: Rcpp, doParallel, foreach
 Suggests: Rmixmod, blockcluster, testthat, RInside, xml2
 LinkingTo: Rcpp, RcppEigen, BH
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1
 Encoding: UTF-8
