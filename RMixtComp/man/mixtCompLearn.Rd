@@ -5,14 +5,28 @@
 \alias{mixtCompPredict}
 \title{Learn and predict using RMixtComp}
 \usage{
-mixtCompLearn(data, model = NULL, algo = createAlgo(), nClass,
-  criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes",
-  "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun),
-  verbose = TRUE)
+mixtCompLearn(
+  data,
+  model = NULL,
+  algo = createAlgo(),
+  nClass,
+  criterion = c("BIC", "ICL"),
+  hierarchicalMode = c("auto", "yes", "no"),
+  nRun = 1,
+  nCore = min(max(1, ceiling(detectCores()/2)), nRun),
+  verbose = TRUE
+)
 
-mixtCompPredict(data, model = NULL, algo = resLearn$algo, resLearn,
-  nClass = NULL, nRun = 1, nCore = min(max(1,
-  ceiling(detectCores()/2)), nRun), verbose = FALSE)
+mixtCompPredict(
+  data,
+  model = NULL,
+  algo = resLearn$algo,
+  resLearn,
+  nClass = NULL,
+  nRun = 1,
+  nCore = min(max(1, ceiling(detectCores()/2)), nRun),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).}

@@ -116,7 +116,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 #' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' plot(resLearn)
-#' plot(resLearn, nClass = 3)
+#' plot(resLearn, nClass = 3, plotData = "Boxplot")
 #' 
 #' @method plot MixtCompLearn
 #' 

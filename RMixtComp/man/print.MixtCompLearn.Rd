@@ -4,8 +4,7 @@
 \alias{print.MixtCompLearn}
 \title{Print Values}
 \usage{
-\method{print}{MixtCompLearn}(x, nVarMaxToPrint = 5, nClass = NULL,
-  ...)
+\method{print}{MixtCompLearn}(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 }
 \arguments{
 \item{x}{\emph{MixtCompLearn} object}

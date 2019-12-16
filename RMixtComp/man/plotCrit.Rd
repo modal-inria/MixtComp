@@ -34,7 +34,8 @@ plotCrit(res)
 
 }
 \seealso{
-Other plot: \code{\link{plot.MixtCompLearn}}
+Other plot: 
+\code{\link{plot.MixtCompLearn}()}
 }
 \author{
 Quentin Grimonprez

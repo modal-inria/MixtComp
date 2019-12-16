@@ -22,8 +22,10 @@ str(simData)
   
 }
 \seealso{
-Other data: \code{\link{CanadianWeather}},
-  \code{\link{prostate}}, \code{\link{titanic}}
+Other data: 
+\code{\link{CanadianWeather}},
+\code{\link{prostate}},
+\code{\link{titanic}}
 }
 \concept{data}
 \keyword{data}

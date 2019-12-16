@@ -78,8 +78,10 @@ getType(resLearn)
   
 }
 \seealso{
-Other data: \code{\link{CanadianWeather}},
-  \code{\link{prostate}}, \code{\link{simData}}
+Other data: 
+\code{\link{CanadianWeather}},
+\code{\link{prostate}},
+\code{\link{simData}}
 }
 \concept{data}
 \keyword{data}
