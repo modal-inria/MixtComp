@@ -22,7 +22,7 @@ formatModel <- function(model)
 {
   model = lapply(model, function(x){
     if(!is.list(x))
-      x = list(type = x)
+      x = list(type = as.character(x))
     if(!("paramStr" %in% names(x)))
       x$paramStr = ""
     
