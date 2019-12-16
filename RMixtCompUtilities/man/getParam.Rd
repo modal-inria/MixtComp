@@ -50,10 +50,12 @@ param <- getParam(resLearn, "var1")
 \seealso{
 \code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
 
-Other getter: \code{\link{getBIC}},
-  \code{\link{getCompletedData}},
-  \code{\link{getEmpiricTik}}, \code{\link{getPartition}},
-  \code{\link{getType}}
+Other getter: 
+\code{\link{getBIC}()},
+\code{\link{getCompletedData}()},
+\code{\link{getEmpiricTik}()},
+\code{\link{getPartition}()},
+\code{\link{getType}()}
 }
 \author{
 Quentin Grimonprez

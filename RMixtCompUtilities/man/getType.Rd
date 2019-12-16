@@ -60,10 +60,12 @@ varNames <- getVarNames(resLearn)
 
 }
 \seealso{
-Other getter: \code{\link{getBIC}},
-  \code{\link{getCompletedData}},
-  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
-  \code{\link{getPartition}}
+Other getter: 
+\code{\link{getBIC}()},
+\code{\link{getCompletedData}()},
+\code{\link{getEmpiricTik}()},
+\code{\link{getParam}()},
+\code{\link{getPartition}()}
 }
 \author{
 Quentin Grimonprez

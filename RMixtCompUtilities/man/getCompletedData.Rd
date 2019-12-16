@@ -54,9 +54,12 @@ completedData2 <- getCompletedData(resLearn, var = "var1")
 
 }
 \seealso{
-Other getter: \code{\link{getBIC}},
-  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
-  \code{\link{getPartition}}, \code{\link{getType}}
+Other getter: 
+\code{\link{getBIC}()},
+\code{\link{getEmpiricTik}()},
+\code{\link{getParam}()},
+\code{\link{getPartition}()},
+\code{\link{getType}()}
 }
 \author{
 Quentin Grimonprez

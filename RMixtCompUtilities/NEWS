@@ -1,4 +1,4 @@
-v4.1.0 2019-10-25
+v4.1.0 2019-12-16
 - can use grl = TRUE in plot.MixtComp
 - add plotData parameter in plot.MixtComp
 - bug correction in extractCIPoissonVble when grl = TRUE

@@ -4,8 +4,7 @@
 \alias{plotDataBoxplot}
 \title{Boxplot per class}
 \usage{
-plotDataBoxplot(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"),
-  ...)
+plotDataBoxplot(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
@@ -60,15 +59,18 @@ plotDataBoxplot(resLearn, "var1")
 
 }
 \seealso{
-Other plot: \code{\link{heatmapClass}},
-  \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
-  \code{\link{histMisclassif}},
-  \code{\link{plot.MixtComp}},
-  \code{\link{plotConvergence}}, \code{\link{plotDataCI}},
-  \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}},
-  \code{\link{plotParamConvergence}},
-  \code{\link{plotProportion}}
+Other plot: 
+\code{\link{heatmapClass}()},
+\code{\link{heatmapTikSorted}()},
+\code{\link{heatmapVar}()},
+\code{\link{histMisclassif}()},
+\code{\link{plot.MixtComp}()},
+\code{\link{plotConvergence}()},
+\code{\link{plotDataCI}()},
+\code{\link{plotDiscrimClass}()},
+\code{\link{plotDiscrimVar}()},
+\code{\link{plotParamConvergence}()},
+\code{\link{plotProportion}()}
 }
 \author{
 Matthieu MARBAC

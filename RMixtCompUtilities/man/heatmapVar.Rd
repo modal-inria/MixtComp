@@ -52,16 +52,18 @@ heatmapVar(resLearn)
 \seealso{
 \code{\link{computeSimilarityVar}}
 
-Other plot: \code{\link{heatmapClass}},
-  \code{\link{heatmapTikSorted}},
-  \code{\link{histMisclassif}},
-  \code{\link{plot.MixtComp}},
-  \code{\link{plotConvergence}},
-  \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
-  \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}},
-  \code{\link{plotParamConvergence}},
-  \code{\link{plotProportion}}
+Other plot: 
+\code{\link{heatmapClass}()},
+\code{\link{heatmapTikSorted}()},
+\code{\link{histMisclassif}()},
+\code{\link{plot.MixtComp}()},
+\code{\link{plotConvergence}()},
+\code{\link{plotDataBoxplot}()},
+\code{\link{plotDataCI}()},
+\code{\link{plotDiscrimClass}()},
+\code{\link{plotDiscrimVar}()},
+\code{\link{plotParamConvergence}()},
+\code{\link{plotProportion}()}
 }
 \author{
 Matthieu MARBAC

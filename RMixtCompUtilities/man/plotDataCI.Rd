@@ -4,8 +4,14 @@
 \alias{plotDataCI}
 \title{Mean and 95\%-level confidence intervals per class}
 \usage{
-plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE,
-  pkg = c("ggplot2", "plotly"), ...)
+plotDataCI(
+  output,
+  var,
+  class = 1:output$algo$nClass,
+  grl = FALSE,
+  pkg = c("ggplot2", "plotly"),
+  ...
+)
 }
 \arguments{
 \item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
@@ -64,16 +70,18 @@ plotDataCI(resLearn, "var1")
 
 }
 \seealso{
-Other plot: \code{\link{heatmapClass}},
-  \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
-  \code{\link{histMisclassif}},
-  \code{\link{plot.MixtComp}},
-  \code{\link{plotConvergence}},
-  \code{\link{plotDataBoxplot}},
-  \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}},
-  \code{\link{plotParamConvergence}},
-  \code{\link{plotProportion}}
+Other plot: 
+\code{\link{heatmapClass}()},
+\code{\link{heatmapTikSorted}()},
+\code{\link{heatmapVar}()},
+\code{\link{histMisclassif}()},
+\code{\link{plot.MixtComp}()},
+\code{\link{plotConvergence}()},
+\code{\link{plotDataBoxplot}()},
+\code{\link{plotDiscrimClass}()},
+\code{\link{plotDiscrimVar}()},
+\code{\link{plotParamConvergence}()},
+\code{\link{plotProportion}()}
 }
 \author{
 Matthieu MARBAC

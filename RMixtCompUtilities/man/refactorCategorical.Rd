@@ -4,8 +4,11 @@
 \alias{refactorCategorical}
 \title{Rename a categorical value}
 \usage{
-refactorCategorical(data, oldCateg = unique(data),
-  newCateg = 1:length(oldCateg))
+refactorCategorical(
+  data,
+  oldCateg = unique(data),
+  newCateg = 1:length(oldCateg)
+)
 }
 \arguments{
 \item{data}{matrix/data.frame/vector containing the data}
