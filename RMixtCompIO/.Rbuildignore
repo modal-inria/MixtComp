@@ -6,3 +6,6 @@ build.sh
 updateLib.py
 RMCIOtest.xml
 README.md
+src/optim/.drone.yml
+src/optim/.git
+src/optim/.ci
