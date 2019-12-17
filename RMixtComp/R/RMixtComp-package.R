@@ -21,6 +21,8 @@
 #' @importFrom ggplot2 ggplot aes_string labs geom_point geom_line scale_x_continuous
 #' @importFrom plotly plot_ly add_trace layout %>% 
 #' @importFrom scales pretty_breaks
+#' @importFrom stats cov var
+#' 
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package
