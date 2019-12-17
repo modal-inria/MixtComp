@@ -57,9 +57,11 @@ out <- slopeHeuristic(resLearn, K0 = 6)
 
 }
   
-
 }
 \references{
 Cathy Maugis, Bertrand Michel.  Slope heuristics for variable selection and clustering via Gaussian mixtures. [Research Report] RR-6550, INRIA. 2008. inria-00284620v2
 Jean-Patrick Baudry, Cathy Maugis, Bertrand Michel. Slope Heuristics: Overview and Implementation. 2010. hal-00461639
+}
+\author{
+Quentin Grimonprez
 }
