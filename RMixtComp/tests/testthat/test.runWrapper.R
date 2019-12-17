@@ -25,9 +25,9 @@ test_that("mixtCompLearn works in basic mode + predict", {
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   ## data.frame object
-  dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
-                    categ = c("a", "b")[c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))],
-                    poiss = c(rpois(100, 2), rpois(100, 5)))
+  dat <- data.frame(cont = c(rnorm(150, -2, 0.8), rnorm(150, 2, 0.8)),
+                    categ = c("a", "b")[c(apply(rmultinom(150, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(150, 1, c(0.2, 0.8)), 2, which.max))],
+                    poiss = c(rpois(150, 2), rpois(150, 5)))
   
   expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2, nRun = 3, nCore = 1), regexp = NA)
   
@@ -41,9 +41,9 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
-  expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("a", "b"), new = c("1", "2"))))
   expect_equal(resLearn$variable$data$categ$completed, as.character(dat$categ))
-  expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: b", "k: 1, modality: a", "k: 2, modality: b", "k: 2, modality: a"))
+  expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: a", "k: 1, modality: b", "k: 2, modality: a", "k: 2, modality: b"))
   
   expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
   
@@ -54,16 +54,16 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.9)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   expect_true(resPredict$algo$basicMode)
-  expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
+  expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("a", "b"), new = c("1", "2"))))
   expect_equal(resPredict$variable$data$categ$completed, as.character(dat$categ))
-  expect_equal(rownames(resPredict$variable$param$categ$stat), c("k: 1, modality: b", "k: 1, modality: a", "k: 2, modality: b", "k: 2, modality: a"))
+  expect_equal(rownames(resPredict$variable$param$categ$stat), c("k: 1, modality: a", "k: 1, modality: b", "k: 2, modality: a", "k: 2, modality: b"))
   
   
-  ## list object with z_class 
-  dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
-              categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
-              categ2 = as.factor(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
-              poiss = c(rpois(100, 2), rpois(100, 5)))
+  ## list object
+  dat <- list(cont = c(rnorm(150, -2, 0.8), rnorm(150, 2, 0.8)),
+              categ1 = as.character(c(apply(rmultinom(150, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(150, 1, c(0.2, 0.8)), 2, which.max))),
+              categ2 = as.factor(c(apply(rmultinom(150, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(150, 1, c(0.2, 0.8)), 2, which.max))),
+              poiss = c(rpois(150, 2), rpois(150, 5)))
   
   expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
   
@@ -77,11 +77,11 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
-  expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+  expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("1", "2"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   expect_equal(resLearn$variable$data$categ1$completed, as.character(dat$categ1))
   expect_equal(resLearn$variable$data$categ2$completed, as.character(dat$categ2))
-  expect_equal(rownames(resLearn$variable$param$categ1$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resLearn$variable$param$categ1$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   expect_equal(rownames(resLearn$variable$param$categ2$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   
   
@@ -95,11 +95,11 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.9)
   expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_true(resPredict$algo$basicMode)
-  expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+  expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("1", "2"), new = c("1", "2")),
                                                 categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   expect_equal(resPredict$variable$data$categ1$completed, as.character(dat$categ1))
   expect_equal(resPredict$variable$data$categ2$completed, as.character(dat$categ2))
-  expect_equal(rownames(resPredict$variable$param$categ1$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resPredict$variable$param$categ1$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   expect_equal(rownames(resPredict$variable$param$categ2$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   
   

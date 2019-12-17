@@ -91,7 +91,7 @@ formatDataBasicMode <- function(data, model, dictionary = NULL)
       {
         if(createDictionary)
         {
-          oldCateg <- unique(data[[name]])
+          oldCateg <- sort(unique(data[[name]]))
           oldCateg = oldCateg[!is.na(oldCateg)]
           dictionary[[name]] = list(old = as.character(oldCateg), new = as.character(seq_along(oldCateg)))
         }else{
