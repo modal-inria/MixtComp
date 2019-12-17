@@ -278,6 +278,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   }
   
   performHier <- performHierarchical(hierarchicalMode, mode, model)
+  nClass = sort(nClass)
   
   ## run MixtComp
   if(performHier)
