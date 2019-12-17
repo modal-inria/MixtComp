@@ -3,6 +3,7 @@
 S3method(plot,MixtCompLearn)
 S3method(print,MixtCompLearn)
 S3method(summary,MixtCompLearn)
+export(extractMixtCompObject)
 export(mixtCompLearn)
 export(mixtCompPredict)
 export(plotCrit)
