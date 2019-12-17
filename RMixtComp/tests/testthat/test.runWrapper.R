@@ -22,7 +22,7 @@ Sys.setenv(MC_DETERMINISTIC = 42)
 
 
 test_that("mixtCompLearn works in basic mode + predict", {
-  set.seed(42)
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   ## data.frame object
   dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
@@ -35,7 +35,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.9)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 150)), 0.9)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
@@ -51,7 +51,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.9)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.9)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
@@ -71,7 +71,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 150)), 0.9)
   expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
@@ -92,7 +92,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.9)
   expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
@@ -105,7 +105,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   
   ## with z_class and without multinomial
-  dat$z_class = rep(1:2, each = 100)
+  dat$z_class = rep(1:2, each = 150)
   dat$categ1 = NULL
   dat$categ2 = NULL
   
@@ -115,7 +115,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), rep(1:2, each = 150)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
@@ -124,7 +124,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   dat$z_class = NULL
   expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
-  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.95)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list())
 })
@@ -195,7 +195,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
 
 
 test_that("mixtCompLearn works + mixtCompPredict", {
-  set.seed(42)
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   nInd <- 2000
   
@@ -203,8 +203,8 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   var$z_class <- RMixtCompIO:::zParam()
   var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
   var$Gaussian1 <- RMixtCompIO:::gaussianParam("Gaussian1")
-  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.5)
-  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.5)
+  var$Gaussian1$param[[3]] <- list(mean = -1.5, sd = 0.4)
+  var$Gaussian1$param[[4]] <- list(mean = 1.5, sd = 0.4)
   
   resGen <- RMixtCompIO:::dataGeneratorNewIO(nInd, 0.95, var)
   
@@ -278,7 +278,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verbose", {
-  set.seed(42)
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   nInd <- 1000
   
@@ -409,7 +409,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 
 
 test_that("mixtCompLearn works in hierarchicalMode",{
-  set.seed(42)
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   data(simData)
   model <- simData$model$unsupervised[c("Gaussian1", "Functional1")]

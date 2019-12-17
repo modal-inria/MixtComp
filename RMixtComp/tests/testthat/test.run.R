@@ -21,7 +21,7 @@ Sys.setenv(MC_DETERMINISTIC = 42)
 
 
 test_that("run cluster/predict R object",{
-  set.seed(42)
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
   
   var <- list()
   var$z_class <- RMixtCompIO:::zParam()
