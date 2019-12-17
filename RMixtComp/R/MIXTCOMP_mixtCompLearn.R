@@ -278,7 +278,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   }
   
   performHier <- performHierarchical(hierarchicalMode, mode, model)
-  nClass = sort(nClass)
+  nClass = sort(unique(nClass))
   
   ## run MixtComp
   if(performHier)
@@ -374,8 +374,6 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
   algo$mode = "learn"
   
   algo = RMixtCompUtilities:::completeAlgo(algo)
-  
-  nClass = unique(nClass)
   
   indCrit <- ifelse(criterion == "BIC", 1, 2)
   
