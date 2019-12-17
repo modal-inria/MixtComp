@@ -1,5 +1,5 @@
-v4.1.0 2019-12-16
-- add slopeHeuristic
+v4.1.0 2019-12-17
+- add slopeHeuristic and extractMixtCompObject functions
 - plotCrit's improvment
 - add plotData parameter to plot.MixtCompLearn (following the update of RMixtCompUtilities)
 - remove skip_on_cran
