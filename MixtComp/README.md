@@ -11,7 +11,7 @@ Note that if you are installing RMixtComp from CRAN, Boost and Eigen are provide
 On Debian / Ubuntu, you can install all the dependencies using:
 
 ```
-sudo apt install cmake libboost-all-dev libeigen3-dev libxml2-dev
+sudo apt install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov genhtml
 ```
 
 ## macOS

@@ -7,6 +7,15 @@ cmake_minimum_required (VERSION 3.5)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+message(${CMAKE_MODULE_PATH})
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	include(CodeCoverage)
+	append_coverage_compiler_flags()
+endif() 
+
+
 ## Boost
 
 find_package(Boost 1.58 REQUIRED)
@@ -57,6 +66,10 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 
+
 ## unit tests
 add_subdirectory(utest EXCLUDE_FROM_ALL)
+
+## code coverage
+setup_target_for_coverage_lcov(NAME ${PROJECT_NAME}_coverage EXECUTABLE runUtest EXCLUDE "\"/usr*\"" "\"*debug*\"" "\"*utest*\"" "${PROJECT_SOURCE_DIR}/CMakeCCompilerId*")
 
