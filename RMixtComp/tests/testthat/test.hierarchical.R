@@ -21,7 +21,7 @@ context("Launch hierarchical MixtComp")
 
 
 test_that("simple case", {
-  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   data <- matrix(nrow = 200, ncol = 2)
   data[,1] = c(rnorm(50, 1, 0.5), rnorm(50, -4, 0.5), rnorm(30, 3, 0.5), rnorm(70, -1, 0.4))
   data[,2] = c(rnorm(100, -2, 1), rnorm(100, 3, 0.4))

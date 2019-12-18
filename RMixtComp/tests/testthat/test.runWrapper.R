@@ -22,7 +22,7 @@ Sys.setenv(MC_DETERMINISTIC = 2)
 
 
 test_that("mixtCompLearn works in basic mode + predict", {
-  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   ## data.frame object
   dat <- data.frame(cont = c(rnorm(150, -2, 0.8), rnorm(150, 2, 0.8)),
@@ -195,7 +195,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
 
 
 test_that("mixtCompLearn works + mixtCompPredict", {
-  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   nInd <- 2000
   
@@ -278,7 +278,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verbose", {
-  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   nInd <- 1000
   
@@ -409,7 +409,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 
 
 test_that("mixtCompLearn works in hierarchicalMode",{
-  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion", sample.kind = "Rejection")
+  set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   data(simData)
   model <- simData$model$unsupervised[c("Gaussian1", "Functional1")]
