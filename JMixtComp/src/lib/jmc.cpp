@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 		std::ifstream descStream(descFile);
 
 		if (algoStream.good() == false || dataStream.good() == false || descStream.good() == false) {
-			std::cout << "Check that algo: " << algoFile << ", data: " << dataFile << ", and model: " << descFile << " paths are correct" << std::endl;
+			std::cout << "File(s) not found: check that algo: " << algoFile << ", data: " << dataFile << ", and model: " << descFile << " paths are correct." << std::endl;
 		} else {
 			nlohmann::json algoJSON;
 			algoStream >> algoJSON;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 				std::ifstream resLearnStream(resLearnFile);
 
 				if (resLearnStream.good() == false) {
-					std::cout << "Check that resLearn: " << resLearnFile << " path is correct" << std::endl;
+					std::cout << "File not found: check that resLearn: " << resLearnFile << " path is correct." << std::endl;
 				}else{
 					nlohmann::json resLearnJSON;
 					resLearnStream >> resLearnJSON;
