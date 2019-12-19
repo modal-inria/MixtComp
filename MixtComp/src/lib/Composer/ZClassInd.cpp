@@ -61,7 +61,8 @@ std::string ZClassInd::setZi(std::vector<std::string>& data) {
 	for (int k = 0; k < nbClass_; ++k) {
 		classInd_(k).clear();
 	}
-	zi_.computeRange();
+
+	computeRange();
 
 	warnLog += checkRange();
 
