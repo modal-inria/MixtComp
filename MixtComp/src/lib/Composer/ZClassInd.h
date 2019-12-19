@@ -40,6 +40,9 @@ public:
 	/** Ask the zi_ member to compute its range */
 	void computeRange();
 
+	/** Check if the computed range is coherent with nClass_*/
+	std::string checkRange();
+
 	/** Set the range of the data, useful in prediction. */
 	void setRange(int min, int max, int range);
 
@@ -51,23 +54,17 @@ public:
 	template<typename Graph>
 	std::string setZi(Graph& g) {
 		std::string warnLog;
-		std::string paramStr;
 
 		std::vector<std::string> data;
 		g.get_payload({}, "z_class", data);
 
-		warnLog += StringToAugmentedData("z_class", data, zi_, -minModality);
-
-		for (int k = 0; k < nbClass_; ++k) {
-			classInd_(k).clear();
-		}
-
-		for (int i = 0; i < nbInd_; ++i) {
-			classInd_(zi_.data_(i)).insert(i);
-		}
+		warnLog += setZi(data);
 
 		return warnLog;
 	}
+
+	/** The DataHandler initializes zi_, and classInd_ is updated. */
+	std::string setZi(std::vector<std::string>& data);
 
 	/** The class of a particular individual is modified */
 	void setZAndClassInd(Index i, Index k);

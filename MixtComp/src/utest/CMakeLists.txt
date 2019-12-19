@@ -69,6 +69,7 @@ add_executable(runUtest
     Functional/UTestFunctionalClass.cpp
     Functional/UTestFunctionalMixture.cpp
     Functional/UTestFunctionalParser.cpp
+    Composer/UTestZClassInd.cpp    
 )
 
 target_link_libraries(runUtest

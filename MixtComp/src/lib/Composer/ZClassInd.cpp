@@ -36,6 +36,45 @@ void ZClassInd::computeRange() {
 	zi_.computeRange();
 }
 
+std::string ZClassInd::checkRange() {
+	std::string warnLog;
+	if (zi_.dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
+		std::stringstream sstm;
+		sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zi().dataRange_.min_ << " while the minimal value has to be: " << minModality
+				<< ". Please check the encoding of this variable to ensure proper bounds." << eol;
+		warnLog += sstm.str();
+	}
+	if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbClass_ - 1) {
+		std::stringstream sstm;
+		sstm << "The z_class latent class variable has a highest provided value of: " << minModality + zi_.dataRange_.max_
+				<< " while the maximal value can not exceed the number of class: " << minModality + nbClass_ - 1 << ". Please check the encoding of this variable to ensure proper bounds."
+				<< eol;
+		warnLog += sstm.str();
+	}
+	return warnLog;
+}
+
+std::string ZClassInd::setZi(std::vector<std::string>& data) {
+	std::string warnLog;
+	warnLog += StringToAugmentedData("z_class", data, zi_, -minModality);
+
+	for (int k = 0; k < nbClass_; ++k) {
+		classInd_(k).clear();
+	}
+	zi_.computeRange();
+
+	warnLog += checkRange();
+
+	if(warnLog.size() == 0)
+	{
+		for (int i = 0; i < nbInd_; ++i) {
+			classInd_(zi_.data_(i)).insert(i);
+		}
+	}
+	return warnLog;
+}
+
+
 void ZClassInd::setRange(int min, int max, int range) {
 	zi_.dataRange_.min_ = min; // real range provided by the parameters is enforced
 	zi_.dataRange_.max_ = max;
