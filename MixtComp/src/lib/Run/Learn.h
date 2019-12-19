@@ -53,7 +53,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 
 	Timer readTimer("Read Data");
 	warnLog += createAllMixtures(algo, desc, data, param, out, composer);
-	warnLog += composer.setDataParam(learning_, data, param);
+	warnLog += composer.setDataParam(learning_, data, param, desc);
 	readTimer.finish();
 
 	if (0 < warnLog.size()) {

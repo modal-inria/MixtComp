@@ -182,7 +182,7 @@ public:
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction) */
 	template<typename Graph>
-	std::string setDataParam(RunMode mode, const Graph& data, const Graph& param) {
+	std::string setDataParam(RunMode mode, const Graph& data, const Graph& param, const Graph& desc) {
 		std::string warnLog;
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
@@ -195,7 +195,7 @@ public:
 #endif
 		}
 
-		warnLog += setZi(data); // dataHandler getData is called to fill zi_
+		warnLog += setZi(data, desc); // dataHandler getData is called to fill zi_
 
 		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
 			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam, it is never parsed at the moment
@@ -237,27 +237,21 @@ public:
 		return warnLog;
 	}
 
-	/**
-	 * DataHandler is injected to take care of setting the values of the latent classes.
-	 * This avoids templating the whole composer with DataHandler type, as is currently done
-	 * with the IMixture subtypes.
-	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
-	 * enforced at sampling (true in learning, false in prediction)
-	 */
+
 	template<typename Graph>
-	std::string setZi(Graph& data) {
+	std::string setZi(Graph& data, Graph& desc) {
 		std::string warnLog;
 
-		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
-#ifdef MC_VERBOSE
-				std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
-#endif
-			zClassInd_.setAllMissing(); // set every value state to missing_
-		} else {
+		if (data.exist_payload( { }, "z_class") & desc.exist_payload( { }, "z_class")) { // z_class was not provided
 #ifdef MC_VERBOSE
 			std::cout << "MixtureComposer::setZi, class label provided." << std::endl;
 #endif
 			warnLog += zClassInd_.setZi(data);
+		} else {
+#ifdef MC_VERBOSE
+				std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
+#endif
+			zClassInd_.setAllMissing(); // set every value state to missing_
 		}
 
 		std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model

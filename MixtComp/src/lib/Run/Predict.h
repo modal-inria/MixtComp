@@ -54,7 +54,7 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 
 	Timer readTimer("Read Data");
 	warnLog += createAllMixtures(algo, desc, data, param, out, composer);
-	warnLog += composer.setDataParam(prediction_, data, param);
+	warnLog += composer.setDataParam(prediction_, data, param, desc);
 	readTimer.finish();
 
 	if (0 < warnLog.size()) {
