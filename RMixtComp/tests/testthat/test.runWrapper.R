@@ -511,11 +511,11 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
   
   
-  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 2, verbose = TRUE), regexp = NA)
-  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
+  expect_warning(resPredict <- mixtCompPredict(simData$dataPredict$matrix, model, algo, resLearn, nClass = 2, verbose = TRUE), regexp = NA)
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
   
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
 })
@@ -532,8 +532,9 @@ test_that("summary works + run without paramStr for functional", {
   data("simData")
   simData$model$unsupervised$Functional1$paramStr = ""
   
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[-4], algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), 
-                            nClass = 2, nRun = 3, nCore = 1, hierarchicalMode = "no") 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[-c(3:5, 7:8)], 
+                            algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), 
+                            nClass = 2, nRun = 1, nCore = 1, hierarchicalMode = "no") 
   
   expect_equal(resLearn$variable$param$Functional1$paramStr, "nSub: 2, nCoeff: 2")
   
