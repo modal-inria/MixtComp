@@ -2,7 +2,7 @@ v4.1.0 2019-12-17
 - add slopeHeuristic and extractMixtCompObject functions
 - plotCrit's improvment
 - add plotData parameter to plot.MixtCompLearn (following the update of RMixtCompUtilities)
-- remove skip_on_cran
+- add skip_on_cran() to reduce elapsed time
 - add vignettes
 
 v4.0.2 2019-09-16
