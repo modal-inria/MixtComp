@@ -157,7 +157,7 @@ One element: *completed*, a matrix/vector containing the completed version of th
 For one variable, it contains a list with estimated parameters (*param*), log recorded during the SEM (*log*) and hyperparameters if any (*paramStr*).
 The output format depends of the model but in most of the case, *stat* is a matrix with 3 columns containing the median values of estimated parameters and quantile ate the desired confidence level,
 *log* is matrix containing the estimated proportion during the M step of each iteration of the algorithm after the burn-in phase and *paramStr* is a string.
-For the meaning of the parameters, user can refer to the documentation [data format](dataFormat.md).
+For the meaning of the parameters, user can refer to the documentation [data format](dataFormat.html).
 
 - **LatentClass**
 
