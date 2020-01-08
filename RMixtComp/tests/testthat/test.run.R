@@ -17,10 +17,12 @@
 # @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
 
+# These tests are skipped on cran to keep elapsed time < 10min
+
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-
-test_that("run cluster/predict R object",{
+test_that("run cluster/predict R object", {
+  skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   var <- list()

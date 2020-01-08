@@ -17,11 +17,12 @@
 # @author Quentin Grimonprez
 context("run functions")
 
+# These tests are skipped on cran to keep elapsed time < 10min
+
 Sys.setenv(MC_DETERMINISTIC = 2)
 
-
-
 test_that("mixtCompLearn works in basic mode + predict", {
+  skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   ## data.frame object
@@ -132,6 +133,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
 
 
 test_that("plot in basic mode + predict works with z_class as character", {
+  skip_on_cran()
   data(iris)
   
   names(iris)[5] = "z_class"
@@ -195,6 +197,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
 
 
 test_that("mixtCompLearn works + mixtCompPredict", {
+  skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   nInd <- 2000
@@ -278,6 +281,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verbose", {
+  skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   nInd <- 1000
@@ -408,7 +412,8 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
 })
 
 
-test_that("mixtCompLearn works in hierarchicalMode",{
+test_that("mixtCompLearn works in hierarchicalMode", {
+  skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
   data(simData)
@@ -529,6 +534,7 @@ test_that("summary returns no warnings and no errors", {
 })
 
 test_that("summary works + run without paramStr for functional", {
+  skip_on_cran()
   data("simData")
   simData$model$unsupervised$Functional1$paramStr = ""
   

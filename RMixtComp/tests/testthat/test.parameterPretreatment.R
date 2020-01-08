@@ -93,7 +93,7 @@ test_that("imputModel returns an error with a matrix", {
 
 
 
-test_that("completeModel adds hyperparameters for functional data",{
+test_that("completeModel adds hyperparameters for functional data", {
   
   model <- list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
                 func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = ""),
