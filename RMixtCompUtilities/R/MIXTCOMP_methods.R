@@ -100,7 +100,7 @@ summary.MixtComp <- function(object, ...)
 #'  
 #' @param x \emph{MixtComp} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
-#' @param ... Not used.
+#' @param ... parameter of \code{head} function
 #' 
 #' @examples 
 #' require(RMixtCompIO) # for learning a mixture model
@@ -172,9 +172,9 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
     cat("\n")
     
     cat("$variable$data\n")
-    cat("$variable$data$z_class$completed: ", head(x$variable$data$z_class$completed), "...\n")
+    cat("$variable$data$z_class$completed: ", head(x$variable$data$z_class$completed, ...), "...\n")
     cat("$variable$data$z_class$stat:\n ")
-    print(head(x$variable$data$z_class$stat))
+    print(head(x$variable$data$z_class$stat, ...))
     cat("\n")
     cat("\t Other variables:", nameVar[-1],"\n")
     cat("\n")
@@ -183,7 +183,19 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
     for(i in 1:nVarToPrint)
     {
       cat(paste0("$variable$param$", nameVar[i], ": \n"))
-      print(x$variable$param[[nameVar[i]]]$stat)
+      if("stat" %in% names(x$variable$param[[nameVar[i]]]))
+      {
+        print(head(x$variable$param[[nameVar[i]]]$stat, ...))
+      }else{
+        for(name in names(x$variable$param[[nameVar[i]]]))
+        {
+          if(name != "paramStr")
+          {
+            cat(paste0("\t $", name,":"), "\n")
+            print(head(x$variable$param[[nameVar[i]]][[name]]$stat, ...))
+          }
+        }
+      }
     }
     if(nVarToPrint < nVar)
       cat("\t Other variables:", nameVar[-c(1:nVarToPrint)],"\n")

@@ -11,7 +11,7 @@
 
 \item{nVarMaxToPrint}{number of variables to display (including z_class)}
 
-\item{...}{Not used.}
+\item{...}{parameter of \code{head} function}
 }
 \description{
 Print a \emph{MixtComp} object
