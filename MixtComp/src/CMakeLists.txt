@@ -7,9 +7,10 @@ cmake_minimum_required (VERSION 3.5)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+## add current path as module path to load code coverage module
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-message(${CMAKE_MODULE_PATH})
 
+## load code coverage module only in Debug mode
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	include(CodeCoverage)
 	append_coverage_compiler_flags()
@@ -70,6 +71,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
 ## unit tests
 add_subdirectory(utest EXCLUDE_FROM_ALL)
 
-## code coverage
-setup_target_for_coverage_lcov(NAME ${PROJECT_NAME}_coverage EXECUTABLE runUtest EXCLUDE "\"/usr*\"" "\"*debug*\"" "\"*utest*\"" "${PROJECT_SOURCE_DIR}/CMakeCCompilerId*")
-
+## code coverage only in debug mode
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	setup_target_for_coverage_lcov(NAME ${PROJECT_NAME}_coverage EXECUTABLE runUtest EXCLUDE "\"/usr*\"" "\"*debug*\"" "\"*release*\"" "\"*utest*\"" "${PROJECT_SOURCE_DIR}/CMakeCCompilerId*")
+endif() 
