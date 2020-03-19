@@ -23,7 +23,7 @@ We recommand using Homebrew to manage dependencies. Installation is easy, follow
 The additional libraries can then be installed using:
 
 ```
-brew install cmake boost eigen
+brew install cmake boost eigen lcov
 ```
 
 ## Windows
