@@ -2,9 +2,12 @@
 % Please edit documentation in R/MIXTCOMP_getParam.R
 \name{getParam}
 \alias{getParam}
+\alias{getProportion}
 \title{Get the estimated parameter}
 \usage{
 getParam(outMixtComp, var)
+
+getProportion(outMixtComp)
 }
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
@@ -44,7 +47,7 @@ resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 # get estimated parameters for variable var1
 param <- getParam(resLearn, "var1")
-
+prop <- getProportion(resLearn)
 
 }
 \seealso{

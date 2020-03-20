@@ -50,7 +50,7 @@
 #' 
 #' # get estimated parameters for variable var1
 #' param <- getParam(resLearn, "var1")
-#' 
+#' prop <- getProportion(resLearn)
 #' 
 #' @seealso \code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
 #' 
@@ -85,6 +85,14 @@ getParam <- function(outMixtComp, var)
                   warning("Not yet implemented."))
   
   return(param)
+}
+
+
+#' @rdname getParam
+#' @export
+getProportion <- function(outMixtComp)
+{
+  drop(getParam(outMixtComp, "z_class"))
 }
 
 # @author Quentin Grimonprez
