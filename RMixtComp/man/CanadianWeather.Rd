@@ -4,14 +4,16 @@
 \name{CanadianWeather}
 \alias{CanadianWeather}
 \title{Canadian average annual weather cycle}
-\format{A list containing 5 elements:
+\format{
+A list containing 5 elements:
 \itemize{
   \item tempav: a matrix of dimensions (365, 35) giving the average temperature in degrees celcius for each day of the year.
   \item precav: a matrix of dimensions (365, 35) giving the average rainfall in millimeters for each day of the year.
   \item time: sequence from 1 to 365.
   \item coordinates: a matrix giving 'N.latitude' and 'W.longitude' for each place.
   \item region: Which of 4 climate zones contain each place: Atlantic, Pacific, Continental, Arctic.
-}}
+}
+}
 \source{
 Ramsay, James O., and Silverman, Bernard W. (2006), Functional Data Analysis, 2nd ed., Springer, New York.
 

@@ -4,7 +4,8 @@
 \name{titanic}
 \alias{titanic}
 \title{Titanic data set}
-\format{A data.frame with 1309 individuals and 8 variables.
+\format{
+A data.frame with 1309 individuals and 8 variables.
 \itemize{
   \item survived: 0 = No, 1 = Yes (factor)
   \item pclass:	ticket class 	1st, 2nd, 3rd (factor)
@@ -14,7 +15,8 @@
   \item parch: number of parents/children aboard the Titanic 
   \item fare: ticket price in pounds
   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton (factor)
-}}
+}
+}
 \source{
 Titanic People Database, Encyclopedia Titanica, \url{https://www.encyclopedia-titanica.org/titanic-survivors/}
 

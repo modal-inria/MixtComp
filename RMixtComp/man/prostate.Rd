@@ -4,7 +4,8 @@
 \name{prostate}
 \alias{prostate}
 \title{Prostate Cancer Data}
-\format{A list containing of 2 elements \emph{data} and \emph{model}.
+\format{
+A list containing of 2 elements \emph{data} and \emph{model}.
 \emph{data} contains 506 individuals described by 12 variables: 
 \itemize{
   \item Age: Age (Continuous) 
@@ -19,7 +20,8 @@
   \item BM: Bone metastasis (Categorical)
   \item SZ: Size of primary tumour (Continuous)
   \item EKG: Electrocardiogram code (Categorical)
-}}
+}
+}
 \source{
 Yakovlev, Goot and Osipova (1994), The choice of cancer treatment based on covariate information. Statist. Med., 13: 1575-1581. doi:10.1002/sim.4780131508
 }
