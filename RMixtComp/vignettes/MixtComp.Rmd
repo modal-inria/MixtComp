@@ -1,0 +1,146 @@
+---
+title: "Using RMixtComp with mixed and missing data"
+author: "Quentin Grimonprez"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Using RMixtComp with mixed and missing data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE}
+Sys.setenv(MC_DETERMINISTIC = 2)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 7, fig.height = 5)
+```
+
+
+
+Unsupervised classification is illustrated on the `titanic` dataset. It is a data.frame with 1309 observations and 8 variables containing information on the passengers of the Titanic. Each observation represents a passenger described by a set of real variables: age in years (`age`), ticket price in pounds (`fare`), a set of counting variables: number of siblings/spouses aboard (`sibsp`), number of parents/children aboard (`parch`) and a set of categorical variables: `sex`, ticket class (`pclass`), port of embarkation and a binary variable indicating if the passenger survived (`survived`). Furthermore, the dataset contains missing values for three variables: `age`, `fare` and `embarked`.
+		
+```{r, echo = TRUE}
+library(RMixtComp)
+```
+
+```{r}
+data(titanic)
+print(titanic[c(1, 16, 38, 169, 285, 1226),])
+```
+	
+	
+## Step 1: Data Preparation
+
+First, the dataset must be converted in the MixtComp format. Categorical variables must be numbered from 1 to the number of categories (e.g. 3 for `embarked`). This can be done using the `refactorCategorical` function that takes in arguments the vector containing the data, the old labels and the new labels. Totaly missing values must be indicated with a `?`.
+
+```{r}
+titanicMC <- titanic
+titanicMC$sex <- refactorCategorical(titanic$sex, c("male", "female"), c(1, 2))
+titanicMC$pclass <- refactorCategorical(titanic$pclass, c("1st", "2nd", "3rd"), c(1, 2, 3))
+titanicMC$embarked <- refactorCategorical(titanic$embarked, c("C", "Q", "S"), c(1, 2, 3))
+titanicMC$survived <- refactorCategorical(titanic$survived, c(0, 1), c(1, 2))
+titanicMC[is.na(titanicMC)] = "?"
+head(titanicMC)
+```
+		
+		
+The dataset is splitted in 2 datasets for illustrating learning and prediction.
+```{r}
+indTrain <- sample(nrow(titanicMC), floor(0.8 * nrow(titanicMC)))
+titanicMCTrain <- titanicMC[indTrain, ]
+titanicMCTest <- titanicMC[-indTrain, ]
+```
+
+		
+
+<!-- In RMixtComp, most of the models support partially missing values. For illustration purpose, we add some with the following code: -->
+
+<!-- ```{r} -->
+<!-- set.seed(42) -->
+<!-- titanicMC$age[sample(which(titanic$age < 10), 20)] = "[0:10]" -->
+<!-- titanicMC$fare[sample(which(titanic$fare > 200), 20)] = "[200:+inf]" -->
+<!-- titanicMC$age[sample(which(titanic$age < 10), 20)] = "[0:10]" -->
+<!-- titanicMC$embarked[sample(which(titanicMC$embarked == 3), 40)] = "{2, 3}" -->
+<!-- ```		 -->
+		
+Then, as all variables are stored as character in a data.frame, a `model` object indicating which model to use for each variable is created. In this example, a gaussian model is used for `age` and `fare` variables, a multinomial for `sex`, `pclass`, `embarked` and `survived`, a Poisson for `sibsp` and `parch`.
+
+``` {r}
+model <- list(fare = "Gaussian", age = "Gaussian", pclass = "Multinomial", survived = "Multinomial", 
+              sex = "Multinomial", embarked = "Multinomial", sibsp = "Poisson", parch = "Poisson")
+```
+		
+		
+## Step 2: Learning
+
+We choose to run the clustering analysis for 1 to 20 clusters with 3 runs for every number of clusters. These runs can be parallelized using the `nCore` parameter.
+
+``` {r, results = "hide"}
+resTitanic <- mixtCompLearn(titanicMCTrain, model, nClass = 1:20, nRun = 3, nCore = 1)
+```
+
+		
+## Step 3: Interpretation and Visualization
+
+`summary` and `plot` functions are used to have an overview of the results for the best number of classes according to the chosen criterion (BIC or ICL). If this number is not the one desired by the user, it can been changed via the parameter `nClass`.
+	
+The `summary` displays the number of clusters chosen and some outputs as the discriminative power indicating the variables that contribute most to class separation and parameters associated with the 3 most discriminant variables.
+	
+``` {r}
+summary(resTitanic)
+```
+
+The `plot` function displayed the values of criteria, the discriminative power of variables and the parameters of the three most discriminative variable. More variables can be displayed using the `nVarMaxToPlot` parameter.
+``` {r}
+plot(resTitanic)
+```
+	
+The most discriminant variable for clustering are `fare` and `pclass`. The similarity between variables is shown with the following code:
+
+``` {r}
+heatmapVar(resTitanic)
+```
+		
+``` {r}
+round(computeSimilarityVar(resTitanic), 2)
+```
+
+The greatest similarity is between `survived` and `sex`, this relation is well-known in the dataset with a great proportion of women surviving compared to men. On the contrary, there is few similarity between `fare` and other variables.		
+
+
+Getters are available to easily access some results: `getBIC`, `getICL`, `getCompletedData`, `getParam`, `getProportion`, `getTik`, `getPartition`, ...
+All these functions use the model maximizing the asked criterion. If results for an other number of classes is desired, the `extractMixtCompObject` can be used. For example:
+```
+getProportion(resTitanic)
+```
+
+```
+resK2 <- extractMixtCompObject(resTitanic, 2)
+getProportion(resK2)
+```
+
+## Step 4: Prediction
+
+Once a model learnt, one can use it to predict the clusters of new individuals.
+
+``` {r, results = "hide"}
+resPred <- mixtCompPredict(titanicMCTest, resLearn = resTitanic, nClass = 5, nRun = 3, nCore = 1)
+```
+
+
+The probabilities of belonging to the different class and the associated partition is given by:
+``` {r}
+tik <- getTik(resPred)
+head(tik)
+partition <- getPartition(resPred)
+head(partition)
+```
+
+
+```{r, echo=FALSE}
+Sys.unsetenv("MC_DETERMINISTIC")
+```
