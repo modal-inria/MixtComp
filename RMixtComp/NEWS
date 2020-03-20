@@ -1,3 +1,6 @@
+v4.1.1 2020-03-20
+- add vignettes
+
 v4.1.0 2019-12-17
 - add slopeHeuristic and extractMixtCompObject functions
 - plotCrit's improvment

@@ -1,8 +1,8 @@
 Package: RMixtComp
 Type: Package
 Title: Mixture Models with Heterogeneous and (Partially) Missing Data
-Version: 4.1.0
-Date: 2020-01-07
+Version: 4.1.1
+Date: 2020-03-20
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
@@ -18,7 +18,7 @@ URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: RMixtCompIO, ggplot2, plotly, scales
 Depends: RMixtCompUtilities (>= 4.1.0)
-Suggests: testthat, xml2, Rmixmod, blockcluster, knitr
-RoxygenNote: 7.0.2
+Suggests: testthat, xml2, Rmixmod, blockcluster, knitr, ClusVis
+RoxygenNote: 7.1.0
 Encoding: UTF-8
 VignetteBuilder: knitr

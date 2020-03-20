@@ -1,0 +1,145 @@
+---
+title: "Using ClusVis with RMixtComp Output for Visualization"
+author: "Quentin Grimonprez"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Using ClusVis with RMixtComp Output for Visualization}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", fig.width = 7, fig.height = 5)
+```
+
+```{r, echo=FALSE}
+Sys.setenv(MC_DETERMINISTIC = 2)
+```
+
+## ClusVis
+
+[ClusVis](https://cran.r-project.org/package=ClusVis) is an R package that performs a gaussian-based visualization of gaussian and non-gaussian Model-Based Clustering.
+This visualization is based on the probabilities of classification. See this [preprint](https://hal.archives-ouvertes.fr/hal-01949155v1/document) for more details about the method. It allows to visualize clusters as bivariate spherical gaussian.
+
+
+## ClusVis and RMixtComp
+
+First, we load the required packages.
+
+```{r, echo = TRUE, results = 'hide'}
+library(RMixtComp)
+library(ClusVis)
+```
+
+To illustrate the use of ClusVis with RMixtComp output, we use the iris dataset and the congress dataset.
+
+### Example 1: iris dataset
+
+The iris dataset gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris.
+
+```{r}
+data("iris")
+head(iris)
+```
+
+
+First, we learn a mixture model with 3 classes for the 4 measurements varaibles.
+
+```{r}
+res <- mixtCompLearn(iris[, -5], nClass = 3, criterion = "BIC", nRun = 3, nCore = 1, verbose = FALSE)
+```
+
+
+Then, we apply the `clusvis` function. This function requires 2 parameters: the logarithm of the probabilities of classification of every individuals and the proportion of the mixture.
+```{r}
+logTik <- getTik(res, log = TRUE)
+prop <- getProportion(res)
+resVisu <- clusvis(logTik, prop)
+```
+
+
+The results can be displayed using the `plotDensityClusVisu` function. The first graph is generated with the parameter `add.obs = TRUE`. It overlays on the most discriminative map the curve of iso-probabilities of classification and the cloud of observations.
+```{r}
+plotDensityClusVisu(resVisu, add.obs = TRUE)
+```
+
+
+With `add.obs = FALSE`, the goal of the plot is to represents the overlap between the clusters. Each clusters is represented by its centers and a 95% confidence level border. The differene between entropies displayed in the title defines the accuracy of the representation. A difference closed to 0 means that the representation is accurate.
+```{r}
+plotDensityClusVisu(resVisu, add.obs = FALSE)
+```
+
+Here, we note that two clusters are closed and so they contains flowers with similar measures whereas the other cluster contains flowers with very different measures from the two others.
+
+
+### Example 2: congress dataset
+
+This data set includes votes for each of the U.S. House of Representatives Congressmen on the 16 key votes identified by the CQA in 1984.
+
+```{r}
+data("congress")
+head(congress)
+```
+
+
+First, we change the format of the data. The vote "n" is refactored as 1 and "y" as 2. "democrat" is refactored as 1 and "republican" as 2.
+
+```{r}
+## MixtComp Format
+congress$V1 = refactorCategorical(congress$V1, c("democrat", "republican", "?"), c(1, 2, "?"))
+for(i in 2:ncol(congress))
+  congress[, i] = refactorCategorical(congress[, i], c("n", "y", "?"), c(1, 2, "?"))
+
+head(congress)
+```
+
+
+We run MixtComp with a Multinomial model for each variable.
+
+```{r, results = 'hide'}
+model <- rep("Multinomial", ncol(congress))
+names(model) = colnames(congress)
+
+res <- mixtCompLearn(congress, model = model, nClass = 4, criterion = "BIC", nRun = 3, nCore = 1)
+```
+
+
+As before, we extract the required parameters.
+```{r}
+logTik <- getTik(res, log = TRUE)
+prop <- getProportion(res)
+head(logTik)
+```
+
+It is important to notice that there are a lot of `-Inf` values in the variable `logTik` because some probabilities to be in a cluster are exactly 0.
+If there are too many infinite values, it is a problem for the `cluvis` function. One way to avoid this problem is to replace infinite values with the logarithm of a epsilon.
+
+```{r}
+logTik[is.infinite(logTik)] = log(1e-20)
+head(logTik)
+```
+
+Now, the `clusvis` function can be run.
+
+```{r}
+resVisu <- clusvis(logTik, prop)
+```
+
+And the two associated plots generated.
+```{r}
+plotDensityClusVisu(resVisu, add.obs = TRUE)
+```
+
+```{r}
+plotDensityClusVisu(resVisu, add.obs = FALSE)
+```
+
+
+
+```{r, echo=FALSE}
+Sys.unsetenv("MC_DETERMINISTIC")
+```
