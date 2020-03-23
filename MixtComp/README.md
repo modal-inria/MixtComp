@@ -1,10 +1,10 @@
 # Compile MixtComp
 
-MixtComp uses cmake to generate a makefile. It also requires the following external libraries:
-- Boost
-- Eigen
+*MixtComp* uses cmake to generate a makefile. It also requires the following external libraries:
+- [Boost](https://www.boost.org/)
+- [Eigen](http://eigen.tuxfamily.org)
 
-Note that if you are installing RMixtComp from CRAN, Boost and Eigen are provided via dependencies from CRAN, so you only have to install CMake manually.
+Note that if you are installing *RMixtComp* from CRAN, Boost and Eigen are provided via dependencies from CRAN.
 
 ## Linux
 
@@ -32,8 +32,8 @@ To install the necessary tools, user needs to install [cygwin](https://www.cygwi
 
 ## Compilation & tests
 
-Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
-Run `./utestDebug.sh` (resp. `./utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
+Run `./buildDebug.sh` (resp. `./buildRelease.sh`, `./buildCoverage.sh`) to compile MixtComp in Debug (resp. Release, Debug with code coverage) mode.
+Run `./utestDebug.sh` (resp. `./utestRelease.sh`, `./utestCoverage.sh`) to run unit tests in Debug (resp. Release, Debug with code coverage)) mode.
 To clean the debug and release folders, run `./clean.sh`.
 
 

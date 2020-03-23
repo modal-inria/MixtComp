@@ -2,11 +2,18 @@
 
 ## Requirements
 
-pyMixtComp requires python and the *numpy* package. See [MixtComp's README](../MixtComp/README.md) for MixtComp's requirements.
+*pyMixtComp* requires python and the *numpy* package. See [MixtComp's README](../MixtComp/README.md) for MixtComp's requirements.
 
 ```
 sudo apt install python-pip
 pip install numpy
+```
+
+
+It requires [Boost.Python](https://www.boost.org/doc/libs/1_72_0/libs/python/doc/html/index.html) library.
+
+```
+brew install boost --with-python
 ```
 
 ## Compile PyMixtComp

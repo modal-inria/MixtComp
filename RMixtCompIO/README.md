@@ -1,6 +1,6 @@
 # RMixtCompIO
 
-RMixtCompIO is the minimal R interface of the MixtComp C++ library. It is recommended to use [RMixtComp](../RMixtComp) which is more versatile and convenient to use. The version number of RMixtCompIO follows that of MixtComp C++ library. 
+*RMixtCompIO* is the minimal R interface of the MixtComp C++ library. It is recommended to use [RMixtComp](../RMixtComp) which is more versatile and convenient to use. The version number of *RMixtCompIO* follows that of MixtComp C++ library. 
 
 You can download it from CRAN in an R console:
 
@@ -10,35 +10,40 @@ install.packages("RMixtCompIO", repos = "https://cran.rstudio.com")
 
 ## Requirements
 
+### CppNumericalSolvers library
+
+The C++ library *CppNumericalSolvers* is required in the *src* folder. It is available via a git submodule. Run in a terminal:
+
+```
+git submodule init
+git submodule update
+```
+
 ### R
 
-R must be installed, along with the following packages from the CRAN: *RcppEigen*, *BH*, *doParallel*, *foreach*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
+R must be installed, along with the following packages from the CRAN: *RcppEigen*, *BH*, *doParallel*, *foreach*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtCompIO on the CI server.
 
 1. Install R from terminal or download it from [R-project](https://www.r-project.org/):
     ```
-    sudo apt-get install r-base
+    sudo apt install r-base
     ```
 
 2. Install required R packages
-
-    Those command lines can perform the installation automatically in the *~/R* directory.
-    Add the following line to .bashrc file: export R_LIBS="~/R". This is not mandatory, if you have already defined a personal library.
 
     Packages are required from Ubuntu repositories: 
     ```sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev```
     
     Install required R packages from terminal:
     ```
-    mkdir ~/R
     Rscript -e "install.packages(c(\"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
-    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
+    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"Rmixmod\", \"blockcluster\"), repos = \"https://cran.rstudio.com\")"
     ```
     from R:
     ```
     install.packages(c("BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for testing purpose
-    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2"), repos = "https://cran.rstudio.com")
+    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "Rmixmod", "blockcluster"), repos = "https://cran.rstudio.com")
     ```
 
 ### Windows
