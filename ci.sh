@@ -4,7 +4,7 @@
 
 cd MixtComp
 ./clean.sh
-./buildDebug.sh
+./buildCoverage.sh
 cd debug/ && MC_DETERMINISTIC=T make MixtComp_coverage && cd ..
 ./valgrindRun.sh
 cd ../JMixtComp
