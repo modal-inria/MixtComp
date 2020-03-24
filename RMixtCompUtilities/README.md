@@ -15,6 +15,7 @@ install.packages("RMixtCompUtilities", repos = "https://cran.rstudio.com")
 R must be installed, along with the following packages from the CRAN: *plotly*, *scales*. Several packages are used for testing but are not required for installing RMixtCompUtilities: *testthat* is used to perform unit testing in R, *xml2* for xml report, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of $RMixtComp$ on the CI server.
 
 1. Install R from terminal or download it from [R-project](https://www.r-project.org/):
+
     ```
     sudo apt install r-base
     ```
@@ -22,15 +23,20 @@ R must be installed, along with the following packages from the CRAN: *plotly*, 
 2. Install required R packages
 
     Packages are required from Ubuntu repositories: 
-    ```sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev```
+    
+    ```
+    sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev
+    ```
     
     Install required R packages from terminal:
+    
     ```
     Rscript -e "install.packages(c(\"plotly\", \"scales\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
     Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"RMixtCompIO\", \"Rmixmod\", \"blockcluster\"), repos = \"https://cran.rstudio.com\")"
     ```
     from R:
+    
     ```
     install.packages(c("plotly", "scales"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for dev/testing purpose

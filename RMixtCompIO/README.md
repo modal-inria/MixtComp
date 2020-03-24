@@ -24,6 +24,7 @@ git submodule update
 R must be installed, along with the following packages from the CRAN: *RcppEigen*, *BH*, *doParallel*, *foreach*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtCompIO on the CI server.
 
 1. Install R from terminal or download it from [R-project](https://www.r-project.org/):
+
     ```
     sudo apt install r-base
     ```
@@ -31,15 +32,20 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 2. Install required R packages
 
     Packages are required from Ubuntu repositories: 
-    ```sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev```
+    
+    ```
+    sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev
+    ```
     
     Install required R packages from terminal:
+    
     ```
     Rscript -e "install.packages(c(\"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
     Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"Rmixmod\", \"blockcluster\"), repos = \"https://cran.rstudio.com\")"
     ```
     from R:
+    
     ```
     install.packages(c("BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for testing purpose
