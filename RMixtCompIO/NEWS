@@ -1,6 +1,7 @@
-v4.0.3 
+v4.0.3 2020-03-25
 - bug correction when z_class is in data but not in the model
-- bug correction when the number of classes does not corresponds to the content of z_class
+- bug correction when the number of classes does not correspond to the content of z_class
+- change maintainer contact
 
 v4.0.2 2019-12-16
 - correct variable name in a function 

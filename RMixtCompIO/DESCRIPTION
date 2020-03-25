@@ -2,15 +2,16 @@ Package: RMixtCompIO
 Type: Package
 Title: Mixture Models with Heterogeneous and (Partially) Missing Data
 Version: 4.0.3
-Date: 2019-12-19
+Date: 2020-03-25
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
-             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Quentin", "Grimonprez", role = "aut"),
              person("Serge", "Iovleff", role = "ctb"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
              person("Étienne", "Goffinet", role = "ctb"), 
              person("Patrick", "Wieschollek", role = "ctb", comment = "for CppOptimizationLibrary"),
-             person("Tobias", "Wood", role = "ctb", comment = "for CppOptimizationLibrary"))
+             person("Tobias", "Wood", role = "ctb", comment = "for CppOptimizationLibrary"),
+             person("MixtComp", "Dev", role = "cre", email = "mixtcomp-dev@inria.fr"))
 Copyright: Inria - Université de Lille - CNRS; Patrick Wieschollek, Tobias Wood & the respective contributors for CppOptimizationLibrary
 License: AGPL-3
 Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
@@ -22,5 +23,5 @@ BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: Rcpp, doParallel, foreach
 Suggests: Rmixmod, blockcluster, testthat, RInside, xml2
 LinkingTo: Rcpp, RcppEigen, BH
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Encoding: UTF-8
