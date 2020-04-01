@@ -14,8 +14,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
  
 
-################################################################################
-### Confidence levels
+
+# Confidence Levels -------------------------------------------------------
+
 
 ## Get
 # @author Matthieu Marbac
@@ -100,7 +101,7 @@ extractCIWeibullVble = function(var, data, class, grl){
 ## Categorical variables
 # @author Matthieu Marbac
 extractCIMultiVble = function(var, data, class, grl){
-  theta = matrix(data$variable$param[[var]]$stat[,1], nrow=data$algo$nClass, byrow = TRUE)
+  theta = matrix(data$variable$param[[var]]$stat[,1], nrow = data$algo$nClass, byrow = TRUE)
   theta <- theta[class,, drop = FALSE]
   if (grl){
     tmp <- table(data$variable$data[[var]]$completed)
@@ -170,20 +171,20 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 }
 
 # @author Matthieu Marbac
-extractCIFunctionnalVble = function(var, data){
+extractCIFunctionnalVble <- function(var, data){
   Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = FALSE)
   param = data$variable$param[[var]]
   G <- data$algo$nClass
-  nSub <- length(param$sd$stat[,1])/G
-  nCoeff <- length(param$beta$stat[,1])/G/nSub
+  nSub <- length(param$sd$stat[, 1])/G
+  nCoeff <- length(param$beta$stat[, 1])/G/nSub
   
-  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*nSub +1) : (g*nSub),, drop=FALSE])
-  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=nCoeff, byrow=TRUE)[((g-1)*nSub +1) : (g*nSub),, drop=FALSE])
-  sigma <- matrix(param$sd$stat[,1], nrow = G, ncol = nSub, byrow=TRUE)
+  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol = 2, byrow = TRUE)[((g-1)*nSub +1) : (g*nSub),, drop = FALSE])
+  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol = nCoeff, byrow = TRUE)[((g-1)*nSub +1) : (g*nSub),, drop = FALSE])
+  sigma <- matrix(param$sd$stat[, 1], nrow = G, ncol = nSub, byrow = TRUE)
   if (nSub>1){
-    meancurve <- sapply(1:G, function(k) sapply(Tseq, functionalmeanVal, alpha=alpha[[k]], beta=beta[[k]]))
-    infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
-    supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
+    meancurve <- sapply(1:G, function(k) sapply(Tseq, functionalmeanVal, alpha = alpha[[k]], beta = beta[[k]]))
+    infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne = 0.025, alpha = alpha[[k]], beta = beta[[k]], sigma = sigma[k,, drop = FALSE]))
+    supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne = 0.975, alpha = alpha[[k]], beta = beta[[k]], sigma = sigma[k,, drop = FALSE]))
   }else{
 
     
@@ -194,25 +195,30 @@ extractCIFunctionnalVble = function(var, data){
       return(b)
       })
     
-    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sigma[k,1]))
-    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sigma[k,1]))
+    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[, k, drop = FALSE], sigma[k, 1]))
+    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[, k, drop = FALSE], sigma[k, 1]))
   }
   out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)
 }
 
 
-############################################################################################
-#### Boxplots
+
+# Boxplots ----------------------------------------------------------------
+
 
 ## Get
 # @author Matthieu Marbac
 extractBoxplotInfoOneVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE){
   out <- NULL
   type <- data$variable$type[[var]]
-  if ((type == "Gaussian") || (type == "Poisson") || (type == "NegativeBinomial") || (type == "Weibull")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
-  if (type == "Multinomial") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
-  if (type %in% c("Func_CS", "Func_SharedAlpha_CS")) out <-  extractCIFunctionnalVble(var, data)
+  if ((type == "Gaussian") || (type == "Poisson") || (type == "NegativeBinomial") || (type == "Weibull")) 
+    out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
+  if (type == "Multinomial") 
+    out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
+  if (type %in% c("Func_CS", "Func_SharedAlpha_CS")) 
+    out <-  extractCIFunctionnalVble(var, data)
+  
   return(out)
 }
 
@@ -226,8 +232,8 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class = 1:data$algo$nCl
   cumsums <- t(t(cumsums) / cumsums[nrow(cumsums), ])
   thresholds <- sapply(c(.05, .25, .5, .75, .95), 
                        function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], 
-                       cumsums=cumsums)
-  thresholds <- matrix(thresholds, nrow=data$algo$nClass)
+                       cumsums = cumsums)
+  thresholds <- matrix(thresholds, nrow = data$algo$nClass)
   thresholds <- thresholds[class, , drop = FALSE]
   
   if(is.null(data$algo$dictionary$z_class))
@@ -258,11 +264,11 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class = 1:data$algo$n
                     function(k, tik, obs)
                       sapply(levels,
                              function(w, obs, level) sum(w * (obs == level)),
-                             w=tik[,k],
-                             obs=obs
+                             w = tik[,k],
+                             obs = obs
                       ) / sum(tik[,k]),
-                    tik=tik ,
-                    obs=obs
+                    tik = tik,
+                    obs = obs
   ))
   probs <- probs[class, , drop = FALSE]
   
