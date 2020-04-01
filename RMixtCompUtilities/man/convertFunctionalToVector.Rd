@@ -2,7 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_formatFunctions.R
 \name{convertFunctionalToVector}
 \alias{convertFunctionalToVector}
-\title{Convert a mixtcomp string into 2-columns matrix}
+\title{Convert a mixtcomp string into a list of 2 vectors}
 \usage{
 convertFunctionalToVector(x)
 }
@@ -10,10 +10,10 @@ convertFunctionalToVector(x)
 \item{x}{a string containing a fonctional observation (cf example)}
 }
 \value{
-matrix
+a list of 2 vectors: \code{time} and \code{value}
 }
 \description{
-Convert a mixtcomp string into 2-columns matrix
+Convert a mixtcomp string into a list of 2 vectors
 }
 \examples{
 convertFunctionalToVector("1:5,1.5:12,1.999:2.9")

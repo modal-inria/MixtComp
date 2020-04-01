@@ -14,11 +14,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
  
 
-#' Convert a mixtcomp string into 2-columns matrix
+#' Convert a mixtcomp string into a list of 2 vectors
 #'
 #' @param x a string containing a fonctional observation (cf example)
 #'
-#' @return matrix
+#' @return a list of 2 vectors: \code{time} and \code{value}
 #'
 #' @examples
 #' convertFunctionalToVector("1:5,1.5:12,1.999:2.9")
