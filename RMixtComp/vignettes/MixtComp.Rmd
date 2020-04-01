@@ -79,7 +79,7 @@ model <- list(fare = "Gaussian", age = "Gaussian", pclass = "Multinomial", survi
 
 We choose to run the clustering analysis for 1 to 20 clusters with 3 runs for every number of clusters. These runs can be parallelized using the `nCore` parameter.
 
-``` {r, results = "hide"}
+``` {r learn, results = "hide"}
 resTitanic <- mixtCompLearn(titanicMCTrain, model, nClass = 1:20, nRun = 3, nCore = 1)
 ```
 
@@ -114,26 +114,27 @@ The greatest similarity is between `survived` and `sex`, this relation is well-k
 
 Getters are available to easily access some results: `getBIC`, `getICL`, `getCompletedData`, `getParam`, `getProportion`, `getTik`, `getPartition`, ...
 All these functions use the model maximizing the asked criterion. If results for an other number of classes is desired, the `extractMixtCompObject` can be used. For example:
-```
+
+``` {r}
 getProportion(resTitanic)
 ```
 
-```
+``` {r}
 resK2 <- extractMixtCompObject(resTitanic, 2)
 getProportion(resK2)
 ```
 
 ## Step 4: Prediction
 
-Once a model learnt, one can use it to predict the clusters of new individuals.
+Once a model is learnt, one can use it to predict the clusters of new individuals.
 
-``` {r, results = "hide"}
+``` {r pred, results = "hide"}
 resPred <- mixtCompPredict(titanicMCTest, resLearn = resTitanic, nClass = 5, nRun = 3, nCore = 1)
 ```
 
 
-The probabilities of belonging to the different class and the associated partition is given by:
-``` {r}
+The probabilities of belonging to the different classes and the associated partition is given by:
+``` {r partition}
 tik <- getTik(resPred)
 head(tik)
 partition <- getPartition(resPred)

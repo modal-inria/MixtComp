@@ -18,10 +18,10 @@
 #' 
 #' @description Estimate the parameter of a mixture model or predict the cluster of new samples. It manages heterogeneous data as well as missing and incomplete data.
 #' 
-#' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).
+#' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} and \emph{Data format} sections).
 #' @param model a named list containing models and hyperparameters (see \emph{Details} section).
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details} or \link{createAlgo}).
-#' @param nClass the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
+#' @param nClass the number of classes of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
 #' @param hierarchicalMode "auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.

@@ -29,13 +29,13 @@ mixtCompPredict(
 )
 }
 \arguments{
-\item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).}
+\item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} and \emph{Data format} sections).}
 
 \item{model}{a named list containing models and hyperparameters (see \emph{Details} section).}
 
 \item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details} or \link{createAlgo}).}
 
-\item{nClass}{the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.}
+\item{nClass}{the number of classes of the mixture model. Can be a vector for \emph{mixtCompLearn} only.}
 
 \item{criterion}{"BIC" or "ICL". Criterion used for choosing the best model.}
 
