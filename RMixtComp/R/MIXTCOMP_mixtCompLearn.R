@@ -346,6 +346,64 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   return(resPredict)
 }
 
+
+
+#' @title Predict using RMixtComp
+#' 
+#' @description Predict the cluster of new samples.
+#' 
+#' @param object output of \link{mixtCompLearn} function.
+#' @param newdata a data.frame, a matrix or a named list containing the data (see \emph{Details} and \emph{Data format} sections in \link{mixtCompLearn} documentation). If \code{NULL}, use the data in \code{object}.
+#' @param type if "partition", returns the estimated partition. If "probabilities", returns the probabilities to belong to each class (tik).
+#' @param nClass the number of classes of the mixture model to use from \code{object}. If \code{NULL}, uses the number maximizing the criterion.
+#' @param ... other parameters of \link{mixtCompPredict} function.
+#'
+#' @return if \code{type = "partition"}, it returns the estimated partition as a vector. If \code{type = "probabilities"}, 
+#' it returns the probabilities to belong to each class (tik) as a matrix.
+#' 
+#' @details This function is based on the generic method "predict". For a more complete output, use \link{mixtCompPredict} function.
+#' 
+#' @examples
+#' data(iris)
+#' 
+#' model <- list(Sepal.Length = "Gaussian", Sepal.Width = "Gaussian",
+#'               Petal.Length = "Gaussian", Petal.Width = "Gaussian")
+#' 
+#' resLearn <- mixtCompLearn(iris[-c(1, 51, 101), ], model = model, nClass = 1:3, nRun = 1)
+#'
+#' # return the partition
+#' predict(resLearn)
+#' 
+#' # return the tik for the 3 new irises for 2 and 3 classes
+#' predict(resLearn, newdata = iris[c(1, 51, 101), ], type = "probabilities", nClass = 2)
+#' predict(resLearn, newdata = iris[c(1, 51, 101), ], type = "probabilities", nClass = 3)
+#'
+#' @method predict MixtComp
+#' @seealso \link{mixtCompPredict}
+#' @author Quentin Grimonprez
+#' @export
+predict.MixtComp <- function(object, newdata = NULL, type = c("partition", "probabilities"), 
+                             nClass = NULL, ...)
+{
+  type = match.arg(type)
+  
+  if(is.null(nClass))
+    nClass = object$algo$nClass
+  
+  if(is.null(newdata))
+  {
+    resPredict <- extractMixtCompObject(object, nClass)
+  }else{
+    resPredict <- mixtCompPredict(newdata, resLearn = object, nClass = nClass, ...)
+  }
+  
+  out <- switch(type,
+                "partition" = getPartition(resPredict, empiric = FALSE),
+                "probabilities" = getTik(resPredict, log = FALSE))
+  
+  return(out)
+}
+
 # @author Quentin Grimonprez
 classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
 {

@@ -196,7 +196,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
 
 
 
-test_that("mixtCompLearn works + mixtCompPredict", {
+test_that("mixtCompLearn works + mixtCompPredict + predict", {
   skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
   
@@ -277,6 +277,12 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
+  
+  
+  expect_warning(outPred <- predict(resLearn, type = "partition"), regexp = NA)
+  expect_equal(outPred, getPartition(resLearn, empiric = FALSE))
+  expect_warning(outPred <- predict(resLearn, data, type = "probabilities", nClass = 4), regexp = NA)
+  expect_equal(dim(outPred), c(nInd, 4))
   
 })
 
