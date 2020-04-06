@@ -89,7 +89,7 @@ std::vector<std::string> Gaussian::paramNames() const {
 	std::vector<std::string> names(nClass_ * 2);
 	for (int k = 0; k < nClass_; ++k) {
 		std::stringstream sstmMean, sstmSd;
-		sstmMean << "k: " << k + minModality << ", mean: ";
+		sstmMean << "k: " << k + minModality << ", mean";
 		sstmSd << "k: " << k + minModality << ", sd";
 		names[2 * k] = sstmMean.str();
 		names[2 * k + 1] = sstmSd.str();

@@ -136,7 +136,7 @@ std::vector<std::string> NegativeBinomial::paramNames() const {
 	std::vector<std::string> names(2 * nClass_);
 	for (int k = 0; k < nClass_; ++k) {
 		std::stringstream sstmN, sstmP;
-		sstmN << "k: " << k + minModality << ", n: ";
+		sstmN << "k: " << k + minModality << ", n";
 		sstmP << "k: " << k + minModality << ", p";
 		names[2 * k] = sstmN.str();
 		names[2 * k + 1] = sstmP.str();

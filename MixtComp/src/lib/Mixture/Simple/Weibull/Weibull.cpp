@@ -145,7 +145,7 @@ std::vector<std::string> Weibull::paramNames() const {
 
 	for (Index k = 0; k < nClass_; ++k) {
 		std::stringstream sstmMean, sstmSd;
-		sstmMean << "k: " << k + minModality << ", k: ";
+		sstmMean << "k: " << k + minModality << ", k";
 		sstmSd << "k: " << k + minModality << ", lambda";
 		names[2 * k] = sstmMean.str();
 		names[2 * k + 1] = sstmSd.str();

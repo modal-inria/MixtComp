@@ -279,12 +279,12 @@ test_that("performHierarchical works", {
 
 
 test_that("changeClassNames works", {
-  rowNames <- c("k: 1, lambda", "k: 2, mean:", "k: 2, sd", "k: 3, modality: 1", "k: 3, modality: 2", "k: 4, n:", "k: 4, p", "k: 5, k:", "k: 6, s: 0, alpha0",
+  rowNames <- c("k: 1, lambda", "k: 2, mean", "k: 2, sd", "k: 3, modality: 1", "k: 3, modality: 2", "k: 4, n", "k: 4, p", "k: 5, k", "k: 6, s: 0, alpha0",
                 "k: 7, s: 0, alpha1", "k: 8, s: 0, c: 0", "k: 9, s: 0", "k: 10, pi")
   
   dictionary <- list(z_class = list(old = paste0("G", 1:10), new = 1:10))
   out <- changeClassName(rowNames, dictionary)
-  expect_equal(out, c("k: G1, lambda", "k: G2, mean:", "k: G2, sd", "k: G3, modality: 1", "k: G3, modality: 2", "k: G4, n:", "k: G4, p", "k: G5, k:", "k: G6, s: 0, alpha0",
+  expect_equal(out, c("k: G1, lambda", "k: G2, mean", "k: G2, sd", "k: G3, modality: 1", "k: G3, modality: 2", "k: G4, n", "k: G4, p", "k: G5, k", "k: G6, s: 0, alpha0",
                            "k: G7, s: 0, alpha1", "k: G8, s: 0, c: 0", "k: G9, s: 0", "k: G10, pi"))
 })
 
