@@ -122,7 +122,7 @@ public:
 	}
 
 	/**
-	 * run the algorithm, only kept during the transition, as an archive
+	 * run the algorithm
 	 * @return string describing the problem in case of soft degeneracy */
 	std::string runSEM(RunType runType, Index nIter, int group, int groupMax, Real ratioStableCriterion, Index nStableCriterion, Real& time) {
 		std::string warnLog;
