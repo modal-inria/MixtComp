@@ -15,6 +15,8 @@ output
 |             |_ nInd
 |             |_ confidenceLevel
 |             |_ nClass
+|             |_ ratioStableCriterion
+|             |_ nStableCriterion
 |
 |_______ mixture __ BIC
 |                |_ ICL
@@ -115,7 +117,7 @@ The format is detailled below according to the model.
 - **LatentClass**
 
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* is a matrix with the same number of columns as the number of class.
-For each sample, it contains the $`t_{ik}`$ (probability of $`x_i`$ to belong to class *k*) estimated with the imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+For each sample, it contains the$`t_{ik}` (probability of `x_i` to belong to class *k*) estimated with the imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
 - **Gaussian/Poisson/NegativeBinomial/Weibull**
 
