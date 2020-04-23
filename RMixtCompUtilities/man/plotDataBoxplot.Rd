@@ -4,12 +4,21 @@
 \alias{plotDataBoxplot}
 \title{Boxplot per class}
 \usage{
-plotDataBoxplot(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"), ...)
+plotDataBoxplot(
+  output,
+  var,
+  class = 1:output$algo$nClass,
+  grl = TRUE,
+  pkg = c("ggplot2", "plotly"),
+  ...
+)
 }
 \arguments{
 \item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
 
 \item{var}{name of the variable}
+
+\item{class}{classes to plot}
 
 \item{grl}{if TRUE plot the general distribution of the data}
 

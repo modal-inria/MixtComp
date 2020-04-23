@@ -61,6 +61,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #'
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
+#' @param class NULL or a number of classes. If NULL, return the discrimative power of variables globally otherwise return the discrimative power of variables in the given class
 #'
 #' @return the discriminative power
 #' 
@@ -102,6 +103,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' 
 #' 
 #' discVar <- computeDiscrimPowerVar(resLearn)
+#' discVarInClass1 <- computeDiscrimPowerVar(resLearn, class = 1)
 #' discClass <- computeDiscrimPowerClass(resLearn)
 #' 
 #' # graphic representation of discriminant variables
@@ -112,9 +114,19 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' @author Matthieu Marbac
 #' @seealso \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 #' @export
-computeDiscrimPowerVar <- function(outMixtComp)
+computeDiscrimPowerVar <- function(outMixtComp, class = NULL)
 {
-  return(1-colSums(outMixtComp$mixture$IDClass))
+  if(is.null(class))
+    return(1-colSums(outMixtComp$mixture$IDClass))
+  else
+  {
+    if(length(class) > 1)
+      stop("class must be NULL or an integer between 1 and the number of classes.")
+    if(!(class %in% 1:nrow(outMixtComp$mixture$IDClass)))
+      stop("class must be NULL or an integer between 1 and the number of classes.")
+    
+    return(1 - outMixtComp$mixture$IDClass[class, ])
+  }
 }
 
 #' @rdname computeDiscrimPowerVar

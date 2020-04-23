@@ -20,6 +20,7 @@
 #'   
 #' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
 #' @param var name of the variable
+#' @param class classes to plot
 #' @param grl if TRUE plot the general distribution of the data
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... other parameters (see \emph{Details})
@@ -65,7 +66,7 @@
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDataBoxplot <- function(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"), ...)
+plotDataBoxplot <- function(output, var, class = 1:output$algo$nClass, grl = TRUE, pkg = c("ggplot2", "plotly"), ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -75,8 +76,8 @@ plotDataBoxplot <- function(output, var, grl = TRUE, pkg = c("ggplot2", "plotly"
   type <- ifelse(type %in% c("Gaussian", "Weibull", "Poisson", "NegativeBinomial"), "Numerical", type)
   
   switch(type,
-         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, pkg = pkg),
-         "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = 1:output$algo$nClass, grl = grl), var, pkg = pkg, class = 1:output$algo$nClass, grl),
+         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = class, grl = grl), var, pkg = pkg),
+         "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = class, grl = grl), var, pkg = pkg, class = class, grl),
          "Func_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))

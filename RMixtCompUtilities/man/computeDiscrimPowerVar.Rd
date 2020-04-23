@@ -5,12 +5,14 @@
 \alias{computeDiscrimPowerClass}
 \title{Discriminative power}
 \usage{
-computeDiscrimPowerVar(outMixtComp)
+computeDiscrimPowerVar(outMixtComp, class = NULL)
 
 computeDiscrimPowerClass(outMixtComp)
 }
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+
+\item{class}{NULL or a number of classes. If NULL, return the discrimative power of variables globally otherwise return the discrimative power of variables in the given class}
 }
 \value{
 the discriminative power
@@ -55,6 +57,7 @@ resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 
 discVar <- computeDiscrimPowerVar(resLearn)
+discVarInClass1 <- computeDiscrimPowerVar(resLearn, class = 1)
 discClass <- computeDiscrimPowerClass(resLearn)
 
 # graphic representation of discriminant variables

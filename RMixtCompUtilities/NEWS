@@ -1,8 +1,9 @@
-v4.1.1 2020-03-25
+v4.1.1 2020-04-23
 - print.MixtComp prints correctly functional and rank parameters
 - add getProportion function
 - change maintainer contact
 - doc correction
+- add class parameter to plotDataBoxplot, plotDiscrimVar and computeDiscrimPowerVar functions
 
 v4.1.0 2019-12-16
 - can use grl = TRUE in plot.MixtComp

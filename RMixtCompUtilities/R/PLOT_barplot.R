@@ -20,6 +20,7 @@
 #' \deqn{C(j)=  -\sum_{k=1}^K \sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*\log(K))}
 #' 
 #' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}
+#' @param class NULL or a number of classes. If NULL, return the discrimative power of variables globally otherwise return the discrimative power of variables in the given class
 #' @param ylim vector of length 2 defining the range of y-axis
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
@@ -52,12 +53,14 @@
 #' # plot
 #' plotDiscrimVar(resLearn)
 #' 
+#' plotDiscrimVar(resLearn, class = 1)
+#' 
 #' @seealso \code{\link{computeDiscrimPowerVar}}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
+plotDiscrimVar <- function(output, class = NULL, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
   pkg = match.arg(pkg)
   
   ## Get information
@@ -65,7 +68,7 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
   namesShort <- abbreviate(namesVbles, 6, use.classes = FALSE)
   # discriminative power (1 - Cj), saved at slot pvdiscrimclasses of JSON file
-  pvDiscrim <- round(1-colSums(output$mixture$IDClass), 2)
+  pvDiscrim <- round(computeDiscrimPowerVar(output, class), 2)
   # Full names and type of the variables
   textMous <- paste(namesVbles, '<br>', as.character(output$variable$type[-1]))
   
@@ -77,10 +80,14 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
   namesShort <- factor(namesShort[orderVbles], levels=namesShort[orderVbles])
   textMous   <- factor(textMous[orderVbles], levels=textMous[orderVbles])
   
+  plotTitle <- ifelse(is.null(class),
+                      "Discriminative level of the variables",
+                      paste0("Discriminative level of the variables in class ", class))
+  
   ## Barplot
   visuVbles <- switch(pkg,
-                      "plotly" = barplotly(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim, text = textMous, ...),
-                      "ggplot2" = ggbarplot(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim, col.text = "black")) 
+                      "plotly" = barplotly(pvDiscrim, namesShort, main = plotTitle, ylim = ylim, text = textMous, ...),
+                      "ggplot2" = ggbarplot(pvDiscrim, namesShort, main = plotTitle, ylim = ylim, col.text = "black")) 
   visuVbles
 }
 

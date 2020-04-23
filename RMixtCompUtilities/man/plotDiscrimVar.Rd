@@ -4,10 +4,18 @@
 \alias{plotDiscrimVar}
 \title{Barplot of the discriminative power of the variables}
 \usage{
-plotDiscrimVar(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...)
+plotDiscrimVar(
+  output,
+  class = NULL,
+  ylim = c(0, 1),
+  pkg = c("ggplot2", "plotly"),
+  ...
+)
 }
 \arguments{
 \item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
+
+\item{class}{NULL or a number of classes. If NULL, return the discrimative power of variables globally otherwise return the discrimative power of variables in the given class}
 
 \item{ylim}{vector of length 2 defining the range of y-axis}
 
@@ -49,6 +57,8 @@ resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 # plot
 plotDiscrimVar(resLearn)
+
+plotDiscrimVar(resLearn, class = 1)
 
 }
 \seealso{
