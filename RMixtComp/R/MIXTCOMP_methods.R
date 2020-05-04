@@ -89,7 +89,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
   
   if(!is.null(nClass) && (nClass[1] %in% x$nClass))
   {
-    cat("\n Result for nClass[1] classes\n")
+    cat(paste0("\n Result for ", nClass[1], " classes\n"))
     RMixtCompUtilities:::print.MixtComp(x$res[[which(x$nClass == nClass[1])]], nVarMaxToPrint = nVarMaxToPrint)
   }else{
     cat("\n Best result\n")
