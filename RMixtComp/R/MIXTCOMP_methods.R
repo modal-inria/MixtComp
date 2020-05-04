@@ -107,7 +107,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 #' @param nClass number of classes of the model to plot
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param plotData "CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}
-#' @param ... extra parameter for \link{plotDataCI}
+#' @param ... extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}
 #' 
 #' @examples 
 #' data(iris)

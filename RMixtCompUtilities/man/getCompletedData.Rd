@@ -17,7 +17,7 @@ getCompletedData(outMixtComp, var = NULL, with.z_class = FALSE)
 a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).
 }
 \description{
-Get the completed data from MixtComp object
+Get the completed data from MixtComp object (does not manage functional models)
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model

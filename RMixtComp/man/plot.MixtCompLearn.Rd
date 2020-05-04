@@ -24,7 +24,7 @@
 
 \item{plotData}{"CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}}
 
-\item{...}{extra parameter for \link{plotDataCI}}
+\item{...}{extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}}
 }
 \description{
 Plot of a \emph{MixtCompLearn} object

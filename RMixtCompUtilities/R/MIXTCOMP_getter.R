@@ -16,7 +16,7 @@
 
 #' @title Get the completed data from MixtComp object
 #'
-#' @description Get the completed data from MixtComp object
+#' @description Get the completed data from MixtComp object (does not manage functional models)
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
 #' @param var Name of the variables for which to extract the completed data. Default is NULL (all variables are extracted)
@@ -69,9 +69,27 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
   if(any(!(var %in% mcVar)))
     stop("some elements of var are not in outMixtComp")
   
-  completedData <- do.call(cbind, lapply(outMixtComp$variable$data[var], function(x){x$completed}))
+  completedData <- do.call(cbind, lapply(var, 
+                                         function(x){
+                                           if("completed" %in% names(outMixtComp$variable$data[[x]]))
+                                           {
+                                             if(outMixtComp$variable$type[[x]] != "Rank_ISR")
+                                             {
+                                               df <- data.frame(outMixtComp$variable$data[[x]]$completed)
+                                             }else{
+                                               df <- data.frame(apply(outMixtComp$variable$data[[x]]$completed, 1, function(x) {paste(x, collapse = ",")}))
+                                             }
+                                             names(df) = x
+                                             
+                                             return(df)
+                                           }
+                                           else
+                                             return(data.frame()[1:outMixtComp$algo$nInd, ])
+                                           }))
   
-  return(as.data.frame(completedData))
+  rownames(completedData) = NULL
+
+  return(completedData)
 }
 
 

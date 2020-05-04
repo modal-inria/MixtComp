@@ -74,6 +74,7 @@ test_that("run cluster/predict R object", {
   expect_true(!is.na(getICL(resLearn)))
   expect_warning(getPartition(resLearn), regexp = NA)
   expect_warning(getCompletedData(resLearn), regexp = NA)
+  expect_equal(dim(getCompletedData(resLearn)), c(200, 6))
   expect_equivalent(getType(resLearn), setdiff(sapply(desc, function(x){x$type}), "LatentClass"))
   expect_equivalent(getVarNames(resLearn), setdiff(names(desc), "z_class"))
   expect_warning(getTik(resLearn), regexp = NA)

@@ -84,8 +84,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resLearn$variable$data$categ2$completed, as.character(dat$categ2))
   expect_equal(rownames(resLearn$variable$param$categ1$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   expect_equal(rownames(resLearn$variable$param$categ2$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
-  
-  
+  expect_type(getCompletedData(resLearn)$cont, "double")
   
   expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
   
