@@ -380,11 +380,14 @@ plotlyFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
 # @author Quentin Grimonprez
 ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL)
 {
+  nClass <- nrow(data$mean)
   if(!is.null(classToPlot))
   {
     data$mean = data$mean[classToPlot,, drop = FALSE] 
     data$inf = data$inf[classToPlot,, drop = FALSE] 
     data$sup = data$sup[classToPlot,, drop = FALSE] 
+  }else{
+    classToPlot = 1:nrow(data$mean)
   }
   
   df = as.data.frame(t(data$mean))
@@ -414,11 +417,13 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
     
   }
   
+
   # mean class
-  for(i in 1:(ncol(df)-1))
-    p = p + geom_line(aes_string(y = paste0("V",i), x = "time", col = factor(paste("Class", i), levels = paste("Class", 1:(ncol(df)-1)))), data = df, stat = "identity", size = 1.5)
+  df2 = data.frame(time = rep(data$time, length(classToPlot)), mean = unlist(df[,-ncol(df)]), 
+                   Class = factor(rep(paste("Class", classToPlot), each = length(df$time)), levels = paste("Class", 1:nClass)))
   
-  
+  p = p + geom_line(data = df2, mapping = aes_string(x = "time", y = "mean", group = "Class", colour = "Class"), size = 1.5)
+
   p = p  +
     labs(title = "Mean curves and 95%-level confidence intervals per class", x = "Time", y = var) +
     scale_color_discrete(name = "Class") 
