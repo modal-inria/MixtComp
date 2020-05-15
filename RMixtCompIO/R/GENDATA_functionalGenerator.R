@@ -19,44 +19,29 @@ functionalGenerator <- function(present, param) {
   nSub <- nrow(param$alpha)
   nCoeff <- ncol(param$beta)
 
-  xStr <- ""
-  t <- vector("numeric", param$nTime)
   x <- vector("numeric", param$nTime)
   
-  for (i in 1:param$nTime) {
-    t[i] <- runif(1, param$tMin, param$tMax)
-  }
-  t <- sort(t)
+  t <- sort(runif(param$nTime, param$tMin, param$tMax))
 
   for (i in 1:param$nTime) {
-    logKappa <- vector("numeric", nSub)
-    
-    for (s in 1:nSub) {
-      logKappa[s] <- param$alpha[s, 1] + param$alpha[s, 2] * t[i]
-    }
+    logKappa <- param$alpha[, 1] + param$alpha[, 2] * t[i]
     
     kappa <- logToMulti(logKappa)
-    w <- match(1, rmultinom(1, 1, kappa))
-    xExp <- 0.
+    indSub <- which(rmultinom(1, 1, kappa) == 1)
     
-    for (c in 1:nCoeff) {
-      xExp <- xExp + param$beta[w, c] * t[i] ** (c - 1)
-    }
+    xExp <- drop(param$beta[indSub, ] %*% t[i]^((1:nCoeff)-1))
     
-    x[i] <- rnorm(1, xExp, param$sigma[w])
-    xStr <- paste(xStr, t[i], ":", x[i], sep = "")
-    
-    if (i < param$nTime) {
-      xStr <- paste(xStr, ",", sep="")
-    }
+    x[i] <- rnorm(1, xExp, param$sigma[indSub])
   }
+  
+  xStr <- paste(t, x, sep = ":", collapse = ",")
   
   return(xStr)
 }
 
 # @author Vincent Kubicki
 logToMulti <- function(logIn) {
-  max <- max(logIn);
+  max <- max(logIn)
   multiOut <- logIn - max
   multiOut <- exp(multiOut)
   sum <- sum(multiOut)
