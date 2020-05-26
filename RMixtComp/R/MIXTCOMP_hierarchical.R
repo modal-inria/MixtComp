@@ -79,150 +79,176 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   
   newRes = leaves = res = allCrit <- list()
   
-  leavesOrder = MAXCRIT <- c()
+  ## nClass = 1
+  t1 <- proc.time()
+  if(verbose)
+    cat(paste0("-- K = 1 \n"))
   
-  leaves[[1]] = list(partition = rep(TRUE, nInd) , indPartition = 1:nInd, go = "toRun", indParent = NULL)
-  nbCurrentCluster <- 1
-  nbLeavesToCompute <- 1
+  algoTemp <- algo
+  algoTemp$nInd = length(data[[1]])
+  algoTemp$nClass = 1
+  algoTemp$mode = "learn"
   
+  res[[1]] <- rmcMultiRun(algoTemp, data, model, list(), nRun, nCore, verbose)
+  class(res[[1]]) = "MixtComp"
+  t2 <- proc.time()
+  if(verbose)
+    cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
   
-  while((nbCurrentCluster != nClass) & (nbLeavesToCompute != 0))
+  ##
+  if(nClass > 1)
   {
-    t1 <- proc.time()
-    if(verbose)
+    leavesOrder = MAXCRIT <- c()
+    
+    leaves[[1]] = list(partition = rep(TRUE, nInd) , indPartition = 1:nInd, go = "toRun", indParent = NULL)
+    nbCurrentCluster <- 1
+    nbLeavesToCompute <- 1
+    
+    
+    while((nbCurrentCluster != nClass) & (nbLeavesToCompute != 0))
     {
-      cat(paste0("-- K = ", nbCurrentCluster + 1, "\n"))
-      cat(paste0("Number of splits to perform: ", nbLeavesToCompute, "\n"))
-    }
-      
-
-      
-    hasRun <- c()
-    for(i in seq_along(leaves))
-    {
-      # run
-      if(leaves[[i]]$go == "toRun")
+      t1 <- proc.time()
+      if(verbose)
       {
-        if(verbose)
-          cat(paste0(" Split a cluster in two\n"))
-        
-        # reduce the data to the class to split
-        resData <- data
-        for(j in names(resData))
-          resData[[j]] = data[[j]][leaves[[i]]$indPartition]
-        
-        algoTemp <- algo
-        algoTemp$nInd = length(resData[[1]])
-        algoTemp$nClass = 2
-        algoTemp$mode = "learn"
-        
-        newRes[[i]] <- rmcMultiRun(algoTemp, resData, model, list(), nRun, nCore, verbose)
-        class(newRes[[i]]) = "MixtComp"
-        
-        if(!is.null(newRes[[i]]$warnLog))
-        {
-          hasRun = c(hasRun, FALSE)
-          warning(newRes[[i]]$warnLog)
-        }else{
-          hasRun = c(hasRun, TRUE)
-        }
+        cat(paste0("-- K = ", nbCurrentCluster + 1, "\n"))
+        cat(paste0("Number of splits to perform: ", nbLeavesToCompute, "\n"))
       }
-    }
-    
-    if(all(!hasRun))
-      break
-    
-    
-    # compute crit
-    if(verbose)
-      cat(" Compute criterion\n")
-    maxCrit <- list(crit = -Inf, ind = NA)
-    bestRes = list(warnLog = "error")
-    crit = list()
-    for(i in seq_along(leaves))
-    {
-      if(leaves[[i]]$go %in% c("toRun", "wait"))
+      
+      
+      
+      hasRun <- c()
+      for(i in seq_along(leaves))
       {
-        leaves[[i]]$go = "wait"
-        if(is.null(leaves[[i]]$indParent))
+        # run
+        if(leaves[[i]]$go == "toRun")
         {
-          maxCrit$ind = 1
-          maxCrit$crit = newRes[[1]]$mixture[[criterion]]
-          bestRes <- newRes[[1]]
-        }else{
-          if(is.null(newRes[[i]]$warnLog))
+          if(verbose)
+            cat(paste0(" Split a cluster in two\n"))
+          
+          # reduce the data to the class to split
+          resData <- data
+          for(j in names(resData))
+            resData[[j]] = data[[j]][leaves[[i]]$indPartition]
+          
+          algoTemp <- algo
+          algoTemp$nInd = length(resData[[1]])
+          algoTemp$nClass = 2
+          algoTemp$mode = "learn"
+          
+          newRes[[i]] <- rmcMultiRun(algoTemp, resData, model, list(), nRun, nCore, verbose)
+          class(newRes[[i]]) = "MixtComp"
+          
+          if(!is.null(newRes[[i]]$warnLog))
           {
-            indClass <- unique(res[[nbCurrentCluster]]$variable$data$z_class$completed[leaves[[i]]$indPartition])
-            
-            tempRes <- computeNewModel(res[[nbCurrentCluster]], newRes[[i]], indClass, data, model, algo, nRun, nCore, verbose)
-            if(!is.null(tempRes$warnLog))
-            {
-              crit[[i]] = -Inf
-            }else{
-              crit[[i]] <- tempRes$mixture[[criterion]]
-            }
-            
-            if(crit[[i]] > maxCrit$crit)
-            {
-              maxCrit$crit = crit[[i]]
-              maxCrit$ind = i
-              bestRes = tempRes
-            }
+            hasRun = c(hasRun, FALSE)
+            warning(newRes[[i]]$warnLog)
+          }else{
+            hasRun = c(hasRun, TRUE)
           }
         }
       }
-    }
-    MAXCRIT = c(MAXCRIT, maxCrit$crit)
-    allCrit[[nbCurrentCluster]] = crit
-    leavesOrder = c(leavesOrder, maxCrit$ind)
-    
-    
-    if(!is.na(maxCrit$ind))
-    {
-      # update leaves for the next step
-      leaves[[maxCrit$ind]]$go = "parent"
-      part <- newRes[[maxCrit$ind]]$variable$data$z_class$completed
-      leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], go = "toRun", indParent = maxCrit$ind)
-      leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], go = "toRun", indParent = maxCrit$ind)
       
-      # stop some classes due to size
+      if(all(!hasRun))
+        break
+      
+      
+      # compute crit
+      if(verbose)
+        cat(" Compute criterion\n")
+      maxCrit <- list(crit = -Inf, ind = NA)
+      bestRes = list(warnLog = "error")
+      crit = list()
       for(i in seq_along(leaves))
       {
         if(leaves[[i]]$go %in% c("toRun", "wait"))
         {
-          if(sum(leaves[[i]]$partition) <= minClassSize)
-            leaves[[i]]$go = "stop"
+          leaves[[i]]$go = "wait"
+          if(is.null(leaves[[i]]$indParent))
+          {
+            maxCrit$ind = 1
+            maxCrit$crit = newRes[[1]]$mixture[[criterion]]
+            bestRes <- newRes[[1]]
+          }else{
+            if(is.null(newRes[[i]]$warnLog))
+            {
+              indClass <- unique(res[[nbCurrentCluster]]$variable$data$z_class$completed[leaves[[i]]$indPartition])
+              
+              tempRes <- computeNewModel(res[[nbCurrentCluster]], newRes[[i]], indClass, data, model, algo, nRun, nCore, verbose)
+              if(!is.null(tempRes$warnLog))
+              {
+                crit[[i]] = -Inf
+              }else{
+                crit[[i]] <- tempRes$mixture[[criterion]]
+              }
+              
+              if(crit[[i]] > maxCrit$crit)
+              {
+                maxCrit$crit = crit[[i]]
+                maxCrit$ind = i
+                bestRes = tempRes
+              }
+            }
+          }
         }
       }
+      MAXCRIT = c(MAXCRIT, maxCrit$crit)
+      allCrit[[nbCurrentCluster]] = crit
+      leavesOrder = c(leavesOrder, maxCrit$ind)
       
-      nbLeavesToCompute = sum(sapply(leaves, FUN = function(x){x$go %in% c("toRun")}))
-      nbCurrentCluster = nbCurrentCluster + 1
       
-      res[[nbCurrentCluster]] = bestRes
-    }else{
-      # if maxCrit$ind == NA, no leaves has produced a model, we force the stop of hierarchical
-      warning(paste0("The hierarchy was stop earlier because all clustering on leaves produced error. Try to increase the nRun parameter."))
-      nbLeavesToCompute = 0
-    }
-    t2 <- proc.time()
+      if(!is.na(maxCrit$ind))
+      {
+        # update leaves for the next step
+        leaves[[maxCrit$ind]]$go = "parent"
+        part <- newRes[[maxCrit$ind]]$variable$data$z_class$completed
+        leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], go = "toRun", indParent = maxCrit$ind)
+        leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], go = "toRun", indParent = maxCrit$ind)
+        
+        # stop some classes due to size
+        for(i in seq_along(leaves))
+        {
+          if(leaves[[i]]$go %in% c("toRun", "wait"))
+          {
+            if(sum(leaves[[i]]$partition) <= minClassSize)
+              leaves[[i]]$go = "stop"
+          }
+        }
+        nbLeavesToCompute = sum(sapply(leaves, FUN = function(x){x$go %in% c("toRun")}))
+        nbCurrentCluster = nbCurrentCluster + 1
+        res[[nbCurrentCluster]] = bestRes
+      }else{
+        # if maxCrit$ind == NA, no leaves has produced a model, we force the stop of hierarchical
+        warning(paste0("The hierarchy was stop earlier because all clustering on leaves produced error. Try to increase the nRun parameter."))
+        nbLeavesToCompute = 0
+      }
+      t2 <- proc.time()
+      
+      if(verbose)
+        cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
+      
+      
+    }# end while
     
-    if(verbose)
-      cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
+    
+    if(nbCurrentCluster != nClass)
+      warning(paste0("Unable to get ", nClass," clusters. Only ", nbCurrentCluster," clusters were computed."))
+    
+    names(MAXCRIT) = 2:nbCurrentCluster
 
-
-  }# end while
+    out <- c(res[[length(res)]], list(res = res, crit = MAXCRIT, nClass = 1:nbCurrentCluster, history = list(leavesOrder = leavesOrder, leaves = leaves, resLeaves = newRes, critStep = allCrit)))
+    if(is.null(out$warnLog))
+      out$algo$hierarchicalMode = TRUE
+    
+    class(out) = c("MixtCompLearn", "MixtComp")
+  }else{
+    out <- c(res[[1]], list(res = res, nClass = 1))
+    if(is.null(out$warnLog))
+      out$algo$hierarchicalMode = TRUE
+    
+    class(out) = c("MixtCompLearn", "MixtComp")
+  }
   
   
-  if(nbCurrentCluster != nClass)
-    warning(paste0("Unable to get ", nClass," clusters. Only ", nbCurrentCluster," clusters were computed."))
-  
-  names(MAXCRIT) = 2:nbCurrentCluster
-  
-  out <- c(res[[length(res)]], list(res = res, crit = MAXCRIT, nClass = 2:nbCurrentCluster, history = list(leavesOrder = leavesOrder, leaves = leaves, resLeaves = newRes, critStep = allCrit)))
-  if(is.null(out$warnLog))
-    out$algo$hierarchicalMode = TRUE
-  
-  class(out) = c("MixtCompLearn", "MixtComp")
   
   return(out)
 }

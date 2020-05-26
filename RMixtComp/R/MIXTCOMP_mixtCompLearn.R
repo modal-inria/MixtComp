@@ -504,14 +504,14 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
   
   ## Choose the best number of classes according to crit
-  allCrit <- sapply(resLearn$res[-1], function(x) {c(getBIC(x), getICL(x))})
+  allCrit <- sapply(resLearn$res, function(x) {c(getBIC(x), getICL(x))})
   colnames(allCrit) = c(resLearn$nClass)
   rownames(allCrit) = c("BIC", "ICL")
   indBestClustering <- which.max(allCrit[indCrit, ])
   
   if(length(indBestClustering) != 0)
   {
-    res <- c(resLearn$res[-1][[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res[-1]))
+    res <- c(resLearn$res[[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res))
     res$algo$basicMode = FALSE
     res$algo$hierarchicalMode = TRUE
   }else{
