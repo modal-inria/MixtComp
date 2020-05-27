@@ -112,11 +112,11 @@ test_that("convertOutput converts well", {
   expect_equal(out$mixture$lnCompletedLikelihood, res$mixture$lnCompletedLikelihood)
   expect_equal(out$mixture$lnObservedLikelihood, res$mixture$lnObservedLikelihood)
   expect_equal(out$mixture$nbFreeParameters, res$mixture$nbFreeParameters)
-  expect_equal(class(out$mixture$IDClass), "matrix")
+  expect_equal(class(out$mixture$IDClass)[1], "matrix")
   expect_equal(rownames(out$mixture$IDClass), res$mixture$IDClass$rowNames)
   expect_equal(colnames(out$mixture$IDClass), res$mixture$IDClass$colNames)
-  expect_equal(class(out$mixture$delta), "matrix")
-  expect_equal(class(out$mixture$lnProbaGivenClass), "matrix")
+  expect_equal(class(out$mixture$delta)[1], "matrix")
+  expect_equal(class(out$mixture$lnProbaGivenClass)[1], "matrix")
   expect_length(out$mixture$completedProbabilityLogBurnIn, res$mixture$completedProbabilityLogBurnIn$nrow)
   expect_length(out$mixture$completedProbabilityLogRun, res$mixture$completedProbabilityLogRun$nrow)
   
@@ -124,11 +124,11 @@ test_that("convertOutput converts well", {
   expect_equal(out$variable$type, res$variable$type)
   
   # variable$param
-  expect_equal(class(out$variable$param$z_class$stat), "matrix")
+  expect_equal(class(out$variable$param$z_class$stat)[1], "matrix")
   expect_equal(rownames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$rowNames)
   expect_equal(colnames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$colNames)
   expect_equal(out$variable$param$z_class$paramStr, res$variable$param$z_class$paramStr)
-  expect_equal(class(out$variable$param$Gaussian1$stat), "matrix")
+  expect_equal(class(out$variable$param$Gaussian1$stat)[1], "matrix")
   expect_equal(rownames(out$variable$param$Gaussian1$stat), res$variable$param$Gaussian1$stat$rowNames)
   expect_equal(colnames(out$variable$param$Gaussian1$stat), res$variable$param$Gaussian1$stat$colNames)
   expect_equal(out$variable$param$Gaussian1$paramStr, res$variable$param$Gaussian1$paramStr)
