@@ -77,7 +77,7 @@
 #' 
 #' # run RMixtComp for learning using only 3 variables
 #' resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
-#'                           nClass = 2:3, nRun = 2, nCore = 1)
+#'                           nClass = 1:2, nRun = 2, nCore = 1)
 #' 
 #' summary(resLearn)
 #' plot(resLearn)

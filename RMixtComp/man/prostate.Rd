@@ -40,7 +40,7 @@ algo <- createAlgo(nInitPerClass = 50)
 
 # run clustering
 resLearn <- mixtCompLearn(prostate$data, prostate$model, algo, nClass = 2:5, criterion = "ICL",
-                          nRun = 3)
+                          nRun = 3, nCore = 1)
 
 summary(resLearn)
 

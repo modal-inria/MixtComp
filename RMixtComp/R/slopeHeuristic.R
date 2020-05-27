@@ -61,7 +61,7 @@
 #' algo <- createAlgo()
 #' 
 #' # run clustering
-#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:25, criterion = "ICL", nRun = 3)
+#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:25, criterion = "ICL", nRun = 3, nCore = 1)
 #' 
 #' out <- slopeHeuristic(resLearn, K0 = 6)
 #' 

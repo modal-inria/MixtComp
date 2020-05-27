@@ -98,8 +98,7 @@ NULL
 #' algo <- createAlgo()
 #' 
 #' # run clustering
-#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
-#' 
+#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nRun = 3, nCore = 1)
 #' summary(resLearn)
 #' 
 #' plot(resLearn) 
@@ -109,7 +108,7 @@ NULL
 #' # mixtCompLearn in "basic" mode without model parameters and data as a data.frame.
 #' # A Multinomial model is used for factor variables, a Poisson for integer
 #' # and a Gaussian for numeric.
-#' resLearn <- mixtCompLearn(titanic, nClass = 2:15, nRun = 3)
+#' resLearn <- mixtCompLearn(titanic, nClass = 2:15, nRun = 3, nCore = 1)
 #' 
 #' # imputed model
 #' getType(resLearn)
@@ -162,7 +161,7 @@ NULL
 #' algo <- createAlgo()
 #' 
 #' # run clustering
-#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
+#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3, nCore = 1)
 #' 
 #' summary(resLearn)
 #' 
@@ -217,7 +216,7 @@ NULL
 #' 
 #' # run clustering
 #' resLearn <- mixtCompLearn(prostate$data, prostate$model, algo, nClass = 2:5, criterion = "ICL",
-#'                           nRun = 3)
+#'                           nRun = 3, nCore = 1)
 #' 
 #' summary(resLearn)
 #' 

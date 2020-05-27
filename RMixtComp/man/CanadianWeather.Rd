@@ -43,7 +43,7 @@ model <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
 algo <- createAlgo()
 
 # run clustering
-resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
+resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3, nCore = 1)
 
 summary(resLearn)
 

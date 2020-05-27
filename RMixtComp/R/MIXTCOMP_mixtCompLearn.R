@@ -243,11 +243,11 @@
 #' 
 #' # run RMixtComp in unsupervised clustering mode + data as matrix
 #' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
-#'                            nClass = 2:3, nRun = 2, nCore = 1)
+#'                            nClass = 1:2, nRun = 2, nCore = 1)
 #' 
 #' # run RMixtComp in supervised clustering mode + data as matrix
 #' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised[1:3], algo, 
-#'                            nClass = 2:3, nRun = 2, nCore = 1)
+#'                            nClass = 1:2, nRun = 2, nCore = 1)
 #' 
 #' # run RMixtComp in predict mode + data as list
 #' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised[1:3], algo,
