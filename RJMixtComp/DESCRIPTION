@@ -2,7 +2,7 @@ Package: RJMixtComp
 Type: Package
 Title: R Interface of JMixtComp
 Version: 4.0.0
-Date: 2019-07-02
+Date: 2020-05-27
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Étienne", "Goffinet", role = "ctb"),
              person("Christophe", "Biernacki", role = "aut"),
@@ -15,6 +15,6 @@ License: AGPL-3
 Copyright: Inria - Université de Lille - CNRS
 Imports: jsonlite
 Depends: RMixtCompUtilities
-Suggests: testthat
+Suggests: testthat, jsonlite
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

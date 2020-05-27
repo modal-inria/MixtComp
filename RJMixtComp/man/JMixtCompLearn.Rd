@@ -5,11 +5,17 @@
 \alias{JMixtCompPredict}
 \title{Learn and predict using RJMixtComp}
 \usage{
-JMixtCompLearn(data, model, algo = createAlgo(), nClass, inputPath,
-  outputFile)
+JMixtCompLearn(data, model, algo = createAlgo(), nClass, inputPath, outputFile)
 
-JMixtCompPredict(data, model, algo = createAlgo(), nClass, inputPath,
-  paramFile, outputFile)
+JMixtCompPredict(
+  data,
+  model,
+  algo = createAlgo(),
+  nClass,
+  inputPath,
+  paramFile,
+  outputFile
+)
 }
 \arguments{
 \item{data}{a data.frame/matrix/list containing the data}
@@ -42,6 +48,8 @@ See external documentation for details about the input/output object of \emph{JM
 }
 \examples{
 \donttest{
+library(jsonlite)
+
 pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
 pathToModel <- system.file("extdata", "desc.json", package = "RJMixtComp")
 

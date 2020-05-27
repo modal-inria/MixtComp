@@ -38,6 +38,8 @@
 #' 
 #' @examples 
 #' \donttest{
+#' library(jsonlite)
+#' 
 #' pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
 #' pathToModel <- system.file("extdata", "desc.json", package = "RJMixtComp")
 #' 

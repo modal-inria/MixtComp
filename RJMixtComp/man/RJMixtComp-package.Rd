@@ -44,6 +44,6 @@ For JMixtComp:
 Vincent Kubicki <vincent.kubicki@inria.fr">
 Christophe Biernacki
 Quentin Grimonprez
-Serge Iovleff"
+Serge Iovleff
 }
 \keyword{package}
