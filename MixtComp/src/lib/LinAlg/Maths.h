@@ -36,6 +36,10 @@ int fac(int n);
 
 Real logFac(int n);
 
+/*
+ * algorithm to compute the standard deviation in an online fashion
+ * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#On-line_algorithm
+ */
 template<typename T>
 void meanSD(const T& data, Real& mean, Real& sd) {
 	mean = 0.;
