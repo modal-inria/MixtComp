@@ -460,9 +460,11 @@ std::string MixtureComposer::initParamSubPartition(Index nInitPerClass) {
 	return warnLog;
 }
 
-void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
+void MixtureComposer::E_kj(Matrix<Real>& ekj, Matrix<Real>& ebarkj) const {
 	ekj.resize(nClass_, nVar_);
 	ekj = 0.;
+	ebarkj.resize(nClass_, nVar_);
+	ebarkj = 0.;
 
 	for (Index i = 0; i < nInd_; ++i) {
 		for (Index j = 0; j < nVar_; ++j) {
@@ -474,7 +476,8 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 			t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
 
 			for (Index k = 0; k < nClass_; ++k) {
-				Real p;
+				Real p, pbar;
+				Real OneMinusT_ik_j = 1. - t_ik_j(k);
 
 				if (epsilon < t_ik_j(k)) {
 					p = -t_ik_j(k) * std::log(t_ik_j(k));
@@ -482,12 +485,19 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 					p = 0.;
 				}
 
+				if (epsilon < OneMinusT_ik_j) {
+					pbar= -(OneMinusT_ik_j) * std::log(OneMinusT_ik_j);
+				} else {
+					pbar = 0.;
+				}
 
 				ekj(k, j) += p;
+				ebarkj(k, j) += pbar;
 			}
 		}
 	}
 }
+
 
 // Added by Matthieu
 void MixtureComposer::Delta(Matrix<Real>& delta) const {
@@ -522,21 +532,24 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 	delta = 1. - delta; // follow the formula from the pdf
 }
 
-void MixtureComposer::IDClass(Matrix<Real>& idc) const {
+void MixtureComposer::IDClass(Matrix<Real>& idc, Matrix<Real>& idcbar) const {
 	idc.resize(nClass_, nVar_);
+	idcbar.resize(nClass_, nVar_);
 
 	if (nClass_ > 1) {
-		Matrix<Real> ekj;
-		E_kj(ekj);
+		Matrix<Real> ekj, ebarkj;
+		E_kj(ekj, ebarkj);
 		Real den = nInd_ * std::log(nClass_);
 
 		for (Index k = 0; k < nClass_; ++k) {
 			for (Index j = 0; j < nVar_; ++j) {
 				idc(k, j) = ekj(k, j) / den;
+				idcbar(k, j) = ebarkj(k, j) / den;
 			}
 		}
 	} else {
 		idc = 1.;
+		idcbar = 0.;
 	}
 }
 

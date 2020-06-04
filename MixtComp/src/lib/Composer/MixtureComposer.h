@@ -326,8 +326,11 @@ public:
 #endif
 
 		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
-		IDClass(idclass.mat_);
+		NamedMatrix<Real> idclassbar = { paramName(), mixtureName(), Matrix<Real>() };
+		IDClass(idclass.mat_, idclassbar.mat_);
 		g.add_payload( { "mixture" }, "IDClass", idclass);
+		g.add_payload( { "mixture" }, "IDClassBar", idclassbar);
+
 
 		NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
 		lnProbaGivenClass(pGCCPP.mat_);
@@ -376,11 +379,14 @@ public:
 	std::string initParamSubPartition(Index nInitPerClass);
 
 	/**
-	 * Compute the "raw" class ID matrix E_kj
+	 * Compute the "raw" class ID matrix containing entropy E_kj= -\sum_{i=1}^n t_{ikj} log(t_{ikj})
 	 *
 	 *@param[out] ekj matrix containing E_kj
+	 *@param[out] ebarkj matrix containing Ebar_kj= -\sum_{i=1}^n (1-t_{ikj}) log((1-t_{ikj}))
 	 * */
-	void E_kj(Matrix<Real>& ekj) const;
+	void E_kj(Matrix<Real>& ekj, Matrix<Real>& ebarkj) const;
+
+
 	/**
 	 * Added by Matt (Compute the matrix delta measuring the similarities between variables)
 	 *
@@ -393,7 +399,7 @@ public:
 	 *
 	 *@param[out] idc matrix containing the class id description
 	 * */
-	void IDClass(Matrix<Real>& idc) const;
+	void IDClass(Matrix<Real>& idc, Matrix<Real>& idcbar) const;
 
 	void lnProbaGivenClass(Matrix<Real>& idc) const;
 
