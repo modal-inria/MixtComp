@@ -121,7 +121,8 @@
 #'   \item{nbFreeParameters: number of free parameters of the mixture}
 #'   \item{lnObservedLikelihood: observed loglikelihood}
 #'   \item{lnCompletedLikelihood: completed loglikelihood}
-#'   \item{IDClass: entropy used to compute the discriminative power (see code of \link{plotDiscrimVar})}
+#'   \item{IDClass: entropy used to compute the discriminative power of variable: -\eqn{\sum_{i=1}^n t_{ikj} log(t_{ikj})/(n * log(K))}}
+#'   \item{IDClassBar: entropy used to compute the discriminative power of variable: -\eqn{\sum_{i=1}^n (1-t_{ikj}) log((1-t_{ikj}))/(n * log(K))}}
 #'   \item{delta: similarities between variables (see \link{heatmapVar})}
 #'   \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
 #'   \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
@@ -169,6 +170,7 @@
 #' |        \tab         \tab |_ lnCompletedLikelihood\cr
 #' |        \tab         \tab |_ lnObservedLikelihood \cr
 #' |        \tab         \tab |_ IDClass  \cr
+#' |        \tab         \tab |_ IDClassBar  \cr
 #' |        \tab         \tab |_ delta  \cr
 #' |        \tab         \tab |_ runTime \cr
 #' |        \tab         \tab |_ nbFreeParameters \cr

@@ -45,6 +45,7 @@ output
 |                |_ lnCompletedLikelihood
 |                |_ lnObservedLikelihood
 |                |_ IDClass
+|                |_ IDClassBar
 |                |_ delta
 |                |_ runTime
 |                |_ nbFreeParameters
@@ -120,8 +121,9 @@ A copy of *algo* parameter.
 - **nbFreeParameters** number of free parameters of the mixture model
 - **lnObservedLikelihood** observed loglikelihood
 - **lnCompletedLikelihood** completed loglikelihood
-- **IDClass** entropy used to compute the discriminative power (see code of plotDiscrimVbles)
-- **delta** entropy used to compute the similarities between variables (see code of heatmapVbles)
+- **IDClass** entropy used to compute the discriminative power (see computeDiscrimPowerVar function)
+- **IDClassBar** entropy used to compute the discriminative power (see computeDiscrimPowerVar function)
+- **delta** entropy used to compute the similarities between variables (see heatmapVar function)
 - **completedProbabilityLogBurnIn** evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
 - **completedProbabilityLogRun** evolution of the completed log-probability after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
 - **runTime** a list containing the execution time in seconds of different part of the algorithm
