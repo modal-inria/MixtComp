@@ -1,8 +1,8 @@
 Package: RMixtCompUtilities
 Type: Package
 Title: Utility Functions for 'MixtComp' Outputs
-Version: 4.1.1
-Date: 2020-05-14
+Version: 4.1.2
+Date: 2020-06-04
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = "aut"),
@@ -18,6 +18,6 @@ Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a pro
 URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: plotly, ggplot2, scales
-Suggests: testthat, xml2, RMixtCompIO, Rmixmod, blockcluster
+Suggests: testthat, xml2, RMixtCompIO (>= 4.0.4), Rmixmod, blockcluster
 RoxygenNote: 7.1.0
 Encoding: UTF-8

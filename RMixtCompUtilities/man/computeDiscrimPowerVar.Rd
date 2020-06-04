@@ -26,6 +26,9 @@ The discriminative power of variable j is defined by 1 - C(j)
 
 A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
 
+The discriminative power of variable j in class k is defined by 1 - C(j)
+\deqn{C(j)=  - sum_{i=1}^n P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) / (n*\log(2))}
+
 
 The discriminative power of class k is defined by 1 - D(k)
 \deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}

@@ -295,14 +295,15 @@ test_that("reduceRMixtCompOutput works in FALSE TRUE", {
 
 test_that("computeDiscrimPowerVar works", {
   
-  output = list(mixture = list(IDClass = matrix(1:15, nrow = 3)))
-  
+  output <- list(mixture = list(IDClass = matrix(1:10, nrow = 2),
+                                IDClassBar = matrix(1:10, nrow = 2)[2:1,]))
   
   out <- computeDiscrimPowerVar(output)
-  expect_equal(out, c(-5, -14, -23, -32, -41))
+  expect_equal(out, c(-2, -6, -10, -14, -18))
   
   out <- computeDiscrimPowerVar(output, 1)
-  expect_equal(out, 1 - c(1, 4, 7, 10, 13))
+  expect_equal(out, 1 - output$mixture$IDClass[1,] - output$mixture$IDClass[2,])
   
   expect_error(out <- computeDiscrimPowerVar(output, 10))
+  
 })

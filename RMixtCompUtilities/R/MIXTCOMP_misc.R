@@ -71,6 +71,9 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' 
 #' A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
 #' 
+#' The discriminative power of variable j in class k is defined by 1 - C(j)
+#' \deqn{C(j)=  - sum_{i=1}^n P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) / (n*\log(2))}
+#' 
 #' 
 #' The discriminative power of class k is defined by 1 - D(k)
 #' \deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
@@ -119,14 +122,35 @@ computeDiscrimPowerVar <- function(outMixtComp, class = NULL)
   if(is.null(class))
     return(1-colSums(outMixtComp$mixture$IDClass))
   else
-  {
-    if(length(class) > 1)
-      stop("class must be NULL or an integer between 1 and the number of classes.")
-    if(!(class %in% 1:nrow(outMixtComp$mixture$IDClass)))
-      stop("class must be NULL or an integer between 1 and the number of classes.")
-    
-    return(1 - outMixtComp$mixture$IDClass[class, ])
-  }
+    return(computeDiscrimPowerVarPerClass(outMixtComp, class))
+}
+
+
+
+# @title Discriminative power of variables in a class
+#
+# @description Compute the discriminative power of each variable for a given class
+#
+# @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
+# @param class class for which discriminating power is required
+#
+# The discriminative power of variable j in class k is defined by 1 - C(j)
+# \deqn{C(j)=  - sum_{i=1}^n P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) / (n*\log(2))}
+#
+# @author Quentin Grimonprez
+computeDiscrimPowerVarPerClass <- function(outMixtComp, class)
+{
+  if(length(class) > 1)
+    stop("class must be NULL or an integer between 1 and the number of classes.")
+  if(!(class %in% 1:nrow(outMixtComp$mixture$IDClass)))
+    stop("class must be NULL or an integer between 1 and the number of classes.")
+  
+  K <- nrow(outMixtComp$mixture$IDClass)
+   
+  entropyKJ <- outMixtComp$mixture$IDClass[class, ] * log(K)
+  entropyKJbar <- outMixtComp$mixture$IDClassBar[class, ] * log(K)
+  
+  1 - (entropyKJ + entropyKJbar)/log(2)
 }
 
 #' @rdname computeDiscrimPowerVar
