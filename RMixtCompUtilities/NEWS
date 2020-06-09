@@ -1,7 +1,6 @@
 v4.1.2 2020-06-04
 - print.MixtComp prints correctly functional and rank parameters
 - add getProportion function
-- change maintainer contact
 - doc correction
 - add class parameter to plotDataBoxplot, plotDiscrimVar and computeDiscrimPowerVar functions
 - getCompletedData returns a data.frame with proper column types and returns rank as a string

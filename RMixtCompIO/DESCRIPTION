@@ -5,13 +5,12 @@ Version: 4.0.4
 Date: 2020-06-04
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
-             person("Quentin", "Grimonprez", role = "aut"),
+             person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),
              person("Serge", "Iovleff", role = "ctb"),
              person("Matthieu", "Marbac-Lourdelle", role = "ctb"),
              person("Étienne", "Goffinet", role = "ctb"), 
              person("Patrick", "Wieschollek", role = "ctb", comment = "for CppOptimizationLibrary"),
-             person("Tobias", "Wood", role = "ctb", comment = "for CppOptimizationLibrary"),
-             person("MixtComp", "Dev", role = "cre", email = "mixtcomp-dev@inria.fr"))
+             person("Tobias", "Wood", role = "ctb", comment = "for CppOptimizationLibrary"))
 Copyright: Inria - Université de Lille - CNRS; Patrick Wieschollek, Tobias Wood & the respective contributors for CppOptimizationLibrary
 License: AGPL-3
 Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
