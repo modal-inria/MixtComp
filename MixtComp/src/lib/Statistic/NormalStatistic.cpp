@@ -42,7 +42,7 @@ Real NormalStatistic::cdf(Real x, Real mean, Real sd) const {
 
 /** log pdf evaluated at individual x */
 Real NormalStatistic::lpdf(Real x, Real mean, Real sd) const {
-	return -log(sd) - l2pi - 0.5 * pow((x - mean) / sd, 2);
+	return -log(sd) - logsqrt2pi - 0.5 * pow((x - mean) / sd, 2);
 }
 
 Real NormalStatistic::pdf(Real x, Real mean, Real sd) const {

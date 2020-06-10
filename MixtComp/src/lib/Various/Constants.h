@@ -44,7 +44,7 @@ extern const Real logEpsilon; // log of very small value
 extern const int minModality; // minimal modality for categorical models (for example, 0-based or 1-based numbering)
 extern const int minIndex;
 extern const Real pi; // pi
-extern const Real l2pi; // constant used in pdf computation for normal law
+extern const Real logsqrt2pi; // constant used in pdf computation for normal law: log(sqrt(2pi))
 extern const std::string progressFile; // progress file name
 extern const Real minInf; // value of log(0)
 
