@@ -37,10 +37,12 @@ TEST(UniformIntStatistic, cdf) {
 	Real cdf1 = unif.cdf(max + 1, min, max);
 	Real cdf0 = unif.cdf(min - 1, min, max);
 	Real cdf = unif.cdf(min, min, max);
+	Real cdfb = unif.cdf((max + min)/2, min, max);
 
 	EXPECT_NEAR(cdf0, 0., epsilon);
 	EXPECT_NEAR(cdf1, 1., epsilon);
 	EXPECT_NEAR(cdf, 1./12., epsilon);
+	EXPECT_NEAR(cdfb, 1./2., epsilon);
 }
 
 
