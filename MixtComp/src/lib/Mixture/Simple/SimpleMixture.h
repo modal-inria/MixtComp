@@ -155,8 +155,12 @@ public:
 	}
 
 	void exportDataParam() const {
+		Graph g;
+		convertDataStat(dataStat_.getDataStatStorage(), g);
+		outG_.addSubGraph( { "variable", "data" }, idName_, g);
+
 		NamedVector<typename Model::Data::Type> dataOut;
-		dataOut.vec_ = augData_.data_; // not that no row names are provided
+		dataOut.vec_ = augData_.data_; // note that no row names are provided
 		if (model_.hasModalities()) {
 			dataOut.vec_ += minModality;
 		}
@@ -179,6 +183,60 @@ public:
 		outG_.add_payload( { "variable", "param", idName_ }, "stat", paramStatOut);
 		outG_.add_payload( { "variable", "param", idName_ }, "log", paramLogOut);
 		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
+	}
+
+
+
+
+	/*
+	 * convert missing data statistics for categorical model
+	 *
+	 * dataStat is the output of getDataStatStorage() from CategoricalDataStat
+	 */
+	void convertDataStat(Vector<std::vector<std::pair<int, Real> > > const& dataStat, Graph & g) const {
+		for (int i = 0; i < augData_.data_.rows(); ++i) {
+			if (augData_.misData_(i).first != present_) {
+				NamedMatrix<Real>  dataStatOut(dataStat(i).size(), 2, true);
+				dataStatOut.colNames_ = {"modality", "probability"};
+				for (std::vector<std::pair<int, Real> >::const_iterator itVec = dataStat(i).begin(); itVec != dataStat(i).end(); ++itVec) {
+					dataStatOut.mat_(itVec - dataStat(i).begin(), 0) = itVec->first + minModality; // current modality
+					dataStatOut.mat_(itVec - dataStat(i).begin(), 1) = itVec->second; // probability of the modality
+				}
+				g.add_payload({"stat"}, std::to_string(i), dataStatOut);
+			}
+		}
+	}
+
+	/*
+	 * convert missing data statistics for other simple models
+	 *
+	 * dataStat is the output of getDataStatStorage() from ConfIntDataStat
+	 */
+	template<typename Type>
+	void convertDataStat(Vector<RowVector<Type> > const& dataStat, Graph & g) const {
+		int nbMiss = augData_.nbSample_ - augData_.misCount_(present_);
+		NamedMatrix<Type> dataStatOut(nbMiss, 4, true);
+
+		Real alpha = (1. - confidenceLevel_) / 2.;
+		dataStatOut.colNames_[0] = "index";
+		dataStatOut.colNames_[1] = "median";
+		dataStatOut.colNames_[2] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
+		dataStatOut.colNames_[3] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
+
+
+		int j = 0;
+		for (int i = 0; i < augData_.data_.rows(); ++i) {
+			if (augData_.misData_(i).first != present_) {
+				dataStatOut.mat_(j, 0) = i;
+				dataStatOut.mat_(j, 1) = dataStat(i)(0); // median
+				dataStatOut.mat_(j, 2) = dataStat(i)(1); // left bound
+				dataStatOut.mat_(j, 3) = dataStat(i)(2); // right bound
+				++j;
+			}
+		}
+
+		g.add_payload( { }, "stat", dataStatOut);
+
 	}
 
 	void initData(Index i) {
