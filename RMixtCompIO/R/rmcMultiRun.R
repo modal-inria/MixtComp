@@ -243,7 +243,7 @@ globalVariables('i')
 #' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #' 
 #' 
-#' # run RMixtCompt in predict mode + data as list
+#' # run RMixtComp in predict mode + data as list
 #' algo$nInd = 20
 #' algo$mode = "predict"
 #' resPredict <- rmcMultiRun(algo, dataPredict, model, resLearn)

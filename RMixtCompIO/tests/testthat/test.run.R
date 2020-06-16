@@ -60,7 +60,7 @@ test_that("gaussian model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -109,7 +109,7 @@ test_that("poisson model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -158,7 +158,7 @@ test_that("NegativeBinomial model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -222,7 +222,7 @@ test_that("multinomial model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -268,7 +268,7 @@ test_that("weibull model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -314,7 +314,7 @@ test_that("functional model works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -361,7 +361,7 @@ test_that("functional model with shared alpha works",{
   data <- resGen$data
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -407,7 +407,7 @@ test_that("rank model works",{
   data <- resGen$da
   desc <- resGen$desc
 
-  resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
+  resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
