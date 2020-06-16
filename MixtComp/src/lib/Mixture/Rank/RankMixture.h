@@ -266,6 +266,11 @@ public:
 	}
 
 	void exportDataParam() const {
+		Graph g ;
+		convertDataStat(g);
+		outG_.addSubGraph({ "variable", "data", idName_ }, "stat", g);
+
+
 		NamedMatrix<int> exportData(nInd_, nbPos_, false);
 		for (Index i = 0; i < nInd_; ++i) {
 			exportData.mat_.row(i) = data_(i).x().o() + minModality;
@@ -312,6 +317,34 @@ public:
 
 		NamedMatrix<Real> piLogStorage = {piParamNames(), std::vector<std::string>(), piParamStat_.getLogStorage() };
 		outG_.add_payload( { "variable", "param", idName_, "pi" }, "log", piLogStorage);
+	}
+
+	// convert statistics about completed rank as a Graph of NamedMatrix
+	void convertDataStat(Graph &g) const {
+		for(Index i = 0; i < dataStat_.size(); ++i) {
+			// get the numbers of Ranks in dataStat_[i]
+			int size = 0;
+			for (std::list<std::pair<RankVal, Real> >::const_iterator it = dataStat_[i].statStorageMu().begin(); it != dataStat_[i].statStorageMu().end(); ++it) {
+				size++;
+			}
+
+
+			if (size > 0) {
+				// Ranks and the associated probability are in the same matrix even if they do not have the same type (int vs Real)
+				NamedMatrix<Real> dataStat (size, nbPos_ + 1, true);
+				dataStat.colNames_[dataStat.colNames_.size() - 1] = "proba";
+				int j = 0;
+				for (std::list<std::pair<RankVal, Real> >::const_iterator it = dataStat_[i].statStorageMu().begin(); it != dataStat_[i].statStorageMu().end(); ++it) {
+					for(Index k = 0; k < nbPos_; ++k) {
+						dataStat.mat_(j, k) = it->first.o()(k) + minModality;
+					}
+					dataStat.mat_(j, nbPos_) = it->second;
+					j++;
+				}
+				g.add_payload( {  }, std::to_string(i), dataStat);
+			}
+		}
+
 	}
 
 	void computeObservedProba() {
