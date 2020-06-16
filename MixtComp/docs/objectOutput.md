@@ -114,7 +114,7 @@ Model used for each variable (e.g. "Gaussian").
 ### data
 
 Except for functional models and LatentClass, data contains, for each variable, two elements: *completed* and *stat*. *completed* contains the completed data and *stat* contains statistics about completed data.
-The format is detailled below according to the model.
+The format is detailed below according to the model.
 
 - **LatentClass**
 
@@ -123,15 +123,15 @@ For each sample, it contains the$`t_{ik}` (probability of `x_i` to belong to cla
 
 - **Gaussian/Poisson/NegativeBinomial/Weibull**
 
-*stat* is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+*stat* is a matrix where each row corresponds to a missing data and contains 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
 - **Multinomial**
 
-*stat* is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
+*stat* is a named list where each element corresponds to a missing data. The name of the element corresponds to the index of the missing data. It contains a matrix containing the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
 - **Rank_ISR**
 
-*stat* is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
+*stat* is a  named list where each element corresponds to a missing data. The name of the element corresponds to the index of the missing data. It contains a matrix containing the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
 - **Func_CS** and **Func_SharedAlpha_CS**
 
