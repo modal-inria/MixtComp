@@ -276,6 +276,11 @@ rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 
     resTemp <- rmc(algo, data, model, resLearn)
     class(resTemp) = "MixtComp"
     
+    # c++ index starts at 0, we add 1
+    varNames <- names(resTemp$variable$data)
+    for(name in varNames)
+      resTemp$variable$data[[name]]$stat = correctIndexCompletedStat(resTemp$variable$data[[name]]$stat, resTemp$variable$type[[name]])
+
     if(verbose)
       cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
     
@@ -292,6 +297,34 @@ rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 
   
   return(res[[indMax]])
 }
+
+# c++ index starts at 0, we add 1
+correctIndexCompletedStat <- function(stat, model)
+{
+  if(model %in% c("Gaussian", "Poisson", "NegativeBinomial", "Weibull"))
+    return(correctIndexCompletedStatNumerical(stat))
+  
+  if(model %in% c("Multinomial", "Rank_ISR"))
+    return(correctIndexCompletedStatMultinomRank(stat))
+  
+  return(stat)
+}
+
+correctIndexCompletedStatNumerical <- function(stat)
+{
+  stat[, 1] = stat[, 1] + 1
+  
+  return(stat)
+}
+
+correctIndexCompletedStatMultinomRank <- function(stat)
+{
+  names(stat) = as.numeric(names(stat)) + 1
+  
+  return(stat)
+}
+
+
 
 # rand index 
 rand.index <- function (partition1, partition2) 

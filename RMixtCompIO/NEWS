@@ -1,7 +1,8 @@
-v4.0.4 2020-06-04
+v4.0.5 2020-06-15
 - bug correction when z_class is in data but not in the model
 - bug correction when the number of classes does not correspond to the content of z_class
 - new output from MixtComp: IDClassBar
+- export statistics about completed data
 
 v4.0.2 2019-12-16
 - correct variable name in a function 
