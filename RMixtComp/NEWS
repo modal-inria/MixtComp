@@ -1,5 +1,6 @@
-v4.1.2 2020-06-04
+v4.1.2 2020-06-17
 - hierarchical mode starts with the model with 1 class
+- manage statistics about completed data
 
 v4.1.1 2020-04-01
 - add vignettes

@@ -2,7 +2,7 @@ Package: RMixtComp
 Type: Package
 Title: Mixture Models with Heterogeneous and (Partially) Missing Data
 Version: 4.1.2
-Date: 2020-06-04
+Date: 2020-06-17
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentin.grimonprez@inria.fr"),

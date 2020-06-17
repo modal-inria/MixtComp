@@ -169,12 +169,21 @@ formatOutputBasicMode <- function(res, dictionary)
   
   for(varName in setdiff(names(res$algo$dictionary), "z_class"))
   {
-    res$variable$data[[varName]]$completed = refactorCategorical(res$variable$data[[varName]]$completed, res$algo$dictionary[[varName]]$new, res$algo$dictionary[[varName]]$old)
+    res$variable$data[[varName]]$completed = refactorCategorical(res$variable$data[[varName]]$completed, 
+                                                                 res$algo$dictionary[[varName]]$new, res$algo$dictionary[[varName]]$old)
+
+    res$variable$data[[varName]]$stat = lapply(res$variable$data[[varName]]$stat, function(x) {
+      out <- as.data.frame(x)
+      out[,1] = refactorCategorical(out[,1], res$algo$dictionary[[varName]]$new, res$algo$dictionary[[varName]]$old)
+      rownames(out) = NULL
+      return(out)
+    })
+    
     rownames(res$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(res$variable$param[[varName]]$stat)), res$algo$dictionary[[varName]]$old)
     rownames(res$variable$param[[varName]]$log) = rownames(res$variable$param[[varName]]$stat)
   }
   
-  # this will not work for non simple model. It is not a problem because in basic mode only simple mdoels are considered
+  # this will not work for non simple model. It is not a problem because in basic mode only simple models are considered
   if("z_class" %in% names(res$algo$dictionary))
   {
     varNames <- getVarNames(res, with.z_class = TRUE)
