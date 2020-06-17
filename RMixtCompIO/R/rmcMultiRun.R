@@ -279,7 +279,10 @@ rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 
     # c++ index starts at 0, we add 1
     varNames <- names(resTemp$variable$data)
     for(name in varNames)
-      resTemp$variable$data[[name]]$stat = correctIndexCompletedStat(resTemp$variable$data[[name]]$stat, resTemp$variable$type[[name]])
+    {
+      if(!is.null(resTemp$variable$data[[name]]$stat))
+        resTemp$variable$data[[name]]$stat = correctIndexCompletedStat(resTemp$variable$data[[name]]$stat, resTemp$variable$type[[name]])
+    }
 
     if(verbose)
       cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
