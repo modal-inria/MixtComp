@@ -39,7 +39,7 @@ mixtCompPredict(
 
 \item{criterion}{"BIC" or "ICL". Criterion used for choosing the best model.}
 
-\item{hierarchicalMode}{"auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.}
+\item{hierarchicalMode}{"auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present (see section \emph{Hierarchical Mode}).}
 
 \item{nRun}{number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.}
 
@@ -95,7 +95,7 @@ Estimates from the burn-in phase are not shown in output.
 }
 \section{Data format}{
 
-See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/dataFormat.md}.
+See the associated vignette for more details (\code{RShowDoc("dataFormat", package = "RMixtComp")}).
 
 - Gaussian data:
 Gaussian data are real values with the dot as decimal separator.
@@ -244,13 +244,27 @@ output  \cr
 
 }                  
 
-See \url{https://github.com/modal-inria/MixtComp/blob/master/MixtComp/docs/objectOutput.md}
+See the associated vignette for more details: \code{RShowDoc("mixtCompObject", package = "RMixtComp")}
 }
 
 \section{MixtCompLearn object}{
 
 The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
 \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}).
+}
+
+\section{Hierarchical Mode}{
+
+When the \code{model}'s parameter includes a functional model (\code{Func_CS} or \code{Func_SharedAlpha_CS}), The algorithm is automatically run in "Hierarchical Mode".
+In hierarchical mode, it first clusters the data in 2 classes. Then, it searches the best model in 3 classes by performing a clustering in 2 classes of each class of the previous step).
+The same process is used until the asked number (\emph{K}) of classes is attained.
+All models from 2 to \emph{K} classes are returned (even if the case \code{nClass = K}).
+
+This strategy is used to solve some problem (initialization, empty classes...) when the number of classes is high with the functional model.
+
+The user can control the activation of the hierarchical mode using the \code{hierarchicalMode}'s parameter. 
+Three values are possible: \code{"no"}, the algorithm is never run in hierarchical mode, \code{"yes"}, the algorithm is always run in hierarchical mode, and \code{"auto"}, 
+the algorithm is run in hierarchical mode only when there is at least one functional variable (default).
 }
 
 \examples{
