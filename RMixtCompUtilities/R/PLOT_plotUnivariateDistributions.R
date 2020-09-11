@@ -76,16 +76,18 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
   type <- output$variable$type[[var]]
   
   if(is.null(output$algo$dictionary$z_class))
-    labelClass <- paste0("Class ", 1:output$algo$nClass)
-  else
-    labelClass <- output$algo$dictionary$z_class$old
+  {
+    labels <- paste0("Class ", 1:output$algo$nClass)
+  }else{
+    labels <- output$algo$dictionary$z_class$old
+  }
   
   switch(type,
-         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, labelClass, grl, pkg),
-         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, labelClass, grl, pkg),
-         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, labelClass, grl, pkg),
-         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, labelClass, grl, pkg),
-         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, labelClass, grl, pkg),
+         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl, pkg, labels),
+         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl, pkg, labels),
+         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl, pkg, labels),
+         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl, pkg, labels),
+         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl, pkg, labels),
          "Func_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))
@@ -94,11 +96,11 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
 
 # Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
 # @author Matthieu Marbac
-plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...){
+plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), labels, ...){
   pkg = match.arg(pkg)
   
   p <- switch(pkg, 
-              "ggplot2" = ggplotCINumericData(data, var, class, grl),
+              "ggplot2" = ggplotCINumericData(data, var, class, grl, labels),
               "plotly" = plotlyCINumericData(data, var, class, grl, ...))
   
   p
@@ -177,30 +179,32 @@ plotlyCINumericData <- function(data, var, class, grl, ...){
 }
 
 # @author Quentin Grimonprez
-ggplotCINumericData <- function(data, var, class, grl)
+ggplotCINumericData <- function(data, var, class, grl, labels = class)
 {
-  labelClass <- class
+  labelClass = c()
   if(grl)
-    labelClass = c(labelClass, "all")
-  labelClass = factor(labelClass, levels = labelClass)
+    labelClass = factor(c(labels[class], "all"), levels = c(labels, "all"))
+  else
+    labelClass = factor(labels[class], levels = c(labels, "all"))
   
   df = data.frame(class = labelClass, classlo = seq_along(data$mean) - 0.1, classup =  seq_along(data$mean) + 0.1, mean = data$mean, lower = data$lower, uppers = data$uppers)
   p <- ggplot(df, aes_string(x = "mean", y = "class")) + 
     geom_point() +
     geom_rect(data = df, mapping = aes_string(xmin = "lower", xmax = "uppers", ymin = "classlo", ymax = "classup", fill = "class"), color = "black", alpha = 0.5) + 
     labs(title = "Mean and 95%-level confidence intervals per class", x = var, y = "Class") +
-    theme(legend.position = "none")
+    theme(legend.position = "none") + 
+    scale_fill_discrete(name = "Class",  drop = FALSE) 
   
   p
 }
 
 # @author Matthieu Marbac
-plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...)
+plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), labels = class, ...)
 {
   pkg = match.arg(pkg)
   
   p <- switch(pkg, 
-              "ggplot2" = ggplotCategoricalData(data, var, class, grl),
+              "ggplot2" = ggplotCategoricalData(data, var, class, grl, labels),
               "plotly" = plotlyCategoricalData(data, var, class, grl, ...))
   
   p
@@ -254,17 +258,19 @@ plotlyCategoricalData <- function(data, var, class, grl, ...){
 
 
 # @author Quentin Grimonprez
-ggplotCategoricalData <- function(data, var, class, grl)
+ggplotCategoricalData <- function(data, var, class, grl, labels)
 {
-  labelClass <- class
+  labelClass = c()
   if(grl)
-    labelClass = c(labelClass, "all")
-  labelClass = factor(labelClass, levels = labelClass)
+    labelClass = factor(c(labels[class], "all"), levels = c(labels, "all"))
+  else
+    labelClass = factor(labels[class], levels = c(labels, "all"))
   
   df = data.frame(value = as.numeric(t(data$probs)), categ = rep(data$levels, nrow(data$probs)), class = rep(labelClass, each = length(data$levels)))
   p <- ggplot(data = df, aes_string(x = "categ", y = "value", fill = "class")) +
     geom_bar(stat = "identity", position = position_dodge()) +
-    labs(title = "Distribution per class", x = var, y = "Probability") 
+    labs(title = "Distribution per class", x = var, y = "Probability") + 
+    scale_fill_discrete(name = "Class",  drop = FALSE) 
   
   p
 }
@@ -389,7 +395,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
   }else{
     classToPlot = 1:nrow(data$mean)
   }
-  
+ 
   df = as.data.frame(t(data$mean))
   df$time = data$time
 
@@ -426,7 +432,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
 
   p = p  +
     labs(title = "Mean curves and 95%-level confidence intervals per class", x = "Time", y = var) +
-    scale_color_discrete(name = "Class") 
+    scale_color_discrete(name = "Class", drop = FALSE) 
   
   if(!is.null(xlim))
     p = p + layout(axis = list(range = xlim))
