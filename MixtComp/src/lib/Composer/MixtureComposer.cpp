@@ -84,17 +84,17 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 
 Real MixtureComposer::lnObservedLikelihood() const {
 	Real lnLikelihood = 0.;
-	Matrix<Real> lnComp(nInd_, nClass_);
+	Matrix<Real> lnObs(nInd_, nClass_);
 
 	for (Index k = 0; k < nClass_; ++k) {
 		for (Index i = 0; i < nInd_; ++i) {
-			lnComp(i, k) = lnObservedProbability(i, k);
+			lnObs(i, k) = lnObservedProbability(i, k);
 		}
 	}
 
 	for (Index i = 0; i < nInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
 		RowVector<Real> dummy;
-		lnLikelihood += dummy.logToMulti(lnComp.row(i));
+		lnLikelihood += dummy.logToMulti(lnObs.row(i));
 	}
 
 	return lnLikelihood;
