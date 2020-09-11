@@ -20,6 +20,16 @@ in varName, individual i: 0 present an error. a is not recognized as a valid for
 
 **Solution:** Bad data format. Please refer to [Data format](./dataFormat.md).
 
+
+**Error:**
+
+```text
+/varName object does not exist.
+```
+
+**Solution:** The variable *varName* is not found in data or model. Check variable names in both.
+
+
 ## Initialization problem
 
 **Error:**
