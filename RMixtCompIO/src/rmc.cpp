@@ -34,10 +34,9 @@ using namespace mixt;
 // [[Rcpp::export]]
 Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List resLearnR) {
 	RGraph resRG;
-
+  std::string warnLog;
+  
 	try {
-		std::string warnLog;
-
 		RGraph algoRG(algoR);
 		RGraph dataRG(dataR);
 		RGraph descRG(descR);
@@ -59,12 +58,12 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 		} else {
 			warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
 		}
-
-		if (warnLog.size() > 0) {
-			resRG.add_payload( { }, "warnLog", warnLog);
-		}
 	} catch (const std::string& s) {
-	  Rcpp::Rcout << s << std::endl;
+	  warnLog += s;
+	}
+	
+	if (warnLog.size() > 0) {
+		resRG.add_payload( { }, "warnLog", warnLog);
 	}
 
 	return resRG.getL();
