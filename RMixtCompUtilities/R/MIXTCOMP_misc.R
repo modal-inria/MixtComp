@@ -331,3 +331,32 @@ reduceRMixtCompOutputIntern <- function(outMixtComp, completed = TRUE, log = TRU
   
   return(outMixtComp)
 }
+
+
+# Compute ICL
+#
+# compute ICL using formula:
+# ICL = loglikObs - nbFreeParameters/2*log(n) - entropy
+#
+# @param outMixtComp mixtComp or mixtCompLearn object
+#
+# @return icl
+#
+# @details
+# compute ICL using formula:
+# ICL = loglikObs - nbFreeParameters/2*log(n) - entropy
+#
+# ICL computed in MixtComp uses the formula:
+# ICL = loglikComp - nbFreeParameters/2*log(n)
+# 
+# loglikComp can be not well estimated in some case (functional)
+icl <- function(outMixtComp)
+{
+  loglikObs <- outMixtComp$mixture$lnObservedLikelihood
+  nbFree <- outMixtComp$mixture$nbFreeParameters
+  n <- outMixtComp$algo$nInd
+  logTik <- getTik(outMixtComp)
+  entropy = - sum(exp(logTik) * logTik)
+  
+  loglikObs - nbFree/2*log(n) - entropy
+}
