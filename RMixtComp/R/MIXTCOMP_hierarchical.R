@@ -79,7 +79,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   
   newRes = leaves = res = allCrit <- list()
   
-  ## nClass = 1
+  ## initialization: K = 1
   t1 <- proc.time()
   if(verbose)
     cat(paste0("-- K = 1 \n"))
@@ -95,11 +95,16 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   if(verbose)
     cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
   
-  ##
+  ## if nClass = 1 there is no hierarchical process to perform
   if(nClass > 1)
   {
     leavesOrder = MAXCRIT <- c()
     
+    # at the beginning everyone is in 1 cluster
+    # a leaf has 3 modes for go: "toRun", "wait" and "stop":
+    # "toRun" = need to split in two. 
+    # "wait" = already split but not selected (will be split after being selected in a model)
+    # "stop" = it won't be split anymore (not enough individuals)
     leaves[[1]] = list(partition = rep(TRUE, nInd) , indPartition = 1:nInd, go = "toRun", indParent = NULL)
     nbCurrentCluster <- 1
     nbLeavesToCompute <- 1
@@ -114,8 +119,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
         cat(paste0("Number of splits to perform: ", nbLeavesToCompute, "\n"))
       }
       
-      
-      
+      # perform clustering for all leaves
       hasRun <- c()
       for(i in seq_along(leaves))
       {
@@ -125,7 +129,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
           if(verbose)
             cat(paste0(" Split a cluster in two\n"))
           
-          # reduce the data to the class to split
+          # reduce the data to the classes to split
           resData <- data
           for(j in names(resData))
             resData[[j]] = data[[j]][leaves[[i]]$indPartition]
@@ -152,7 +156,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
         break
       
       
-      # compute crit
+      # compute criterion by computing all the models with K classes regarding the different available leaves
       if(verbose)
         cat(" Compute criterion\n")
       maxCrit <- list(crit = -Inf, ind = NA)
@@ -198,11 +202,13 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
       
       if(!is.na(maxCrit$ind))
       {
-        # update leaves for the next step
+        # update leaves for the next step: add the 2 new clusters
         leaves[[maxCrit$ind]]$go = "parent"
-        part <- newRes[[maxCrit$ind]]$variable$data$z_class$completed
-        leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], go = "toRun", indParent = maxCrit$ind)
-        leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], go = "toRun", indParent = maxCrit$ind)
+        part <- getPartition(newRes[[maxCrit$ind]], empiric = FALSE)
+        leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], 
+                                            go = "toRun", indParent = maxCrit$ind)
+        leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], 
+                                            go = "toRun", indParent = maxCrit$ind)
         
         # stop some classes due to size
         for(i in seq_along(leaves))
@@ -225,11 +231,10 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
       
       if(verbose)
         cat(paste0("Run time: ", round((t2-t1)[3], 3), "s\n"))
-      
-      
+   
     }# end while
     
-    
+    # tell the user if we have not attained the desired number of cluster
     if(nbCurrentCluster != nClass)
       warning(paste0("Unable to get ", nClass," clusters. Only ", nbCurrentCluster," clusters were computed."))
     
@@ -269,16 +274,22 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
 # @author Quentin Grimonprez
 computeNewModel <- function(resParent, resChild, classParentOfChild, data, model, algo, nRun, nCore, verbose)
 {
-  oldZ_class = resParent$variable$data$z_class$completed
+  ## Run Mixtcomp with fixed partition in order to estimate parameter and criterion for the given leaves
+  
+  # compute new partition
+  oldZ_class = getPartition(resParent, empiric = FALSE) # resParent$variable$data$z_class$completed
+  childPartition <- getPartition(resChild, empiric = FALSE) # resChild$variable$data$z_class$completed 
   newZ_class = rep(NA, length(oldZ_class))
   
-  newZ_class[oldZ_class == classParentOfChild] = resChild$variable$data$z_class$completed + (resParent$algo$nClass - 1)
+  newZ_class[oldZ_class == classParentOfChild] = childPartition + (resParent$algo$nClass - 1)
   newZ_class[oldZ_class != classParentOfChild] <- refactorCategorical(oldZ_class[oldZ_class != classParentOfChild],
-                                                                      unique(oldZ_class[oldZ_class != classParentOfChild]), seq_along(unique(oldZ_class[oldZ_class != classParentOfChild])))
+                                                                      unique(oldZ_class[oldZ_class != classParentOfChild]), 
+                                                                      seq_along(unique(oldZ_class[oldZ_class != classParentOfChild])))
   
   data$z_class = as.character(newZ_class)
   
   
+  # run with fixed partition
   algo$nClass = resParent$algo$nClass + 1
   algo$nInd = resParent$algo$nInd
   algo$mode = "learn"
