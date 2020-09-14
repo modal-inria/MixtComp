@@ -75,8 +75,15 @@ plotDataBoxplot <- function(output, var, class = 1:output$algo$nClass, grl = TRU
   
   type <- ifelse(type %in% c("Gaussian", "Weibull", "Poisson", "NegativeBinomial"), "Numerical", type)
   
+  if(is.null(output$algo$dictionary$z_class))
+  {
+    labels <- paste0("Class ", 1:output$algo$nClass)
+  }else{
+    labels <- output$algo$dictionary$z_class$old
+  }
+
   switch(type,
-         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = class, grl = grl), var, pkg = pkg),
+         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = class, grl = grl), var, pkg = pkg, labels = labels),
          "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = class, grl = grl), var, pkg = pkg, class = class, grl),
          "Func_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
@@ -85,11 +92,11 @@ plotDataBoxplot <- function(output, var, class = 1:output$algo$nClass, grl = TRU
 
 # here bounds is a matrix
 # @author Quentin Grimonprez
-plotBoxplotperClass <- function(bounds, var, pkg = c("ggplot2", "plotly"), ...){
+plotBoxplotperClass <- function(bounds, var, pkg = c("ggplot2", "plotly"), labels = rownames(bounds), ...){
   pkg = match.arg(pkg)
   
   p <- switch(pkg, 
-              "ggplot2" = ggplotBoxplotperClass(bounds, var),
+              "ggplot2" = ggplotBoxplotperClass(bounds, var, labels),
               "plotly" = plotlyBoxplotperClass(bounds, var))
   
   p
@@ -97,9 +104,9 @@ plotBoxplotperClass <- function(bounds, var, pkg = c("ggplot2", "plotly"), ...){
 
 
 # @author Quentin Grimonprez
-ggplotBoxplotperClass  <- function(bounds, var)
+ggplotBoxplotperClass  <- function(bounds, var, labels)
 {
-  labelClass <- factor(rownames(bounds), levels = rownames(bounds))
+  labelClass <- factor(rownames(bounds), levels = c(labels, "all"))
   
   df = as.data.frame(bounds)
   df$class = labelClass
@@ -114,7 +121,8 @@ ggplotBoxplotperClass  <- function(bounds, var)
     geom_rect(data = df, mapping = aes_string(xmin = "`quantil. 0.75`", xmax = "`quantil. 0.95`", ymin = "classmid", ymax = "classmid"), color = "black") +
     labs(title = paste0("Boxplot per class for variable ", var), x = var, y = element_blank()) +
     theme(legend.position = "none") +
-    scale_y_continuous(breaks = 1:nrow(df), labels = df$class)
+    scale_y_continuous(breaks = 1:nrow(df), labels = df$class) + 
+    scale_fill_discrete(name = "Class",  drop = FALSE) 
   
   p
 }
