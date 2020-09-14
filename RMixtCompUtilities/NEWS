@@ -1,4 +1,5 @@
 v4.1.3
+- use uniroot instead of optimize to find the ci bounds for functional data
 - bug corrections in plotDataCI and plotDataBoxplot when using class parameter (color, position, error when combined with grl = TRUE)
 - add unexported icl function
 

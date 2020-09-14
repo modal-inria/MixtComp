@@ -129,45 +129,53 @@ extractCIMultiVble = function(var, data, class, grl){
 # To compute the mean curve per component
 # @author Matthieu Marbac
 functionalmeanVal <- function(Tt, alpha, beta){
-  weights <- alpha[,2] * Tt + alpha[,1]
+  weights <- alpha[, 2] * Tt + alpha[, 1]
   weights <- weights - max(weights)
   weights <- exp(weights) / sum(exp(weights))  # To avoid numerical problems
-  weigths <- round(weights,4)
-  weights <- weigths/sum(weights)
+  weights <- weights/sum(weights)
   
   b <- 0
   for(i in 1:ncol(beta))
-    b = b + beta[,i] * Tt^(i-1)
+    b = b + beta[, i] * Tt^(i-1)
 
   sum(b * weights)
 }
 
 # Tool function for assessing the quantile for the functional model
 # @author Matthieu Marbac
-objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil)**2
+objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil) ** 2
+objectivefunctional2 <- function(x, pi, mu, s, seuil) sum(pi*pnorm(x, mu, s)) - seuil
 
 # To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
 # @author Matthieu Marbac
 functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
-  weights <- alpha[,1] + alpha[,2] * Tt
+  weights <- alpha[, 1] + alpha[, 2] * Tt
   weights <- weights - max(weights)
   weights <- exp(weights) / sum(exp(weights))
   # To avoid numerical problems
-  weigths <- round(weights,4)
-  weights <- weigths/sum(weights)
+  weights <- weights/sum(weights)
   means  <- 0
   for(i in 1:ncol(beta))
-    means  = means  + beta[,i] * Tt^(i-1)
+    means  = means + beta[,i] * Tt^(i-1)
 
   
-  return(
-    optimize(objectivefunctional,
-             interval = range(qnorm(borne-0.001, means, sigma)[which(weights!=0)], qnorm(borne+0.001, means, sigma)[which(weights!=0)]),
-             pi=weights,
-             mu=means,
-             s=sigma,
-             seuil=borne)$minimum
-  )
+  # min1 <- optimize(objectivefunctional,
+  #                      interval = range(qnorm(borne - 0.001, means, sigma)[which(weights != 0)],
+  #                                       qnorm(borne + 0.001, means, sigma)[which(weights != 0)]),
+  #                      pi = weights,
+  #                      mu = means,
+  #                      s = sigma,
+  #                      seuil = borne)$minimum
+  
+  min2 <- uniroot(objectivefunctional2, 
+                  interval = range(qnorm(borne - 0.001, means, sigma)[which(weights != 0)],
+                                   qnorm(borne + 0.001, means, sigma)[which(weights != 0)]), 
+                  pi = weights, 
+                  mu = means,
+                  s = sigma, 
+                  seuil = borne)$root
+  
+  return(min2)
 }
 
 # @author Matthieu Marbac

@@ -15,7 +15,7 @@
  
 
 #' @import scales plotly
-#' @importFrom stats optimize pnorm qnbinom qnorm qpois qweibull
+#' @importFrom stats optimize pnorm qnbinom qnorm qpois qweibull uniroot
 #' @importFrom grDevices n2mfrow
 #' @importFrom graphics axis lines plot abline legend matplot par title
 #' @importFrom ggplot2 ggplot aes aes_string ylim labs theme theme_minimal element_text element_blank 
