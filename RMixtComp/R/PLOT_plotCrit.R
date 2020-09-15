@@ -16,6 +16,7 @@
 #' Plot BIC and ICL 
 #'
 #' @param output \emph{MixtCompLearn} object
+#' @param crit criterion to plot (can be "BIC", "ICL" or  c("BIC", "ICL") (default))
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
@@ -38,12 +39,16 @@
 #' @family plot
 #' @author Quentin Grimonprez
 #' @export
-plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
+plotCrit <- function(output, crit = c("BIC", "ICL"), pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
   
+  crit = intersect(crit, c("BIC", "ICL"))
+  if(length(crit) == 0)
+    crit = c("BIC", "ICL")
+  
   p <- switch(pkg, 
-              "ggplot2" = ggplotCrit(output$crit, output$nClass),
+              "ggplot2" = ggplotCrit(output$crit[rownames(output$crit) %in% crit, , drop = FALSE], output$nClass),
               "plotly" = plotlyCrit(output$crit, output$nClass, ...))
   
   p
@@ -62,7 +67,7 @@ plotlyCrit <- function(crit, nClass, ...)
 # @author Quentin Grimonprez
 ggplotCrit <- function(crit, nClass)
 {
-  df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), Criterion = rep(c("BIC", "ICL"), each = length(nClass)))
+  df = data.frame(class = nClass, value = as.vector(t(crit)), Criterion = rep(rownames(crit), each = length(nClass)))
   
   p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
     labs(title = "Criterion", x = "Number of classes", y = "value") + 

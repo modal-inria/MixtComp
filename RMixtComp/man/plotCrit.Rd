@@ -4,10 +4,12 @@
 \alias{plotCrit}
 \title{Plot BIC and ICL}
 \usage{
-plotCrit(output, pkg = c("ggplot2", "plotly"), ...)
+plotCrit(output, crit = c("BIC", "ICL"), pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{\emph{MixtCompLearn} object}
+
+\item{crit}{criterion to plot (can be "BIC", "ICL" or  c("BIC", "ICL") (default))}
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
