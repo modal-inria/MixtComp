@@ -1,4 +1,5 @@
 v4.1.3
+- formatModel manages data.frame and matrix for models with hyperparameters
 - bug correction for heatmap* functions with pkg = "plotly"
 - use uniroot instead of optimize to find the ci bounds for functional data
 - bug corrections in plotDataCI and plotDataBoxplot when using class parameter (color, position, error when combined with grl = TRUE)

@@ -297,7 +297,7 @@ heatmapplotly <- function(dat, xname, yname = NULL, main, xlab = "", ylab = "", 
 {
   heatmap <- plot_ly(text = text,
                      hoverinfo = "text",
-                     z =dat,
+                     z = dat,
                      x = xname,
                      y = yname,
                      colorscale = cbind(0:1, c("#F7FBFF", "#08306B")),

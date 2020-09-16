@@ -20,14 +20,25 @@
 # @author Quentin Grimonprez
 formatModel <- function(model)
 {
-  model = lapply(model, function(x){
-    if(!is.list(x))
-      x = list(type = as.character(x))
-    if(!("paramStr" %in% names(x)))
-      x$paramStr = ""
-    
-    return(x)
-  })
+  if(("matrix" %in% class(model)) || ("data.frame" %in% class(model)))
+  {
+    model = apply(model, 2, function(x) {
+      out <- list(type = as.character(x[1]))
+      if(length(x) >= 2)
+        out$paramStr = as.character(x[2])
+      
+      out
+    })
+  }else{
+    model = lapply(model, function(x){
+      if(!is.list(x))
+        x = list(type = as.character(x))
+      if(!("paramStr" %in% names(x)))
+        x$paramStr = ""
+      
+      return(x)
+    })
+  }
   
   return(model)
 }

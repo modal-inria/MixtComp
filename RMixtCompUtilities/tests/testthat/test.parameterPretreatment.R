@@ -12,7 +12,7 @@
 # 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Quentin Grimonprez
 context("Pretreatment functions of mixtCompLearn's parameters")
@@ -55,7 +55,33 @@ test_that("formatModel puts type in a list format", {
   
 })
 
+test_that("formatModel works with named vector", {
+  desc <- c("var1" = "Gaussian", "var2" = "CorReg")
+  expectedOut <- list(var1 = list(type = "Gaussian", paramStr = ""),
+                      var2 = list(type = "CorReg", paramStr = ""))
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc, expectedOut)
+})
 
+test_that("formatModel works with matrix", {
+  desc <- matrix(c("Gaussian", "", "CorReg", "ouais"), nrow = 2, dimnames = list(NULL, c("var1", "var2")))
+  expectedOut <- list(var1 = list(type = "Gaussian", paramStr = ""),
+                      var2 = list(type = "CorReg", paramStr = "ouais"))
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc, expectedOut)
+})
+
+test_that("formatModel works with data.frame", {
+  desc <- data.frame(var1 = c("Gaussian", ""),
+                     var2 = c("CorReg", "ouais"))
+  expectedOut <- list(var1 = list(type = "Gaussian", paramStr = ""),
+                      var2 = list(type = "CorReg", paramStr = "ouais"))
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc, expectedOut)
+})
 
 test_that("formatData converts data.frame into a list format", {
   dat <- data.frame(x1 = 1:10, x2 = 10:1)
