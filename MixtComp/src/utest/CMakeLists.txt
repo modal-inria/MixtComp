@@ -54,7 +54,7 @@ add_executable(runUtest
     Various/UTestRegex.cpp
     Statistic/UTestNegativeBinomialStatistic.cpp
     Statistic/UTestWeibullStatistic.cpp
-    Statistic/UTestNormalStatistic.cpp
+    Statistic/UTestGaussianStatistic.cpp
     Statistic/UTestUniformIntStatistic.cpp
     Statistic/UTestPoissonStatistic.cpp
     Statistic/UTestRNG.cpp

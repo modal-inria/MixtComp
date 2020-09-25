@@ -26,13 +26,13 @@
 using namespace mixt;
 
 /** Compute statistics on truncated distribution, using limit cases, where the truncation is numerically farthest from the mode. */
-TEST(NormalStatistic, expVarTruncated) {
+TEST(GaussianStatistic, expVarTruncated) {
 	Real mu = 12.;
 	Real sigma = 23.;
 	Real a = std::numeric_limits<Real>::lowest();
 	Real b = std::numeric_limits<Real>::max();
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 
 	Real computedMu, computedSigma;
 
@@ -43,13 +43,13 @@ TEST(NormalStatistic, expVarTruncated) {
 }
 
 /** Basic test for the unbounded sampler. Will be used as a template for more complex cases. */
-TEST(NormalStatistic, sample) {
+TEST(GaussianStatistic, sample) {
 	Real mu = 12.;
 	Real sigma = 5.;
 	Index nSample = 100000;
 	Real computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -62,7 +62,7 @@ TEST(NormalStatistic, sample) {
 	ASSERT_NEAR(sigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, lbSamplerLowerInf0) {
+TEST(GaussianStatistic, lbSamplerLowerInf0) {
 	Real mu = 0.;
 	Real sigma = 1.;
 
@@ -72,7 +72,7 @@ TEST(NormalStatistic, lbSamplerLowerInf0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -87,7 +87,7 @@ TEST(NormalStatistic, lbSamplerLowerInf0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, lbSamplerLowerSup0) {
+TEST(GaussianStatistic, lbSamplerLowerSup0) {
 	Real mu = 0.;
 	Real sigma = 1.;
 
@@ -97,7 +97,7 @@ TEST(NormalStatistic, lbSamplerLowerSup0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -112,7 +112,7 @@ TEST(NormalStatistic, lbSamplerLowerSup0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, lrbSamplerLowerInf0UpperSup0) {
+TEST(GaussianStatistic, lrbSamplerLowerInf0UpperSup0) {
 	Real mu = 0.;
 	Real sigma = 1.;
 
@@ -122,7 +122,7 @@ TEST(NormalStatistic, lrbSamplerLowerInf0UpperSup0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -137,7 +137,7 @@ TEST(NormalStatistic, lrbSamplerLowerInf0UpperSup0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, lrbSamplerUpperInf0) {
+TEST(GaussianStatistic, lrbSamplerUpperInf0) {
 	Real mu = 0.;
 	Real sigma = 1.;
 
@@ -147,7 +147,7 @@ TEST(NormalStatistic, lrbSamplerUpperInf0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -162,7 +162,7 @@ TEST(NormalStatistic, lrbSamplerUpperInf0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, lrbSamplerLowerSup0) {
+TEST(GaussianStatistic, lrbSamplerLowerSup0) {
 	Real mu = 0.;
 	Real sigma = 1.;
 
@@ -172,7 +172,7 @@ TEST(NormalStatistic, lrbSamplerLowerSup0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -187,7 +187,7 @@ TEST(NormalStatistic, lrbSamplerLowerSup0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, sampleIUpperInf0) {
+TEST(GaussianStatistic, sampleIUpperInf0) {
 	Real mu = 12.;
 	Real sigma = 5.;
 
@@ -197,7 +197,7 @@ TEST(NormalStatistic, sampleIUpperInf0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -212,7 +212,7 @@ TEST(NormalStatistic, sampleIUpperInf0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, sampleILowerSup0) {
+TEST(GaussianStatistic, sampleILowerSup0) {
 	Real mu = -12.;
 	Real sigma = 1.;
 
@@ -222,7 +222,7 @@ TEST(NormalStatistic, sampleILowerSup0) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -237,7 +237,7 @@ TEST(NormalStatistic, sampleILowerSup0) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, sampleITight) {
+TEST(GaussianStatistic, sampleITight) {
 	Real mu = -12.;
 	Real sigma = 1.;
 
@@ -252,7 +252,7 @@ TEST(NormalStatistic, sampleITight) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -267,7 +267,7 @@ TEST(NormalStatistic, sampleITight) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, sampleIWide) {
+TEST(GaussianStatistic, sampleIWide) {
 	Real mu = 25.;
 	Real sigma = 0.5;
 
@@ -282,7 +282,7 @@ TEST(NormalStatistic, sampleIWide) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {
@@ -297,7 +297,7 @@ TEST(NormalStatistic, sampleIWide) {
 	ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }
 
-TEST(NormalStatistic, sampleIB) {
+TEST(GaussianStatistic, sampleIB) {
 	Real mu = 25.;
 	Real sigma = 3.3;
 
@@ -307,7 +307,7 @@ TEST(NormalStatistic, sampleIB) {
 	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> sampleVal(nSample);
 
 	for (Index i = 0; i < nSample; ++i) {

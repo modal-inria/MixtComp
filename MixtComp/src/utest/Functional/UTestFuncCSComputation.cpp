@@ -58,7 +58,7 @@ TEST(FuncCSComputation, regressionNoNoise) {
 	Vector<Real> betaEstimated;
 	Real sdEstimated;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	UniformStatistic uni;
 
 	for (Index i = 0; i < nObs; ++i) {
@@ -94,7 +94,7 @@ TEST(FuncCSComputation, regressionNoise) {
 	Real sdEstimated;
 	Vector<Real> betaEstimated;
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	UniformStatistic uni;
 
 	for (Index i = 0; i < nObs; ++i) {
@@ -137,7 +137,7 @@ TEST(FuncCSComputation, subRegression) {
 	Vector<Real> sdEstimated;
 
 	MultinomialStatistic multi;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	UniformStatistic uni;
 
 	Vector<std::list<Index> > w(nSub);
@@ -398,7 +398,7 @@ TEST(FuncCSComputation, optimRealSimpleCase) {
 	timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 	MultinomialStatistic multi;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	UniformStatistic uni;
 
 	Matrix<Real> kappa(nTime, nSub);

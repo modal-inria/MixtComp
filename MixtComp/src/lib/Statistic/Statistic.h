@@ -24,10 +24,10 @@
 #define STATISTIC_H
 
 #include <Statistic/MultinomialStatistic.h>
-#include <Statistic/NormalStatistic.h>
 #include <Mixture/Simple/Poisson/PoissonStatistic.h>
 #include "Functions.h"
 #include <Statistic/ExponentialStatistic.h>
+#include <Statistic/GaussianStatistic.h>
 #include <Statistic/RNG.h>
 #include <Statistic/UniformStatistic.h>
 #include "UniformIntStatistic.h"

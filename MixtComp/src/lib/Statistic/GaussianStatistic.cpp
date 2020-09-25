@@ -24,34 +24,34 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/math/distributions/normal.hpp>
+#include <Statistic/GaussianStatistic.h>
 #include <Statistic/RNG.h>
 #include <Various/Constants.h>
-#include "NormalStatistic.h"
 
 namespace mixt {
 
-NormalStatistic::NormalStatistic() :
+GaussianStatistic::GaussianStatistic() :
 		rng_(seed(this)) {
 }
 
-Real NormalStatistic::cdf(Real x, Real mean, Real sd) const {
+Real GaussianStatistic::cdf(Real x, Real mean, Real sd) const {
 	boost::math::normal norm(mean, sd);
 	Real proba = boost::math::cdf(norm, x);
 	return proba;
 }
 
 /** log pdf evaluated at individual x */
-Real NormalStatistic::lpdf(Real x, Real mean, Real sd) const {
+Real GaussianStatistic::lpdf(Real x, Real mean, Real sd) const {
 	return -log(sd) - logsqrt2pi - 0.5 * pow((x - mean) / sd, 2);
 }
 
-Real NormalStatistic::pdf(Real x, Real mean, Real sd) const {
+Real GaussianStatistic::pdf(Real x, Real mean, Real sd) const {
 	boost::math::normal norm(mean, sd);
 	Real proba = boost::math::pdf(norm, x);
 	return proba;
 }
 
-Real NormalStatistic::sample(Real mean, Real sd) {
+Real GaussianStatistic::sample(Real mean, Real sd) {
 	boost::normal_distribution<> norm(mean, sd);
 	boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > generator(
 			rng_, norm);
@@ -59,7 +59,7 @@ Real NormalStatistic::sample(Real mean, Real sd) {
 	return x;
 }
 
-Real NormalStatistic::sampleI(Real mean, Real sd, Real infBound,
+Real GaussianStatistic::sampleI(Real mean, Real sd, Real infBound,
 		Real supBound) {
 	Real z;
 
@@ -86,21 +86,21 @@ Real NormalStatistic::sampleI(Real mean, Real sd, Real infBound,
 	return z * sd + mean;
 }
 
-Real NormalStatistic::sampleIB(Real mean, Real sd, Real infBound) {
+Real GaussianStatistic::sampleIB(Real mean, Real sd, Real infBound) {
 	Real z;
 	Real lower = (infBound - mean) / sd;
 	z = lbSampler(lower);
 	return z * sd + mean;
 }
 
-Real NormalStatistic::sampleSB(Real mean, Real sd, Real supBound) {
+Real GaussianStatistic::sampleSB(Real mean, Real sd, Real supBound) {
 	Real z;
 	Real upper = (supBound - mean) / sd;
 	z = -lbSampler(-upper);
 	return z * sd + mean;
 }
 
-Real NormalStatistic::lbSampler(Real lower) {
+Real GaussianStatistic::lbSampler(Real lower) {
 	Real alpha = (lower + sqrt(pow(lower, 2) + 4.)) / 2.;
 	Real z, u, rho;
 	if (lower < 0) { // less than 0.5 proba of rejection using regular sampling
@@ -117,7 +117,7 @@ Real NormalStatistic::lbSampler(Real lower) {
 	return z;
 }
 
-Real NormalStatistic::lrbSampler(Real lower, Real upper) {
+Real GaussianStatistic::lrbSampler(Real lower, Real upper) {
 	Real z, u;
 	Real rho = 0.;
 	do {
@@ -139,7 +139,7 @@ Real NormalStatistic::lrbSampler(Real lower, Real upper) {
 	return z;
 }
 
-Real NormalStatistic::sideSampler(Real lower, Real upper) {
+Real GaussianStatistic::sideSampler(Real lower, Real upper) {
 	Real alpha = (lower + sqrt(pow(lower, 2) + 4.)) / 2.;
 	Real z;
 
@@ -155,7 +155,7 @@ Real NormalStatistic::sideSampler(Real lower, Real upper) {
 	return z;
 }
 
-void NormalStatistic::expSigmaTruncated(Real mu, Real sigma, Real a, Real b,
+void GaussianStatistic::expSigmaTruncated(Real mu, Real sigma, Real a, Real b,
 		Real& truncMu, Real& truncSigma) {
 	Real alpha = (a - mu) / sigma;
 	Real beta = (b - mu) / sigma;

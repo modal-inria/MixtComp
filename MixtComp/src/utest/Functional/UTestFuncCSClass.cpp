@@ -59,7 +59,7 @@ TEST(FuncCSClass, optimOneclassOneInd) {
 	timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 	MultinomialStatistic multi;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	UniformStatistic uni;
 
 	Matrix<Real> kappa(nTime, nSub);
@@ -133,7 +133,7 @@ TEST(FuncCSClass, optimOneclassMultiIndAlphaBetaSd) {
 		timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 		MultinomialStatistic multi;
-		NormalStatistic normal;
+		GaussianStatistic normal;
 		UniformStatistic uni;
 
 		Matrix<Real> kappa(nTime, nSub);

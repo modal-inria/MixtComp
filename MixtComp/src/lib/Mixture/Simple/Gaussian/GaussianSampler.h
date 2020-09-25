@@ -26,7 +26,7 @@
 
 #include "../../../LinAlg/LinAlg.h"
 #include "../../../Data/AugmentedData.h"
-#include "../../../Statistic/NormalStatistic.h"
+#include "../../../Statistic/GaussianStatistic.h"
 
 
 namespace mixt
@@ -48,7 +48,7 @@ class GaussianSampler
 
     UniformStatistic uniform_;
 
-    NormalStatistic normal_;
+    GaussianStatistic normal_;
 
     ExponentialStatistic exponential_;
 };

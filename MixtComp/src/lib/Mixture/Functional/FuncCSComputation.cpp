@@ -208,14 +208,14 @@ Real sampleW(Real t, const Matrix<Real>& alpha, MultinomialStatistic& multi) {
 	return multi.sample(kappa);
 }
 
-Real sampleYGW(Real t, Index w, const Matrix<Real>& beta, NormalStatistic& normal) { // NormalStatistic is provided to avoid multiple calls to constructor / destructor
+Real sampleYGW(Real t, Index w, const Matrix<Real>& beta, GaussianStatistic& normal) { // NormalStatistic is provided to avoid multiple calls to constructor / destructor
 	return normal.sample(beta(w, 0) + beta(w, 1) * t, beta(w, 2));
 }
 
 void sampleY(const Vector<Real>& t, const Matrix<Real>& alpha, const Matrix<Real>& beta, Vector<Real>& y) {
 	Index nTime = t.size();
 	MultinomialStatistic multi;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 
 	for (Index i = 0; i < nTime; ++i) {
 		Index currT = t(i);
@@ -224,7 +224,7 @@ void sampleY(const Vector<Real>& t, const Matrix<Real>& alpha, const Matrix<Real
 	}
 }
 
-Real logProbaXGW(Real t, Real y, Index w, const Matrix<Real>& beta, NormalStatistic& normal) {
+Real logProbaXGW(Real t, Real y, Index w, const Matrix<Real>& beta, GaussianStatistic& normal) {
 	Index nCoeff = beta.cols() - 1;
 
 	Real mu = 0.; // expected value for y
@@ -239,7 +239,7 @@ void sampleW(const Vector<Real>& t, const Vector<Real>& y, const Matrix<Real>& a
 	Index nTime = t.size();
 	Index nSub = alpha.rows();
 	MultinomialStatistic multi;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> logKappa;
 	Vector<Real> lpXW(nSub); // joIndex probability p(x, w)
 	Vector<Real> pWGX(nSub); // conditional probability p(w / x)
@@ -262,7 +262,7 @@ void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, c
 
 	lambda.resize(nTime, nSub);
 
-	NormalStatistic normal;
+	GaussianStatistic normal;
 
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;

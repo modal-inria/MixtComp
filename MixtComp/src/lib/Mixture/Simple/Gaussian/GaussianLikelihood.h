@@ -25,7 +25,7 @@
 
 #include <LinAlg/LinAlg.h>
 #include "../../../Data/AugmentedData.h"
-#include "../../../Statistic/NormalStatistic.h"
+#include "../../../Statistic/GaussianStatistic.h"
 
 namespace mixt
 {
@@ -52,7 +52,7 @@ class GaussianLikelihood
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<Vector<Real> >& augData_;
 
-    NormalStatistic normal_;
+    GaussianStatistic normal_;
 };
 
 } /* namespace mixt */

@@ -128,7 +128,7 @@ private:
 	 * and columns are coefficients in the regression. */
 	Matrix<Real> vandermonde_;
 
-	NormalStatistic normal_;
+	GaussianStatistic normal_;
 	MultinomialStatistic multi_;
 };
 

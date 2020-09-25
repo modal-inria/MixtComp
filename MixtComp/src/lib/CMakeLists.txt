@@ -104,9 +104,9 @@ add_library(MixtComp
     Statistic/RNG.h
     Statistic/RNG.cpp
     Statistic/MultinomialStatistic.h
-    Statistic/NormalStatistic.cpp
+    Statistic/GaussianStatistic.cpp
     Statistic/UniformStatistic.cpp
-    Statistic/NormalStatistic.h
+    Statistic/GaussianStatistic.h
     Statistic/ExponentialStatistic.cpp
     Statistic/UniformStatistic.h
     Statistic/Functions.h

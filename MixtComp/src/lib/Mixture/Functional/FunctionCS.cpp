@@ -52,7 +52,7 @@ void FunctionCS::computeVandermonde(Index nCoeff) {
 
 void FunctionCS::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const {
 	jointLogProba.resize(nTime_, nSub_);
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	Vector<Real> currLogKappa(nSub_);
 	for (Index i = 0; i < nTime_; ++i) {
 		logKappaMatrix(t_(i), alpha, currLogKappa);

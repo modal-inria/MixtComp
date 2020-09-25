@@ -60,7 +60,7 @@ TEST(Function, lnCompletedProbability) {
 	timeValue(t, nParam, alphaArray, logValue, logSumExpValue);
 
 	UniformStatistic uni;
-	NormalStatistic normal;
+	GaussianStatistic normal;
 	MultinomialStatistic multi;
 
 	Real mode = std::numeric_limits<Real>::lowest();

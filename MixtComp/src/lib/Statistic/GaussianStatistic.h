@@ -20,8 +20,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef NORMALSTATISTIC_H
-#define NORMALSTATISTIC_H
+#ifndef GAUSSIANSTATISTIC_H
+#define GAUSSIANSTATISTIC_H
 
 #include <boost/random.hpp>
 #include <Statistic/ExponentialStatistic.h>
@@ -30,9 +30,9 @@
 
 namespace mixt {
 
-class NormalStatistic {
+class GaussianStatistic {
   public:
-    NormalStatistic();
+	GaussianStatistic();
 
     /** cdf evaluated at individual x */
     Real cdf(Real x,
@@ -101,4 +101,4 @@ class NormalStatistic {
 
 } // namespace mixt
 
-#endif // NORMALSTATISTIC_H
+#endif // GAUSSIANSTATISTIC_H
