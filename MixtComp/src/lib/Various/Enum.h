@@ -37,35 +37,14 @@ enum MisType {
   nb_enum_MisType_
 };
 
-enum LikelihoodType {
-  lnCompletedLikelihood_,
-  lnObservedLikelihood_
-};
-
 enum RunMode {
   learning_,
   prediction_
 };
 
-enum SimpleMixtureID {
-  Categorical_pjk_,
-  Gaussian_sjk_,
-  Poisson_k_
-};
-
 enum RunType {
   burnIn_,
   run_,
-};
-
-enum RunProblemType {
-  noProblem_,
-  invalidSampler_
-};
-
-enum SamplerType {
-  rejectSampler_,
-  GibbsSampler_
 };
 
 } // namespace mixt
