@@ -87,7 +87,7 @@ void ZClassInd::setAllMissing() {
 }
 
 std::string ZClassInd::checkMissingType() {
-	Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
+	Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in multinomial mixtures
 	at(0) = true; // present_,
 	at(1) = true; // missing_,
 	at(2) = true; // missingFiniteValues_,

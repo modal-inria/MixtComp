@@ -44,7 +44,7 @@ add_executable(runUtest
     LinAlgStat/UTestLinAlg.cpp
     Functional/UTestOptim.cpp
     Simple/UTestPoisson.cpp
-    Simple/UTestCategorical.cpp
+    Simple/UTestMultinomial.cpp
     Simple/UTestWeibull.cpp
     Simple/UTestGaussian.cpp
     Simple/UTestNegativeBinomial.cpp

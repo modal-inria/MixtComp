@@ -70,7 +70,7 @@ public:
 
 
 	/**
-	 * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
+	 * Check if conditions on data are verified. For example, for a multinomial model one must check that each modality
 	 * is present at least one time in each class. This is invoked to avoid degeneracy.
 	 * @return 0 if condition not verified and 1 if condition verified
 	 * */

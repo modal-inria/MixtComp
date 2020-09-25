@@ -23,23 +23,23 @@
 #include <IO/IO.h>
 #include <IO/SpecialStr.h>
 #include <LinAlg/LinAlg.h>
+#include <Mixture/Simple/Multinomial/Multinomial.h>
 #include <Various/Constants.h>
 #include <regex>
 
 #include "Various/Enum.h"
-#include "Categorical.h"
 
 namespace mixt {
 
-const std::string Categorical::name = "Multinomial";
+const std::string Multinomial::name = "Multinomial";
 
-Categorical::Categorical(const std::string& idName, int nbClass,
+Multinomial::Multinomial(const std::string& idName, int nbClass,
 		Vector<Real>& param) :
 		idName_(idName), nClass_(nbClass), nModality_(0), p_data_(0), param_(
 				param) {
 } // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
-Vector<bool> Categorical::acceptedType() const {
+Vector<bool> Multinomial::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
 	at(0) = true; // present_,
 	at(1) = true; // missing_,
@@ -50,11 +50,11 @@ Vector<bool> Categorical::acceptedType() const {
 	return at;
 }
 
-int Categorical::computeNbFreeParameters() const {
+int Multinomial::computeNbFreeParameters() const {
 	return nClass_ * (nModality_ - 1);
 }
 
-std::string Categorical::mStep(const Vector<std::set<Index>>& classInd) {
+std::string Multinomial::mStep(const Vector<std::set<Index>>& classInd) {
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<Real> modalities(nModality_, 0.);
 
@@ -73,7 +73,7 @@ std::string Categorical::mStep(const Vector<std::set<Index>>& classInd) {
 	return "";
 }
 
-std::vector<std::string> Categorical::paramNames() const {
+std::vector<std::string> Multinomial::paramNames() const {
 	std::vector<std::string> names(nClass_ * nModality_);
 	for (Index k = 0; k < nClass_; ++k) {
 		for (Index p = 0; p < nModality_; ++p) {
@@ -86,7 +86,7 @@ std::vector<std::string> Categorical::paramNames() const {
 	return names;
 }
 
-std::string Categorical::setData(std::string& paramStr,
+std::string Multinomial::setData(std::string& paramStr,
 		AugmentedData<Vector<int> >& augData, RunMode mode) {
 	std::string warnLog;
 
@@ -146,7 +146,7 @@ std::string Categorical::setData(std::string& paramStr,
 	//		if (modalityPresent != true) { // if at least one modality has been observed
 	//			for (Index p = 0; p < nModality_; ++p) {
 	//				if (modalityPresent(p) == false) {
-	//					warnLog += "Categorical variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
+	//					warnLog += "Multinomial variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
 	//							+ std::to_string(minModality) + "." + eol;
 	//				}
 	//			}
@@ -161,7 +161,7 @@ std::string Categorical::setData(std::string& paramStr,
 	return warnLog;
 }
 
-void Categorical::writeParameters() const {
+void Multinomial::writeParameters() const {
 	std::stringstream sstm;
 	for (Index k = 0; k < nClass_; ++k) {
 		sstm << "Class: " << k << std::endl;
@@ -176,7 +176,7 @@ void Categorical::writeParameters() const {
 #endif
 }
 
-std::string Categorical::checkSampleCondition(
+std::string Multinomial::checkSampleCondition(
 		const Vector<std::set<Index>>& classInd) const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood)
 		return "";
@@ -196,7 +196,7 @@ std::string Categorical::checkSampleCondition(
 		for (Index p = 0; p < nModality_; ++p) {
 			if (modalityPresent(p) == false) {
 				warnLog +=
-						"Categorical variables must have one individual with each modality present in each class. Modality: "
+						"Multinomial variables must have one individual with each modality present in each class. Modality: "
 								+ std::to_string(p + minModality)
 								+ " is absent from class: " + std::to_string(k)
 								+ " You can check whether you have enough individuals regarding the number of classes and whether all of your modalities are encoded using contiguous integers starting at "
@@ -211,11 +211,11 @@ std::string Categorical::checkSampleCondition(
 	return "";
 }
 
-bool Categorical::hasModalities() const {
+bool Multinomial::hasModalities() const {
 	return true;
 }
 
-void Categorical::initParam() {
+void Multinomial::initParam() {
 }
 
 } // namespace mixt

@@ -20,17 +20,17 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef CATEGORICALDATASTAT_H
-#define CATEGORICALDATASTAT_H
+#ifndef MULTINOMIALDATASTAT_H
+#define MULTINOMIALDATASTAT_H
 
 #include <LinAlg/LinAlg.h>
 #include "../../../Data/AugmentedData.h"
 
 namespace mixt {
 
-class CategoricalDataStat {
+class MultinomialDataStat {
 public:
-	CategoricalDataStat(AugmentedData<Vector<int> >& augData, Real confidenceLevel);
+	MultinomialDataStat(AugmentedData<Vector<int> >& augData, Real confidenceLevel);
 
 	void setNbIndividual(int nbInd);
 
@@ -63,4 +63,4 @@ private:
 
 } // namespace mixt
 
-#endif // CATEGORICALDATASTAT_H
+#endif // MULTINOMIALDATASTAT_H

@@ -21,12 +21,12 @@
  **/
 
 #include <Mixture/IMixture.h>
-#include "CategoricalSampler.h"
+#include <Mixture/Simple/Multinomial/MultinomialSampler.h>
 #include "../../../Various/Constants.h"
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
+MultinomialSampler::MultinomialSampler(AugmentedData<Vector<int> >& augData,
                                        const Vector<Real>& param,
                                        int nbClass) :
     nbClass_(nbClass),
@@ -34,11 +34,11 @@ CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
     param_(param)
 {}
 
-void CategoricalSampler::samplingStepNoCheck(int i,
+void MultinomialSampler::samplingStepNoCheck(int i,
                                              int z_i)
 {
 #ifdef MC_DEBUG
-  std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
+  std::cout << "MultinomialSampler::sampleIndividual" << std::endl;
   std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
@@ -48,7 +48,7 @@ void CategoricalSampler::samplingStepNoCheck(int i,
     int nbModalities = param_.rows() / nbClass_;
 
 #ifdef MC_DEBUG
-    std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
+    std::cout << "MultinomialSampler::sampleIndividual" << std::endl;
     std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
@@ -84,7 +84,7 @@ void CategoricalSampler::samplingStepNoCheck(int i,
 
       default:
       {
-    	  throw("CategoricalSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
+    	  throw("MultinomialSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
       }
       break;
     }

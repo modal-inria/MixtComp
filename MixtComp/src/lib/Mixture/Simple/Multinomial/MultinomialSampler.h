@@ -21,8 +21,8 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef CATEGORICALSAMPLER_H
-#define CATEGORICALSAMPLER_H
+#ifndef MULTINOMIALSAMPLER_H
+#define MULTINOMIALSAMPLER_H
 
 #include "../../../LinAlg/LinAlg.h"
 #include "../../../Data/AugmentedData.h"
@@ -31,10 +31,10 @@
 namespace mixt
 {
 
-class CategoricalSampler
+class MultinomialSampler
 {
   public:
-    CategoricalSampler(AugmentedData<Vector<int> >& augData,
+	MultinomialSampler(AugmentedData<Vector<int> >& augData,
                        const Vector<Real>& param,
                        int nbClass);
 
@@ -52,4 +52,4 @@ class CategoricalSampler
 
 } // namespace mixt
 
-#endif /* CATEGORICALSAMPLER_H */
+#endif /* MULTINOMIALSAMPLER_H */

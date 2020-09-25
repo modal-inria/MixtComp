@@ -20,26 +20,26 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <Mixture/Simple/Categorical/CategoricalDataStat.h>
+#include <Mixture/Simple/Multinomial/MultinomialDataStat.h>
 #include <Various/Constants.h>
 
 namespace mixt {
 
-CategoricalDataStat::CategoricalDataStat(AugmentedData<Vector<int> >& augData, Real confidenceLevel) :
+MultinomialDataStat::MultinomialDataStat(AugmentedData<Vector<int> >& augData, Real confidenceLevel) :
 		augData_(augData), confidenceLevel_(confidenceLevel) {
 }
 
-void CategoricalDataStat::setNbIndividual(int nbInd) {
+void MultinomialDataStat::setNbIndividual(int nbInd) {
 	stat_.resize(nbInd);
 	dataStatStorage_.resize(nbInd);
 }
 
-void CategoricalDataStat::sample(int ind) {
+void MultinomialDataStat::sample(int ind) {
 	int currMod = augData_.data_(ind);
 	stat_(ind)(currMod) += 1.;
 }
 
-void CategoricalDataStat::sampleVals(int ind, int iteration, int iterationMax) {
+void MultinomialDataStat::sampleVals(int ind, int iteration, int iterationMax) {
 	if (augData_.misData_(ind).first != present_) {
 		if (iteration == 0) { // clear the temporary statistical object
 			stat_(ind).resize(augData_.dataRange_.max_ + 1); // initialize internal storage
@@ -76,7 +76,7 @@ void CategoricalDataStat::sampleVals(int ind, int iteration, int iterationMax) {
 	}
 }
 
-void CategoricalDataStat::imputeData(int ind) {
+void MultinomialDataStat::imputeData(int ind) {
 	if (augData_.misData_(ind).first != present_) {
 		augData_.data_(ind) = dataStatStorage_(ind)[0].first; // imputation by the mode
 	}

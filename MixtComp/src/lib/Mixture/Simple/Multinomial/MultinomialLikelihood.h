@@ -20,8 +20,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef CATEGORICALLIKELIHOOD_H
-#define CATEGORICALLIKELIHOOD_H
+#ifndef MULTINOMIALLIKELIHOOD_H
+#define MULTINOMIALLIKELIHOOD_H
 
 #include "../../../Data/AugmentedData.h"
 #include "../../../LinAlg/LinAlg.h"
@@ -29,10 +29,10 @@
 namespace mixt {
 
 template<typename Type>
-class CategoricalLikelihood {
+class MultinomialLikelihood {
   public:
     /** Constructor */
-    CategoricalLikelihood(const Vector<Real>& param,
+    MultinomialLikelihood(const Vector<Real>& param,
                           const AugmentedData<Vector<Type> >& augData,
                           Index nbClass) :
         nbClass_(nbClass),
@@ -77,7 +77,7 @@ class CategoricalLikelihood {
         break;
 
         default: {
-        	throw("CategoricalLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
+        	throw("MultinomialLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
         }
         break;
       }
@@ -96,4 +96,4 @@ class CategoricalLikelihood {
 
 } /* namespace mixt */
 
-#endif /* CATEGORICALLIKELIHOOD_H */
+#endif /* MULTINOMIALLIKELIHOOD_H */

@@ -189,9 +189,9 @@ public:
 
 
 	/*
-	 * convert missing data statistics for categorical model
+	 * convert missing data statistics for multinomial model
 	 *
-	 * dataStat is the output of getDataStatStorage() from CategoricalDataStat
+	 * dataStat is the output of getDataStatStorage() from MultinomialDataStat
 	 */
 	void convertDataStat(Vector<std::vector<std::pair<int, Real> > > const& dataStat, Graph & g) const {
 		for (int i = 0; i < augData_.data_.rows(); ++i) {

@@ -26,7 +26,6 @@
 
 #include <Composer/MixtureComposer.h>
 #include <Mixture/Simple/SimpleMixture.h>
-#include <Mixture/Simple/Categorical/Categorical.h>
 #include <Mixture/Simple/Gaussian/Gaussian.h>
 #include <Mixture/Simple/NegativeBinomial/NegativeBinomial.h>
 #include <Mixture/Simple/Poisson/Poisson.h>
@@ -34,6 +33,7 @@
 #include <Mixture/Functional/FunctionalMixture.h>
 #include <Mixture/Functional/FunctionalSharedAlphaMixture.h>
 #include <Mixture/Rank/RankMixture.h>
+#include <Mixture/Simple/Multinomial/Multinomial.h>
 
 namespace mixt {
 
@@ -63,7 +63,7 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 			IMixture* p_mixture = NULL;
 
 			if (idModel == "Multinomial") {
-				p_mixture = new SimpleMixture<Graph, Categorical>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+				p_mixture = new SimpleMixture<Graph, Multinomial>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 			
 			else if (idModel == "Gaussian") {

@@ -60,13 +60,13 @@ add_library(MixtComp
     Mixture/Simple/NegativeBinomial/NegativeBinomial.cpp
     Mixture/Simple/NegativeBinomial/NegativeBinomialSampler.cpp
     Mixture/Simple/NegativeBinomial/NegativeBinomial.h
-    Mixture/Simple/Categorical/Categorical.h
-    Mixture/Simple/Categorical/CategoricalSampler.h
-    Mixture/Simple/Categorical/Categorical.cpp
-    Mixture/Simple/Categorical/CategoricalLikelihood.h
-    Mixture/Simple/Categorical/CategoricalSampler.cpp
-    Mixture/Simple/Categorical/CategoricalDataStat.h
-    Mixture/Simple/Categorical/CategoricalDataStat.cpp
+    Mixture/Simple/Multinomial/Multinomial.h
+    Mixture/Simple/Multinomial/MultinomialSampler.h
+    Mixture/Simple/Multinomial/Multinomial.cpp
+    Mixture/Simple/Multinomial/MultinomialLikelihood.h
+    Mixture/Simple/Multinomial/MultinomialSampler.cpp
+    Mixture/Simple/Multinomial/MultinomialDataStat.h
+    Mixture/Simple/Multinomial/MultinomialDataStat.cpp
     Mixture/Simple/Poisson/Poisson.h
     Mixture/Simple/Poisson/PoissonStatistic.h
     Mixture/Simple/Poisson/PoissonLikelihood.h

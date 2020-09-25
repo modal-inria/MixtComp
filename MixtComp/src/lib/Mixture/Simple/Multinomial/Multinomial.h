@@ -21,30 +21,30 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef CATEGORICAL_H
-#define CATEGORICAL_H
+#ifndef MULTINOMIAL_H
+#define MULTINOMIAL_H
 
 #include <LinAlg/LinAlg.h>
+#include <Mixture/Simple/Multinomial/MultinomialDataStat.h>
+#include <Mixture/Simple/Multinomial/MultinomialLikelihood.h>
+#include <Mixture/Simple/Multinomial/MultinomialSampler.h>
 #include <vector>
 #include <set>
 
-#include "CategoricalDataStat.h"
-#include "CategoricalSampler.h"
-#include "CategoricalLikelihood.h"
 
 namespace mixt {
 
-class Categorical {
+class Multinomial {
 
 public:
 	static const std::string name;
 
 	typedef Vector<int> Data;
-	typedef CategoricalDataStat DataStat;
-	typedef CategoricalSampler Sampler;
-	typedef CategoricalLikelihood<int> Likelihood;
+	typedef MultinomialDataStat DataStat;
+	typedef MultinomialSampler Sampler;
+	typedef MultinomialLikelihood<int> Likelihood;
 
-	Categorical(const std::string& idName, int nbClass, Vector<Real>& param);
+	Multinomial(const std::string& idName, int nbClass, Vector<Real>& param);
 
 	Vector<bool> acceptedType() const;
 

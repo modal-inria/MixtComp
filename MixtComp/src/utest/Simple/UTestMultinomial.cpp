@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-//TEST(Categorical_pjk, OKSample) {
+//TEST(Multinomial, OKSample) {
 //	Index nbClass = 2;
 //	Index nbInd = 4;
 //	Index nbModality = 2;
@@ -59,7 +59,7 @@ using namespace mixt;
 //}
 
 //
-//TEST(Categorical_pjk, MissingModality) {
+//TEST(Multinomial, MissingModality) {
 //  int nbClass = 2;
 //  int nbInd = 4;
 //  int nbModality = 2;
