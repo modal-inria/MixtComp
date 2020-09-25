@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-TEST(FunctionalComputation, Vandermonde) {
+TEST(FuncCSComputation, Vandermonde) {
 	Vector<Real> timeStep(2);
 	timeStep << 2., 12.;
 
@@ -41,7 +41,7 @@ TEST(FunctionalComputation, Vandermonde) {
 	ASSERT_EQ(true, vm.isApprox(expectedVm));
 }
 
-TEST(FunctionalComputation, regressionNoNoise) {
+TEST(FuncCSComputation, regressionNoNoise) {
 	Index nCoeff = 4;
 	Index nObs = 100;
 
@@ -76,7 +76,7 @@ TEST(FunctionalComputation, regressionNoNoise) {
 	ASSERT_NEAR(0., sdEstimated, epsilon);
 }
 
-TEST(FunctionalComputation, regressionNoise) {
+TEST(FuncCSComputation, regressionNoise) {
 	Index nCoeff = 3;
 	Index nObs = 2000;
 
@@ -113,7 +113,7 @@ TEST(FunctionalComputation, regressionNoise) {
 	ASSERT_NEAR(sd, sdEstimated, 0.01);
 }
 
-TEST(FunctionalComputation, subRegression) {
+TEST(FuncCSComputation, subRegression) {
 	Index nCoeff = 3;
 	Index nObs = 15000;
 	Index nSub = 3;
@@ -180,14 +180,14 @@ TEST(FunctionalComputation, subRegression) {
 	ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
 }
 
-TEST(FunctionalComputation, smallTest) {
+TEST(FuncCSComputation, smallTest) {
 	Vector<Real> a(4, 0.);
 
 	Vector<Real> dummy;
 	ASSERT_NEAR(4, std::exp(dummy.logToMulti(a)), epsilon);
 }
 
-TEST(FunctionalComputation, costAndGrad1SubReg) {
+TEST(FuncCSComputation, costAndGrad1SubReg) {
 	Index nTime = 4;
 	Index nParam = 2;
 	Real delta = epsilon;
@@ -241,7 +241,7 @@ TEST(FunctionalComputation, costAndGrad1SubReg) {
 	ASSERT_EQ(true, computedGrad.isApprox(fdGrad, epsilon));
 }
 
-TEST(FunctionalComputation, costAndGrad) {
+TEST(FuncCSComputation, costAndGrad) {
 	Index nTime = 4;
 	Index nParam = 4;
 	Real delta = epsilon;
@@ -295,7 +295,7 @@ TEST(FunctionalComputation, costAndGrad) {
 	ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
 }
 
-TEST(FunctionalComputation, hessian) {
+TEST(FuncCSComputation, hessian) {
 	Index nTime = 4;
 	Index nParam = 4;
 	Real delta = 1e-5;
@@ -367,7 +367,7 @@ TEST(FunctionalComputation, hessian) {
 	ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-TEST(FunctionalComputation, optimRealSimpleCase) {
+TEST(FuncCSComputation, optimRealSimpleCase) {
 	Index nTime = 5000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
@@ -415,14 +415,14 @@ TEST(FunctionalComputation, optimRealSimpleCase) {
 
 	Vector<Real> estimatedFreeAlpha(nFreeParam, 0.); // initialization of solution
 
-	Vector<Function> data(1);
+	Vector<FunctionCS> data(1);
 	data(0).setVal(t, y, w);
 	std::set<Index> setInd;
 	setInd.insert(0);
 
-	FuncProblem fp(nParam, data, setInd);
+	FuncCSProblem fp(nParam, data, setInd);
 
-	cppoptlib::BfgsSolver<FuncProblem> solver;
+	cppoptlib::BfgsSolver<FuncCSProblem> solver;
 	cppoptlib::Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
 	crit.iterations = maxIterationOptim;
 	solver.setStopCriteria(crit);
@@ -439,7 +439,7 @@ TEST(FunctionalComputation, optimRealSimpleCase) {
 	ASSERT_EQ(true, isApprox);
 }
 
-TEST(FunctionalComputation, removeMissingQuantile) {
+TEST(FuncCSComputation, removeMissingQuantile) {
 	Index nInd = 250;
 	Index nTime = 1000;
 	Index nSub = 3;
@@ -449,7 +449,7 @@ TEST(FunctionalComputation, removeMissingQuantile) {
 
 	Index nQuantile = nSub + 1;
 
-	Vector<Function> vecInd(nInd);
+	Vector<FunctionCS> vecInd(nInd);
 	Vector<Real> computedQuantile;
 
 	UniformStatistic uni;

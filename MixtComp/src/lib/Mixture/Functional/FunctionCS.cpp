@@ -20,12 +20,12 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <Mixture/Functional/Function.h>
-#include "FunctionalClass.h"
+#include <Mixture/Functional/FuncCSClass.h>
+#include <Mixture/Functional/FunctionCS.h>
 
 namespace mixt {
 
-void Function::setSize(Index nT, Index nSub) {
+void FunctionCS::setSize(Index nT, Index nSub) {
 	nTime_ = nT;
 	nSub_ = nSub;
 	t_.resize(nT);
@@ -33,7 +33,7 @@ void Function::setSize(Index nT, Index nSub) {
 	w_.resize(nSub);
 }
 
-void Function::setVal(const Vector<Real>& t, const Vector<Real>& x, const Vector<std::set<Index> >& w) {
+void FunctionCS::setVal(const Vector<Real>& t, const Vector<Real>& x, const Vector<std::set<Index> >& w) {
 	nTime_ = t.size();
 	nSub_ = w.size();
 	t_ = t;
@@ -41,16 +41,16 @@ void Function::setVal(const Vector<Real>& t, const Vector<Real>& x, const Vector
 	w_ = w;
 }
 
-void Function::setValTime(Index i, Real t, Real x) {
+void FunctionCS::setValTime(Index i, Real t, Real x) {
 	t_(i) = t;
 	x_(i) = x;
 }
 
-void Function::computeVandermonde(Index nCoeff) {
+void FunctionCS::computeVandermonde(Index nCoeff) {
 	vandermondeMatrix(t_, nCoeff, vandermonde_);
 }
 
-void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const {
+void FunctionCS::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const {
 	jointLogProba.resize(nTime_, nSub_);
 	NormalStatistic normal;
 	Vector<Real> currLogKappa(nSub_);
@@ -67,7 +67,7 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real
 }
 
 
-Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
+Real FunctionCS::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
 
 	Matrix<Real> jointLogProba;
@@ -81,7 +81,7 @@ Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Re
 	return logProba;
 }
 
-Real Function::lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
+Real FunctionCS::lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
 
 	Matrix<Real> jointLogProba;
@@ -94,7 +94,7 @@ Real Function::lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Rea
 	return logProba;
 }
 
-void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) {
+void FunctionCS::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) {
 	Matrix<Real> jointLogProba;
 	computeJointLogProba(alpha, beta, sd, jointLogProba);
 
@@ -110,7 +110,7 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& bet
 }
 
 
-void Function::removeMissingUniformSampling() {
+void FunctionCS::removeMissingUniformSampling() {
 	for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
 		w_(s).clear();
 	}
@@ -120,7 +120,7 @@ void Function::removeMissingUniformSampling() {
 	}
 }
 
-void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
+void FunctionCS::removeMissingQuantile(const Vector<Real>& quantiles) {
 	Index nQuantile = quantiles.size();
 	for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
 		w_(s).clear();
@@ -137,7 +137,7 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
 	}
 }
 
-void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
+void FunctionCS::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
 	for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
 		w_(s).clear();
 	}
@@ -173,7 +173,7 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
 	}
 }
 
-Real Function::costAndGrad(const Vector<Real>& alpha, Vector<Real>& grad) const {
+Real FunctionCS::costAndGrad(const Vector<Real>& alpha, Vector<Real>& grad) const {
 	Real cost;
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
@@ -189,7 +189,7 @@ Real Function::costAndGrad(const Vector<Real>& alpha, Vector<Real>& grad) const 
 	return cost;
 }
 
-Real Function::cost(const Vector<Real>& alpha) const {
+Real FunctionCS::cost(const Vector<Real>& alpha) const {
 	Real cost;
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
@@ -203,7 +203,7 @@ Real Function::cost(const Vector<Real>& alpha) const {
 	return cost;
 }
 
-void Function::grad(const Vector<Real>& alpha, Vector<Real>& grad) const {
+void FunctionCS::grad(const Vector<Real>& alpha, Vector<Real>& grad) const {
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
 
@@ -214,7 +214,7 @@ void Function::grad(const Vector<Real>& alpha, Vector<Real>& grad) const {
 	gradCostFunction(t_, logValue, logSumExpValue, w_, grad);
 }
 
-void Function::printProp() const {
+void FunctionCS::printProp() const {
 	Vector<Real> prop(nSub_, 0.);
 
 	for (Index s = 0; s < nSub_; ++s) {
@@ -228,7 +228,7 @@ void Function::printProp() const {
 #endif
 }
 
-void Function::quantile(Vector<Real>& quantile) {
+void FunctionCS::quantile(Vector<Real>& quantile) {
 	Index nQuantile = nSub_ + 1;
 	quantile.resize(nQuantile);
 
@@ -246,7 +246,7 @@ void Function::quantile(Vector<Real>& quantile) {
 	}
 }
 
-void Function::printSubRegT() const {
+void FunctionCS::printSubRegT() const {
 #ifdef MC_VERBOSE
 	for (Index w = 0; w < nSub_; ++w) {
 		std::cout << "w: " << w << ": ";

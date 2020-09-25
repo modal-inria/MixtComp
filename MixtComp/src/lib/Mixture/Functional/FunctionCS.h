@@ -25,11 +25,11 @@
 
 #include <LinAlg/LinAlg.h>
 #include "Statistic/Statistic.h"
-#include "FunctionalComputation.h"
+#include "FuncCSComputation.h"
 
 namespace mixt {
 
-class Function {
+class FunctionCS {
 public:
 	void setSize(Index nT, Index nSub);
 

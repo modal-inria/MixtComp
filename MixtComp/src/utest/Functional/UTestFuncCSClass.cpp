@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-TEST(FunctionalClass, optimOneclassOneInd) {
+TEST(FuncCSClass, optimOneclassOneInd) {
 	Index nTime = 10000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
@@ -74,13 +74,13 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 		x(i) += normal.sample(0, sd(currW));
 	}
 
-	Vector<Function> data(1);
+	Vector<FunctionCS> data(1);
 	data(0).setVal(t, x, w);
 
 	std::set<Index> setInd;
 	setInd.insert(0);
 
-	FunctionalClass funcClass(data, 0.95);
+	FuncCSClass funcClass(data, 0.95);
 	funcClass.setSize(nSub, nCoeff);
 	funcClass.mStepAlpha(setInd);
 
@@ -93,7 +93,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
 
-TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
+TEST(FuncCSClass, optimOneclassMultiIndAlphaBetaSd) {
 	Index nTime = 500;
 	Index nInd = 10;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
@@ -116,7 +116,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 	Vector<Real> sd(nSub);
 	sd << 0.1, 1.;
 
-	Vector<Function> data(nInd);
+	Vector<FunctionCS> data(nInd);
 	std::set<Index> setInd;
 
 	for (Index ind = 0; ind < nInd; ++ind) {
@@ -153,7 +153,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 		setInd.insert(ind);
 	}
 
-	FunctionalClass funcClass(data, 0.95);
+	FuncCSClass funcClass(data, 0.95);
 	funcClass.setSize(nSub, nCoeff);
 	funcClass.mStep(setInd);
 
@@ -168,7 +168,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 	ASSERT_EQ(true, funcClass.sd().isApprox(sd, 0.1));
 }
 
-TEST(FunctionalClass, checkNbDifferentValue) {
+TEST(FuncCSClass, checkNbDifferentValue) {
 	Index nInd = 100;
 	Index nClass = 2;
 	Index nSub = 2;
@@ -177,7 +177,7 @@ TEST(FunctionalClass, checkNbDifferentValue) {
 	Real xMin = -30.;
 	Real xMax = 35.;
 
-	Vector<Function> data(nInd);
+	Vector<FunctionCS> data(nInd);
 	std::set<Index> setInd;
 	Real confidenceLevel = 0.95;
 
@@ -201,7 +201,7 @@ TEST(FunctionalClass, checkNbDifferentValue) {
 		}
 	}
 
-	FunctionalClass fc(data, confidenceLevel);
+	FuncCSClass fc(data, confidenceLevel);
 	fc.setSize(nSub, nCoeff);
 	bool diffVal = fc.checkNbDifferentValue(setInd);
 

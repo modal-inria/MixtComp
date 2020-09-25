@@ -64,11 +64,11 @@ add_executable(runUtest
     Rank/UTestRankVal.cpp
     Rank/UTestRankClass.cpp
     Rank/UTestRankLikelihood.cpp
-    Functional/UTestFunctionalComputation.cpp
-    Functional/UTestFunction.cpp
-    Functional/UTestFunctionalClass.cpp
-    Functional/UTestFunctionalMixture.cpp
-    Functional/UTestFunctionalParser.cpp
+    Functional/UTestFuncCSComputation.cpp
+    Functional/UTestFunctionCS.cpp
+    Functional/UTestFuncCSClass.cpp
+    Functional/UTestFuncCSMixture.cpp
+    Functional/UTestFunctionCSParser.cpp
     Composer/UTestZClassInd.cpp    
 )
 

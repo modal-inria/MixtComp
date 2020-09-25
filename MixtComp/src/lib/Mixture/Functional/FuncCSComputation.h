@@ -20,8 +20,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef FUNCTIONALCOMPUTATION
-#define FUNCTIONALCOMPUTATION
+#ifndef FUNCCSCOMPUTATION
+#define FUNCCSCOMPUTATION
 
 #include <LinAlg/LinAlg.h>
 #include <LinAlg/Maths.h>
@@ -30,7 +30,7 @@
 
 namespace mixt {
 
-class Function;
+class FunctionCS;
 // forward declaration
 
 template<typename kappaType>
@@ -121,8 +121,8 @@ void initAlpha(Index nParam, const Vector<Real>& t, Vector<Real>& alpha);
 
 void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, const Vector<Real>& alpha, const Matrix<Real>& beta, Matrix<Real>& lambda);
 
-void globalQuantile(const Vector<Function>& vecInd, Vector<Real>& quantile);
+void globalQuantile(const Vector<FunctionCS>& vecInd, Vector<Real>& quantile);
 
 } // namespace mixt
 
-#endif // FUNCTIONALCOMPUTATION
+#endif // FUNCCSCOMPUTATION

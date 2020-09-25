@@ -20,19 +20,19 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef FUNCTIONALCLASS
-#define FUNCTIONALCLASS
+#ifndef FUNCCSCLASS
+#define FUNCCSCLASS
 
 #include <LinAlg/LinAlg.h>
-#include <Mixture/Functional/Function.h>
+#include <Mixture/Functional/FuncCSComputation.h>
+#include <Mixture/Functional/FunctionCS.h>
 #include <Param/ConfIntParamStat.h>
-#include "FunctionalComputation.h"
 
 namespace mixt {
 
-class FunctionalClass {
+class FuncCSClass {
 public:
-	FunctionalClass(Vector<Function>& data, Real confidenceLevel);
+	FuncCSClass(Vector<FunctionCS>& data, Real confidenceLevel);
 
 	void setSize(Index nSub, Index nCoeff);
 
@@ -101,7 +101,7 @@ private:
 	Index nCoeff_;
 
 	/** Data, not const because sampling has to occur at some point */
-	Vector<Function>& data_;
+	Vector<FunctionCS>& data_;
 
 	/** Parameter alpha for current class. */
 	Matrix<Real> alpha_;
@@ -112,7 +112,7 @@ private:
 	/** One coefficient per sub-regression */
 	Vector<Real> sd_;
 
-	/** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
+	/** Contrary to what is done in the Rank model for example, here the parameter estimation is done
 	 * directly inside class. */
 	ConfIntParamStat<Matrix<Real> > alphaParamStat_;
 	ConfIntParamStat<Matrix<Real> > betaParamStat_;
@@ -121,4 +121,4 @@ private:
 
 } // namespace mixt
 
-#endif // FUNCTIONALCLASS
+#endif // FUNCCSCLASS

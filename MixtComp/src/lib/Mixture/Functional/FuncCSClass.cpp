@@ -20,16 +20,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "FuncProblem.h"
-#include "FunctionalClass.h"
+#include <Mixture/Functional/FuncCSClass.h>
+#include <Mixture/Functional/FuncCSProblem.h>
 
 namespace mixt {
 
-FunctionalClass::FunctionalClass(Vector<Function>& data, Real confidenceLevel) :
+FuncCSClass::FuncCSClass(Vector<FunctionCS>& data, Real confidenceLevel) :
 		nSub_(0), nCoeff_(0), data_(data), alphaParamStat_(alpha_, confidenceLevel), betaParamStat_(beta_, confidenceLevel), sdParamStat_(sd_, confidenceLevel) {
 }
 
-void FunctionalClass::setSize(Index nSub, Index nCoeff) {
+void FuncCSClass::setSize(Index nSub, Index nCoeff) {
 	nSub_ = nSub;
 	nCoeff_ = nCoeff;
 
@@ -42,7 +42,7 @@ void FunctionalClass::setSize(Index nSub, Index nCoeff) {
 	sd_ = 0.;
 }
 
-std::string FunctionalClass::mStep(const std::set<Index>& setInd) {
+std::string FuncCSClass::mStep(const std::set<Index>& setInd) {
 	std::string warnLog;
 
 	mStepAlpha(setInd);
@@ -51,7 +51,7 @@ std::string FunctionalClass::mStep(const std::set<Index>& setInd) {
 	return warnLog;
 }
 
-void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
+void FuncCSClass::mStepAlpha(const std::set<Index>& setInd) {
 	Index nSub = alpha_.rows();
 	Index nParam = 2 * nSub;
 	Index nFreeParam = 2 * (nSub - 1);
@@ -62,9 +62,9 @@ void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
 		alpha[2 * s + 1] = alpha_(s + 1, 1);
 	}
 
-	FuncProblem fp(nParam, data_, setInd);
+	FuncCSProblem fp(nParam, data_, setInd);
 
-	cppoptlib::BfgsSolver<FuncProblem> solver;
+	cppoptlib::BfgsSolver<FuncCSProblem> solver;
 	cppoptlib::Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
 	crit.iterations = maxIterationOptim;
 	solver.setStopCriteria(crit);
@@ -77,7 +77,7 @@ void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
 	}
 }
 
-std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
+std::string FuncCSClass::mStepBetaSd(const std::set<Index>& setInd) {
 	std::string warnLog;
 	Vector<Index> nTTotal(nSub_, 0);
 
@@ -112,29 +112,29 @@ std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 	return warnLog;
 }
 
-void FunctionalClass::initParam() {
+void FuncCSClass::initParam() {
 	alpha_ = 0.;
 }
 
-void FunctionalClass::setParamStorage() {
+void FuncCSClass::setParamStorage() {
 	alphaParamStat_.setParamStorage();
 	betaParamStat_.setParamStorage();
 	sdParamStat_.setParamStorage();
 }
 
-void FunctionalClass::setExpectationParam() {
+void FuncCSClass::setExpectationParam() {
 	alphaParamStat_.setExpectationParam();
 	betaParamStat_.setExpectationParam();
 	sdParamStat_.setExpectationParam();
 }
 
-void FunctionalClass::sampleParam(Index iteration, Index iterationMax) {
+void FuncCSClass::sampleParam(Index iteration, Index iterationMax) {
 	alphaParamStat_.sampleParam(iteration, iterationMax);
 	betaParamStat_.sampleParam(iteration, iterationMax);
 	sdParamStat_.sampleParam(iteration, iterationMax);
 }
 
-std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
+std::string FuncCSClass::checkSampleCondition(const std::set<Index>& setInd) const {
 	std::string warnLog;
 	bool value = checkNbDifferentValue(setInd);
 
@@ -145,7 +145,7 @@ std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd)
 	return warnLog;
 }
 
-bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
+bool FuncCSClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
 	for (Index s = 0; s < nSub_; ++s) {
 		std::list<Real> listT;
 
@@ -163,7 +163,7 @@ bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const
 	return true;
 }
 
-void FunctionalClass::samplingStepNoCheck(Index i) {
+void FuncCSClass::samplingStepNoCheck(Index i) {
 	data_(i).sampleWNoCheck(alpha_, beta_, sd_);
 }
 } // namespace mixt

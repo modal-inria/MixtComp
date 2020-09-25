@@ -30,7 +30,7 @@
 #include "cppoptlib/problem.h"
 #include "cppoptlib/solver/bfgssolver.h"
 
-#include <Mixture/Functional/Function.h>
+#include <Mixture/Functional/FunctionCS.h>
 
 namespace mixt {
 
@@ -38,12 +38,12 @@ namespace mixt {
  * This problem follows the API of cppoptlib. It provides both the value and gradient of the problem to be optimized. The problem is parameterized by the data, hence
  * the references to the data as private members. Code is inspired from old code in optiFunctional
  */
-class FuncProblem: public cppoptlib::Problem<Real> {
+class FuncCSProblem: public cppoptlib::Problem<Real> {
 public:
 	using typename cppoptlib::Problem<Real>::Scalar;
 	using typename cppoptlib::Problem<Real>::TVector;
 
-	FuncProblem(Index nParam, const Vector<Function>& data, const std::set<Index>& setInd) :
+	FuncCSProblem(Index nParam, const Vector<FunctionCS>& data, const std::set<Index>& setInd) :
 			nParam_(nParam), alphaComplete_(nParam), gradInd_(nParam), data_(data), setInd_(setInd) {
 		alphaComplete_ = 0;
 	}
@@ -85,7 +85,7 @@ private:
 	Index nParam_;
 	Vector<Real> alphaComplete_;
 	Vector<Real> gradInd_;
-	const Vector<Function>& data_;
+	const Vector<FunctionCS>& data_;
 	const std::set<Index>& setInd_;
 };
 

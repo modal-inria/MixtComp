@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-TEST(FunctionalParser, validData) {
+TEST(FuncCSParser, validData) {
 	Index nSub = 2; // useless in this context, but used in observation's setVal
 	Index nCoeff = 2; // useless as well
 	Index nObs = 2;
@@ -33,7 +33,7 @@ TEST(FunctionalParser, validData) {
 	std::string warnLog;
 
 	std::vector<std::string> vecStr(nObs);
-	Vector<Function> vecInd;
+	Vector<FunctionCS> vecInd;
 
 	vecStr[0] = "12.:24.,13.:-3.,15.:90.3";
 	vecStr[1] = "-5.4:2.3,-4.21:-3.";
@@ -43,7 +43,7 @@ TEST(FunctionalParser, validData) {
 	ASSERT_EQ(0, warnLog.size());
 }
 
-TEST(FunctionalParser, timeMissing) {
+TEST(FuncCSParser, timeMissing) {
 	Index nSub = 2; // useless in this context, but used in observation's setVal
 	Index nCoeff = 2; // useless as well
 	Index nObs = 2;
@@ -51,7 +51,7 @@ TEST(FunctionalParser, timeMissing) {
 	std::string warnLog;
 
 	std::vector<std::string> vecStr(nObs);
-	Vector<Function> vecInd;
+	Vector<FunctionCS> vecInd;
 
 	vecStr[0] = ":24.,13.:-3.,15.:90.3";
 	vecStr[1] = "-5.4:2.3,-4.21:-3.";
@@ -61,7 +61,7 @@ TEST(FunctionalParser, timeMissing) {
 	ASSERT_LT(0, warnLog.size());
 }
 
-TEST(FunctionalParser, unsupportedMissing) {
+TEST(FuncCSParser, unsupportedMissing) {
 	Index nSub = 2; // useless in this context, but used in observation's setVal
 	Index nCoeff = 2;
 	Index nObs = 2;
@@ -69,7 +69,7 @@ TEST(FunctionalParser, unsupportedMissing) {
 	std::string warnLog;
 
 	std::vector<std::string> vecStr(nObs);
-	Vector<Function> vecInd;
+	Vector<FunctionCS> vecInd;
 
 	vecStr[0] = "-8.:24.,13.:-3.,15.:[90.3:104.]";
 	vecStr[1] = "-5.4:2.3,-4.21:-3.";
@@ -79,7 +79,7 @@ TEST(FunctionalParser, unsupportedMissing) {
 	ASSERT_LT(0, warnLog.size());
 }
 
-TEST(FunctionalParser, verifyValues) {
+TEST(FuncCSParser, verifyValues) {
 	Index nSub = 2; // useless in this context, but used in observation's setVal
 	Index nCoeff = 2;
 	Index nObs = 1;
@@ -88,7 +88,7 @@ TEST(FunctionalParser, verifyValues) {
 	std::string warnLog;
 
 	std::vector<std::string> vecStr(nObs);
-	Vector<Function> vecInd;
+	Vector<FunctionCS> vecInd;
 
 	vecStr[0] = "-8.:24.,13.:-3.,15.:90.3";
 

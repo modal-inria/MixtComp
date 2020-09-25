@@ -75,7 +75,7 @@ TEST(Function, lnCompletedProbability) {
 	for (Index o = 0; o < nObs; ++o) { // loop over the observations
 		Vector<std::set<Index> > w(nSub);
 		Vector<Real> x(nTime, 0.);
-		Function function;
+		FunctionCS function;
 
 		for (Index i = 0; i < nTime; ++i) {
 			Index currSub = multi.sample(kappa.row(i));
@@ -117,7 +117,7 @@ TEST(Function, removeMissingQuantile) {
 	Vector<Real> quantile(nQuantile);
 	quantile << -5., 2.3, 45.;
 
-	Function function;
+	FunctionCS function;
 	function.setVal(t, x, w);
 	function.removeMissingQuantile(quantile);
 

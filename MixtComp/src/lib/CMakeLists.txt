@@ -89,16 +89,16 @@ add_library(MixtComp
     Mixture/Rank/RankIndividual.cpp
     Mixture/Rank/RankLikelihood.h
     Mixture/Rank/RankVal.cpp
-    Mixture/Functional/FunctionalClass.h
-    Mixture/Functional/FunctionalSharedAlphaMixture.h
-    Mixture/Functional/FunctionalClass.cpp
-    Mixture/Functional/Function.cpp
-    Mixture/Functional/FunctionalComputation.cpp
-    Mixture/Functional/FunctionalComputation.h
-    Mixture/Functional/FunctionalParser.h
-    Mixture/Functional/FunctionalParser.cpp
-    Mixture/Functional/FunctionalMixture.h
-    Mixture/Functional/Function.h
+    Mixture/Functional/FuncCSClass.h
+    Mixture/Functional/FuncSharedAlphaCSMixture.h
+    Mixture/Functional/FuncCSClass.cpp
+    Mixture/Functional/FunctionCS.cpp
+    Mixture/Functional/FuncCSComputation.cpp
+    Mixture/Functional/FuncCSComputation.h
+    Mixture/Functional/FunctionCSParser.h
+    Mixture/Functional/FunctionCSParser.cpp
+    Mixture/Functional/FuncCSMixture.h
+    Mixture/Functional/FunctionCS.h
     Statistic/ExponentialStatistic.h
     Statistic/MultinomialStatistic.cpp
     Statistic/RNG.h

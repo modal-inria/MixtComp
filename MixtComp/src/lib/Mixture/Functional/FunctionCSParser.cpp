@@ -24,11 +24,11 @@
 #include <regex>
 
 #include "../../IO/MisValParser.h"
-#include "FunctionalParser.h"
+#include "FunctionCSParser.h"
 
 namespace mixt {
 
-std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::string>& dataStr, Vector<Function>& vecInd) {
+std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::string>& dataStr, Vector<FunctionCS>& vecInd) {
 	std::string warnLog;
 
 	Index nInd = dataStr.size();

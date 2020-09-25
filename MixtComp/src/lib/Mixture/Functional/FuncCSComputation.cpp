@@ -22,10 +22,10 @@
 
 #include <IO/IO.h>
 #include <LinAlg/Maths.h>
+#include <Mixture/Functional/FuncCSClass.h>
+#include <Mixture/Functional/FuncCSComputation.h>
 #include <iostream>
 #include "Statistic/Statistic.h"
-#include "FunctionalClass.h"
-#include "FunctionalComputation.h"
 
 namespace mixt {
 
@@ -276,7 +276,7 @@ void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, c
 	}
 }
 
-void globalQuantile(const Vector<Function>& vecInd, Vector<Real>& quantile) {
+void globalQuantile(const Vector<FunctionCS>& vecInd, Vector<Real>& quantile) {
 	Index nInd = vecInd.size();
 	Index nSub = vecInd(0).nSub();
 	Index nQuantile = nSub + 1;

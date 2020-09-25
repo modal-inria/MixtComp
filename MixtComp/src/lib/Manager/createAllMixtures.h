@@ -25,13 +25,13 @@
 #define LIB_MANAGER_CREATEALLMIXTURES_H
 
 #include <Composer/MixtureComposer.h>
+#include <Mixture/Functional/FuncCSMixture.h>
 #include <Mixture/Simple/SimpleMixture.h>
 #include <Mixture/Simple/Gaussian/Gaussian.h>
 #include <Mixture/Simple/NegativeBinomial/NegativeBinomial.h>
 #include <Mixture/Simple/Poisson/Poisson.h>
 #include <Mixture/Simple/Weibull/Weibull.h>
-#include <Mixture/Functional/FunctionalMixture.h>
-#include <Mixture/Functional/FunctionalSharedAlphaMixture.h>
+#include <Mixture/Functional/FuncSharedAlphaCSMixture.h>
 #include <Mixture/Rank/RankMixture.h>
 #include <Mixture/Simple/Multinomial/Multinomial.h>
 
@@ -83,11 +83,11 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 			}
 
 			if (idModel == "Func_CS") {
-				p_mixture = new FunctionalMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+				p_mixture = new FuncCSMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
 			if (idModel == "Func_SharedAlpha_CS") {
-				p_mixture = new FunctionalSharedAlphaMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+				p_mixture = new FuncSharedAlphaCSMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
 			if (idModel == "Rank_ISR") {

@@ -16,20 +16,23 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: June 20, 2016
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: July 5, 2016
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef FUNCTIONALPARSER
-#define FUNCTIONALPARSER
+#include "gtest/gtest.h"
+#include "MixtComp.h"
 
-#include <LinAlg/LinAlg.h>
-#include <Mixture/Functional/Function.h>
+using namespace mixt;
 
-namespace mixt {
+/**
+ * Test if the FuncCSMixture compiles. As it is a template class, it needs to be instancied to be compiled. So here we go.
+ */
+TEST(FuncCSMixture, compilation) {
+  Vector<std::set<Index> > classInd;
 
-std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::string>& dataStr, Vector<Function>& vecInd);
-
-} // namespace mixt
-
-#endif // FUNCTIONALPARSER
+//  FuncCSMixture<DataHandlerDummy,
+//                DataExtractorDummy,
+//                ParamSetterDummy,
+//                ParamExtractorDummy> dummyFunctionalMixture(classInd);
+}
