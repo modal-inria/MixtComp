@@ -76,14 +76,14 @@ add_library(MixtComp
     Mixture/Simple/Poisson/PoissonSampler.h
     Mixture/Simple/Poisson/PoissonSampler.cpp
     Mixture/Simple/SimpleMixture.h
-    Mixture/Rank/RankClass.h
+    Mixture/Rank/RankISRClass.h
     Mixture/Rank/RankLikelihood.cpp
-    Mixture/Rank/RankMixture.h
-    Mixture/Rank/RankStat.h
-    Mixture/Rank/RankStat.cpp
+    Mixture/Rank/RankISRMixture.h
+    Mixture/Rank/RankISRStat.h
+    Mixture/Rank/RankISRStat.cpp
     Mixture/Rank/RankIndividual.h
     Mixture/Rank/RankVal.h
-    Mixture/Rank/RankClass.cpp
+    Mixture/Rank/RankISRClass.cpp
     Mixture/Rank/RankParser.cpp
     Mixture/Rank/RankParser.h
     Mixture/Rank/RankIndividual.cpp

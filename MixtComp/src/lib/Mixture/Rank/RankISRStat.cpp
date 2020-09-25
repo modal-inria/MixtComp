@@ -20,7 +20,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "RankStat.h"
+#include "RankISRStat.h"
 
 #include <algorithm>
 #include <iostream>
@@ -28,15 +28,15 @@
 
 namespace mixt {
 
-RankStat::RankStat(RankVal& mu, Real confidenceLevel) :
+RankISRStat::RankISRStat(RankVal& mu, Real confidenceLevel) :
 		mu_(mu), confidenceLevel_(confidenceLevel), initialNIter_(0) {
 }
 
-void RankStat::sample(int iteration) {
+void RankISRStat::sample(int iteration) {
 	logStorageMu_(iteration) = mu_;
 }
 
-void RankStat::sampleValue(int iteration, int iterationMax) {
+void RankISRStat::sampleValue(int iteration, int iterationMax) {
 	if (iteration == 0) {
 		initialNIter_ = iterationMax + 1;
 		logStorageMu_.resize(initialNIter_);
@@ -88,11 +88,11 @@ void RankStat::sampleValue(int iteration, int iterationMax) {
 	}
 }
 
-void RankStat::setExpectationParam() {
+void RankISRStat::setExpectationParam() {
 	mu_ = statStorageMu_.front().first;
 }
 
-void RankStat::setParamStorage() {
+void RankISRStat::setParamStorage() {
 	statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
 }
 

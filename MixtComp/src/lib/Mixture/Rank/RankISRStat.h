@@ -20,8 +20,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RANKPARAMSTAT_H
-#define RANKPARAMSTAT_H
+#ifndef RANKISRSTAT_H
+#define RANKISRSTAT_H
 
 #include <Mixture/Rank/RankVal.h>
 #include <list>
@@ -31,9 +31,9 @@
 namespace mixt {
 
 /** Compute statistics for a single class. Use a vector of those for a mixture. */
-class RankStat {
+class RankISRStat {
 public:
-	RankStat(RankVal& mu, Real confidenceLevel);
+	RankISRStat(RankVal& mu, Real confidenceLevel);
 
 	/** There used to be a tuple here, dedicated to Quentin Grimonprez, proud forefather of its usage among us, mere Modal Team member.
 	 * But it was deemed unnecessary leading to its demise and ultimate obliteration with extreme prejudice.
@@ -76,4 +76,4 @@ private:
 
 } // namespace mixt
 
-#endif // RANKPARAMSTAT_H
+#endif // RANKISRSTAT_H

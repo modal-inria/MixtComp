@@ -59,10 +59,10 @@ add_executable(runUtest
     Statistic/UTestPoissonStatistic.cpp
     Statistic/UTestRNG.cpp
     Rank/UTestRankIndividual.cpp
-    Rank/UTestRankParamStat.cpp
+    Rank/UTestRankISRStat.cpp
     Rank/UTestRankParser.cpp
     Rank/UTestRankVal.cpp
-    Rank/UTestRankClass.cpp
+    Rank/UTestRankISRClass.cpp
     Rank/UTestRankLikelihood.cpp
     Functional/UTestFuncCSComputation.cpp
     Functional/UTestFunctionCS.cpp

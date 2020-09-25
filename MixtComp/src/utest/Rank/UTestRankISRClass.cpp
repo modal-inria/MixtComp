@@ -32,7 +32,7 @@ typedef typename std::pair<MisType, std::vector<int> > MisVal;
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere.
  * */
-TEST(RankClass, probaYgX) {
+TEST(RankIndividual, probaYgX) {
 	int nbPos = 4;
 	int nbE = fac(nbPos);
 
@@ -68,7 +68,7 @@ TEST(RankClass, probaYgX) {
  * Test if the conditional distribution p(y / x) obtained using Gibbs sampling is significantly different from the distribution
  * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference.
  * */
-TEST(RankClass, gibbsY) {
+TEST(RankISRClass, gibbsY) {
 	int nbPos = 4;
 	int nbIterBurnIn = 500;
 	int nbIterRun = 100000;
@@ -128,7 +128,7 @@ TEST(RankClass, gibbsY) {
 }
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
-TEST(RankClass, sampleMu) {
+TEST(RankISRClass, sampleMu) {
 	int nbPos = 5;
 	int nbInd = 100;
 	int nbIterburnIn = 100;
@@ -163,7 +163,7 @@ TEST(RankClass, sampleMu) {
 	RankVal muEst(nbPos);
 	muEst.setO(muVec);
 
-	RankClass rank(data, muEst, pi);
+	RankISRClass rank(data, muEst, pi);
 
 	for (int i = 0; i < nbIterburnIn; ++i) {
 		rank.sampleMu(classInd);
@@ -178,7 +178,7 @@ TEST(RankClass, sampleMu) {
 }
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
-TEST(RankClass, mStep) {
+TEST(RankISRClass, mStep) {
 	int nbPos = 5;
 	int nbInd = 100;
 	int nbIterburnIn = 100;
@@ -214,7 +214,7 @@ TEST(RankClass, mStep) {
 	muEst.setO(muVec);
 	Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
-	RankClass rank(data, muEst, piEst);
+	RankISRClass rank(data, muEst, piEst);
 
 	for (int i = 0; i < nbIterburnIn; ++i) {
 		for (int ind = 0; ind < nbInd; ++ind) {
@@ -229,7 +229,7 @@ TEST(RankClass, mStep) {
 	ASSERT_LT(std::abs(pi - piEst), tolerance);
 }
 
-TEST(RankClass, lnObservedProbability) {
+TEST(RankISRClass, lnObservedProbability) {
 	int nbPos = 4;
 
 	Vector<int> x(nbPos);
@@ -248,7 +248,7 @@ TEST(RankClass, lnObservedProbability) {
 	RankVal mu(nbPos);
 	mu.setO(muVec);
 
-	RankClass rc(data, mu, pi);
+	RankISRClass rc(data, mu, pi);
 
 	rc.computeObservedProba();
 

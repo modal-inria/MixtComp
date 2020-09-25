@@ -67,9 +67,9 @@ TEST(RankStat, computeStat) {
 	muEst.setO(muVec);
 	Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
-	RankStat paramStat(muEst, confidenceLevel); // stat computer on muEst and piEst
+	RankISRStat paramStat(muEst, confidenceLevel); // stat computer on muEst and piEst
 
-	RankClass rank(data, muEst, piEst);
+	RankISRClass rank(data, muEst, piEst);
 
 	for (int i = 0; i < nbIterburnIn; ++i) {
 		for (int ind = 0; ind < nbInd; ++ind) {

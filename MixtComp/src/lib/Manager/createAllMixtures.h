@@ -32,7 +32,7 @@
 #include <Mixture/Simple/Poisson/Poisson.h>
 #include <Mixture/Simple/Weibull/Weibull.h>
 #include <Mixture/Functional/FuncSharedAlphaCSMixture.h>
-#include <Mixture/Rank/RankMixture.h>
+#include <Mixture/Rank/RankISRMixture.h>
 #include <Mixture/Simple/Multinomial/Multinomial.h>
 
 namespace mixt {
@@ -91,7 +91,7 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 			}
 
 			if (idModel == "Rank_ISR") {
-				p_mixture = new RankMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+				p_mixture = new RankISRMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
 			if (p_mixture) {
