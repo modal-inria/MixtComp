@@ -409,15 +409,6 @@ private:
 	Vector<Real> pi_;
 	Vector<RankISRIndividual> data_;
 
-	/** RankLikelihood object, used to for the harmonic mean estimation of the observed likelihood. */
-	RankLikelihood rankLikelihood_;
-
-	/** Matrix containing observed log probability distribution, used in harmonic mean estimation
-	 * of the observed probability
-	 * Individual in rows
-	 * Classes in columns */
-	Matrix<Real> observedProbaHMean_;
-
 	std::vector<RankISRClass> class_;
 
 	/** Each element of the vector keeps track of statistics for one particular mu */
