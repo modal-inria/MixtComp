@@ -32,7 +32,7 @@
 #include <IO/SpecialStr.h>
 #include "RankISRClass.h"
 #include "RankLikelihood.h"
-#include "RankParser.h"
+#include "RankISRParser.h"
 #include "RankISRStat.h"
 
 
@@ -408,7 +408,7 @@ private:
 
 	Vector<RankVal> mu_;
 	Vector<Real> pi_;
-	Vector<RankIndividual> data_;
+	Vector<RankISRIndividual> data_;
 
 	/** RankLikelihood object, used to for the harmonic mean estimation of the observed likelihood. */
 	RankLikelihood rankLikelihood_;

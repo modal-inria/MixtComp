@@ -39,10 +39,10 @@
 #include <Mixture/Simple/SimpleMixture.h>
 #include <Mixture/Simple/Weibull/Weibull.h>
 #include <Mixture/Simple/NegativeBinomial/NegativeBinomial.h>
-#include <Mixture/Rank/RankParser.h>
 #include <Manager/createAllMixtures.h>
 #include <Mixture/Functional/FuncCSClass.h>
 #include <Mixture/Functional/FuncCSProblem.h>
+#include <Mixture/Rank/RankISRParser.h>
 #include <Run/Learn.h>
 #include <Run/Predict.h>
 #include <Statistic/Statistic.h>

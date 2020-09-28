@@ -81,12 +81,12 @@ add_library(MixtComp
     Mixture/Rank/RankISRMixture.h
     Mixture/Rank/RankISRStat.h
     Mixture/Rank/RankISRStat.cpp
-    Mixture/Rank/RankIndividual.h
+    Mixture/Rank/RankISRIndividual.h
     Mixture/Rank/RankVal.h
     Mixture/Rank/RankISRClass.cpp
-    Mixture/Rank/RankParser.cpp
-    Mixture/Rank/RankParser.h
-    Mixture/Rank/RankIndividual.cpp
+    Mixture/Rank/RankISRParser.cpp
+    Mixture/Rank/RankISRParser.h
+    Mixture/Rank/RankISRIndividual.cpp
     Mixture/Rank/RankLikelihood.h
     Mixture/Rank/RankVal.cpp
     Mixture/Functional/FuncCSClass.h

@@ -28,7 +28,7 @@ using namespace mixt;
 typedef typename std::pair<MisType, std::vector<int> > MisVal;
 
 /** Test RankVal::switchRepresentation using the property that it is an involution */
-TEST(RankIndividual, switchRepresentation) {
+TEST(RankISRIndividual, switchRepresentation) {
 	int nbPos = 4;
 	int nbSample = 1000;
 
@@ -66,14 +66,14 @@ TEST(RankIndividual, switchRepresentation) {
 }
 
 /** Test xGen, using the fact that for pi = 0.5 the distribution should be uniform. Kullback-Leibler divergence of uniform distribution from empirical distribution */
-TEST(RankIndividual, xGenP05) {
+TEST(RankISRIndividual, xGenP05) {
 	int nbPos = 4;
 	int nbSample = 15000;
 	Real tolerance = 1.e-3;
 	int nbE = fac(nbPos);
 	Real logProba = -std::log(nbE);
 
-	RankIndividual rank(nbPos); // rank which will be completed multiple time
+	RankISRIndividual rank(nbPos); // rank which will be completed multiple time
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 
@@ -132,12 +132,12 @@ TEST(RankIndividual, xGenP05) {
 }
 
 /** Test xGen, using the fact that for pi = 1, mu will be sampled no matter the presentation order */
-TEST(RankIndividual, xGenP1) {
+TEST(RankISRIndividual, xGenP1) {
 	int nbPos = 4;
 	int nbSample = 100;
 
 	Vector<bool> sorted(nbSample);
-	RankIndividual rank(nbPos); // rank which will be completed multiple time
+	RankISRIndividual rank(nbPos); // rank which will be completed multiple time
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 
@@ -162,7 +162,7 @@ TEST(RankIndividual, xGenP1) {
 
 /** Computation of the joint probability p(x, y). Compare the probability obtained through direct computation with
  * the proba obtained during the xGen sampling of x. */
-TEST(RankIndividual, lnCompletedProbability) {
+TEST(RankISRIndividual, lnCompletedProbability) {
 	int nbPos = 6;
 	int nbSample = 100;
 
@@ -177,7 +177,7 @@ TEST(RankIndividual, lnCompletedProbability) {
 	mu.setO(muVec);
 	Real pi = 0.3;
 
-	RankIndividual rank(nbPos);
+	RankISRIndividual rank(nbPos);
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 
@@ -206,7 +206,7 @@ TEST(RankIndividual, observedProba) {
 	RankVal mu = { 5, 1, 0, 4, 2, 3 };
 	Real pi = 0.87;
 
-	RankIndividual rv(nbPos);
+	RankISRIndividual rv(nbPos);
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rv.setObsData(obsData);
 	rv.removeMissing();
@@ -235,11 +235,11 @@ TEST(RankIndividual, observedProba) {
 	ASSERT_EQ(mu, muEst);
 }
 
-TEST(RankIndividual, checkAcceptedTypeTrue) {
+TEST(RankISRIndividual, checkAcceptedTypeTrue) {
 	int nbPos;
 	std::vector<std::string> vecStr = { "0, 1, 3, 2" };
 
-	Vector<RankIndividual> vecInd;
+	Vector<RankISRIndividual> vecInd;
 
 	std::string warnLog = parseRankStr(vecStr, 0, nbPos, vecInd);
 	bool isValid = (warnLog.size() == 0);
@@ -247,11 +247,11 @@ TEST(RankIndividual, checkAcceptedTypeTrue) {
 	ASSERT_EQ(isValid, true);
 }
 
-TEST(RankIndividual, checkAcceptedTypeFalse) {
+TEST(RankISRIndividual, checkAcceptedTypeFalse) {
 	int nbPos;
 	std::vector<std::string> vecStr = { "{1 3}, [0:2], 3, 2" };
 
-	Vector<RankIndividual> vecInd;
+	Vector<RankISRIndividual> vecInd;
 
 	std::string warnLog = parseRankStr(vecStr, 0, nbPos, vecInd);
 	bool isValid = (warnLog.size() == 0);
@@ -259,7 +259,7 @@ TEST(RankIndividual, checkAcceptedTypeFalse) {
 	ASSERT_EQ(isValid, false);
 }
 
-TEST(RankIndividual, enumCompletedAllMissing) {
+TEST(RankISRIndividual, enumCompletedAllMissing) {
 	int nbPos = 5;
 
 	Vector<int> o(nbPos);
@@ -272,7 +272,7 @@ TEST(RankIndividual, enumCompletedAllMissing) {
 	mv(3) = MisVal(missing_, { });
 	mv(4) = MisVal(missing_, { });
 
-	RankIndividual rv(nbPos);
+	RankISRIndividual rv(nbPos);
 	rv.setO(o);
 	rv.setObsData(mv);
 
@@ -285,7 +285,7 @@ TEST(RankIndividual, enumCompletedAllMissing) {
 	ASSERT_EQ(rvList.size(), fac(nbPos));
 }
 
-TEST(RankIndividual, enumCompletedAllPresent) {
+TEST(RankISRIndividual, enumCompletedAllPresent) {
 	int nbPos = 5;
 
 	Vector<int> o(nbPos);
@@ -298,7 +298,7 @@ TEST(RankIndividual, enumCompletedAllPresent) {
 	mv(3) = MisVal(present_, { });
 	mv(4) = MisVal(present_, { });
 
-	RankIndividual rv(nbPos);
+	RankISRIndividual rv(nbPos);
 	rv.setO(o);
 	rv.setObsData(mv);
 
@@ -311,7 +311,7 @@ TEST(RankIndividual, enumCompletedAllPresent) {
 	ASSERT_EQ(rvList.size(), 1);
 }
 
-TEST(RankIndividual, invalidIndividual) {
+TEST(RankISRIndividual, invalidIndividual) {
 	int nbPos = 5;
 
 	Vector<int> o(nbPos);
@@ -324,7 +324,7 @@ TEST(RankIndividual, invalidIndividual) {
 	mv(3) = MisVal(present_, { });
 	mv(4) = MisVal(present_, { });
 
-	RankIndividual rv(nbPos);
+	RankISRIndividual rv(nbPos);
 	rv.setO(o);
 	rv.setObsData(mv);
 
@@ -337,7 +337,7 @@ TEST(RankIndividual, invalidIndividual) {
 	ASSERT_EQ(rvList.size(), 0);
 }
 
-TEST(RankIndividual, enumCompletedPartial1) {
+TEST(RankISRIndividual, enumCompletedPartial1) {
 	int nbPos = 5;
 
 	Vector<int> o(nbPos);
@@ -350,7 +350,7 @@ TEST(RankIndividual, enumCompletedPartial1) {
 	mv(3) = MisVal(present_, { });
 	mv(4) = MisVal(present_, { });
 
-	RankIndividual rv(nbPos);
+	RankISRIndividual rv(nbPos);
 	rv.setO(o);
 	rv.setObsData(mv);
 
@@ -363,10 +363,10 @@ TEST(RankIndividual, enumCompletedPartial1) {
 	ASSERT_EQ(rvList.size(), 2);
 }
 
-TEST(RankIndividual, enumCompletedPartial2) {
+TEST(RankISRIndividual, enumCompletedPartial2) {
 	int nbPos = 5;
 
-	RankIndividual rankIndividual(nbPos);
+	RankISRIndividual rankIndividual(nbPos);
 	Vector<int> xVec(nbPos);
 	xVec << 3, 4, 2, 0, 1;
 	Vector<MisVal> obsData(nbPos);
@@ -384,10 +384,10 @@ TEST(RankIndividual, enumCompletedPartial2) {
 	ASSERT_EQ(listCompleted.size(), 2);
 }
 
-TEST(RankIndividual, checkPermutation) {
+TEST(RankISRIndividual, checkPermutation) {
 	int nbPos = 5;
 
-	RankIndividual rankIndividual(nbPos);
+	RankISRIndividual rankIndividual(nbPos);
 	Vector<int> xVec(nbPos);
 	xVec << 0, 1, 2, 3, 4;
 	Vector<MisVal> obsData(nbPos);
@@ -414,7 +414,7 @@ TEST(RankIndividual, checkPermutation) {
 /** To test for sampleY and sampleX, a Gibbs sampling is performed on a RankIndividual with partially observed data.
  * The mode of the distribution of completed individual is known and is checked at the end of a Gibbs sampling
  * that calls both sampleY and sampleX. Initialization of the Gibbs is performed randomly using removeMissing. */
-TEST(RankIndividual, sampleX) {
+TEST(RankISRIndividual, sampleX) {
 	int nbPos = 5;
 	int nbIterationBurnIn = 1000;
 	int nbIteration = 1000;
@@ -426,7 +426,7 @@ TEST(RankIndividual, sampleX) {
 
 	Real pi = 0.8;
 
-	RankIndividual rankIndividual(nbPos);
+	RankISRIndividual rankIndividual(nbPos);
 	Vector<int> xVec(nbPos);
 	xVec << 0, 1, 2, 3, 4;
 	Vector<MisVal> obsData(nbPos);

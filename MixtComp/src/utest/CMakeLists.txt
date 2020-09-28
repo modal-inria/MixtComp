@@ -58,9 +58,9 @@ add_executable(runUtest
     Statistic/UTestUniformIntStatistic.cpp
     Statistic/UTestPoissonStatistic.cpp
     Statistic/UTestRNG.cpp
-    Rank/UTestRankIndividual.cpp
+    Rank/UTestRankISRIndividual.cpp
     Rank/UTestRankISRStat.cpp
-    Rank/UTestRankParser.cpp
+    Rank/UTestRankISRParser.cpp
     Rank/UTestRankVal.cpp
     Rank/UTestRankISRClass.cpp
     Rank/UTestRankLikelihood.cpp

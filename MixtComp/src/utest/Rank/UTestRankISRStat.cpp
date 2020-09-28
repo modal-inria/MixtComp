@@ -41,11 +41,11 @@ TEST(RankStat, computeStat) {
 	MultinomialStatistic multi;
 	UniformStatistic uni;
 
-	RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+	RankISRIndividual rankIndividual(nbPos); // rank which will be completed multiple time
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rankIndividual.setObsData(obsData);
 
-	Vector<RankIndividual> data(nbInd); // will store the result of xGen
+	Vector<RankISRIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> setInd;
 
 	RankVal mu = { 0, 3, 1, 2 }; // ordering (position -> modality) representation

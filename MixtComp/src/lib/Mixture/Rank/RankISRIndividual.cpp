@@ -21,37 +21,37 @@
  **/
 
 #include <LinAlg/Maths.h>
-#include <Mixture/Rank/RankIndividual.h>
+#include <Mixture/Rank/RankISRIndividual.h>
 #include<set>
 
 
 namespace mixt {
 
-RankIndividual::RankIndividual() :
+RankISRIndividual::RankISRIndividual() :
 		nbPos_(0), lnFacNbPos_(0), allPresent_(true), allMissing_(true) {
 }
 
-RankIndividual::RankIndividual(int nbPos) :
+RankISRIndividual::RankISRIndividual(int nbPos) :
 		nbPos_(nbPos), lnFacNbPos_(-std::log(fac(nbPos))), x_(nbPos), allPresent_(
 				true), allMissing_(true) {
 	obsData_.resize(nbPos);
 	y_.resize(nbPos);
 }
 
-RankIndividual::RankIndividual(const RankVal& rv) :
+RankISRIndividual::RankISRIndividual(const RankVal& rv) :
 		nbPos_(rv.nbPos()), lnFacNbPos_(-std::log(fac(nbPos_))), x_(rv), allPresent_(
 				true), allMissing_(true) {
 	obsData_.resize(nbPos_);
 	y_.resize(nbPos_);
 }
 
-RankIndividual::RankIndividual(const RankIndividual& ri) :
+RankISRIndividual::RankISRIndividual(const RankISRIndividual& ri) :
 		nbPos_(ri.nbPos_), lnFacNbPos_(ri.lnFacNbPos_), obsData_(ri.obsData_), x_(
 				ri.x_), y_(ri.y_), allPresent_(ri.allPresent_), allMissing_(
 				ri.allMissing_) {
 } // note that the state of multi_ is not copied and a new rng is created
 
-RankIndividual& RankIndividual::operator=(const RankIndividual& ri) {
+RankISRIndividual& RankISRIndividual::operator=(const RankISRIndividual& ri) {
 	nbPos_ = ri.nbPos_;
 	lnFacNbPos_ = ri.lnFacNbPos_;
 	obsData_ = ri.obsData_;
@@ -61,7 +61,7 @@ RankIndividual& RankIndividual::operator=(const RankIndividual& ri) {
 	return *this;
 } // note that the state of multi_ is not copied and a new rng is created
 
-void RankIndividual::setNbPos(int nbPos) {
+void RankISRIndividual::setNbPos(int nbPos) {
 	nbPos_ = nbPos;
 	obsData_.resize(nbPos);
 	x_.setNbPos(nbPos);
@@ -72,9 +72,9 @@ void RankIndividual::setNbPos(int nbPos) {
 	lnFacNbPos_ = -std::log(fac(nbPos_));
 }
 
-void RankIndividual::removeMissing() {
+void RankISRIndividual::removeMissing() {
 #ifdef MC_DEBUG
-	std::cout << "RankIndividual::removeMissing, x_: " << x_ << ", y_: " << itString(y_) << std::endl;
+	std::cout << "RankISRIndividual::removeMissing, x_: " << x_ << ", y_: " << itString(y_) << std::endl;
 #endif
 
 	std::iota(y_.begin(), y_.end(), 0);
@@ -95,18 +95,18 @@ void RankIndividual::removeMissing() {
 	}
 }
 
-void RankIndividual::yGen() {
+void RankISRIndividual::yGen() {
 	multi_.shuffle(y_);
 }
 
-Real RankIndividual::xGen(const RankVal& mu, Real pi) {
+Real RankISRIndividual::xGen(const RankVal& mu, Real pi) {
 #ifdef MC_DEBUG
 	int a = 0;
 	int g = 0;
 #endif
 
 #ifdef MC_DEBUG
-	std::cout << "RankIndividual::xGen, mu: " << mu << ", pi: " << pi << ", y_: " << itString(y_) << std::endl;
+	std::cout << "RankISRIndividual::xGen, mu: " << mu << ", pi: " << pi << ", y_: " << itString(y_) << std::endl;
 #endif
 
 	Real logProba = 0.;
@@ -158,26 +158,26 @@ Real RankIndividual::xGen(const RankVal& mu, Real pi) {
 	x_.setO(x);
 
 #ifdef MC_DEBUG
-	std::cout << "Rank::xGen, a: " << a << ", g:" << g << std::endl;
+	std::cout << "RankISRIndividual::xGen, a: " << a << ", g:" << g << std::endl;
 #endif
 
 	return lnFacNbPos_ + logProba;
 }
 
-Real RankIndividual::lnCompletedProbability(const RankVal& mu, Real pi, int& a,
+Real RankISRIndividual::lnCompletedProbability(const RankVal& mu, Real pi, int& a,
 		int& g) const {
 	AG(mu, a, g);
 
 #ifdef MC_DEBUG
-	std::cout << "Rank::lnCompletedProbability, a: " << a << ", g:" << g << ", y_: " << itString(y_) << std::endl;
+	std::cout << "RankISRIndividual::lnCompletedProbability, a: " << a << ", g:" << g << ", y_: " << itString(y_) << std::endl;
 #endif
 
 	return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
 }
 
-void RankIndividual::AG(const RankVal& mu, int& a, int& g) const {
+void RankISRIndividual::AG(const RankVal& mu, int& a, int& g) const {
 #ifdef MC_DEBUG
-	std::cout << "Rank::AG, y_: " << itString(y_) << ", mu.r(): " << itString(mu.r()) << ", x_.r(): " << itString(x_.r()) << std::endl;
+	std::cout << "RankISRIndividual::AG, y_: " << itString(y_) << ", mu.r(): " << itString(mu.r()) << ", x_.r(): " << itString(x_.r()) << std::endl;
 #endif
 
 	a = 0;
@@ -214,7 +214,7 @@ void RankIndividual::AG(const RankVal& mu, int& a, int& g) const {
 	}
 }
 
-void RankIndividual::sampleX(const RankVal& mu, Real pi) {
+void RankISRIndividual::sampleX(const RankVal& mu, Real pi) {
 	int A, G; // dummy variables
 	Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
 	Vector<Real, 2> proba; // multinomial distribution obtained from the logProba
@@ -240,7 +240,7 @@ void RankIndividual::sampleX(const RankVal& mu, Real pi) {
  * Perform one round of Gibbs sampling for the presentation order
  * @param mu central rank
  * @param pi precision */
-void RankIndividual::sampleY(const RankVal& mu, Real pi) {
+void RankISRIndividual::sampleY(const RankVal& mu, Real pi) {
 	int A, G; // dummy variables
 	Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
 	Vector<Real, 2> proba; // multinomial distribution obtained from the logProba
@@ -260,13 +260,13 @@ void RankIndividual::sampleY(const RankVal& mu, Real pi) {
 	}
 }
 
-void RankIndividual::permutationY(int firstElem) {
+void RankISRIndividual::permutationY(int firstElem) {
 	int dummy = y_(firstElem);
 	y_(firstElem) = y_(firstElem + 1);
 	y_(firstElem + 1) = dummy;
 }
 
-void RankIndividual::probaYgX(const RankVal& mu, Real pi,
+void RankISRIndividual::probaYgX(const RankVal& mu, Real pi,
 		Vector<Vector<int> >& resVec, Vector<Real>& resProba) {
 	int nbInd = fac(nbPos_);
 
@@ -283,7 +283,7 @@ void RankIndividual::probaYgX(const RankVal& mu, Real pi,
 	resProba.logToMulti(logProba); // from log of joint distribution to conditional distribution
 }
 
-void RankIndividual::recYgX(const RankVal& mu, Real pi,
+void RankISRIndividual::recYgX(const RankVal& mu, Real pi,
 		Vector<Vector<int> >& resVec, Vector<Real>& resProba, Vector<int>& vec,
 		const std::set<int>& remainingMod, int firstElem, int nbElem,
 		int currPos, int nbPos) {
@@ -316,7 +316,7 @@ void RankIndividual::recYgX(const RankVal& mu, Real pi,
 	}
 }
 
-void RankIndividual::observedProba(const RankVal& mu, Real pi,
+void RankISRIndividual::observedProba(const RankVal& mu, Real pi,
 		std::map<RankVal, Real>& proba) {
 	proba.clear();
 	for (int i = 0; i < nbSampleObserved; ++i) {
@@ -335,7 +335,7 @@ void RankIndividual::observedProba(const RankVal& mu, Real pi,
 	}
 }
 
-bool RankIndividual::checkMissingType(const Vector<bool>& acceptedType) const {
+bool RankISRIndividual::checkMissingType(const Vector<bool>& acceptedType) const {
 	for (int p = 0; p < nbPos_; ++p) {
 		if (acceptedType(obsData_(p).first) == false) {
 			return false;
@@ -345,14 +345,14 @@ bool RankIndividual::checkMissingType(const Vector<bool>& acceptedType) const {
 	return true;
 }
 
-std::list<int> RankIndividual::candidateList(int currPos,
+std::list<int> RankISRIndividual::candidateList(int currPos,
 		const std::set<int>& remainingMod) const {
 	std::list<int> candidateList;
 
 	if (obsData_(currPos).first == present_) { // if data is present
 		if (remainingMod.find(x_.o()(currPos)) != remainingMod.end()) { // only add the observed value if it is still available, to avoid duplication of value in completed individual
 #ifdef MC_DEBUG
-				std::cout << "RankIndividual::candidateList, present_, x_.o(): " << itString(x_.o()) << std::endl;
+				std::cout << "RankISRIndividual::candidateList, present_, x_.o(): " << itString(x_.o()) << std::endl;
 #endif
 
 			candidateList.push_back(x_.o()(currPos));
@@ -364,7 +364,7 @@ std::list<int> RankIndividual::candidateList(int currPos,
 		}
 	} else if (obsData_(currPos).first == missingFiniteValues_) { // only add the intersection between what is possible and what is available
 #ifdef MC_DEBUG
-			std::cout << "RankIndividual::candidateList, missingFiniteValues_, obsData_(currPos).second: " << itString(obsData_(currPos).second) << std::endl;
+			std::cout << "RankISRIndividual::candidateList, missingFiniteValues_, obsData_(currPos).second: " << itString(obsData_(currPos).second) << std::endl;
 #endif
 
 		std::set_intersection(
@@ -377,11 +377,11 @@ std::list<int> RankIndividual::candidateList(int currPos,
 	return candidateList;
 }
 
-std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
+std::list<RankVal> RankISRIndividual::recEnumComplete(int currPos,
 		const std::set<int>& remainingMod,
 		const Vector<int>& completedVec) const {
 #ifdef MC_DEBUG
-	std::cout << "RankIndividual::recEnumComplete, currPos: " << currPos << ", "
+	std::cout << "RankISRIndividual::recEnumComplete, currPos: " << currPos << ", "
 	<< "remainingMod: " << itString(remainingMod) << ", "
 	<< "completedVec: " << itString(completedVec) << std::endl;
 #endif
@@ -413,7 +413,7 @@ std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
 		}
 	} else { // termination condition of the recursion
 #ifdef MC_DEBUG
-	std::cout << "RankIndividual::recEnumComplete, termination" << std::endl;
+	std::cout << "RankISRIndividual::recEnumComplete, termination" << std::endl;
 #endif
 
 		RankVal rv(nbPos_);
@@ -424,7 +424,7 @@ std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
 	return rankList;
 }
 
-std::list<RankVal> RankIndividual::enumCompleted() const {
+std::list<RankVal> RankISRIndividual::enumCompleted() const {
 	std::list<RankVal> rankList;
 	std::set<int> remainingMod;
 	Vector<int> completedVec(nbPos_, -1);
@@ -441,7 +441,7 @@ std::list<RankVal> RankIndividual::enumCompleted() const {
 }
 
 /** Is a value authorized for a particular MisVal ? */
-bool RankIndividual::isAuthorized(int value, const MisVal& misval) const {
+bool RankISRIndividual::isAuthorized(int value, const MisVal& misval) const {
 	bool isValid = false; // false until proven true
 
 	switch (misval.first) { // the present_ case is not considered as it forbids any permutation
@@ -466,7 +466,7 @@ bool RankIndividual::isAuthorized(int value, const MisVal& misval) const {
 	return isValid; // default value
 }
 
-bool RankIndividual::checkPermutation(int pos) const {
+bool RankISRIndividual::checkPermutation(int pos) const {
 	bool isValid = false;
 
 	if (isAuthorized(x_.o()(pos), obsData_(pos + 1))
@@ -477,7 +477,7 @@ bool RankIndividual::checkPermutation(int pos) const {
 	return isValid;
 }
 
-void RankIndividual::setObsData(const Vector<MisVal>& v) {
+void RankISRIndividual::setObsData(const Vector<MisVal>& v) {
 	obsData_ = v;
 
 	for (int p = 0; p < nbPos_; ++p) {

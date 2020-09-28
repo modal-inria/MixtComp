@@ -32,8 +32,8 @@ TEST(RankParser, basicTest) {
 
 	std::vector<std::string> vecStr = { "1 , 3 , 2 , 0", "0 , 3 , 1 , 2", "0 , 1 , 2 , 3" };
 
-	Vector<RankIndividual> vecIndComputed; // result of parsing
-	Vector<RankIndividual> vecIndExpected(3); // expected result of parsing
+	Vector<RankISRIndividual> vecIndComputed; // result of parsing
+	Vector<RankISRIndividual> vecIndExpected(3); // expected result of parsing
 
 	vecIndExpected(0).setNbPos(4);
 	vecIndExpected(0).setO(std::vector<int>( { 1, 3, 2, 0 }));
@@ -56,7 +56,7 @@ TEST(RankParser, minMaxDetection) {
 	int nbPos;
 	std::vector<std::string> vecStr = { "{22 -8 1 2 3}, -1, 3, 38, 2" };
 
-	Vector<RankIndividual> vecInd;
+	Vector<RankISRIndividual> vecInd;
 
 	MisVal misVal;
 

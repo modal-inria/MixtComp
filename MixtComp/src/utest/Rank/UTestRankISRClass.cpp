@@ -32,11 +32,11 @@ typedef typename std::pair<MisType, std::vector<int> > MisVal;
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere.
  * */
-TEST(RankIndividual, probaYgX) {
+TEST(RankISRIndividual, probaYgX) {
 	int nbPos = 4;
 	int nbE = fac(nbPos);
 
-	RankIndividual rank(nbPos);
+	RankISRIndividual rank(nbPos);
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 	rank.removeMissing();
@@ -77,7 +77,7 @@ TEST(RankISRClass, gibbsY) {
 
 	Vector<int> dummyVec(nbPos);
 
-	RankIndividual rank(nbPos);
+	RankISRIndividual rank(nbPos);
 	dummyVec << 2, 3, 1, 0;
 	rank.setO(dummyVec); // set observed value x
 	rank.removeMissing(); // initialize y_ randomly
@@ -138,11 +138,11 @@ TEST(RankISRClass, sampleMu) {
 
 	MultinomialStatistic multi;
 
-	RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+	RankISRIndividual rankIndividual(nbPos); // rank which will be completed multiple time
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rankIndividual.setObsData(obsData);
 
-	Vector<RankIndividual> data(nbInd); // will store the result of xGen
+	Vector<RankISRIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> classInd;
 
 	RankVal mu = { 0, 3, 1, 2, 4 }; // position -> modality representation
@@ -189,11 +189,11 @@ TEST(RankISRClass, mStep) {
 	MultinomialStatistic multi;
 	UniformStatistic uni;
 
-	RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+	RankISRIndividual rankIndividual(nbPos); // rank which will be completed multiple time
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rankIndividual.setObsData(obsData);
 
-	Vector<RankIndividual> data(nbInd); // will store the result of xGen
+	Vector<RankISRIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> setInd;
 
 	RankVal mu = { 0, 3, 1, 2, 4 }; // position -> modality representation
@@ -236,7 +236,7 @@ TEST(RankISRClass, lnObservedProbability) {
 	x << 0, 1, 2, 3;
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 
-	Vector<RankIndividual> data(1);
+	Vector<RankISRIndividual> data(1);
 	data(0).setNbPos(nbPos);
 	data(0).setO(x);
 	data(0).setObsData(obsData);

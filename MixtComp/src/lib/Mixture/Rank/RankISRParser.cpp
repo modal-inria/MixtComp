@@ -21,14 +21,14 @@
  **/
 
 #include <boost/algorithm/string.hpp>
-#include <Mixture/Rank/RankParser.h>
+#include <Mixture/Rank/RankISRParser.h>
 
 #include "../../IO/MisValParser.h"
 #include "../../IO/IO.h"
 
 namespace mixt {
 
-std::string parseRankStr(const std::vector<std::string>& vecStr, int minMod, int& nbPos, Vector<RankIndividual>& vecInd) {
+std::string parseRankStr(const std::vector<std::string>& vecStr, int minMod, int& nbPos, Vector<RankISRIndividual>& vecInd) {
 	typedef std::pair<MisType, std::vector<int> > MisVal;
 
 	int nbInd = vecStr.size();

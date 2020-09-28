@@ -24,7 +24,7 @@
 #define RANKISRCLASS_H
 
 #include <Mixture/IMixture.h>
-#include <Mixture/Rank/RankIndividual.h>
+#include <Mixture/Rank/RankISRIndividual.h>
 #include <Mixture/Rank/RankVal.h>
 #include <set>
 
@@ -39,7 +39,7 @@ public:
 //    RankClass(int nbClass);
 
 	/** Constructor with data and parameters provided. useful for unit-testing. */
-	RankISRClass(const Vector<RankIndividual>& data, RankVal& mu, Real& pi);
+	RankISRClass(const Vector<RankISRIndividual>& data, RankVal& mu, Real& pi);
 
 	Real lnCompletedProbability(const std::set<Index>& setInd) const;
 
@@ -60,7 +60,7 @@ private:
 	int nbInd_;
 
 	/** Data */
-	const Vector<RankIndividual>& data_;
+	const Vector<RankISRIndividual>& data_;
 
 	/** Parameter mu */
 	RankVal& mu_;

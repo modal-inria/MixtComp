@@ -20,16 +20,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef LIB_MIXTURE_RANK_RANKPARSER_H
-#define LIB_MIXTURE_RANK_RANKPARSER_H
+#ifndef LIB_MIXTURE_RANK_RANKISRPARSER_H
+#define LIB_MIXTURE_RANK_RANKISRPARSER_H
 
 #include <LinAlg/LinAlg.h>
-#include <Mixture/Rank/RankIndividual.h>
+#include <Mixture/Rank/RankISRIndividual.h>
 
 namespace mixt {
 
-std::string parseRankStr(const std::vector<std::string>& vecStr, int minMod, int& nbMod, Vector<RankIndividual>& vecInd);
+std::string parseRankStr(const std::vector<std::string>& vecStr, int minMod, int& nbMod, Vector<RankISRIndividual>& vecInd);
 
 } // namespace mixt
 
-#endif // RANKPARSER_H
+#endif // RANKISRPARSER_H

@@ -20,8 +20,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RANKINDIVIDUAL_H
-#define RANKINDIVIDUAL_H
+#ifndef RANKISRINDIVIDUAL_H
+#define RANKISRINDIVIDUAL_H
 
 #include <Mixture/Rank/RankVal.h>
 #include <list>
@@ -39,20 +39,20 @@ namespace mixt {
  * values, as well as methods to compute the likelihood or to perform samplings. In contrast, the RankVal is the much more simplest representation
  * of a rank, ignoring all probabilistic notions.
  */
-class RankIndividual {
+class RankISRIndividual {
 public:
 
 	typedef std::pair<MisType, std::vector<int> > MisVal;
 
-	RankIndividual();
+	RankISRIndividual();
 
-	RankIndividual(int nbPos);
+	RankISRIndividual(int nbPos);
 
-	RankIndividual(const RankVal& rv);
+	RankISRIndividual(const RankVal& rv);
 
-	RankIndividual(const RankIndividual& ri);
+	RankISRIndividual(const RankISRIndividual& ri);
 
-	RankIndividual& operator=(const RankIndividual& ri);
+	RankISRIndividual& operator=(const RankISRIndividual& ri);
 
 	int nbPos() const {
 		return nbPos_;
@@ -215,4 +215,4 @@ private:
 
 } // namespace mixt
 
-#endif // RANKINDIVIDUAL_H
+#endif // RANKISRINDIVIDUAL_H
