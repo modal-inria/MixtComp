@@ -1,5 +1,7 @@
 v 4.0.6
 - catch error "XXX object does not exit."
+- rename some C++ classes and files
+- remove useless files
 
 v4.0.5 2020-06-15
 - bug correction when z_class is in data but not in the model

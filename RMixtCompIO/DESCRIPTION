@@ -1,7 +1,7 @@
 Package: RMixtCompIO
 Type: Package
 Title: Mixture Models with Heterogeneous and (Partially) Missing Data
-Version: 4.0.65
+Version: 4.0.6
 Date: 2020-09-11
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
