@@ -79,7 +79,8 @@ Real WeibullStatistic::lpdf(Real x, Real k, Real lambda) const {
 }
 
 Real WeibullStatistic::cdf(Real x, Real k, Real lambda) const {
-	return 1.0 - std::exp(-std::pow(x / lambda, k));
+	boost::math::weibull weib(k, lambda);
+	return boost::math::cdf(weib, x);
 }
 
 Real WeibullStatistic::cdfIB(Real x, Real k, Real lambda, Real infBound) const {
