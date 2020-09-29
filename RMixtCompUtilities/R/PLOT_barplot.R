@@ -222,9 +222,7 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
   p <- plot_ly(x = label,
                y = value,
                type = "bar",
-               text = text,
-               marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(value*100)),
-                             line = list(color = "black", width = 1.5), ...)
+               text = text
   ) %>%
     layout(title = main,
            xaxis = list(title = xlab),
@@ -243,10 +241,9 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
 ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), col.text = "white")
 {
   df = data.frame(var = factor(label, levels = label), discrim = value, roundedDiscrim = round(value, 2))
-  ggplot(data = df, aes_string(x = "var", y = "discrim", fill = "var")) +
+  ggplot(data = df, aes_string(x = "var", y = "discrim")) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = col_numeric("Blues", domain = c(0,100))(ceiling(value*100))) + 
-    geom_text(aes_string(label = "roundedDiscrim"), vjust = 1.6, color = col.text, size = 5) +
+    geom_text(aes_string(label = "roundedDiscrim"), vjust = -0.5, color = col.text, size = 5) +
     theme_minimal() +
     ylim(ylim[1], ylim[2]) +
     labs(title = main, x = xlab, y = ylab) +
