@@ -85,8 +85,8 @@ plotDataBoxplot <- function(output, var, class = 1:output$algo$nClass, grl = TRU
   switch(type,
          "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = class, grl = grl), var, pkg = pkg, labels = labels),
          "Multinomial" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output, class = class, grl = grl), var, pkg = pkg, class = class, grl, labels),
-         "Func_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
-         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, pkg = pkg, ...),
+         "Func_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
+         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))
 }
 
