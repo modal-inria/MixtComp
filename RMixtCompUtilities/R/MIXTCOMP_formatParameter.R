@@ -14,10 +14,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
  
 
-# format the model list for rmc/rmcMultiRun functions:
-# - add paramStr when missing
-# - ensure the list format of each element
-# @author Quentin Grimonprez
+#' @title Format the model parameter
+#' 
+#' @description Format the model list for rmc/rmcMultiRun functions:
+#' - add paramStr when missing
+#' - ensure the list format of each element
+#' 
+#' @param model description of model used per variable
+#' 
+#' @return model as a list where each element is the model applied to a variable (list with elements type and paramStr)
+#' 
+#' @author Quentin Grimonprez
+#' 
+#' @export
 formatModel <- function(model)
 {
   if(("matrix" %in% class(model)) || ("data.frame" %in% class(model)))
@@ -44,9 +53,17 @@ formatModel <- function(model)
 }
 
 
-# format data.frame or matrix in list of character
-# keep list in list format
-# @author Quentin Grimonprez
+#' @title Format the data parameter required by rmc
+#' 
+#' @description format data.frame or matrix in list of character
+#' 
+#' @param data data parameter as data.frame, matrix or list
+#' 
+#' @return data as a list of characters
+#' 
+#' @author Quentin Grimonprez
+#' 
+#' @export
 formatData <- function(data)
 {
   if(is.data.frame(data) || is.matrix(data))
@@ -61,7 +78,17 @@ formatData <- function(data)
 }
 
 
-# @author Quentin Grimonprez
+#' @title Add the missing element to algo parameter
+#' 
+#' Add the missing element to algo parameter with default values
+#'
+#' @param algo a list with the different algo parameters for rmc function
+#'
+#' @return algo parameter with all required elements (see \link{createAlgo} function)
+#'
+#' @author Quentin Grimonprez
+#' 
+#' @export
 completeAlgo <- function(algo)
 {
   algoDefault <- createAlgo()
