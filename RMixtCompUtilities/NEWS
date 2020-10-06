@@ -1,5 +1,8 @@
-v4.1.3 2020-10-02
+v4.1.4
+- export formatData, completeAlgo and formatModel functions to avoir using RMixtCompUtilities::: in RMixtComp
 - add class parameter for functional models in plotDataBoxplot
+
+v4.1.3 2020-10-02
 - formatModel manages data.frame and matrix for models with hyperparameters
 - bug correction for heatmap* functions with pkg = "plotly"
 - use uniroot instead of optimize to find the ci bounds for functional data
@@ -7,7 +10,6 @@ v4.1.3 2020-10-02
 - add unexported icl function
 - remove colours in barplot functions
 - change maintainer
-- export formatData, completeAlgo and formatModel functions to avoir using RMixtCompUtilities::: in RMixtComp
 
 v4.1.2 2020-06-04
 - print.MixtComp prints correctly functional and rank parameters
