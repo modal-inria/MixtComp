@@ -18,7 +18,7 @@ URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: RMixtCompIO(>= 4.0.4), ggplot2, plotly, scales
 Depends: RMixtCompUtilities (>= 4.1.2)
-Suggests: testthat, xml2, Rmixmod, blockcluster, knitr, ClusVis, markdown
+Suggests: testthat, xml2, Rmixmod, blockcluster, knitr, ClusVis, rmarkdown
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
