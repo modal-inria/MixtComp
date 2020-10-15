@@ -85,5 +85,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v2
         with:
+          working-directory: RMixtCompIO
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
