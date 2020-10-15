@@ -54,6 +54,8 @@ bool Poisson::hasModalities() const {
 }
 
 std::string Poisson::mStep(const Vector<std::set<Index>>& classInd) {
+	std::string warnLog;
+
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
 		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE =
@@ -62,9 +64,19 @@ std::string Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 		}
 
 		param_(k) = sumClass / Real(classInd(k).size());
+
+		if (param_(k) < epsilon) {
+			warnLog +=
+					"Poisson variables must have a minimum mean of "
+							+ epsilonStr
+							+ " in each class. It is not the case in class: "
+							+ std::to_string(k)
+							+ "."
+							+ eol;
+		}
 	}
 
-	return "";
+	return warnLog;
 }
 
 std::vector<std::string> Poisson::paramNames() const {
