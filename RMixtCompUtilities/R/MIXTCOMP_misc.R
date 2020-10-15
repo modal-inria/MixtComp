@@ -22,7 +22,7 @@
 #' @param nbIter Number of iterations of the SEM algorithm.
 #' @param nbGibbsBurnInIter Number of iterations of the burn-in part of the Gibbs algorithm.
 #' @param nbGibbsIter Number of iterations of the Gibbs algorithm.
-#' @param nInitPerClass Number of individuals used to initialize each cluster (default = 10).
+#' @param nInitPerClass Number of individuals used to initialize each cluster.
 #' @param nSemTry Number of try of the algorithm for avoiding an error.
 #' @param confidenceLevel confidence level for confidence bounds for parameter estimation
 #' @param ratioStableCriterion stability partition required to stop earlier the SEM 
@@ -39,7 +39,9 @@
 #' 
 #' @author Quentin Grimonprez
 #' @export
-createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterion = 0.99, nStableCriterion = 20)
+createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, 
+                       nInitPerClass = 50, nSemTry = 20, confidenceLevel = 0.95, 
+                       ratioStableCriterion = 0.99, nStableCriterion = 20)
 {
   list(nbBurnInIter = nbBurnInIter,
        nbIter = nbIter,

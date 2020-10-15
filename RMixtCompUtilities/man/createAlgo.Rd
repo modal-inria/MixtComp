@@ -9,7 +9,7 @@ createAlgo(
   nbIter = 50,
   nbGibbsBurnInIter = 50,
   nbGibbsIter = 50,
-  nInitPerClass = 10,
+  nInitPerClass = 50,
   nSemTry = 20,
   confidenceLevel = 0.95,
   ratioStableCriterion = 0.99,
@@ -25,7 +25,7 @@ createAlgo(
 
 \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
 
-\item{nInitPerClass}{Number of individuals used to initialize each cluster (default = 10).}
+\item{nInitPerClass}{Number of individuals used to initialize each cluster.}
 
 \item{nSemTry}{Number of try of the algorithm for avoiding an error.}
 
