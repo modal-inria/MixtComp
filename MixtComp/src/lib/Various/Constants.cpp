@@ -39,8 +39,8 @@ const std::string eol = "\n";
 
 const int nbSamplingAttempts = 10000;
 
-const Real epsilon = 1.e-8;
-const std::string epsilonStr = "1.e-8";
+const Real epsilon = 1.e-10;
+const std::string epsilonStr = "1.e-10";
 const Real logEpsilon = std::log(epsilon);
 
 const Real epsilonProba = std::numeric_limits<Real>::epsilon();

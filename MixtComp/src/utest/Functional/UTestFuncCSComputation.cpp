@@ -72,8 +72,8 @@ TEST(FuncCSComputation, regressionNoNoise) {
 
 	regression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
-	ASSERT_NEAR(0., sdEstimated, epsilon);
+	EXPECT_EQ(true, betaEstimated.isApprox(beta, 1e-8));
+	EXPECT_NEAR(0., sdEstimated, 1e-8);
 }
 
 TEST(FuncCSComputation, regressionNoise) {
