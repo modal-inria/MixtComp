@@ -64,16 +64,6 @@ std::string Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 		}
 
 		param_(k) = sumClass / Real(classInd(k).size());
-
-		if (param_(k) < epsilon) {
-			warnLog +=
-					"Poisson variables must have a minimum mean of "
-							+ epsilonStr
-							+ " in each class. It is not the case in class: "
-							+ std::to_string(k)
-							+ "."
-							+ eol;
-		}
 	}
 
 	return warnLog;

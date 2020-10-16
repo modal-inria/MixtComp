@@ -2,7 +2,7 @@ v 4.0.6
 - catch error "XXX object does not exit."
 - rename some C++ classes and files
 - remove useless files
-- detect when the Poisson's parameter is estimated at 0
+- Manage the case when lambda = 0 for Poisson and there are some missing intervals  
 
 v4.0.5 2020-06-15
 - bug correction when z_class is in data but not in the model

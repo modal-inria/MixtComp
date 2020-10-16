@@ -53,9 +53,14 @@ Real PoissonStatistic::lpdf(int x, Real lambda) const {
 }
 
 Real PoissonStatistic::cdf(int x, Real lambda) const {
-	boost::math::poisson pois(lambda);
-	Real proba = boost::math::cdf(pois, x);
-	return proba;
+	if (0.0 < lambda) {
+		boost::math::poisson pois(lambda);
+		Real proba = boost::math::cdf(pois, x);
+
+		return proba;
+	} else {
+		return 1.0;
+	}
 }
 
 
@@ -103,11 +108,17 @@ int PoissonStatistic::quantile(Real lambda, Real p) const {
 	 * https://www.boost.org/doc/libs/1_69_0/libs/math/doc/html/math_toolkit/pol_tutorial/understand_dis_quant.html
 	 *
 	 */
-	boost::math::poisson_distribution<
-	            double,
-				boost::math::policies::policy<boost::math::policies::discrete_quantile<boost::math::policies::integer_round_up> > > pois(lambda);
-	int q = boost::math::quantile(pois, p);
-	return q;
+	if (0.0 < lambda)
+	{
+		boost::math::poisson_distribution<
+					double,
+					boost::math::policies::policy<boost::math::policies::discrete_quantile<boost::math::policies::integer_round_up> > > pois(lambda);
+		int q = boost::math::quantile(pois, p);
+		return q;
+	} else {
+		return 0.0;
+	}
+
 }
 
 int PoissonStatistic::quantileIB(Real lambda, int infBound, Real p) const {
