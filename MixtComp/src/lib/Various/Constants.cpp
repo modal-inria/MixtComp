@@ -43,6 +43,8 @@ const Real epsilon = 1.e-8;
 const std::string epsilonStr = "1.e-8";
 const Real logEpsilon = std::log(epsilon);
 
+const Real epsilonProba = std::numeric_limits<Real>::epsilon();
+
 const int minModality = 1;
 const int minIndex = 1;
 const Real pi = boost::math::constants::pi<Real>();

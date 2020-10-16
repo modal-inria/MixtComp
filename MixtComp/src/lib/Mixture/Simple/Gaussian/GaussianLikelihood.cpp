@@ -71,7 +71,12 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
       Real supCdf = normal_.cdf(supBound,
                                 mean,
                                 sd);
-      logProba = std::log(supCdf - infCdf);
+
+      Real proba = supCdf - infCdf;
+      if(proba < epsilonProba)
+    	  proba = epsilonProba;
+
+      logProba = std::log(proba);
     }
     break;
 
@@ -80,6 +85,10 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
       Real supCdf = normal_.cdf(supBound,
                                 mean,
                                 sd);
+
+      if(supCdf < epsilonProba)
+    	  supCdf = epsilonProba;
+
       logProba = std::log(supCdf);
     }
     break;
@@ -89,7 +98,11 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
       Real infCdf = normal_.cdf(infBound,
                                 mean,
                                 sd);
-      logProba = std::log(1. - infCdf);
+      Real proba = 1. - infCdf;
+      if(proba < epsilonProba)
+    	  proba = epsilonProba;
+
+      logProba = std::log(proba);
     }
     break;
 
