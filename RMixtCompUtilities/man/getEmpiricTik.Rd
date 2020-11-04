@@ -59,6 +59,7 @@ tik <- getTik(resLearn, log = FALSE)
 Other getter: 
 \code{\link{getBIC}()},
 \code{\link{getCompletedData}()},
+\code{\link{getMixtureDensity}()},
 \code{\link{getParam}()},
 \code{\link{getPartition}()},
 \code{\link{getType}()}
