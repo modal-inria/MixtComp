@@ -19,7 +19,7 @@ Histogram of the misclassification probabilities
 \details{
 Missclassification probability of observation i is denoted err_i
 err_i = 1 - max_{k={1,\ldots,K}} P(Z_i=k|x_i)
-Histgrams of err_i's can be plot for a specific class, all classes or every class
+Histograms of err_i's can be plotted for a specific class, all classes or every class
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model

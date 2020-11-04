@@ -243,7 +243,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
 #' @param log if TRUE, log(tik) are returned
 #'
-#' @return a matrix containing the tik for each individuals (in row) and each class (in column).
+#' @return a matrix containing the tik for each individual (in row) and each class (in column).
 #'
 #' @details 
 #' \emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns an estimation based on the sampled z_i during the algorithm. 

@@ -15,7 +15,7 @@ getTik(outMixtComp, log = TRUE)
 \item{log}{if TRUE, log(tik) are returned}
 }
 \value{
-a matrix containing the tik for each individuals (in row) and each class (in column).
+a matrix containing the tik for each individual (in row) and each class (in column).
 }
 \description{
 Get the a posteriori probability to belong to each class for each individual
