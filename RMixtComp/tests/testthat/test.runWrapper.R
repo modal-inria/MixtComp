@@ -253,7 +253,7 @@ test_that("mixtCompLearn works + mixtCompPredict + predict", {
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
   
-  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res", "totalTime"))
   expect_equal(resLearn$criterion, "ICL")
   expect_equal(resLearn$nRun, 3)
   expect_equal(dim(resLearn$crit), c(2, 1))
@@ -342,7 +342,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
   
-  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res", "totalTime"))
   expect_equal(resLearn$nRun, 5)
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 4))
@@ -461,7 +461,7 @@ test_that("mixtCompLearn works in hierarchicalMode", {
   expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn$res[[2]]), simData$dataLearn$data.frame$z_class), 0.85)
   expect_lte(norm(getTik(resLearn$res[[2]], log = FALSE) - getEmpiricTik(resLearn$res[[2]]))/resLearn$algo$nInd, 0.1)
   
-  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res", "totalTime"))
   expect_equal(resLearn$nRun, 2)
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 3))
