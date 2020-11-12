@@ -344,7 +344,7 @@ getTik <- function(outMixtComp, log = TRUE)
 #' @export
 getMixtureDensity <- function(outMixtComp) 
 {
-  logProp <- log(getProportion(outMixtComp))
+  logprop <- log(getProportion(outMixtComp))
   apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(x) sum(exp(x + logprop))) 
 }
 
