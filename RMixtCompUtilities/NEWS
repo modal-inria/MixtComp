@@ -1,4 +1,4 @@
-v4.1.4
+v4.1.4 2020-11-12
 - export formatData, completeAlgo and formatModel functions to avoir using RMixtCompUtilities::: in RMixtComp
 - add class parameter for functional models in plotDataBoxplot
 - change default value of nInitPerClass in createAlgo function
