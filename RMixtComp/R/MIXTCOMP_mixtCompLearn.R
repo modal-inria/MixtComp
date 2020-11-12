@@ -222,8 +222,10 @@
 #' See the associated vignette for more details: \code{RShowDoc("mixtCompObject", package = "RMixtComp")}
 #'
 #' @section MixtCompLearn object:
-#' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
-#' \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
+#' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. 
+#' It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
+#' \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, \emph{totalTime}, the total running time, 
+#' and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
 #'
 #'
 #' @section Hierarchical Mode:
@@ -303,9 +305,11 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     resLearn <- classicLearn(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
   t2 <- proc.time()
   
+  resLearn$totalTime <- (t2-t1)[3]
+  
   if(verbose)
   {
-    cat(paste0("Total runtime: ", round((t2-t1)[3], 3), "s\n"))
+    cat(paste0("Total runtime: ", round(resLearn$totalTime, 3), "s\n"))
     if(is.null(resLearn$warnLog))
       cat(paste0("Best model according to ", criterion, ": ", resLearn$algo$nClass," clusters.\n"))
     else
