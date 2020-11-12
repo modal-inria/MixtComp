@@ -292,7 +292,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     model <- imputModel(data)
   }else{
     mode <- "expert"
-    model <- RMixtCompUtilities:::formatModel(model)  
+    model <- formatModel(model)  
   }
   
   performHier <- performHierarchical(hierarchicalMode, mode, model)
@@ -329,14 +329,14 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   if(is.null(model))
     model = getModel(resLearn, with.z_class = FALSE)
   
-  model = RMixtCompUtilities:::formatModel(model)
+  model = formatModel(model)
   
   
   if(resLearn$algo$basicMode)
   {
     dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
   }else{
-    dataList <- RMixtCompUtilities:::formatData(data)
+    dataList <- formatData(data)
   }
   
   
@@ -344,7 +344,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   algo$nClass = checkNClass(nClass, resLearn)
   algo$mode = "predict"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   ## run predict
   if("MixtCompLearn" %in% class(resLearn))
@@ -444,14 +444,14 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
     }
     
   }else{
-    dataList <- RMixtCompUtilities:::formatData(data)
+    dataList <- formatData(data)
     model <- completeModel(model, dataList)
   }
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   indCrit <- ifelse(criterion == "BIC", 1, 2)
   
@@ -513,13 +513,13 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   
   nClass <- max(nClass)
   
-  dataList <- RMixtCompUtilities:::formatData(data)
+  dataList <- formatData(data)
   model <- completeModel(model, dataList)
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
   
