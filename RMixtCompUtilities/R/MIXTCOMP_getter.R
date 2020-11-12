@@ -134,7 +134,7 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 #' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getPartition <- function(outMixtComp, empiric = TRUE)
+getPartition <- function(outMixtComp, empiric = FALSE)
 {
   if(empiric)
     return(outMixtComp$variable$data$z_class$completed)
