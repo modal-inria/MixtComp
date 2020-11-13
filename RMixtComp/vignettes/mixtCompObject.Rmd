@@ -234,3 +234,4 @@ A *MixtCompLearn* object is the output of `mixtCompLearn` function. It contains 
 - **algo**, **mixture**, **variable**, **warnLog** MixtComp object associated with the best number of classes
 - **res** A list containing one *MixtComp* object per number of class. The first element (res[[1]]) corresponds to the *MixtComp* object for a number of classes of *nClass[1]*
 - **nRun** Number of runs for each number of classes
+- **totalTime** Total running time
