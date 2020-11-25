@@ -175,7 +175,8 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
           }else{
             if(is.null(newRes[[i]]$warnLog))
             {
-              indClass <- unique(res[[nbCurrentCluster]]$variable$data$z_class$completed[leaves[[i]]$indPartition])
+              # indClass <- unique(res[[nbCurrentCluster]]$variable$data$z_class$completed[leaves[[i]]$indPartition])
+              indClass <- unique(getPartition(res[[nbCurrentCluster]], empiric = FALSE)[leaves[[i]]$indPartition])
               
               tempRes <- computeNewModel(res[[nbCurrentCluster]], newRes[[i]], indClass, data, model, algo, nRun, nCore, verbose)
               if(!is.null(tempRes$warnLog))
