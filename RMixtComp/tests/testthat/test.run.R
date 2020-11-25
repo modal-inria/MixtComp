@@ -140,7 +140,7 @@ test_that("run cluster/predict R object", {
   class(resLearn) = "MixtComp"
   expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
-  file.remove("Rplots.pdf")
+  unlink("Rplots.pdf")
   
   resGenPredict <- RMixtCompIO:::dataGeneratorNewIO(200, 0.95, var)
   
