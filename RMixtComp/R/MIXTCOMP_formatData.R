@@ -22,19 +22,24 @@ imputModel <- function(data)
   if(is.matrix(data))
     stop("Can imput model only with data in data.frame or list format. Please provide data in these formats or provide a model parameter.")   
   
-  if(is.data.frame(data))
-  {
-    varNames <- colnames(data)
-    index <- 1:ncol(data)
-    model <- lapply(index, function(i) list(type = imputModelIntern(data[,i], varNames[i]), paramStr = ""))
-    names(model) = varNames
-  }else{
-    varNames <- names(data)
-    index <- seq_along(data)
-    model <- lapply(index, function(i) list(type = imputModelIntern(data[[i]], varNames[i]), paramStr = ""))
-    names(model) = varNames
-  }
+  varNames <- names(data)
+  index <- seq_along(data)
+  model <- lapply(index, function(i) list(type = imputModelIntern(data[[i]], varNames[i]), paramStr = ""))
+  names(model) = varNames
   
+  # check there is no variable named z_class imputed with something else than "LatentClass"
+  if(any(names(model) == "z_class"))
+  {
+    if(model$z_class$type != "LatentClass")
+    {
+      model$z_class = NULL  # we remove the variable
+      warning(paste("A variable named z_class was provided but not with the right type (numeric instead of integer or factor).",
+                    "The z_class name is reserved for the latent class variable.",
+                    "This variable was removed from the model.", 
+                    "If you want to keep it, change the type of the variable to integer or factor (if this variable is the latent class variable) or change the variable name."))
+    }
+  }
+
   return(model)
 }
 
