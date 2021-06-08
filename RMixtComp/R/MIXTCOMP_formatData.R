@@ -22,19 +22,11 @@ imputModel <- function(data)
   if(is.matrix(data))
     stop("Can imput model only with data in data.frame or list format. Please provide data in these formats or provide a model parameter.")   
   
-  if(is.data.frame(data))
-  {
-    varNames <- colnames(data)
-    index <- 1:ncol(data)
-    model <- lapply(index, function(i) list(type = imputModelIntern(data[,i], varNames[i]), paramStr = ""))
-    names(model) = varNames
-  }else{
-    varNames <- names(data)
-    index <- seq_along(data)
-    model <- lapply(index, function(i) list(type = imputModelIntern(data[[i]], varNames[i]), paramStr = ""))
-    names(model) = varNames
-  }
-  
+  varNames <- names(data)
+  index <- seq_along(data)
+  model <- lapply(index, function(i) list(type = imputModelIntern(data[[i]], varNames[i]), paramStr = ""))
+  names(model) = varNames
+
   return(model)
 }
 
