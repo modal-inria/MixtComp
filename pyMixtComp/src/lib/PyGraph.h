@@ -17,7 +17,7 @@
 /*
  *  Project:    MixtComp
  *  Created on: January 21, 2019
- *  Authors:    Quentin Grimonprez, Vincent Kubicki, Leo Perard
+ *  Authors:    Quentin Grimonprez, Vincent Kubicki
  **/
 
 #ifndef PYMIXTCOMP_SRC_PYGRAPH_H
