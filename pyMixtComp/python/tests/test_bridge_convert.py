@@ -17,7 +17,7 @@ class TestBridge(unittest.TestCase):
         x = {"data": np.array([[1.73245393e-06], [1.49653391e-07]]), "rowNames": [],
              "colNames": [], "ctype": "Matrix", "dtype": "Real", "ncol": 1, "nrow": 2}
         out = convert_C_matrix(x)
-        self.assertEqual(out, x["data"])
+        self.assertListEqual(out.tolist(), x["data"].tolist())
 
         x = {"data": np.array([[-2.02395103, -2.02395103, -2.02395103],
                                [0.53140162,  0.53140162,  0.53140162],
@@ -27,7 +27,7 @@ class TestBridge(unittest.TestCase):
              "colNames": [],
              "ctype": "Matrix", "dtype": "Real", "ncol": 3, "nrow": 4}
         out = convert_C_matrix(x)
-        self.assertEqual(out, x["data"])
+        self.assertListEqual(out.tolist(), x["data"].tolist())
 
     def test_convert_C_matrix_convert_DataFrame(self):
         x = {"data": np.array([[1.]]), "rowNames": ["a"], "colNames": ["gauss"],
@@ -109,7 +109,7 @@ class TestBridge(unittest.TestCase):
         self.assertEqual(x["c"], expected_out["c"])
         self.assertEqual(x["d"].keys(), expected_out["d"].keys())
         self.assertEqual(x["d"]["dd1"], expected_out["d"]["dd1"])
-        self.assertDictEqual(x["d"]["dd2"].to_dict().to_dict())
+        self.assertDictEqual(x["d"]["dd2"].to_dict(), expected_out["d"]["dd2"].to_dict())
 
     def test_convert_data_to_dict_with_array(self):
         x = np.array([[1, 2, 3], [4, 5, 6]])
