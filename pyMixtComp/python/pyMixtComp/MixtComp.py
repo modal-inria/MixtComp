@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from sklearn.base import BaseEstimator
 
 import pyMixtComp.pyMixtCompBridge as pyMixtCompBridge
@@ -8,10 +10,8 @@ from pyMixtComp.bridge.utils import create_algo
 class MixtComp(BaseEstimator):
     def __init__(self, n_component, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
-                 ratio_stable_criterion=0.99, n_stable_criterion=20, n_run=1, verbose=True):
+                 ratio_stable_criterion=0.99, n_stable_criterion=20):
         self.n_component = n_component
-        self.n_run = n_run
-        self.verbose = verbose
 
         self.n_burn_in_iter = n_burn_in_iter
         self.n_iter = n_iter
@@ -25,7 +25,20 @@ class MixtComp(BaseEstimator):
 
     def fit(self, X, model):
         algo = create_algo(self, X, "learn")
+        self.model = model
 
-        self.res = pyMixtCompBridge.pmc(algo, X, model, {})
+        self.res = pyMixtCompBridge.pmc(algo, X, self.model, {})
+
+        self._param = {"variable": {"param": deepcopy(self.res["variable"]["param"])}}
         convert(self.res)
+
         return self
+
+    def predict(self, X):
+        algo = create_algo(self, X, "predict")
+
+        self.res_predict = pyMixtCompBridge.pmc(algo, X, self.model, self._param)
+
+        convert(self.res_predict)
+
+        return self.res_predict["variable"]["data"]["z_class"]["completed"]
