@@ -54,3 +54,5 @@ RJMixtComp/RJMCtest.xml
 RMixtCompHier.Rcheck
 /.metadata/
 RemoteSystemsTempFiles
+__pycache__
+*.egg-info

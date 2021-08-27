@@ -1,0 +1,1 @@
+cp ../build/lib/pyMixtCompBridge.so pyMixtComp/pyMixtCompBridge.so
