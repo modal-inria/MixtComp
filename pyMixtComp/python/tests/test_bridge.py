@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from pyMixtComp.bridge.convert import convert_C_matrix, convert_C_vector, convert
+from pyMixtComp.bridge.convert import convert_C_matrix, convert_C_vector, convert, convert_data_to_dict
 
 
 class TestBridge(unittest.TestCase):
@@ -110,6 +110,41 @@ class TestBridge(unittest.TestCase):
         self.assertEqual(x["d"].keys(), expected_out["d"].keys())
         self.assertEqual(x["d"]["dd1"], expected_out["d"]["dd1"])
         self.assertDictEqual(x["d"]["dd2"].to_dict().to_dict())
+
+    def test_convert_data_to_dict_with_array(self):
+        x = np.array([[1, 2, 3], [4, 5, 6]])
+        expected_out = {"var0": np.array(["1", "4"], dtype="<U21"),
+                        "var1": np.array(["2", "5"], dtype="<U21"),
+                        "var2": np.array(["3", "6"], dtype="<U21")}
+
+        out = convert_data_to_dict(x)
+        self.assertEqual(out.keys(), expected_out.keys())
+        for key in expected_out.keys():
+            self.assertListEqual(list(out[key]), list(expected_out[key]))
+
+    def test_convert_data_to_dict_with_dict(self):
+        x = {"a": [1, 4],
+             "b": [2, 5],
+             "c": [3, 6]}
+        expected_out = {"a": ["1", "4"],
+                        "b": ["2", "5"],
+                        "c": ["3", "6"]}
+
+        out = convert_data_to_dict(x)
+        self.assertEqual(out.keys(), expected_out.keys())
+        for key in expected_out.keys():
+            self.assertListEqual(list(out[key]), list(expected_out[key]))
+
+    def test_convert_data_to_dict_with_dataframe(self):
+        x = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6]]), columns=["a", "b", "c"])
+        expected_out = {"a": ["1", "4"],
+                        "b": ["2", "5"],
+                        "c": ["3", "6"]}
+
+        out = convert_data_to_dict(x)
+        self.assertEqual(out.keys(), expected_out.keys())
+        for key in expected_out.keys():
+            self.assertListEqual(list(out[key]), list(expected_out[key]))
 
 
 if __name__ == "__main__":

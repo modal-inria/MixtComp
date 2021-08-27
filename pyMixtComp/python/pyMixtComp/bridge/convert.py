@@ -1,7 +1,7 @@
 """
 Functions to convert c++ outputs to python
 """
-
+import numpy as np
 import pandas as pd
 
 
@@ -73,3 +73,37 @@ def convert(object):
                     object[key] = convert_C_vector(object[key])
             else:
                 convert(object[key])
+
+
+def convert_data_to_dict(X):
+    """ Convert data to dict of list of string
+
+    Parameters
+    ----------
+    X : array, DataFrame, dict
+        Data. Columns corresponds to variables. In the case of a dict: 1 key = 1 variable
+
+    Returns
+    -------
+    dict
+        Data in the supported format
+    """
+    if isinstance(X, np.ndarray):
+        d = {}
+        for i in range(X.shape[1]):
+            d["var" + str(i)] = X[:, i].astype("str")
+
+        return d
+
+    if isinstance(X, pd.DataFrame):
+        return X.astype(str).to_dict("list")
+
+    if isinstance(X, dict):
+        d = {}
+        for key in X.keys():
+            if isinstance(X[key], np.ndarray):
+                d[key] = X[key].astype("str")
+            elif isinstance(X[key], list):
+                d[key] = np.array(X[key]).astype("str")
+
+        return d

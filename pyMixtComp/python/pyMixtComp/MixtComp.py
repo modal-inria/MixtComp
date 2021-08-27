@@ -3,7 +3,7 @@ from copy import deepcopy
 from sklearn.base import BaseEstimator
 
 import pyMixtComp.pyMixtCompBridge as pyMixtCompBridge
-from pyMixtComp.bridge.convert import convert
+from pyMixtComp.bridge.convert import convert, convert_data_to_dict
 from pyMixtComp.bridge.utils import create_algo
 
 
@@ -24,10 +24,11 @@ class MixtComp(BaseEstimator):
         self.n_stable_criterion = n_stable_criterion
 
     def fit(self, X, model):
-        algo = create_algo(self, X, "learn")
+        dat = convert_data_to_dict(X)
+        algo = create_algo(self, dat, "learn")
         self.model = model
 
-        self.res = pyMixtCompBridge.pmc(algo, X, self.model, {})
+        self.res = pyMixtCompBridge.pmc(algo, dat, self.model, {})
 
         self._param = {"variable": {"param": deepcopy(self.res["variable"]["param"])}}
         convert(self.res)
@@ -35,9 +36,10 @@ class MixtComp(BaseEstimator):
         return self
 
     def predict(self, X):
-        algo = create_algo(self, X, "predict")
+        dat = convert_data_to_dict(X)
+        algo = create_algo(self, dat, "predict")
 
-        self.res_predict = pyMixtCompBridge.pmc(algo, X, self.model, self._param)
+        self.res_predict = pyMixtCompBridge.pmc(algo, dat, self.model, self._param)
 
         convert(self.res_predict)
 
