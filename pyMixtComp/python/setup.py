@@ -15,5 +15,5 @@ setup(
     ],
     packages=["pyMixtComp"],
     package_data={"pyMixtComp": ["pyMixtCompBridge.so"]},
-    install_requires=["numpy", "pandas"],
+    install_requires=["numpy", "pandas", "scikit-learn"],
 )

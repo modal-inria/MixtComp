@@ -4,7 +4,7 @@ from sklearn.base import BaseEstimator
 
 import pyMixtComp.pyMixtCompBridge as pyMixtCompBridge
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
-from pyMixtComp.bridge.utils import create_algo
+from pyMixtComp.bridge.utils import create_algo, format_model, create_model
 
 
 class MixtComp(BaseEstimator):
@@ -23,10 +23,15 @@ class MixtComp(BaseEstimator):
         self.ratio_stable_criterion = ratio_stable_criterion
         self.n_stable_criterion = n_stable_criterion
 
-    def fit(self, X, model):
+    def fit(self, X, model=None):
         dat = convert_data_to_dict(X)
         algo = create_algo(self, dat, "learn")
+
         self.model = model
+        if self.model is None:
+            self.model = create_model(var_names=list(dat.keys()))
+        else:
+            format_model(self.model)
 
         self.res = pyMixtCompBridge.pmc(algo, dat, self.model, {})
 
