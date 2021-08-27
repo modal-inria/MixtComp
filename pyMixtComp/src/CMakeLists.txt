@@ -18,6 +18,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 
 # Compile MixtComp
+add_compile_options("-DMINMODALITY=0")
 add_subdirectory(../../MixtComp/src MixtComp)
 
 # add MixtComp's include directories and definitions
