@@ -28,7 +28,7 @@ def create_algo(object, X, mode):
     }
     algo["mode"] = mode
     algo["nInd"] = len(X[list(X.keys())[0]])
-    algo["nClass"] = object.n_component
+    algo["nClass"] = object.n_components
 
     return algo
 

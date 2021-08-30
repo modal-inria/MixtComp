@@ -5,7 +5,7 @@ from pyMixtComp.bridge.utils import create_algo, create_model, format_model
 
 class TestUtils(unittest.TestCase):
     def setUp(self):
-        self.n_component = 2
+        self.n_components = 2
         self.n_burn_in_iter = 10
         self.n_iter = 15
         self.n_gibbs_burn_in_iter = 20
@@ -28,7 +28,7 @@ class TestUtils(unittest.TestCase):
             "confidenceLevel": self.confidence_level,
             "ratioStableCriterion": self.ratio_stable_criterion,
             "nStableCriterion": self.n_stable_criterion,
-            "nClass": self.n_component,
+            "nClass": self.n_components,
             "nInd": 2,
             "mode": "learn"
         }

@@ -8,10 +8,10 @@ from pyMixtComp.bridge.utils import create_algo, format_model, create_model
 
 
 class MixtComp(BaseEstimator):
-    def __init__(self, n_component, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
+    def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
                  ratio_stable_criterion=0.99, n_stable_criterion=20):
-        self.n_component = n_component
+        self.n_components = n_components
 
         self.n_burn_in_iter = n_burn_in_iter
         self.n_iter = n_iter
