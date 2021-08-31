@@ -35,6 +35,9 @@ class MixtComp(BaseEstimator):
 
         self.res = pyMixtCompBridge.pmc(algo, dat, self.model, {})
 
+        if "warnLog" in self.res.keys():
+            raise RuntimeError(self.res["warnLog"])
+
         self._param = {"variable": {"param": deepcopy(self.res["variable"]["param"])}}
         convert(self.res)
 

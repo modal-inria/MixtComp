@@ -25,6 +25,11 @@ class TestMixtComp(unittest.TestCase):
         self.assertEqual(mod.ratio_stable_criterion, 0.95)
         self.assertEqual(mod.n_stable_criterion, 40)
 
+    def test_MixtComp_raise_error(self):
+        mod = MixtComp(n_components=2)
+        with self.assertRaises(RuntimeError):
+            mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Multinomial", "paramStr": ""}})
+
     def test_MixtComp_fit_dict(self):
         mod = MixtComp(n_components=2)
 
