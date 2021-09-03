@@ -13,8 +13,9 @@ class TestMixtComp(unittest.TestCase):
     def test_MixtComp_init(self):
         mod = MixtComp(n_components=2, n_burn_in_iter=10, n_iter=15, n_gibbs_burn_in_iter=20, n_gibbs_iter=25,
                        n_init_per_class=30, n_sem_try=35, confidence_level=0.9,
-                       ratio_stable_criterion=0.95, n_stable_criterion=40)
+                       ratio_stable_criterion=0.95, n_stable_criterion=40, n_init=3)
         self.assertEqual(mod.n_components, 2)
+        self.assertEqual(mod.n_init, 3)
         self.assertEqual(mod.n_burn_in_iter, 10)
         self.assertEqual(mod.n_iter, 15)
         self.assertEqual(mod.n_gibbs_burn_in_iter, 20)
@@ -45,6 +46,11 @@ class TestMixtComp(unittest.TestCase):
 
         mod.fit(self.gauss.reshape(-1, 1))
         self.assertDictEqual(mod.model, {"var0": {"type": "Gaussian", "paramStr": ""}})
+
+    def test_MixtComp_fit_multi_init(self):
+        mod = MixtComp(n_components=2, n_init_per_class=10, n_init=2)
+
+        mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
 
 
 if __name__ == "__main__":

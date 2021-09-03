@@ -3,6 +3,7 @@ from copy import deepcopy
 from sklearn.base import BaseEstimator
 
 import pyMixtComp.pyMixtCompBridge as pyMixtCompBridge
+from pyMixtComp.bridge.bridge import multi_run_pmc
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
 from pyMixtComp.bridge.utils import create_algo, format_model, create_model
 
@@ -10,9 +11,11 @@ from pyMixtComp.bridge.utils import create_algo, format_model, create_model
 class MixtComp(BaseEstimator):
     def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
-                 ratio_stable_criterion=0.99, n_stable_criterion=20):
+                 ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1):
         self.n_components = n_components
+        self.n_init = n_init
 
+        # algo parameters
         self.n_burn_in_iter = n_burn_in_iter
         self.n_iter = n_iter
         self.n_gibbs_burn_in_iter = n_gibbs_burn_in_iter
@@ -33,7 +36,7 @@ class MixtComp(BaseEstimator):
         else:
             format_model(self.model)
 
-        self.res = pyMixtCompBridge.pmc(algo, dat, self.model, {})
+        self.res = multi_run_pmc(algo, dat, self.model, {}, self.n_init)
 
         if "warnLog" in self.res.keys():
             raise RuntimeError(self.res["warnLog"])
