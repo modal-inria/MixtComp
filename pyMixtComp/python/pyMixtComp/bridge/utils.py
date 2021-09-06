@@ -1,3 +1,7 @@
+import numpy as np
+import pandas as pd
+
+
 def create_algo(object, X, mode):
     """ Create the algo dict required by MixtComp
 
@@ -52,31 +56,72 @@ def format_model(model):
                 model[key] = {"type": model[key], "paramStr": ""}
 
 
-def create_model(model_names=None, var_names=None):
-    """ Create model dict from model and variables names
+def impute_model(data):
+    """ Create model dict from data
 
-    At least 1 of the parameters must not be None
 
     Parameters
     ----------
-    model_names : list of str, optional
-        model names, by default None
-    var_names : list of str, optional
-        variables names, by default None
+    data : array, DataFrame or dict
+        data for MixtComp
 
     Returns
     -------
     dict
         A dict with where every key has the form `{"type": "model", "paramStr": "param"}`
     """
-    if model_names is None:
-        model_names = ["Gaussian"] * len(var_names)
+    if isinstance(data, np.ndarray):
+        var_names = ["var" + str(i) for i in range(data.shape[1])]
+        var_types = [data.dtype] * data.shape[1]
 
-    if var_names is None:
-        var_names = ["var" + str(i) for i in range(len(model_names))]
+    if isinstance(data, pd.DataFrame):
+        var_names = data.columns
+        var_types = data.dtypes
+
+    if isinstance(data, dict):
+        var_names = data.keys()
+        var_types = [type(v[0]) for v in data.values()]
 
     model = {}
-    for i in range(len(model_names)):
-        model[var_names[i]] = {"type": model_names[i], "paramStr": ""}
+    for var_name, var_type in zip(var_names, var_types):
+        model[var_name] = _impute_model(var_name, var_type)
 
     return model
+
+
+def _impute_model(var_name, var_type):
+    """ Return the model given the variable type and name
+
+    Parameters
+    ----------
+    var_name : str
+        variable name
+    var_type : dtype, class
+        variable type
+
+    Returns
+    -------
+    str
+        model name
+
+    Raises
+    ------
+    TypeError
+        Cannot impute the model
+    """
+    if pd.api.types.is_float_dtype(var_type):
+        return "Gaussian"
+    elif pd.api.types.is_int64_dtype(var_type):
+        if var_name == "z_class":
+            return "LatentClass"
+        else:
+            return "Poisson"
+    elif pd.api.types.is_string_dtype(var_type) or pd.api.types.is_categorical_dtype(var_type):
+        if var_name == "z_class":
+            return "LatentClass"
+        else:
+            return "Multinomial"
+    else:
+        raise TypeError("Cannot impute the model for variable ", var_name, ". Please provide the model parameter.")
+
+

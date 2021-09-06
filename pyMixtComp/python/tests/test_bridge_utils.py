@@ -1,6 +1,9 @@
 import unittest
 
-from pyMixtComp.bridge.utils import create_algo, create_model, format_model
+import numpy as np
+import pandas as pd
+
+from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model
 
 
 class TestUtils(unittest.TestCase):
@@ -71,20 +74,41 @@ class TestUtils(unittest.TestCase):
         format_model(model)
         self.assertDictEqual(model, expected_out)
 
-    def test_create_model_model_names_None(self):
-        model = create_model(None, ["gauss", "mult"])
-        self.assertDictEqual(model, {"gauss": {"type": "Gaussian", "paramStr": ""},
-                                     "mult": {"type": "Gaussian", "paramStr": ""}})
+    def test_impute_model(self):
+        self.assertEqual(_impute_model("gauss", np.float64), "Gaussian")
+        self.assertEqual(_impute_model("pois", np.int64), "Poisson")
+        self.assertEqual(_impute_model("z_class", np.int64), "LatentClass")
+        self.assertEqual(_impute_model("z_class", str), "LatentClass")
+        self.assertEqual(_impute_model("mult", str), "Multinomial")
+        with self.assertRaises(TypeError):
+            _impute_model("mult", np.datetime64)
 
-    def test_create_model_var_names_None(self):
-        model = create_model(["Gaussian", "Multinomial"], None)
-        self.assertDictEqual(model, {"var0": {"type": "Gaussian", "paramStr": ""},
-                                     "var1": {"type": "Multinomial", "paramStr": ""}})
+    def test_impute_model_DataFrame(self):
+        model = impute_model(pd.DataFrame({"gauss": [1.5, 2.5],
+                                           "pois": [1, 2],
+                                           "mult": ["a", "b"],
+                                           "z_class": [1, 2]}))
 
-    def test_create_model(self):
-        model = create_model(["Gaussian", "Multinomial"], ["gauss", "mult"])
-        self.assertDictEqual(model, {"gauss": {"type": "Gaussian", "paramStr": ""},
-                                     "mult": {"type": "Multinomial", "paramStr": ""}})
+        self.assertDictEqual(model, {"gauss": "Gaussian", "pois": "Poisson",
+                                     "mult": "Multinomial", "z_class": "LatentClass"})
+
+    def test_impute_model_array(self):
+        model = impute_model(np.array([[1, 2], [3, 4]]))
+        self.assertDictEqual(model, {"var0": "Poisson", "var1": "Poisson"})
+
+        model = impute_model(np.array([[1., 2.], [3., 4.]]))
+        self.assertDictEqual(model, {"var0": "Gaussian", "var1": "Gaussian"})
+
+        model = impute_model(np.array([["a", "a"], ["b", "b"]]))
+        self.assertDictEqual(model, {"var0": "Multinomial", "var1": "Multinomial"})
+
+    def test_impute_model_dict(self):
+        model = impute_model({"gauss": [1.5, 2.5],
+                              "pois": [1, 2],
+                              "mult": ["a", "b"],
+                              "z_class": [1, 2]})
+        self.assertDictEqual(model, {"gauss": "Gaussian", "pois": "Poisson",
+                                     "mult": "Multinomial", "z_class": "LatentClass"})
 
 
 if __name__ == "__main__":

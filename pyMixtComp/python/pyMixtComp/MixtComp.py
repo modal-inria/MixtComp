@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator
 
 from pyMixtComp.bridge.bridge import multi_run_pmc_pool
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
-from pyMixtComp.bridge.utils import create_algo, format_model, create_model
+from pyMixtComp.bridge.utils import create_algo, format_model, impute_model
 import pyMixtComp.plot as plot
 
 
@@ -32,14 +32,43 @@ class MixtComp(BaseEstimator):
         self.n_stable_criterion = n_stable_criterion
 
     def fit(self, X, model=None):
+        """ Estimate model parameters with the SEM algorithm.
+
+        Parameters
+        ----------
+        X : dict, array or DataFrame
+            [description]
+        model : dict, optional
+            dict containing the variables to use in the model, by default None.
+            Each key corresponds to a variable name (in the case where X is a dict or a DataFrame), and each value to a model.
+            Available models are: "Gaussian", "Multinomial", "Poisson", "NegativeBinomial", "Weibull", "Rank_ISR", "Func_CS"
+            and "Func_SharedAlpha_CS". "Func_CS" and "Func_SharedAlpha_CS" require hyperparameters, their values must
+            be {type: "Func_CS", paramStr: "nSub: a, nCoeff: b"} where a is the number of subregressions and b the the number
+            of coefficients of each regression.
+            None is tolerated when a numpy array or a DataFrame is provided.
+            In the numpy array case, all variables are assumed to be gaussian. In the DataFrame case, model are imputed
+            regarding the column type: float => Gaussian, int => Poisson, object => categorical.
+
+
+        Returns
+        -------
+        MixtComp
+            self
+
+        Raises
+        ------
+        RuntimeError
+            Error from the C++ algorithm.
+        """
+        self.basic_mode = (model is None)
+
+        if self.basic_mode:
+            model = impute_model(X)
+        self.model = model
+        format_model(self.model)
+
         dat = convert_data_to_dict(X)
         algo = create_algo(self, dat, "learn")
-
-        self.model = model
-        if self.model is None:
-            self.model = create_model(var_names=list(dat.keys()))
-        else:
-            format_model(self.model)
 
         self.res = multi_run_pmc_pool(algo, dat, self.model, {}, self.n_init, self.n_core)
 
