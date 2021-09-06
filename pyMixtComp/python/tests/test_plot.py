@@ -78,6 +78,16 @@ class TestPlot(unittest.TestCase):
     def test_plot_tik(self):
         plot_tik(self.mod.res)
 
+    def test_MixtComp_interface(self):
+        self.mod.plot_class_similarity()
+        self.mod.plot_variable_similarity()
+        self.mod.plot_discriminative_power_class()
+        self.mod.plot_discriminative_power_variable()
+        self.mod.plot_tik()
+        self.mod.plot_data("gauss")
+        self.mod.plot_data_CI("gauss")
+        self.mod.plot_proportion()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,8 +11,36 @@ from pyMixtComp.plot.univariate_boxplot import barplot_per_class_categorical
 
 
 def plot_data_CI(res, var_name, class_numbers=None, all=False):
+    """ Plot Mean and 95%-level confidence intervals per class
+
+    Parameters
+    ----------
+    res : dict
+        output of multi_run_pmc_pool
+    var_name : str
+        Variable name
+    class_numbers : int, array-like of int, optional
+        Classes to plot, by default None, all classes are plotted
+    all : bool, optional
+        If True, it adds the mean and 95%-level confidence interval for all data, by default False
+
+    Returns
+    -------
+    Axes
+        Plot Mean and 95%-level confidence intervals per class
+
+    Raises
+    ------
+    ValueError
+        The given var_name does not exist
+    NotImplementedError
+        The plot function associated with the model of var_name does not exist
+    """
     if var_name not in res["variable"]["type"].keys():
         raise ValueError(var_name + " variable does not exist in the mixture model.")
+
+    if isinstance(class_numbers, int):
+        class_numbers = [class_numbers]
 
     model = res["variable"]["type"][var_name]
 
@@ -53,6 +81,7 @@ def plot_CI_numerical(ci, var_name):
 
 
 def extract_CI_gaussian(res, var_name, class_numbers=None, all=False):
+    """ Compute mean and 95% CI of the estimated gaussian distribution """
     if class_numbers is None:
         class_numbers = list(range(res["algo"]["nClass"]))
 
@@ -76,6 +105,7 @@ def extract_CI_gaussian(res, var_name, class_numbers=None, all=False):
 
 
 def extract_CI_poisson(res, var_name, class_numbers=None, all=False):
+    """ Compute mean and 95% CI of the estimated poisson distribution """
     if class_numbers is None:
         class_numbers = list(range(res["algo"]["nClass"]))
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 1)
@@ -97,6 +127,7 @@ def extract_CI_poisson(res, var_name, class_numbers=None, all=False):
 
 
 def extract_CI_nbinom(res, var_name, class_numbers=None, all=False):
+    """ Compute mean and 95% CI of the estimated negative binomial distribution """
     if class_numbers is None:
         class_numbers = list(range(res["algo"]["nClass"]))
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
@@ -118,6 +149,7 @@ def extract_CI_nbinom(res, var_name, class_numbers=None, all=False):
 
 
 def extract_CI_weibull(res, var_name, class_numbers=None, all=False):
+    """ Compute mean and 95% CI of the estimated weibull distribution """
     if class_numbers is None:
         class_numbers = list(range(res["algo"]["nClass"]))
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
@@ -137,6 +169,7 @@ def extract_CI_weibull(res, var_name, class_numbers=None, all=False):
 
 
 def extract_CI_multinomial(res, var_name, class_numbers=None, all=False):
+    """ Keep labels up to 95% probability """
     if class_numbers is None:
         class_numbers = list(range(res["algo"]["nClass"]))
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(res["algo"]["nClass"], -1)

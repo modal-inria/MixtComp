@@ -7,6 +7,7 @@ from sklearn.base import BaseEstimator
 from pyMixtComp.bridge.bridge import multi_run_pmc_pool
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
 from pyMixtComp.bridge.utils import create_algo, format_model, create_model
+import pyMixtComp.plot as plot
 
 
 class MixtComp(BaseEstimator):
@@ -58,3 +59,117 @@ class MixtComp(BaseEstimator):
         convert(self.res_predict)
 
         return self.res_predict["variable"]["data"]["z_class"]["completed"]
+
+    def plot_discriminative_power_variable(self, class_number=None):
+        """ Plot the discriminative power of variables
+
+        Parameters
+        ----------
+        class_number : int, optional
+            Class number (0, ...,  n_components - 1), by default None.
+            If None, it returns the discriminative power of variables globally otherwise it returns the discriminative power
+            of variables in the given class
+
+        Returns
+        -------
+        Axes
+            Barplot
+        """
+        return plot.plot_discriminative_power_variable(self.res, class_number)
+
+    def plot_discriminative_power_class(self):
+        """Plot the discriminative power of classes
+
+        Returns
+        -------
+        Axes
+            barplot
+        """
+        return plot.plot_discriminative_power_class(self.res)
+
+    def plot_proportion(self):
+        """ Plot a barplot with proportion's mixture
+
+        Returns
+        -------
+        Axes
+            barplot
+        """
+        return plot.plot_proportion(self.res)
+
+    def plot_class_similarity(self):
+        """ Plot the similarity between classes
+
+        Returns
+        -------
+        Axes
+            Heatmap of the similarity
+
+        Notes
+        -----
+        The similarities between classes k and g is defined by 1 - Sigma(k,g) where Sigma is:
+        .. math::
+        Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
+
+        A high value (close to one) means that the classes are highly similar (high overlapping).
+        A low value (close to zero) means that the classes are highly different (low overlapping).
+        """
+        return plot.plot_class_similarity(self.res)
+
+    def plot_variable_similarity(self):
+        """ Plot the similarity between variables
+
+        Returns
+        -------
+        Axes
+            Heatmap of the similarity
+
+        Notes
+        -----
+        The similarities between variables j and h is defined by Delta(j, h) where Delta is:
+        .. math::
+        Delta(j,h)^2 = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
+
+        A high value (close to one) means that the variables provide the same information for the clustering task
+        (i.e. similar partitions).
+        A low value (close to zero) means that the variables provide some different information for the clustering task
+        (i.e. different partitions).
+        """
+        return plot.plot_variable_similarity(self.res)
+
+    def plot_tik(self):
+        """ Heatmap of the tik = P(Z_i=k|x_i)
+
+        Observation are sorted according to the hard partition then for each component
+        they are sorted by decreasing order of their tik
+
+        Returns
+        -------
+        Axes
+            Heatmap of the tik
+        """
+        return plot.plot_tik(self.res)
+
+    def plot_data_CI(self, var_name, class_numbers=None, all=False):
+        """ Mean and 95%-level confidence intervals per class
+
+        Parameters
+        ----------
+        var_name : str
+            Variable name
+        class_numbers : int, array-like of int, optional
+            Classes to plot, by default None, all classes are plotted
+        all : bool, optional
+            If True, it adds the mean and 95%-level confidence interval for all data, by default False
+
+        Returns
+        -------
+        Axes
+            Plot Mean and 95%-level confidence intervals per class
+        """
+        return plot.plot_data_CI(self.res, var_name, class_numbers, all)
+
+    def plot_data(self, var_name, class_numbers=None, all=False):
+        return plot.plot_data(self.res, var_name, class_numbers, all)
+
+

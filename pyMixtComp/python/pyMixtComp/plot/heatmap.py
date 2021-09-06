@@ -138,7 +138,7 @@ def plot_tik(res):
     Returns
     -------
     Axes
-        Heatmap of the similarity
+        Heatmap of the tik
     """
     tik = res["variable"]["data"]["z_class"]["stat"]
     predicted_class = res["variable"]["data"]["z_class"]["completed"]
