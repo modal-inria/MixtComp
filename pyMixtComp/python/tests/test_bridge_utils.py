@@ -1,9 +1,11 @@
+import pickle
 import unittest
 
 import numpy as np
 import pandas as pd
 
-from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model, format_data_basic_mode
+from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model, format_data_basic_mode, \
+    refactor_categorical, format_output_basic_mode
 
 
 class TestUtils(unittest.TestCase):
@@ -149,6 +151,70 @@ class TestUtils(unittest.TestCase):
                                 "pois": ["1", "4", "2"],
                                 "mult": ["1", "0", "?"],
                                 "z_class": ["1", "0", "1"]})
+
+    def test_refactor_categorical_with_series(self):
+        data = pd.Series([0.0, 1.0, 0.0])
+        new_categ = ["a", "b"]
+        old_categ = ["0", "1"]
+
+        out = refactor_categorical(data, old_categ, new_categ)
+
+        self.assertListEqual(out.to_list(), ["a", "b", "a"])
+
+    def test_refactor_categorical_with_array(self):
+        data = np.array([0.0, 1.0, 0.0])
+        new_categ = ["a", "b"]
+        old_categ = ["0", "1"]
+
+        out = refactor_categorical(data, old_categ, new_categ)
+
+        self.assertListEqual(list(out), ["a", "b", "a"])
+        self.assertIsInstance(out, np.ndarray)
+
+    def test_format_output_basic_mode(self):
+        with open("tests/mixtcomp_output.pickle", "rb") as f:
+            res = pickle.load(f)
+
+            dictionary = {"mult": {"old": ["a", "b", "c", "d"], "new": ["0", "1", "2", "3"]},
+                          "mult2": {"old": ["d", "c", "b", "a"], "new": ["0", "1", "2", "3"]},
+                          "z_class": {"old": ["A", "B"], "new": ["0", "1"]}}
+
+            expected_mult = res["variable"]["data"]["mult"]["completed"].copy().astype(str)
+            for i in range(4):
+                expected_mult[expected_mult == str(i)] = dictionary["mult"]["old"][i]
+
+            expected_mult2 = res["variable"]["data"]["mult2"]["completed"].copy().astype(str)
+            for i in range(4):
+                expected_mult2[expected_mult2 == str(i)] = dictionary["mult2"]["old"][i]
+
+            expected_z_class = res["variable"]["data"]["z_class"]["completed"].copy().astype(str)
+            for i in range(2):
+                expected_z_class[expected_z_class == str(i)] = dictionary["z_class"]["old"][i]
+
+            format_output_basic_mode(res, dictionary)
+
+            self.assertDictEqual(res["algo"]["dictionary"], dictionary)
+
+            self.assertListEqual(res["variable"]["data"]["mult"]["stat"]["4"]["modality"].to_list(), ["b", "d", "c"])
+            self.assertListEqual(res["variable"]["data"]["mult"]["stat"]["5"]["modality"].to_list(), ["b", "c", "d"])
+            self.assertListEqual(list(res["variable"]["data"]["z_class"]["stat"].columns), ["k: A", "k: B"])
+
+            self.assertListEqual(list(res["variable"]["data"]["mult"]["completed"]), list(expected_mult))
+            self.assertListEqual(list(res["variable"]["data"]["mult2"]["completed"]), list(expected_mult2))
+            self.assertListEqual(list(res["variable"]["data"]["z_class"]["completed"]), list(expected_z_class))
+
+            self.assertListEqual(list(res["variable"]["param"]["mult"]["stat"].index),
+                                 ["k: " + k + ", modality: " + m for k, m in zip(np.repeat(dictionary["z_class"]["old"], 4),
+                                                                                 dictionary["mult"]["old"] * 2)])
+            self.assertListEqual(list(res["variable"]["param"]["mult2"]["stat"].index),
+                                 ["k: " + k + ", modality: " + m for k, m in zip(np.repeat(dictionary["z_class"]["old"], 4),
+                                                                                 dictionary["mult2"]["old"] * 2)])
+            self.assertListEqual(list(res["variable"]["param"]["gauss"]["stat"].index),
+                                 ["k: " + k + ", " + m for k, m in zip(np.repeat(dictionary["z_class"]["old"], 2),
+                                                                       ["mean", "sd"] * 2)])
+            self.assertListEqual(list(res["variable"]["param"]["z_class"]["stat"].index), ["k: A", "k: B"])
+            self.assertListEqual(list(res["mixture"]["IDClass"].index), ["k: A", "k: B"])
+            self.assertListEqual(list(res["mixture"]["IDClassBar"].index), ["k: A", "k: B"])
 
 
 if __name__ == "__main__":

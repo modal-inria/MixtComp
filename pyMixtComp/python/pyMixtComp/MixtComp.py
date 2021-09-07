@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator
 
 from pyMixtComp.bridge.bridge import multi_run_pmc_pool
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
-from pyMixtComp.bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model
+from pyMixtComp.bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model, format_output_basic_mode
 import pyMixtComp.plot as plot
 
 
@@ -83,6 +83,8 @@ class MixtComp(BaseEstimator):
 
         self._param = {"variable": {"param": deepcopy(self.res["variable"]["param"])}}
         convert(self.res)
+        if self.basic_mode:
+            format_output_basic_mode(self.res, self.dictionary)
 
         return self
 
@@ -97,6 +99,8 @@ class MixtComp(BaseEstimator):
 
         self.res_predict = multi_run_pmc_pool(algo, dat, self.model, self._param, self.n_init, self.n_core)
         convert(self.res_predict)
+        if self.basic_mode:
+            format_output_basic_mode(self.res_predict, self.dictionary)
 
         return self.res_predict["variable"]["data"]["z_class"]["completed"]
 

@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 
@@ -161,3 +163,63 @@ def format_data_basic_mode(data, model, dictionary=None):
             data[var_name] = data[var_name].astype("str")
 
     return data.to_dict("list"), dictionary
+
+
+def refactor_categorical(data, old_categ, new_categ):
+    is_not_series = not isinstance(data, pd.Series)
+
+    if is_not_series:
+        data = pd.Series(data)
+    data = data.astype("int").astype("str").astype("category")
+    data = data.cat.rename_categories(dict(zip(old_categ, new_categ)))
+
+    if is_not_series:
+        data = data.to_numpy()
+
+    return data
+
+
+def format_output_basic_mode(res, dictionary):
+    res["algo"]["dictionary"] = dictionary
+
+    for var_name in (set(dictionary) - {"z_class"}):
+        res["variable"]["data"][var_name]["completed"] = refactor_categorical(
+            res["variable"]["data"][var_name]["completed"],
+            dictionary[var_name]["new"], dictionary[var_name]["old"])
+
+        if "stat" in res["variable"]["data"][var_name]:
+            for key in res["variable"]["data"][var_name]["stat"].keys():
+                res["variable"]["data"][var_name]["stat"][key]["modality"] = refactor_categorical(
+                    res["variable"]["data"][var_name]["stat"][key]["modality"],
+                    dictionary[var_name]["new"], dictionary[var_name]["old"])
+
+        res["variable"]["param"][var_name]["stat"].index = [re.sub("[0-9]*$", "", x) + d for x, d in zip(
+            res["variable"]["param"][var_name]["stat"].index, dictionary[var_name]["old"] * res["algo"]["nClass"])]
+        # ! log has not the right format
+        # res["variable"]["param"][var_name]["log"].index = res["variable"]["param"][var_name]["stat"].index
+
+    # this will not work for non simple model. It is not a problem because in basic mode only simple models are considered
+    if "z_class" in dictionary:
+        res["variable"]["data"]["z_class"]["completed"] = refactor_categorical(
+            res["variable"]["data"]["z_class"]["completed"],
+            dictionary["z_class"]["new"], dictionary["z_class"]["old"])
+
+        res["variable"]["data"]["z_class"]["stat"].columns = [re.sub("[0-9]*$", "", x) + d for x, d in zip(
+            res["variable"]["data"]["z_class"]["stat"].columns, dictionary["z_class"]["old"])]
+
+        res["mixture"]["IDClass"].index = [re.sub("[0-9]*$", "", x) + d for x, d in zip(
+            res["mixture"]["IDClass"].index, dictionary["z_class"]["old"])]
+
+        res["mixture"]["IDClassBar"].index = res["mixture"]["IDClass"].index
+
+        var_names = res["variable"]["type"].keys()
+        for var_name in var_names:
+            n_param_per_class = int(len(res["variable"]["param"][var_name]["stat"].index) / res["algo"]["nClass"])
+            row_names = res["variable"]["param"][var_name]["stat"].index
+            row_names = [re.sub("k: [0-9]*", "k: " + d, x) for x, d in zip(
+                row_names, np.repeat(dictionary["z_class"]["old"], n_param_per_class))]
+
+            res["variable"]["param"][var_name]["stat"].index = row_names
+            # res["variable"]["param"][var_name]["log"].index = row_names
+
+    return res
