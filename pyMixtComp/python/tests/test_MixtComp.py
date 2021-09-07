@@ -9,6 +9,14 @@ from pyMixtComp.MixtComp import MixtComp
 class TestMixtComp(unittest.TestCase):
     def setUp(self):
         self.gauss = np.concatenate((np.random.normal(-2, 0.5, 70), np.random.normal(2, 0.5, 30)), axis=None)
+        self.mult = np.where(
+                         np.concatenate((np.random.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70),
+                                         np.random.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30))) == 1)[1]
+        self.mult_basic = self.mult.copy().astype("str")
+        self.mult_basic[self.mult_basic == "0"] = "a"
+        self.mult_basic[self.mult_basic == "1"] = "b"
+        self.mult_basic[self.mult_basic == "2"] = "c"
+        self.mult_basic[self.mult_basic == "3"] = "d"
 
     def test_MixtComp_init(self):
         mod = MixtComp(n_components=2, n_burn_in_iter=10, n_iter=15, n_gibbs_burn_in_iter=20, n_gibbs_iter=25,
@@ -60,11 +68,12 @@ class TestMixtComp(unittest.TestCase):
     def test_MixtComp_fit_DataFrame_basic_mode(self):
         mod = MixtComp(n_components=2)
 
-        mod.fit(pd.DataFrame(self.gauss, columns=["gauss"]))
+        mod.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
         self.assertEqual(mod.basic_mode, True)
-        self.assertDictEqual(mod.model, {"gauss": {"type": "Gaussian", "paramStr": ""}})
+        self.assertDictEqual(mod.model, {"gauss": {"type": "Gaussian", "paramStr": ""},
+                                         "mult": {"type": "Multinomial", "paramStr": ""}})
 
-        mod.predict(pd.DataFrame(self.gauss, columns=["gauss"]))
+        mod.predict(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
 
     def test_MixtComp_fit_array(self):
         mod = MixtComp(n_components=2)

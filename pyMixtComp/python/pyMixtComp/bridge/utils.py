@@ -125,3 +125,39 @@ def _impute_model(var_name, var_type):
         raise TypeError("Cannot impute the model for variable ", var_name, ". Please provide the model parameter.")
 
 
+def format_data_basic_mode(data, model, dictionary=None):
+    create_dict = dictionary is None
+
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data, columns=model.keys())
+
+    if create_dict:
+        dictionary = {}
+
+    for var_name in model.keys():
+        if model[var_name]["type"] in ["Multinomial", "LatentClass"]:
+            if not pd.api.types.is_int64_dtype(data[var_name].dtype):
+                data[var_name] = data[var_name].astype("category")
+
+                if create_dict:
+                    old_categ = data[var_name].unique()
+                    old_categ = old_categ[old_categ.notna()]
+
+                    dictionary[var_name] = {"old": old_categ.categories.to_list(),
+                                            "new": [str(i) for i in range(len(old_categ))]}
+                elif var_name not in dictionary.keys():
+                    raise ValueError("No dictionary given for variable " + var_name)
+
+                data[var_name] = data[var_name].cat.rename_categories(dict(zip(dictionary[var_name]["old"],
+                                                                               dictionary[var_name]["new"])))
+
+                data[var_name] = data[var_name].cat.add_categories("?")
+                data[var_name] = data[var_name].fillna("?")
+            else:
+                data.loc[data[var_name].isna(), var_name] = "?"
+                data[var_name] = data[var_name].astype("str")
+        else:
+            data.loc[data[var_name].isna(), var_name] = "?"
+            data[var_name] = data[var_name].astype("str")
+
+    return data.to_dict("list"), dictionary

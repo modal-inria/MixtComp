@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model
+from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model, format_data_basic_mode
 
 
 class TestUtils(unittest.TestCase):
@@ -109,6 +109,46 @@ class TestUtils(unittest.TestCase):
                               "z_class": [1, 2]})
         self.assertDictEqual(model, {"gauss": "Gaussian", "pois": "Poisson",
                                      "mult": "Multinomial", "z_class": "LatentClass"})
+
+    def test_format_data_basic_mode_without_dict(self):
+        model = {"gauss": {"type": "Gaussian", "paramStr": ""},
+                 "pois": {"type": "Poisson", "paramStr": ""},
+                 "mult": {"type": "Multinomial", "paramStr": ""},
+                 "z_class": {"type": "LatentClass", "paramStr": ""}}
+
+        data = {"gauss": [1.5, np.nan, None],
+                "pois": [1, 4, 2],
+                "mult": ["a", "b", None],
+                "z_class": [1, 0, 1]}
+
+        dictionary = None
+        data, dictionary = format_data_basic_mode(data, model, dictionary)
+
+        self.assertEqual(dictionary, {"mult": {"old": ["a", "b"], "new": ["0", "1"]}})
+        self.assertEqual(data, {"gauss": ["1.5", "?", "?"],
+                                "pois": ["1", "4", "2"],
+                                "mult": ["0", "1", "?"],
+                                "z_class": ["1", "0", "1"]})
+
+    def test_format_data_basic_mode_with_dict(self):
+        model = {"gauss": {"type": "Gaussian", "paramStr": ""},
+                 "pois": {"type": "Poisson", "paramStr": ""},
+                 "mult": {"type": "Multinomial", "paramStr": ""},
+                 "z_class": {"type": "LatentClass", "paramStr": ""}}
+
+        data = {"gauss": [1.5, np.nan, None],
+                "pois": [1, 4, 2],
+                "mult": ["a", "b", None],
+                "z_class": [1, 0, 1]}
+
+        dictionary = {"mult": {"old": ["a", "b"], "new": ["1", "0"]}}
+        data, dictionary = format_data_basic_mode(data, model, dictionary)
+
+        self.assertEqual(dictionary, {"mult": {"old": ["a", "b"], "new": ["1", "0"]}})
+        self.assertEqual(data, {"gauss": ["1.5", "?", "?"],
+                                "pois": ["1", "4", "2"],
+                                "mult": ["1", "0", "?"],
+                                "z_class": ["1", "0", "1"]})
 
 
 if __name__ == "__main__":
