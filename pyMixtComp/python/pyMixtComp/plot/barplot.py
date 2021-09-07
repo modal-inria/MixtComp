@@ -2,15 +2,15 @@ import numpy as np
 import seaborn as sns
 
 
-def compute_discriminative_power_variable(res, class_number=None):
+def compute_discriminative_power_variable(res, class_id=None):
     """ Compute the discriminative power of variables
 
     Parameters
     ----------
     res : dict
         output of multi_run_pmc_pool
-    class_number : int, optional
-        Class number (0, ...,  n_components - 1), by default None.
+    class_id : int, optional
+        Class number (0, ...,  n_components - 1) of class name, by default None.
         If None, it returns the discriminative power of variables globally otherwise it returns the discriminative power
         of variables in the given class
 
@@ -32,13 +32,13 @@ def compute_discriminative_power_variable(res, class_number=None):
     A high value (close to one) means that the variable is highly discriminating.
     A low value (close to zero) means that the variable is poorly discriminating.
     """
-    if class_number is None:
+    if class_id is None:
         return 1 - res["mixture"]["IDClass"].sum(axis=0)
     else:
         K = len(res["mixture"]["IDClass"])
 
-        entropy_KJ = res["mixture"]["IDClass"].iloc[class_number] * np.log(K)
-        entropy_KJ_bar = res["mixture"]["IDClassBar"].iloc[class_number] * np.log(K)
+        entropy_KJ = res["mixture"]["IDClass"].loc["k: " + str(class_id)] * np.log(K)
+        entropy_KJ_bar = res["mixture"]["IDClassBar"].loc["k: " + str(class_id)] * np.log(K)
 
         return 1 - (entropy_KJ + entropy_KJ_bar) / np.log(2)
 
@@ -69,15 +69,15 @@ def compute_discriminative_power_class(res):
     return 1 + np.log(tik ** tik).mean(axis=0)/np.exp(-1)
 
 
-def plot_discriminative_power_variable(res, class_number=None):
+def plot_discriminative_power_variable(res, class_id=None):
     """ Plot the discriminative power of variables
 
     Parameters
     ----------
     res : dict
         output of multi_run_pmc_pool
-    class_number : int, optional
-        Class number (0, ...,  n_components - 1), by default None.
+    class_id : int, optional
+        Class number (0, ...,  n_components - 1) or class name, by default None.
         If None, it returns the discriminative power of variables globally otherwise it returns the discriminative power
         of variables in the given class
 
@@ -86,12 +86,12 @@ def plot_discriminative_power_variable(res, class_number=None):
     Axes
         Barplot
     """
-    discrim_power = compute_discriminative_power_variable(res, class_number)
+    discrim_power = compute_discriminative_power_variable(res, class_id)
     discrim_power = discrim_power.sort_values(ascending=False)
 
     title = "Discriminative level of variables"
-    if class_number is not None:
-        title += " in class " + str(class_number)
+    if class_id is not None:
+        title += " in class " + str(class_id)
 
     ax = _barplot(discrim_power, title, "Variables", "Discriminative power")
     return ax

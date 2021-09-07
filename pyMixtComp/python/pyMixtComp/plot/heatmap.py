@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -58,8 +60,8 @@ def compute_class_similarity(res):
     for k in range(len(simil)):
         simil[k, :] = 1 - np.sqrt(((tik.values - tik.values[:, [k]]) ** 2).mean(axis=0))
 
-    simil = pd.DataFrame(simil, columns=["Class " + str(k) for k in range(len(simil))],
-                         index=["Class " + str(k) for k in range(len(simil))])
+    simil = pd.DataFrame(simil, columns=[re.sub("k: ", "Class ", x) for x in tik.columns],
+                         index=[re.sub("k: ", "Class ", x) for x in tik.columns])
 
     return simil
 
@@ -141,15 +143,16 @@ def plot_tik(res):
         Heatmap of the tik
     """
     tik = res["variable"]["data"]["z_class"]["stat"]
-    predicted_class = res["variable"]["data"]["z_class"]["completed"]
+    predicted_class = res["variable"]["data"]["z_class"]["completed"].astype(str)
 
     order_tik = np.zeros((0, ))
     for k in range(tik.shape[1]):
+        class_id = re.sub("k: ", "", tik.columns[k])
         order_tik = np.concatenate(
             (order_tik,
-             np.argsort(tik.values[:, k] * (predicted_class == k))[::-1][:(predicted_class == k).sum()]))
+             np.argsort(tik.values[:, k] * (predicted_class == class_id))[::-1][:(predicted_class == class_id).sum()]))
 
-    ax = sns.heatmap(data=tik.iloc[order_tik, ], vmin=0, vmax=1, annot=True, cmap="coolwarm")
+    ax = sns.heatmap(data=tik.iloc[order_tik, ], vmin=0, vmax=1, annot=False, cmap="coolwarm")
     ax.set_title("Probabilities of classification")
 
     return ax

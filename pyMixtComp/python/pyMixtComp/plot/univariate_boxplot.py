@@ -1,4 +1,5 @@
 from collections import Counter
+import re
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -7,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 
 
-def plot_data(res, var_name, class_numbers=None, all=False):
+def plot_data(res, var_name, class_ids=None, all=False):
     """ Plot Data Distribution
 
     Parameters
@@ -16,8 +17,8 @@ def plot_data(res, var_name, class_numbers=None, all=False):
         output of multi_run_pmc_pool
     var_name : str
         Name of the variable to plot
-    class_numbers : list of int, optional
-        Indices of classes to plot, by default None
+    class_ids : list of int, optional
+        Numbers or names of classes to plot, by default None
     all : bool, optional
         If True add the overall distribution, by default False
 
@@ -29,22 +30,25 @@ def plot_data(res, var_name, class_numbers=None, all=False):
     if var_name not in res["variable"]["type"].keys():
         raise ValueError(var_name + " variable does not exist in the mixture model.")
 
+    if isinstance(class_ids, int) | isinstance(class_ids, str):
+        class_ids = [class_ids]
+
     model = res["variable"]["type"][var_name]
 
     if model == "Gaussian":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_numbers, all),
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
                                            var_name)
     elif model == "Multinomial":
-        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_numbers, all),
+        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_ids, all),
                                              var_name)
     elif model == "Poisson":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_numbers, all),
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
                                            var_name)
     elif model == "NegativeBinomial":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_numbers, all),
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
                                            var_name)
     elif model == "Weibull":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_numbers, all),
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
                                            var_name)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
@@ -83,7 +87,7 @@ def barplot_per_class_categorical(bounds, var_name):
     return ax
 
 
-def extract_bounds_boxplot_numerical(res, var_name, class_numbers=None, all=False):
+def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
     """ Compute quantiles for boxplot for boxplot_per_class_numerical
 
     Returns
@@ -91,11 +95,11 @@ def extract_bounds_boxplot_numerical(res, var_name, class_numbers=None, all=Fals
     DataFrame
         Quantiles at [.05, .25, .5, .75, .95] for the different classes. 1 row = 1 class
     """
-    if class_numbers is None:
-        class_numbers = list(range(res["algo"]["nClass"]))
-
     obs = res["variable"]["data"][var_name]["completed"]
     tik = res["variable"]["data"]["z_class"]["stat"]
+
+    if class_ids is None:
+        class_ids = [re.sub("k: ", "", x) for x in tik.columns]
 
     ordered_indices = obs.argsort()
 
@@ -108,8 +112,8 @@ def extract_bounds_boxplot_numerical(res, var_name, class_numbers=None, all=Fals
         thresholds[:, i] = obs[ordered_indices[np.argmin(abs(cum_sums - q[i]).values, axis=0)]]
 
     thresholds = pd.DataFrame(thresholds, columns=["q" + str(i) for i in q],
-                              index=["Class " + str(i) for i in range(res["algo"]["nClass"])])
-    thresholds = thresholds.iloc[class_numbers]
+                              index=[re.sub("k:", "Class", x) for x in tik.columns])
+    thresholds = thresholds.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
         thresholds = thresholds.append(pd.DataFrame(np.quantile(obs, q).reshape(1, -1),
@@ -118,7 +122,7 @@ def extract_bounds_boxplot_numerical(res, var_name, class_numbers=None, all=Fals
     return thresholds
 
 
-def extract_bounds_barplot_categorical(res, var_name, class_numbers=None, all=False):
+def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False):
     """ Compute the proportion of every label in every class
 
     Returns
@@ -126,11 +130,11 @@ def extract_bounds_barplot_categorical(res, var_name, class_numbers=None, all=Fa
     DataFrame
         Proportion of each level in each class. 1 row = 1 class
     """
-    if class_numbers is None:
-        class_numbers = list(range(res["algo"]["nClass"]))
-
     obs = res["variable"]["data"][var_name]["completed"]
     tik = res["variable"]["data"]["z_class"]["stat"]
+
+    if class_ids is None:
+        class_ids = [re.sub("k: ", "", x) for x in tik.columns]
 
     levels = np.unique(obs)
 
@@ -138,8 +142,9 @@ def extract_bounds_barplot_categorical(res, var_name, class_numbers=None, all=Fa
     for i in range(len(levels)):
         probas[:, i] = (tik * (obs == levels[i])[:, np.newaxis]).sum() / tik.sum()
 
-    probas = pd.DataFrame(probas, columns=levels, index=["Class " + str(k) for k in range(res["algo"]["nClass"])])
-    probas = probas.iloc[class_numbers]
+    probas = pd.DataFrame(probas, columns=levels,
+                          index=[re.sub("k:", "Class", x) for x in tik.columns])
+    probas = probas.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
         freq = Counter(obs)
