@@ -12,10 +12,12 @@ from pyMixtComp.plot.heatmap import plot_variable_similarity, plot_class_similar
 
 class TestPlot(unittest.TestCase):
     def setUp(self):
-        self.gauss = np.concatenate((np.random.normal(-2, 0.5, 70), np.random.normal(2, 0.5, 30)), axis=None)
+        rng = np.random.default_rng(42)
+
+        self.gauss = np.concatenate((rng.normal(-2, 0.5, 70), rng.normal(2, 0.5, 30)), axis=None)
         self.mult = np.where(
-                         np.concatenate((np.random.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70),
-                                         np.random.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30))) == 1)[1]
+                         np.concatenate((rng.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70),
+                                         rng.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30))) == 1)[1]
         self.mult_basic = self.mult.copy().astype("str")
         self.mult_basic[self.mult_basic == "0"] = "a"
         self.mult_basic[self.mult_basic == "1"] = "b"

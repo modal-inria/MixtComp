@@ -2,12 +2,14 @@ from copy import deepcopy
 from multiprocessing import cpu_count
 
 import numpy as np
+from scipy.special import logsumexp
 from sklearn.base import BaseEstimator
 
 from pyMixtComp.bridge.bridge import multi_run_pmc_pool
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
 from pyMixtComp.bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model, format_output_basic_mode
 import pyMixtComp.plot as plot
+import pyMixtComp.utils as utils
 
 
 class MixtComp(BaseEstimator):
@@ -86,6 +88,9 @@ class MixtComp(BaseEstimator):
         if self.basic_mode:
             format_output_basic_mode(self.res, self.dictionary)
 
+        self.n_features = len(self.res["variable"]["type"]) - 1
+        self.n_samples = algo["nInd"]
+
         return self
 
     def predict(self, X):
@@ -95,6 +100,7 @@ class MixtComp(BaseEstimator):
         ----------
         X : dict, array, DataFrame
             List of n_features-dimensional data points. Each row corresponds to a single data point.
+
         Returns
         -------
         array
@@ -243,8 +249,145 @@ class MixtComp(BaseEstimator):
         """
         return plot.plot_data(self.res, var_name, class_ids, all)
 
+    def aic(self, X=None):
+        """ Akaike information criterion for the current model on the input X.
 
-    def plot_data(self, var_name, class_numbers=None, all=False):
-        return plot.plot_data(self.res, var_name, class_numbers, all)
+        Parameters
+        ----------
+        X : DataFrame, dict or array, optional
+            Data used to run predict(). If None the aic of the fitted model is returned
 
+        Returns
+        -------
+        float
+            AIC value
+        """
+        if X is None:
+            return self.res["mixture"]["lnObservedLikelihood"] - self.res["mixture"]["nbFreeParameters"]
+        else:
+            _ = self.predict(X)
+            return self.res_predict["mixture"]["lnObservedLikelihood"] - self.res_predict["mixture"]["nbFreeParameters"]
 
+    def bic(self, X=None):
+        """ Bayesian information criterion for the current model on the input X.
+
+        Parameters
+        ----------
+        X : DataFrame, dict or array, optional
+            Data used to run predict(). If None the bic of the fitted model is returned
+
+        Returns
+        -------
+        float
+            BIC value
+        """
+        if X is None:
+            return self.res["mixture"]["BIC"]
+        else:
+            _ = self.predict(X)
+            return self.res_predict["mixture"]["BIC"]
+
+    def icl(self, X=None):
+        """ Integrated Complete-data Likelihood for the current model on the input X.
+
+        Parameters
+        ----------
+        X : DataFrame, dict or array, optional
+            Data used to run predict(). If None the icl of the fitted model is returned
+
+        Returns
+        -------
+        float
+            ICL value
+        """
+        if X is None:
+            return self.res["mixture"]["ICL"]
+        else:
+            _ = self.predict(X)
+            return self.res_predict["mixture"]["ICL"]
+
+    def predict_proba(self, X=None, log=True, empiric=False):
+        """Predict posterior probability of each component given the data.
+
+        Parameters
+        ----------
+        X : dict, array, DataFrame, optional
+            List of n_features-dimensional data points. Each row corresponds to a single data point.
+            If None, the data used in fit() are used.
+        log : bool
+            If True, the log probabilities are returned
+        empiric : bool
+            If True, the probabilities estimated during the Gibbs step are turned. Otherwise, the probabilities are computed
+            with estimated parameters.
+
+        Returns
+        -------
+        array
+            Returns the probability given each sample.
+        """
+        if X is None:
+            return utils.get_tik(self.res, log, empiric)
+        else:
+            _ = self.predict(X)
+            return utils.get_tik(self.res_predict, log, empiric)
+
+    def fit_predict(self, X, model=None):
+        """Estimate model parameters using X and predict the labels for X.
+
+        The method fits the model n_init times and sets the parameters with
+        which the model has the largest likelihood.
+        After fitting, it predicts the most probable label for the input data points.
+
+        Parameters
+        ----------
+        X : dict, array, DataFrame
+            List of n_features-dimensional data points. Each row corresponds to a single data point.
+
+        Returns
+        -------
+        array
+            Component labels.
+        """
+        _ = self.fit(X, model)
+
+        return self.res["variable"]["data"]["z_class"]["completed"]
+
+    def score_samples(self, X=None):
+        """Compute the weighted log probabilities for each sample.
+
+        Parameters
+        ----------
+        X : dict, array, DataFrame, optional
+            List of n_features-dimensional data points. Each row corresponds to a single data point.
+            If None, the data used in fit() are used.
+
+        Returns
+        -------
+        array
+            Log probabilities of each data point in X.
+        """
+        if X is None:
+            return logsumexp(self.res["mixture"]["lnProbaGivenClass"], axis=1)
+        else:
+            _ = self.predict(X)
+            return logsumexp(self.res_predict["mixture"]["lnProbaGivenClass"], axis=1)
+
+    def score(self, X=None):
+        """Compute the per-sample average log-likelihood of the given data X.
+
+        Parameters
+        ----------
+        X : dict, array, DataFrame, optional
+            List of n_features-dimensional data points. Each row corresponds to a single data point.
+            If None, the data used in fit() are used.
+
+        Returns
+        -------
+        float
+            Log likelihood of the mixture given X.
+        """
+        if X is None:
+            return self.res["mixture"]["lnObservedLikelihood"]
+        else:
+            _ = self.predict(X)
+            return self.res_predict["mixture"]["lnObservedLikelihood"]
