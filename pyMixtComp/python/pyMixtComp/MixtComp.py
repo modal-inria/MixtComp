@@ -62,34 +62,34 @@ class MixtComp(BaseEstimator):
         RuntimeError
             Error from the C++ algorithm.
         """
-        self.basic_mode = (model is None)
+        self._basic_mode = (model is None)
 
-        if self.basic_mode:
+        if self._basic_mode:
             model = impute_model(X)
 
-        self.model = model
-        format_model(self.model)
+        self.model_ = model
+        format_model(self.model_)
 
         dat = {}
-        if self.basic_mode:
-            dat, self.dictionary = format_data_basic_mode(X, model, None)
+        if self._basic_mode:
+            dat, self.dictionary_ = format_data_basic_mode(X, model, None)
         else:
             dat = convert_data_to_dict(X)
 
         algo = create_algo(self, dat, "learn")
 
-        self.res = multi_run_pmc_pool(algo, dat, self.model, {}, self.n_init, self.n_core)
+        self.res_ = multi_run_pmc_pool(algo, dat, self.model_, {}, self.n_init, self.n_core)
 
-        if "warnLog" in self.res.keys():
-            raise RuntimeError(self.res["warnLog"])
+        if "warnLog" in self.res_.keys():
+            raise RuntimeError(self.res_["warnLog"])
 
-        self._param = {"variable": {"param": deepcopy(self.res["variable"]["param"])}}
-        convert(self.res)
-        if self.basic_mode:
-            format_output_basic_mode(self.res, self.dictionary)
+        self._param = {"variable": {"param": deepcopy(self.res_["variable"]["param"])}}
+        convert(self.res_)
+        if self._basic_mode:
+            format_output_basic_mode(self.res_, self.dictionary_)
 
-        self.n_features = len(self.res["variable"]["type"]) - 1
-        self.n_samples = algo["nInd"]
+        self.n_features_ = len(self.res_["variable"]["type"]) - 1
+        self.n_samples_ = algo["nInd"]
 
         return self
 
@@ -107,19 +107,19 @@ class MixtComp(BaseEstimator):
             Component labels.
         """
         dat = {}
-        if self.basic_mode:
-            dat, _ = format_data_basic_mode(X, self.model, self.dictionary)
+        if self._basic_mode:
+            dat, _ = format_data_basic_mode(X, self.model_, self.dictionary_)
         else:
             dat = convert_data_to_dict(X)
 
         algo = create_algo(self, dat, "predict")
 
-        self.res_predict = multi_run_pmc_pool(algo, dat, self.model, self._param, self.n_init, self.n_core)
-        convert(self.res_predict)
-        if self.basic_mode:
-            format_output_basic_mode(self.res_predict, self.dictionary)
+        self.res_predict_ = multi_run_pmc_pool(algo, dat, self.model_, self._param, self.n_init, self.n_core)
+        convert(self.res_predict_)
+        if self._basic_mode:
+            format_output_basic_mode(self.res_predict_, self.dictionary_)
 
-        return self.res_predict["variable"]["data"]["z_class"]["completed"]
+        return self.res_predict_["variable"]["data"]["z_class"]["completed"]
 
     def plot_discriminative_power_variable(self, class_id=None):
         """ Plot the discriminative power of variables
@@ -136,7 +136,7 @@ class MixtComp(BaseEstimator):
         Axes
             Barplot
         """
-        return plot.plot_discriminative_power_variable(self.res, class_id)
+        return plot.plot_discriminative_power_variable(self.res_, class_id)
 
     def plot_discriminative_power_class(self):
         """Plot the discriminative power of classes
@@ -146,7 +146,7 @@ class MixtComp(BaseEstimator):
         Axes
             barplot
         """
-        return plot.plot_discriminative_power_class(self.res)
+        return plot.plot_discriminative_power_class(self.res_)
 
     def plot_proportion(self):
         """ Plot a barplot with proportion's mixture
@@ -156,7 +156,7 @@ class MixtComp(BaseEstimator):
         Axes
             barplot
         """
-        return plot.plot_proportion(self.res)
+        return plot.plot_proportion(self.res_)
 
     def plot_class_similarity(self):
         """ Plot the similarity between classes
@@ -175,7 +175,7 @@ class MixtComp(BaseEstimator):
         A high value (close to one) means that the classes are highly similar (high overlapping).
         A low value (close to zero) means that the classes are highly different (low overlapping).
         """
-        return plot.plot_class_similarity(self.res)
+        return plot.plot_class_similarity(self.res_)
 
     def plot_variable_similarity(self):
         """ Plot the similarity between variables
@@ -196,7 +196,7 @@ class MixtComp(BaseEstimator):
         A low value (close to zero) means that the variables provide some different information for the clustering task
         (i.e. different partitions).
         """
-        return plot.plot_variable_similarity(self.res)
+        return plot.plot_variable_similarity(self.res_)
 
     def plot_tik(self):
         """ Heatmap of the tik = P(Z_i=k|x_i)
@@ -209,7 +209,7 @@ class MixtComp(BaseEstimator):
         Axes
             Heatmap of the tik
         """
-        return plot.plot_tik(self.res)
+        return plot.plot_tik(self.res_)
 
     def plot_data_CI(self, var_name, class_ids=None, all=False):
         """ Mean and 95%-level confidence intervals per class
@@ -228,7 +228,7 @@ class MixtComp(BaseEstimator):
         Axes
             Plot Mean and 95%-level confidence intervals per class
         """
-        return plot.plot_data_CI(self.res, var_name, class_ids, all)
+        return plot.plot_data_CI(self.res_, var_name, class_ids, all)
 
     def plot_data(self, var_name, class_ids=None, all=False):
         """ Boxplot per class
@@ -247,7 +247,7 @@ class MixtComp(BaseEstimator):
         Axes
             Boxplot (with 5%-25%-50%-75%-95% quantile) of the data
         """
-        return plot.plot_data(self.res, var_name, class_ids, all)
+        return plot.plot_data(self.res_, var_name, class_ids, all)
 
     def aic(self, X=None):
         """ Akaike information criterion for the current model on the input X.
@@ -263,10 +263,10 @@ class MixtComp(BaseEstimator):
             AIC value
         """
         if X is None:
-            return self.res["mixture"]["lnObservedLikelihood"] - self.res["mixture"]["nbFreeParameters"]
+            return self.res_["mixture"]["lnObservedLikelihood"] - self.res_["mixture"]["nbFreeParameters"]
         else:
             _ = self.predict(X)
-            return self.res_predict["mixture"]["lnObservedLikelihood"] - self.res_predict["mixture"]["nbFreeParameters"]
+            return self.res_predict_["mixture"]["lnObservedLikelihood"] - self.res_predict_["mixture"]["nbFreeParameters"]
 
     def bic(self, X=None):
         """ Bayesian information criterion for the current model on the input X.
@@ -282,10 +282,10 @@ class MixtComp(BaseEstimator):
             BIC value
         """
         if X is None:
-            return self.res["mixture"]["BIC"]
+            return self.res_["mixture"]["BIC"]
         else:
             _ = self.predict(X)
-            return self.res_predict["mixture"]["BIC"]
+            return self.res_predict_["mixture"]["BIC"]
 
     def icl(self, X=None):
         """ Integrated Complete-data Likelihood for the current model on the input X.
@@ -301,10 +301,10 @@ class MixtComp(BaseEstimator):
             ICL value
         """
         if X is None:
-            return self.res["mixture"]["ICL"]
+            return self.res_["mixture"]["ICL"]
         else:
             _ = self.predict(X)
-            return self.res_predict["mixture"]["ICL"]
+            return self.res_predict_["mixture"]["ICL"]
 
     def predict_proba(self, X=None, log=True, empiric=False):
         """Predict posterior probability of each component given the data.
@@ -326,10 +326,10 @@ class MixtComp(BaseEstimator):
             Returns the probability given each sample.
         """
         if X is None:
-            return utils.get_tik(self.res, log, empiric)
+            return utils.get_tik(self.res_, log, empiric)
         else:
             _ = self.predict(X)
-            return utils.get_tik(self.res_predict, log, empiric)
+            return utils.get_tik(self.res_predict_, log, empiric)
 
     def fit_predict(self, X, model=None):
         """Estimate model parameters using X and predict the labels for X.
@@ -350,7 +350,7 @@ class MixtComp(BaseEstimator):
         """
         _ = self.fit(X, model)
 
-        return self.res["variable"]["data"]["z_class"]["completed"]
+        return self.res_["variable"]["data"]["z_class"]["completed"]
 
     def score_samples(self, X=None):
         """Compute the weighted log probabilities for each sample.
@@ -367,10 +367,10 @@ class MixtComp(BaseEstimator):
             Log probabilities of each data point in X.
         """
         if X is None:
-            return logsumexp(self.res["mixture"]["lnProbaGivenClass"], axis=1)
+            return logsumexp(self.res_["mixture"]["lnProbaGivenClass"], axis=1)
         else:
             _ = self.predict(X)
-            return logsumexp(self.res_predict["mixture"]["lnProbaGivenClass"], axis=1)
+            return logsumexp(self.res_predict_["mixture"]["lnProbaGivenClass"], axis=1)
 
     def score(self, X=None):
         """Compute the per-sample average log-likelihood of the given data X.
@@ -387,7 +387,7 @@ class MixtComp(BaseEstimator):
             Log likelihood of the mixture given X.
         """
         if X is None:
-            return self.res["mixture"]["lnObservedLikelihood"]
+            return self.res_["mixture"]["lnObservedLikelihood"]
         else:
             _ = self.predict(X)
-            return self.res_predict["mixture"]["lnObservedLikelihood"]
+            return self.res_predict_["mixture"]["lnObservedLikelihood"]

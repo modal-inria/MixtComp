@@ -46,65 +46,65 @@ class TestMixtComp(unittest.TestCase):
         mod = MixtComp(n_components=2)
 
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
-        self.assertEqual(mod.basic_mode, False)
-        self.assertIsInstance(mod.res, dict)
+        self.assertEqual(mod._basic_mode, False)
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict({"gauss": self.gauss})
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_dict_basic_mode(self):
         mod = MixtComp(n_components=2)
 
         mod.fit({"gauss": self.gauss})
-        self.assertEqual(mod.basic_mode, True)
-        self.assertDictEqual(mod.model, {"gauss": {"type": "Gaussian", "paramStr": ""}})
-        self.assertIsInstance(mod.res, dict)
+        self.assertEqual(mod._basic_mode, True)
+        self.assertDictEqual(mod.model_, {"gauss": {"type": "Gaussian", "paramStr": ""}})
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict({"gauss": self.gauss})
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_DataFrame(self):
         mod = MixtComp(n_components=2)
 
         mod.fit(pd.DataFrame(self.gauss, columns=["gauss"]), model={"gauss": {"type": "Gaussian", "paramStr": ""}})
-        self.assertEqual(mod.basic_mode, False)
-        self.assertIsInstance(mod.res, dict)
+        self.assertEqual(mod._basic_mode, False)
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict(pd.DataFrame(self.gauss, columns=["gauss"]))
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_DataFrame_basic_mode(self):
         mod = MixtComp(n_components=2)
 
         mod.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
-        self.assertEqual(mod.basic_mode, True)
-        self.assertDictEqual(mod.model, {"gauss": {"type": "Gaussian", "paramStr": ""},
+        self.assertEqual(mod._basic_mode, True)
+        self.assertDictEqual(mod.model_, {"gauss": {"type": "Gaussian", "paramStr": ""},
                                          "mult": {"type": "Multinomial", "paramStr": ""}})
-        self.assertIsInstance(mod.res, dict)
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_array(self):
         mod = MixtComp(n_components=2)
 
         mod.fit(self.gauss.reshape(-1, 1))
-        self.assertEqual(mod.basic_mode, True)
-        self.assertDictEqual(mod.model, {"var0": {"type": "Gaussian", "paramStr": ""}})
-        self.assertIsInstance(mod.res, dict)
+        self.assertEqual(mod._basic_mode, True)
+        self.assertDictEqual(mod.model_, {"var0": {"type": "Gaussian", "paramStr": ""}})
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict(self.gauss.reshape(-1, 1))
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_multi_init(self):
         mod = MixtComp(n_components=2, n_init_per_class=10, n_init=2)
 
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
-        self.assertEqual(mod.basic_mode, False)
-        self.assertIsInstance(mod.res, dict)
+        self.assertEqual(mod._basic_mode, False)
+        self.assertIsInstance(mod.res_, dict)
 
         mod.predict({"gauss": self.gauss})
-        self.assertIsInstance(mod.res_predict, dict)
+        self.assertIsInstance(mod.res_predict_, dict)
 
     def test_MixtComp_fit_multi_init_core(self):
         mod = MixtComp(n_components=2, n_init_per_class=10, n_init=1, n_core=5)
@@ -118,26 +118,26 @@ class TestMixtComp(unittest.TestCase):
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
 
         bic = mod.bic()
-        self.assertEqual(bic, mod.res["mixture"]["BIC"])
+        self.assertEqual(bic, mod.res_["mixture"]["BIC"])
         icl = mod.icl()
-        self.assertEqual(icl, mod.res["mixture"]["ICL"])
+        self.assertEqual(icl, mod.res_["mixture"]["ICL"])
         aic = mod.aic()
-        self.assertEqual(aic, mod.res["mixture"]["lnObservedLikelihood"] - mod.res["mixture"]["nbFreeParameters"])
+        self.assertEqual(aic, mod.res_["mixture"]["lnObservedLikelihood"] - mod.res_["mixture"]["nbFreeParameters"])
 
         bic = mod.bic({"gauss": self.gauss})
-        self.assertEqual(bic, mod.res_predict["mixture"]["BIC"])
+        self.assertEqual(bic, mod.res_predict_["mixture"]["BIC"])
         icl = mod.icl({"gauss": self.gauss})
-        self.assertEqual(icl, mod.res_predict["mixture"]["ICL"])
+        self.assertEqual(icl, mod.res_predict_["mixture"]["ICL"])
         aic = mod.aic({"gauss": self.gauss})
         self.assertEqual(aic,
-                         mod.res_predict["mixture"]["lnObservedLikelihood"] - mod.res_predict["mixture"]["nbFreeParameters"])
+                         mod.res_predict_["mixture"]["lnObservedLikelihood"] - mod.res_predict_["mixture"]["nbFreeParameters"])
 
     def test_MixtComp_score(self):
         mod = MixtComp(n_components=2)
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
 
-        self.assertEqual(mod.score(), mod.res["mixture"]["lnObservedLikelihood"])
-        self.assertEqual(mod.score({"gauss": self.gauss}), mod.res_predict["mixture"]["lnObservedLikelihood"])
+        self.assertEqual(mod.score(), mod.res_["mixture"]["lnObservedLikelihood"])
+        self.assertEqual(mod.score({"gauss": self.gauss}), mod.res_predict_["mixture"]["lnObservedLikelihood"])
 
 
 if __name__ == "__main__":

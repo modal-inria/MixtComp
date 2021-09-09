@@ -35,82 +35,82 @@ class TestPlot(unittest.TestCase):
         self.mod_basic.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic, "z_class": self.z_class}))
 
     def test_plot_proportion(self):
-        plot_proportion(self.mod.res)
-        plot_proportion(self.mod_basic.res)
+        plot_proportion(self.mod.res_)
+        plot_proportion(self.mod_basic.res_)
 
     def test_plot_discriminative_power_class(self):
-        plot_discriminative_power_class(self.mod.res)
-        plot_discriminative_power_class(self.mod_basic.res)
+        plot_discriminative_power_class(self.mod.res_)
+        plot_discriminative_power_class(self.mod_basic.res_)
 
     def test_plot_discriminative_power_variable(self):
-        plot_discriminative_power_variable(self.mod.res, class_id=None)
-        plot_discriminative_power_variable(self.mod_basic.res, class_id=None)
+        plot_discriminative_power_variable(self.mod.res_, class_id=None)
+        plot_discriminative_power_variable(self.mod_basic.res_, class_id=None)
 
-        plot_discriminative_power_variable(self.mod.res, class_id=0)
-        plot_discriminative_power_variable(self.mod_basic.res, class_id="A")
+        plot_discriminative_power_variable(self.mod.res_, class_id=0)
+        plot_discriminative_power_variable(self.mod_basic.res_, class_id="A")
 
-        plot_discriminative_power_variable(self.mod.res, class_id=1)
-        plot_discriminative_power_variable(self.mod_basic.res, class_id="B")
+        plot_discriminative_power_variable(self.mod.res_, class_id=1)
+        plot_discriminative_power_variable(self.mod_basic.res_, class_id="B")
 
     def test_plot_data_bad_var_name(self):
         with self.assertRaises(ValueError):
-            plot_data(self.mod.res, "gauss2", class_ids=None, all=False)
+            plot_data(self.mod.res_, "gauss2", class_ids=None, all=False)
 
     def test_plot_data_numerical(self):
-        plot_data(self.mod.res, "gauss", class_ids=None, all=False)
-        plot_data(self.mod_basic.res, "gauss", class_ids=None, all=False)
+        plot_data(self.mod.res_, "gauss", class_ids=None, all=False)
+        plot_data(self.mod_basic.res_, "gauss", class_ids=None, all=False)
 
-        plot_data(self.mod.res, "gauss", class_ids=None, all=True)
-        plot_data(self.mod_basic.res, "gauss", class_ids=None, all=True)
+        plot_data(self.mod.res_, "gauss", class_ids=None, all=True)
+        plot_data(self.mod_basic.res_, "gauss", class_ids=None, all=True)
 
-        plot_data(self.mod.res, "gauss", class_ids=[1], all=False)
-        plot_data(self.mod_basic.res, "gauss", class_ids=["B"], all=False)
+        plot_data(self.mod.res_, "gauss", class_ids=[1], all=False)
+        plot_data(self.mod_basic.res_, "gauss", class_ids=["B"], all=False)
 
     def test_plot_data_categorical(self):
-        plot_data(self.mod.res, "mult", class_ids=None, all=False)
-        plot_data(self.mod_basic.res, "mult", class_ids=None, all=False)
+        plot_data(self.mod.res_, "mult", class_ids=None, all=False)
+        plot_data(self.mod_basic.res_, "mult", class_ids=None, all=False)
 
-        plot_data(self.mod.res, "mult", class_ids=None, all=True)
-        plot_data(self.mod_basic.res, "mult", class_ids=None, all=True)
+        plot_data(self.mod.res_, "mult", class_ids=None, all=True)
+        plot_data(self.mod_basic.res_, "mult", class_ids=None, all=True)
 
-        plot_data(self.mod.res, "mult", class_ids=[1], all=True)
-        plot_data(self.mod_basic.res, "mult", class_ids=["A"], all=True)
+        plot_data(self.mod.res_, "mult", class_ids=[1], all=True)
+        plot_data(self.mod_basic.res_, "mult", class_ids=["A"], all=True)
 
     def test_plot_data_CI_bad_var_name(self):
         with self.assertRaises(ValueError):
-            plot_data_CI(self.mod.res, "gauss2", class_ids=None, all=False)
+            plot_data_CI(self.mod.res_, "gauss2", class_ids=None, all=False)
 
     def test_plot_data_CI_numerical(self):
-        plot_data_CI(self.mod.res, "gauss", class_ids=None, all=False)
-        plot_data_CI(self.mod_basic.res, "gauss", class_ids=None, all=False)
+        plot_data_CI(self.mod.res_, "gauss", class_ids=None, all=False)
+        plot_data_CI(self.mod_basic.res_, "gauss", class_ids=None, all=False)
 
-        plot_data_CI(self.mod.res, "gauss", class_ids=None, all=True)
-        plot_data_CI(self.mod_basic.res, "gauss", class_ids=None, all=True)
+        plot_data_CI(self.mod.res_, "gauss", class_ids=None, all=True)
+        plot_data_CI(self.mod_basic.res_, "gauss", class_ids=None, all=True)
 
-        plot_data_CI(self.mod.res, "gauss", class_ids=[1], all=False)
-        plot_data_CI(self.mod_basic.res, "gauss", class_ids=["B"], all=False)
+        plot_data_CI(self.mod.res_, "gauss", class_ids=[1], all=False)
+        plot_data_CI(self.mod_basic.res_, "gauss", class_ids=["B"], all=False)
 
     def test_plot_data_CI_categorical(self):
-        plot_data_CI(self.mod.res, "mult", class_ids=None, all=False)
-        plot_data_CI(self.mod_basic.res, "mult", class_ids=None, all=False)
+        plot_data_CI(self.mod.res_, "mult", class_ids=None, all=False)
+        plot_data_CI(self.mod_basic.res_, "mult", class_ids=None, all=False)
 
-        plot_data_CI(self.mod.res, "mult", class_ids=None, all=True)
-        plot_data_CI(self.mod_basic.res, "mult", class_ids=None, all=True)
+        plot_data_CI(self.mod.res_, "mult", class_ids=None, all=True)
+        plot_data_CI(self.mod_basic.res_, "mult", class_ids=None, all=True)
 
-        plot_data_CI(self.mod.res, "mult", class_ids=[1], all=False)
-        plot_data_CI(self.mod_basic.res, "mult", class_ids=["B"], all=False)
+        plot_data_CI(self.mod.res_, "mult", class_ids=[1], all=False)
+        plot_data_CI(self.mod_basic.res_, "mult", class_ids=["B"], all=False)
 
     def test_plot_variable_similarity(self):
-        plot_variable_similarity(self.mod.res)
-        plot_variable_similarity(self.mod_basic.res)
+        plot_variable_similarity(self.mod.res_)
+        plot_variable_similarity(self.mod_basic.res_)
 
     def test_plot_class_similarity(self):
-        plot_class_similarity(self.mod.res)
-        plot_class_similarity(self.mod_basic.res)
+        plot_class_similarity(self.mod.res_)
+        plot_class_similarity(self.mod_basic.res_)
 
     def test_plot_tik(self):
-        plot_tik(self.mod.res)
-        plot_tik(self.mod_basic.res)
+        plot_tik(self.mod.res_)
+        plot_tik(self.mod_basic.res_)
 
     def test_MixtComp_interface(self):
         self.mod.plot_class_similarity()
