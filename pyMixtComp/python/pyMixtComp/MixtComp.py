@@ -89,6 +89,17 @@ class MixtComp(BaseEstimator):
         return self
 
     def predict(self, X):
+        """Predict the labels for the data samples in X using trained model.
+
+        Parameters
+        ----------
+        X : dict, array, DataFrame
+            List of n_features-dimensional data points. Each row corresponds to a single data point.
+        Returns
+        -------
+        array
+            Component labels.
+        """
         dat = {}
         if self.basic_mode:
             dat, _ = format_data_basic_mode(X, self.model, self.dictionary)
@@ -104,12 +115,12 @@ class MixtComp(BaseEstimator):
 
         return self.res_predict["variable"]["data"]["z_class"]["completed"]
 
-    def plot_discriminative_power_variable(self, class_number=None):
+    def plot_discriminative_power_variable(self, class_id=None):
         """ Plot the discriminative power of variables
 
         Parameters
         ----------
-        class_number : int, optional
+        class_id : int, optional
             Class number (0, ...,  n_components - 1), by default None.
             If None, it returns the discriminative power of variables globally otherwise it returns the discriminative power
             of variables in the given class
@@ -119,7 +130,7 @@ class MixtComp(BaseEstimator):
         Axes
             Barplot
         """
-        return plot.plot_discriminative_power_variable(self.res, class_number)
+        return plot.plot_discriminative_power_variable(self.res, class_id)
 
     def plot_discriminative_power_class(self):
         """Plot the discriminative power of classes
@@ -194,14 +205,14 @@ class MixtComp(BaseEstimator):
         """
         return plot.plot_tik(self.res)
 
-    def plot_data_CI(self, var_name, class_numbers=None, all=False):
+    def plot_data_CI(self, var_name, class_ids=None, all=False):
         """ Mean and 95%-level confidence intervals per class
 
         Parameters
         ----------
         var_name : str
             Variable name
-        class_numbers : int, array-like of int, optional
+        class_ids : int, array-like of int, optional
             Classes to plot, by default None, all classes are plotted
         all : bool, optional
             If True, it adds the mean and 95%-level confidence interval for all data, by default False
@@ -211,7 +222,27 @@ class MixtComp(BaseEstimator):
         Axes
             Plot Mean and 95%-level confidence intervals per class
         """
-        return plot.plot_data_CI(self.res, var_name, class_numbers, all)
+        return plot.plot_data_CI(self.res, var_name, class_ids, all)
+
+    def plot_data(self, var_name, class_ids=None, all=False):
+        """ Boxplot per class
+
+        Parameters
+        ----------
+        var_name : str
+            Variable name
+        class_ids : int, array-like of int, optional
+            Classes to plot, by default None, all classes are plotted
+        all : bool, optional
+            If True, it adds the mean and 95%-level confidence interval for all data, by default False
+
+        Returns
+        -------
+        Axes
+            Boxplot (with 5%-25%-50%-75%-95% quantile) of the data
+        """
+        return plot.plot_data(self.res, var_name, class_ids, all)
+
 
     def plot_data(self, var_name, class_numbers=None, all=False):
         return plot.plot_data(self.res, var_name, class_numbers, all)
