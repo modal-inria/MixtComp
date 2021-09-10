@@ -14,6 +14,7 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence"
     ],
     packages=["pyMixtComp"],
-    package_data={"pyMixtComp": ["pyMixtCompBridge.so"]},
+    include_package_data=True,
+    package_data={"pyMixtComp": ["pyMixtCompBridge.so"], "": ["data/*.csv"]},
     install_requires=["numpy", "pandas", "scikit-learn"],
 )
