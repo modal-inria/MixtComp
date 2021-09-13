@@ -109,9 +109,9 @@ def get_param(res, var_name):
     elif type == "NegativeBinomial":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["n", "p"])
     elif type == "Rank_ISR":
-        raise ValueError("Not yet implemented for model " + type)
+        return _get_param_Rank_ISR(res["variable"]["param"][var_name], n_class)
     elif (type == "Func_CS") | (type == "Func_SharedAlpha_CS"):
-        raise ValueError("Not yet implemented for model " + type)
+        return _get_param_Func_CS(res["variable"]["param"][var_name], n_class)
     elif type == "LatentClass":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["pi"])
     else:
@@ -133,3 +133,24 @@ def _get_param_multinomial(param, n_class):
 
     modalities = [re.sub("k: .*, modality: ", "", x) for x in param["stat"].index[:n_modalities]]
     return _get_param_numerical(param, n_class, modalities)
+
+
+def _get_param_Func_CS(param, n_class):
+    n_sub = int(re.search("nSub:(.+?),", param["paramStr"]).group(1))
+    n_coeff = int(re.search("nCoeff:(.+?)$", param["paramStr"]).group(1))
+
+    return {"alpha": _get_param_numerical(param["alpha"], n_class,
+                                          ["s: " + str(i) + str(j) for i in range(n_sub) for j in [", alpha0", ", alpha1"]]),
+            "beta": _get_param_numerical(
+                param["beta"], n_class,
+                ["s: " + str(i) + str(j) for i in range(n_sub) for j in [", c: " + str(i) for i in range(n_coeff)]]),
+            "sd": _get_param_numerical(param["sd"], n_class, ["s: " + str(i) for i in range(n_sub)])}
+
+
+def _get_param_Rank_ISR(param, n_class):
+    n_modality = int(re.sub("nModality:", "", param["paramStr"]))
+    mu = np.empty((0, n_modality), dtype=int)
+    for value in param["mu"]["stat"].values():
+        mu = np.vstack((mu, value["rank"]))
+
+    return {"pi": _get_param_numerical(param["pi"], n_class, ["pi"]), "mu": mu}

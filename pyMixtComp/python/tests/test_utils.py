@@ -5,7 +5,8 @@ import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
 
-from pyMixtComp.utils.getter import _get_param_numerical, _get_param_multinomial, get_param, get_partition, get_tik
+from pyMixtComp.utils.getter import _get_param_numerical, _get_param_multinomial, _get_param_Rank_ISR, \
+                                    _get_param_Func_CS, get_param, get_partition, get_tik
 
 
 class TestUtils(unittest.TestCase):
@@ -54,6 +55,66 @@ class TestUtils(unittest.TestCase):
                "algo": {"nClass": 2}}
         out = get_param(res, "mult")
         self.assertDictEqual(out.to_dict(), expected_out.to_dict())
+
+    def test_get_param_rank(self):
+        param = {"pi": {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6]],
+                                             columns=["median", "q0", "q1"], index=["k: 0, pi", "k: 1, pi"])},
+                 "mu": {"stat": {"k: 0": {"rank": np.array([3, 2, 1, 0])},
+                                 "k: 1": {"rank": np.array([0, 1, 2, 3])}}},
+                 "paramStr": "nModality: 4"}
+
+        out = _get_param_Rank_ISR(param, 2)
+        expected_out = {"pi": pd.DataFrame([[1], [4]], columns=["pi"], index=["0", "1"]),
+                        "mu": np.array([[3, 2, 1, 0], [0, 1, 2, 3]])}
+        self.assertEqual(out.keys(), expected_out.keys())
+        self.assertDictEqual(out["pi"].to_dict(), expected_out["pi"].to_dict())
+        self.assertListEqual(out["mu"].tolist(), expected_out["mu"].tolist())
+
+        res = {"variable": {"param": {"rank": param}, "type": {"rank": "Rank_ISR"}},
+               "algo": {"nClass": 2}}
+        out = get_param(res, "rank")
+        self.assertEqual(out.keys(), expected_out.keys())
+        self.assertDictEqual(out["pi"].to_dict(), expected_out["pi"].to_dict())
+        self.assertListEqual(out["mu"].tolist(), expected_out["mu"].tolist())
+
+    def test_get_param_func_CS(self):
+        param = {"alpha": {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12],
+                                                 [13, 14, 15], [16, 17, 18], [19, 20, 21], [22, 23, 24]],
+                                                columns=["median", "q0", "q1"],
+                                                index=["k: 0, s: 0, alpha0", "k: 0, s: 0, alpha1", "k: 0, s: 1, alpha0",
+                                                       "k: 0, s: 1, alpha1", "k: 1, s: 0, alpha0", "k: 1, s: 0, alpha1",
+                                                       "k: 1, s: 1, alpha0", "k: 1, s: 1, alpha1"])},
+                 "beta": {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12],
+                                                [13, 14, 15], [16, 17, 18], [19, 20, 21], [22, 23, 24]],
+                                               columns=["median", "q0", "q1"],
+                                               index=["k: 0, s: 0, c: 0", "k: 0, s: 0, c: 1", "k: 0, s: 1, c: 0",
+                                                      "k: 0, s: 1, c: 1", "k: 1, s: 0, c: 0", "k: 1, s: 0, c: 1",
+                                                      "k: 1, s: 1, c: 0", "k: 1, s: 1, c: 1"])},
+                 "sd": {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]],
+                                             columns=["median", "q0", "q1"],
+                                             index=["k: 0, s: 0", "k: 0, s: 1", "k: 1, s: 0", "k: 1, s: 1"])},
+                 "paramStr": "nSub: 2, nCoeff: 2"}
+
+        out = _get_param_Func_CS(param, 2)
+        expected_out = {"alpha": pd.DataFrame([[1, 4, 7, 10], [13, 16, 19, 22]],
+                                              columns=["s: 0, alpha0", "s: 0, alpha1", "s: 1, alpha0", "s: 1, alpha1"],
+                                              index=["0", "1"]),
+                        "beta": pd.DataFrame([[1, 4, 7, 10], [13, 16, 19, 22]],
+                                             columns=["s: 0, c: 0", "s: 0, c: 1", "s: 1, c: 0", "s: 1, c: 1"],
+                                             index=["0", "1"]),
+                        "sd": pd.DataFrame([[1, 4], [7, 10]], columns=["s: 0", "s: 1"], index=["0", "1"])}
+        self.assertEqual(out.keys(), expected_out.keys())
+        self.assertDictEqual(out["alpha"].to_dict(), expected_out["alpha"].to_dict())
+        self.assertDictEqual(out["beta"].to_dict(), expected_out["beta"].to_dict())
+        self.assertDictEqual(out["sd"].to_dict(), expected_out["sd"].to_dict())
+
+        res = {"variable": {"param": {"func": param}, "type": {"func": "Func_CS"}},
+               "algo": {"nClass": 2}}
+        out = get_param(res, "func")
+        self.assertEqual(out.keys(), expected_out.keys())
+        self.assertDictEqual(out["alpha"].to_dict(), expected_out["alpha"].to_dict())
+        self.assertDictEqual(out["beta"].to_dict(), expected_out["beta"].to_dict())
+        self.assertDictEqual(out["sd"].to_dict(), expected_out["sd"].to_dict())
 
     def test_get_tik(self):
         out = get_tik(self.res, log=False, empiric=False)
