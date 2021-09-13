@@ -391,3 +391,18 @@ class MixtComp(BaseEstimator):
         else:
             _ = self.predict(X)
             return self.res_predict_["mixture"]["lnObservedLikelihood"]
+
+    def get_param(self, var_name):
+        """ Get the estimated parameters
+
+        Parameters
+        ----------
+        var_name : str
+            variable name to get params
+
+        Returns
+        -------
+        DataFrame, dict
+            The parameters are mainly returned as a DataFrame with each row corresponding to a component
+        """
+        return utils.get_param(self.res_, var_name)

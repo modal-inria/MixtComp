@@ -79,7 +79,7 @@ class TestMixtComp(unittest.TestCase):
         mod.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
         self.assertEqual(mod._basic_mode, True)
         self.assertDictEqual(mod.model_, {"gauss": {"type": "Gaussian", "paramStr": ""},
-                                         "mult": {"type": "Multinomial", "paramStr": ""}})
+                                          "mult": {"type": "Multinomial", "paramStr": ""}})
         self.assertIsInstance(mod.res_, dict)
 
         mod.predict(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
