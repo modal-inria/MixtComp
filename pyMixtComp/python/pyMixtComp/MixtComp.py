@@ -13,6 +13,156 @@ import pyMixtComp.utils as utils
 
 
 class MixtComp(BaseEstimator):
+    """ Mixture model
+
+    Estimate the parameter of a mixture model or predict the cluster of new samples.
+    It manages heterogeneous data as well as missing and incomplete data.
+    It uses a SEM-Gibbs algorithm to estimate parameters and impute missing data.
+
+    Parameters
+    ----------
+    n_components : int
+        The number of mixture components.
+    n_burn_in_iter : int, optional
+        Number of iterations of the burn-in part of the SEM algorithm, by default 50
+    n_iter : int, optional
+        Number of iterations of the SEM algorithm, by default 50
+    n_gibbs_burn_in_iter : int, optional
+        Number of iterations of the burn-in part of the Gibbs algorithm, by default 50
+    n_gibbs_iter : int, optional
+        Number of iterations of the Gibbs algorithm, by default 50
+    n_init_per_class : int, optional
+        Number of individuals used to initialize each cluster, by default 50
+    n_sem_try : int, optional
+        Number of try of the algorithm for avoiding an error, by default 20
+    confidence_level : float, optional
+        Confidence level for confidence bounds for parameter estimation, by default 0.95
+    ratio_stable_criterion : float, optional
+        Required proportion of the partition to stay stable to stop earlier the SEM, by default 0.99
+    n_stable_criterion : int, optional
+        Number of consecutive iterations of stability to stop earlier the SEM, by default 20
+    n_init : int, optional
+        The number of initializations to perform, by default 1. The best results are kept.
+    n_core : int, optional
+        Number of cores used to parallelize initializations, by default None
+
+    Attributes
+    ----------
+    model_ : dict
+        Model used for fitting
+    res_ : dict
+        Output of a fit
+    res_predict_ : dict
+        Output of a predict
+    n_features_ : int
+        Number of variables (features)
+    n_samples_ : int
+        Number of individuals (samples)
+
+    Notes
+    -----
+    ### Data format (X)
+
+    Data can be provided as:
+    - a dict where each key is a variable name and each value is a 1d-array.
+    - a DataFrame where each columns is a variable
+    - a numpy array
+
+    Values can be given as a string in order to provide information about incomplete data.
+    Otherwise, data are automatically converted to string.
+
+    The format for the different model are:
+    - Gaussian data:
+    Gaussian data are real values with the dot as decimal separator.
+    Missing data are indicated by a `?`. Partial data can be provided through intervals denoted by
+    `[a:b]` where `a` (resp. `b`) is a real or `-inf` (resp. `+inf`).
+
+    - Categorical Data:
+    Categorical data must be consecutive integer with 0 as minimal value. Missing data are indicated by a `?`.
+    For partial data, a list of possible values can be provided by `{a_1,...,a_j}`,
+    where `a_i` denotes a categorical value.
+
+    - Poisson and NegativeBinomial Data:
+    Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a `?`.
+    Partial data can be provided through intervals denoted by
+    `[a:b]` where `a` and `b` are  positive integers. `b` can be `+inf`.
+
+    - Weibull Data:
+    Weibull data are real positive values with the dot as decimal separator.
+    Missing data are indicated by a `?`. Partial data can be provided through intervals denoted by
+    `[a:b]` where `a` and `b` are  positive reals. `b` can be `+inf`.
+
+    - Rank data:
+    The format of a rank is: `o_1, ..., o_j` where `o_1` is an integer corresponding to the number of the object ranked
+    in 1st position.
+    For example: 3,1,0,2 means that the object number 3 is ranked first then the object number 1 is in second position
+    and so on.
+    Missing data can be specified by replacing and object by a `?` or a list of potential object, for example:
+    `3, {1 2}, {1 0}, ?` means that the object ranked in second position is either the object number 1 or the object number 2,
+    then the object ranked in third position is either the object 1 or 0 and the last one can be anything.
+    A totally missing rank is specified by `?,?,...,?`
+
+    - Functional data:
+    The format of a functional data is: `time_1:value_1,..., time_j:value_j`.
+    Between individuals, functional data can have different length and different time.
+    `i` is the number of subregressions in a functional data and `k` the number of coefficients
+    of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
+
+    - z_class:
+    To perform a (semi-)supervised clustering, user can add a variable named `z_class` (with eventually some missing values)
+    with "LatentClass" as model. Missing data are indicated by a `?`.
+    For partial data, a list of possible values can be provided by `{a_1,...,a_j}`, where `a_i` denotes a class number.
+
+    ### model
+
+    `model` is a dict indicating which model is used for each variable. Each key is a variable name.
+    All variables listed in the `model` object must be in the `X` object. `model` can contain less variables than `X`.
+    An element of the dict is the model's name to use (see below for the list of available models).
+    For example, `model = {"real1": "Gaussian", "counting1": "Poisson"}` indicates a mixture model with 2 variables named
+    real1 and counting1 with Gaussian and Poisson as model.
+
+    Some models require hyperparameters. In this case, the model is described by a dict of 2 elements: "type" containing
+    the model name and "paramStr" containing the hyperparameters.
+    For example: `model = {"func1": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"}, "counting1": "Poisson"}`.
+    If `model` is None, data are supposed to be provided in a DataFrame or a dict with dtypes
+    (float, int, object, np.nan as missing value for float).
+    Models will be imputed as follows: "Gaussian" for float, "Multinomial" for object and "Poisson" for int.
+
+    Eight models are available in MixtComp: Gaussian, Multinomial, Poisson, NegativeBinomial, Weibull, Func_CS,
+    Func_SharedAlpha_CS, Rank_ISR.
+    Func_CS and Func_SharedAlpha_CS models require hyperparameters: the number of subregressions of functional and the number
+    of coefficients of each subregression. These hyperparameters are specified by: `nSub: i, nCoeff: k` in the `paramStr` field
+    of the `model` object. Func_SharedAlpha_CS is a variant of the Func_CS model with the alpha parameter shared between
+    clusters. It means that the start and end of each subregression will be the same across the clusters.
+
+    Examples
+    --------
+    >>> import matplotlib.pyplot as plt
+    >>> from pyMixtComp import MixtComp
+    >>> from pyMixtComp.data import load_prostate
+    >>> data, model = load_prostate()
+    >>> data.head()
+
+    Prostate data are mixted data (real and categorical). All variables are stored as object, "?" indicates missing values.
+    And the model dict indicates which model used for every variable.
+
+    >>> model
+    >>> mod = MixtComp(n_components=2, n_init=5)
+    >>> mod.fit(data[:-50], model)
+
+    Plot the discriminative power of variables to find the variables that participate the most at the clustering task.
+
+    >>> mod.plot_discriminative_power_variable()
+    >>> plt.show()
+
+    SG and AP are the most discriminant variables.
+
+    >>> mod.get_param("SG")
+
+    Predict the cluster of the 50 last data
+
+    >>> mod.predict(data[-50:], model)
+    """
     def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
                  ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1, n_core=None):
@@ -50,7 +200,6 @@ class MixtComp(BaseEstimator):
             None is tolerated when a numpy array or a DataFrame is provided.
             In the numpy array case, all variables are assumed to be gaussian. In the DataFrame case, model are imputed
             regarding the column type: float => Gaussian, int => Poisson, object => categorical.
-
 
         Returns
         -------
