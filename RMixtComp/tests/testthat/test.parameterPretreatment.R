@@ -66,7 +66,8 @@ test_that("imputModel works with data.frame", {
                      c = letters[1:3],
                      z_class = 1:3)
   
-  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), 
+                        c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
   
   outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)
@@ -79,7 +80,8 @@ test_that("imputModel works with list", {
                c = letters[1:3],
                z_class = 1:3)
   
-  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), 
+                        c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
   
   outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)
@@ -91,12 +93,26 @@ test_that("imputModel returns an error with a matrix", {
   expect_error(outModel <- imputModel(data))
 })
 
+test_that("imputModel detects a bad z_class type", {
+  data <- data.frame(a = 1:3,
+                     b = rnorm(3),
+                     c = letters[1:3],
+                     z_class = c(1., 2., 3.))
+  
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), 
+                        c = list(type = "Multinomial", paramStr = ""))
+  
+  expect_warning(outModel <- imputModel(data))
+  expect_equal(outModel, expectedModel)
+})
 
 
 test_that("completeModel adds hyperparameters for functional data", {
   
-  model <- list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
-                func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = ""),
+  model <- list(gauss = list(type = "Gaussian", paramStr = ""), 
+                func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), 
+                func3 = list(type = "Func_CS", paramStr = ""),
                 func4 = list(type = "Func_SharedAlpha_CS", paramStr = ""))
   
   nInd <- 200
@@ -113,8 +129,10 @@ test_that("completeModel adds hyperparameters for functional data", {
   data <- RMixtCompIO:::dataGeneratorNewIO(nInd, ratioPresent, var)$data
   
   expect_warning(out <- completeModel(model, data))
-  expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
-                         func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
+  expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), 
+                         func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                         func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), 
+                         func3 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
                          func4 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2")))
   
 })
