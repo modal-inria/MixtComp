@@ -37,6 +37,11 @@ def plot_data_CI(res, var_name, class_ids=None, all=False):
     NotImplementedError
         The plot function associated with the model of var_name does not exist
     """
+    if not isinstance(all, bool):
+        raise TypeError("all mus be a boolean.")
+    if not isinstance(var_name, str):
+        raise TypeError("var_name mus be a string.")
+
     if var_name not in res["variable"]["type"].keys():
         raise ValueError(var_name + " variable does not exist in the mixture model.")
 

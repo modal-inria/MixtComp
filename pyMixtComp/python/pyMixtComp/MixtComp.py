@@ -2,8 +2,10 @@ from copy import deepcopy
 from multiprocessing import cpu_count
 
 import numpy as np
+from pandas.core.frame import DataFrame
 from scipy.special import logsumexp
 from sklearn.base import BaseEstimator
+from sklearn.utils.validation import check_is_fitted, check_scalar
 
 from pyMixtComp.bridge.bridge import multi_run_pmc_pool
 from pyMixtComp.bridge.convert import convert, convert_data_to_dict
@@ -166,6 +168,11 @@ class MixtComp(BaseEstimator):
     def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
                  ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1, n_core=None):
+
+        self._check_init(n_components, n_burn_in_iter, n_iter, n_gibbs_burn_in_iter, n_gibbs_iter,
+                         n_init_per_class, n_sem_try, confidence_level, ratio_stable_criterion,
+                         n_stable_criterion, n_init, n_core)
+
         self.n_components = n_components
         self.n_init = n_init
 
@@ -182,6 +189,31 @@ class MixtComp(BaseEstimator):
         self.confidence_level = confidence_level
         self.ratio_stable_criterion = ratio_stable_criterion
         self.n_stable_criterion = n_stable_criterion
+
+    def _check_init(self, n_components, n_burn_in_iter, n_iter, n_gibbs_burn_in_iter, n_gibbs_iter,
+                    n_init_per_class, n_sem_try, confidence_level, ratio_stable_criterion,
+                    n_stable_criterion, n_init, n_core):
+        check_scalar(n_components, min_val=1, name="n_components", target_type=int)
+        check_scalar(n_burn_in_iter, min_val=1, name="n_burn_in_iter", target_type=int)
+        check_scalar(n_iter, min_val=1, name="n_iter", target_type=int)
+        check_scalar(n_gibbs_burn_in_iter, min_val=1, name="n_gibbs_burn_in_iter", target_type=int)
+        check_scalar(n_gibbs_iter, min_val=1, name="n_gibbs_iter", target_type=int)
+        check_scalar(n_init_per_class, min_val=1, name="n_init_per_class", target_type=int)
+        check_scalar(n_sem_try, min_val=1, name="n_sem_try", target_type=int)
+        check_scalar(confidence_level, min_val=0, max_val=1, name="confidence_level", target_type=float)
+        check_scalar(ratio_stable_criterion, min_val=0, max_val=1, name="ratio_stable_criterion", target_type=float)
+        check_scalar(n_stable_criterion, min_val=1, name="n_stable_criterion", target_type=int)
+        check_scalar(n_init, min_val=1, name="n_init", target_type=int)
+        if n_core is not None:
+            check_scalar(n_core, min_val=1, name="n_core", target_type=int)
+
+    def _check_X(self, X):
+        if not (isinstance(X, dict) | isinstance(X, np.ndarray) | isinstance(X, DataFrame)):
+            raise TypeError("X must be a dict with variable names as key, an array or a DataFrame.")
+
+    def _check_model(self, model):
+        if not (isinstance(model, dict) | (model is None)):
+            raise TypeError("model must be a dict with variable names as key.")
 
     def fit(self, X, model=None):
         """ Estimate model parameters with the SEM algorithm.
@@ -211,6 +243,9 @@ class MixtComp(BaseEstimator):
         RuntimeError
             Error from the C++ algorithm.
         """
+        self._check_X(X)
+        self._check_model(model)
+
         self._basic_mode = (model is None)
 
         if self._basic_mode:
@@ -221,7 +256,7 @@ class MixtComp(BaseEstimator):
 
         dat = {}
         if self._basic_mode:
-            dat, self.dictionary_ = format_data_basic_mode(X, model, None)
+            dat, self.dictionary_ = format_data_basic_mode(X, self.model_, None)
         else:
             dat = convert_data_to_dict(X)
 
@@ -255,6 +290,9 @@ class MixtComp(BaseEstimator):
         array
             Component labels.
         """
+        check_is_fitted(self, attributes="res_")
+        self._check_X(X)
+
         dat = {}
         if self._basic_mode:
             dat, _ = format_data_basic_mode(X, self.model_, self.dictionary_)
@@ -285,6 +323,7 @@ class MixtComp(BaseEstimator):
         Axes
             Barplot
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_discriminative_power_variable(self.res_, class_id)
 
     def plot_discriminative_power_class(self):
@@ -295,6 +334,7 @@ class MixtComp(BaseEstimator):
         Axes
             barplot
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_discriminative_power_class(self.res_)
 
     def plot_proportion(self):
@@ -305,6 +345,7 @@ class MixtComp(BaseEstimator):
         Axes
             barplot
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_proportion(self.res_)
 
     def plot_class_similarity(self):
@@ -324,6 +365,7 @@ class MixtComp(BaseEstimator):
         A high value (close to one) means that the classes are highly similar (high overlapping).
         A low value (close to zero) means that the classes are highly different (low overlapping).
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_class_similarity(self.res_)
 
     def plot_variable_similarity(self):
@@ -345,6 +387,7 @@ class MixtComp(BaseEstimator):
         A low value (close to zero) means that the variables provide some different information for the clustering task
         (i.e. different partitions).
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_variable_similarity(self.res_)
 
     def plot_tik(self):
@@ -358,6 +401,7 @@ class MixtComp(BaseEstimator):
         Axes
             Heatmap of the tik
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_tik(self.res_)
 
     def plot_data_CI(self, var_name, class_ids=None, all=False):
@@ -377,6 +421,7 @@ class MixtComp(BaseEstimator):
         Axes
             Plot Mean and 95%-level confidence intervals per class
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_data_CI(self.res_, var_name, class_ids, all)
 
     def plot_data(self, var_name, class_ids=None, all=False):
@@ -396,6 +441,7 @@ class MixtComp(BaseEstimator):
         Axes
             Boxplot (with 5%-25%-50%-75%-95% quantile) of the data
         """
+        check_is_fitted(self, attributes="res_")
         return plot.plot_data(self.res_, var_name, class_ids, all)
 
     def aic(self, X=None):
@@ -411,6 +457,7 @@ class MixtComp(BaseEstimator):
         float
             AIC value
         """
+        check_is_fitted(self, attributes="res_")
         if X is None:
             return self.res_["mixture"]["lnObservedLikelihood"] - self.res_["mixture"]["nbFreeParameters"]
         else:
@@ -430,6 +477,7 @@ class MixtComp(BaseEstimator):
         float
             BIC value
         """
+        check_is_fitted(self, attributes="res_")
         if X is None:
             return self.res_["mixture"]["BIC"]
         else:
@@ -449,6 +497,7 @@ class MixtComp(BaseEstimator):
         float
             ICL value
         """
+        check_is_fitted(self, attributes="res_")
         if X is None:
             return self.res_["mixture"]["ICL"]
         else:
@@ -474,6 +523,7 @@ class MixtComp(BaseEstimator):
         array
             Returns the probability given each sample.
         """
+        check_is_fitted(self, attributes="res_")
         if X is None:
             return utils.get_tik(self.res_, log, empiric)
         else:
@@ -535,6 +585,7 @@ class MixtComp(BaseEstimator):
         float
             Log likelihood of the mixture given X.
         """
+        check_is_fitted(self, attributes="res_")
         if X is None:
             return self.res_["mixture"]["lnObservedLikelihood"]
         else:
@@ -554,4 +605,5 @@ class MixtComp(BaseEstimator):
         DataFrame, dict
             The parameters are mainly returned as a DataFrame with each row corresponding to a component
         """
+        check_is_fitted(self, attributes="res_")
         return utils.get_param(self.res_, var_name)

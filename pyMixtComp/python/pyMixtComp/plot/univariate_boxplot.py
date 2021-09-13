@@ -27,6 +27,11 @@ def plot_data(res, var_name, class_ids=None, all=False):
     Axes
         Boxplot of the data distribution
     """
+    if not isinstance(all, bool):
+        raise TypeError("all mus be a boolean.")
+    if not isinstance(var_name, str):
+        raise TypeError("var_name mus be a string.")
+
     if var_name not in res["variable"]["type"].keys():
         raise ValueError(var_name + " variable does not exist in the mixture model.")
 

@@ -55,6 +55,12 @@ class TestPlot(unittest.TestCase):
     def test_plot_data_bad_var_name(self):
         with self.assertRaises(ValueError):
             plot_data(self.mod.res_, "gauss2", class_ids=None, all=False)
+        with self.assertRaises(TypeError):
+            plot_data(self.mod.res_, 5, class_ids=None, all=False)
+
+    def test_plot_data_bad_all(self):
+        with self.assertRaises(TypeError):
+            plot_data(self.mod.res_, "gauss", class_ids=None, all=3)
 
     def test_plot_data_numerical(self):
         plot_data(self.mod.res_, "gauss", class_ids=None, all=False)
@@ -79,6 +85,12 @@ class TestPlot(unittest.TestCase):
     def test_plot_data_CI_bad_var_name(self):
         with self.assertRaises(ValueError):
             plot_data_CI(self.mod.res_, "gauss2", class_ids=None, all=False)
+        with self.assertRaises(TypeError):
+            plot_data_CI(self.mod.res_, 5, class_ids=None, all=False)
+
+    def test_plot_data_CI_bad_all(self):
+        with self.assertRaises(TypeError):
+            plot_data_CI(self.mod.res_, "gauss", class_ids=None, all=3)
 
     def test_plot_data_CI_numerical(self):
         plot_data_CI(self.mod.res_, "gauss", class_ids=None, all=False)

@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sklearn.exceptions import NotFittedError
 
 from pyMixtComp.MixtComp import MixtComp
 
@@ -36,6 +37,25 @@ class TestMixtComp(unittest.TestCase):
         self.assertEqual(mod.confidence_level, 0.9)
         self.assertEqual(mod.ratio_stable_criterion, 0.95)
         self.assertEqual(mod.n_stable_criterion, 40)
+
+    def test_MixtComp_init_bad(self):
+        with self.assertRaises(ValueError):
+            MixtComp(n_components=-1)
+        with self.assertRaises(TypeError):
+            MixtComp(n_components=["ss"])
+
+        for param in ["n_burn_in_iter", "n_iter", "n_gibbs_burn_in_iter", "n_gibbs_iter", "n_init_per_class", "n_sem_try",
+                      "n_stable_criterion", "n_init", "n_core"]:
+            with self.assertRaises(ValueError):
+                MixtComp(n_components=1, **{param: -5})
+            with self.assertRaises(TypeError):
+                MixtComp(n_components=1, **{param: "str"})
+
+        for param in ["confidence_level", "ratio_stable_criterion"]:
+            with self.assertRaises(ValueError):
+                MixtComp(n_components=1, **{param: 1.5})
+            with self.assertRaises(TypeError):
+                MixtComp(n_components=1, **{param: "str"})
 
     def test_MixtComp_raise_error(self):
         mod = MixtComp(n_components=2)
@@ -113,8 +133,20 @@ class TestMixtComp(unittest.TestCase):
         mod = MixtComp(n_components=2, n_init_per_class=10, n_init=3, n_core=2)
         self.assertEqual(mod.n_core, 2)
 
+    def test_MixtComp_error_when_no_fit(self):
+        mod = MixtComp(n_components=2)
+        with self.assertRaises(NotFittedError):
+            mod.predict({"gauss": [1, 2]})
+
     def test_MixtComp_crit(self):
         mod = MixtComp(n_components=2)
+        with self.assertRaises(NotFittedError):
+            mod.bic()
+        with self.assertRaises(NotFittedError):
+            mod.aic()
+        with self.assertRaises(NotFittedError):
+            mod.icl()
+
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
 
         bic = mod.bic()
@@ -134,6 +166,9 @@ class TestMixtComp(unittest.TestCase):
 
     def test_MixtComp_score(self):
         mod = MixtComp(n_components=2)
+        with self.assertRaises(NotFittedError):
+            mod.score()
+
         mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
 
         self.assertEqual(mod.score(), mod.res_["mixture"]["lnObservedLikelihood"])
