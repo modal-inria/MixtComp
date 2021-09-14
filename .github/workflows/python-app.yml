@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: 'true'
       - name: Install MixtComp dependencies
-        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov genhtml
+        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
