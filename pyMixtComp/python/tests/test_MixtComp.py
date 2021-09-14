@@ -1,3 +1,4 @@
+from multiprocessing import cpu_count
 import unittest
 
 import numpy as np
@@ -27,7 +28,10 @@ class TestMixtComp(unittest.TestCase):
                        ratio_stable_criterion=0.95, n_stable_criterion=40, n_init=3, n_core=2)
         self.assertEqual(mod.n_components, 2)
         self.assertEqual(mod.n_init, 3)
-        self.assertEqual(mod.n_core, 2)
+        if cpu_count() > 1:
+            self.assertEqual(mod.n_core, 2)
+        else:
+            self.assertEqual(mod.n_core, 1)
         self.assertEqual(mod.n_burn_in_iter, 10)
         self.assertEqual(mod.n_iter, 15)
         self.assertEqual(mod.n_gibbs_burn_in_iter, 20)
@@ -131,7 +135,10 @@ class TestMixtComp(unittest.TestCase):
         self.assertEqual(mod.n_core, 1)
 
         mod = MixtComp(n_components=2, n_init_per_class=10, n_init=3, n_core=2)
-        self.assertEqual(mod.n_core, 2)
+        if cpu_count() > 1:
+            self.assertEqual(mod.n_core, 2)
+        else:
+            self.assertEqual(mod.n_core, 1)
 
     def test_MixtComp_error_when_no_fit(self):
         mod = MixtComp(n_components=2)
