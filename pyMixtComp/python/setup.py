@@ -16,5 +16,5 @@ setup(
     packages=["pyMixtComp"],
     include_package_data=True,
     package_data={"pyMixtComp": ["pyMixtCompBridge.so"], "": ["data/*.csv"]},
-    install_requires=["numpy", "pandas", "scikit-learn"],
+    install_requires=["numpy", "pandas", "scikit-learn", "seaborn", "matplotlib", "scipy"],
 )
