@@ -145,7 +145,7 @@ class MixtComp(BaseEstimator):
     >>> data, model = load_prostate()
     >>> data.head()
 
-    Prostate data are mixted data (real and categorical). All variables are stored as object, "?" indicates missing values.
+    Prostate data are mixed data (real and categorical). All variables are stored as object, "?" indicates missing values.
     And the model dict indicates which model used for every variable.
 
     >>> model

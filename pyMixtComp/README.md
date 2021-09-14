@@ -27,16 +27,5 @@ After compiling, *pyMixtCompBridge* python library can be found at the following
 
 ## Using Python library
 
-In Python console, run:
-
-``` python
-import pyMixtCompBridge
-```
-
-It contains the *pmc* function that performs learn and predict. The function uses dictionaries for the different parameters.
-
-*pmc* requires four parameters: four input dictionaries (algo, data, desc and res, see [Data Format](../MixtComp/docs/dataFormat.md)). To perform learning, the *res* parameter must be an empty dictionary. Ine predict mode, *res* is the output dictionary of a *pmc* run. To have more information about the output format, read the associated [documentation](../MixtComp/docs/objectOutput.md).
-
-## Examples
-
-See the file [here](python/pyMixtComp.py).
+The python package is located in the [pyMixtComp](./python) folder.
+See the [README](./python/README.md) to install the package.
