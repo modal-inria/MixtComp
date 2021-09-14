@@ -25,16 +25,19 @@ jobs:
         with:
           python-version: 3.8
       - name: Install Tests dependencies
-        run: |
-          pip install pytest flake8
+        run: pip install pytest flake8
       - name: Install Other Python Dependencies
         working-directory: pyMixtComp/python
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
       - name: Compile PyMixtCompBridge
+        working-directory: pyMixtComp
+        run: ./build.sh
+      - name: Test PyMixtCompBridge
+        working-directory: pyMixtComp
+        run: ./utest.sh
+      - name: Copy PyMixtCompBridge.so
         working-directory: pyMixtComp/python
-        run: |
-          ./build.sh
+        run: cp ../build/lib/pyMixtCompBridge.so pyMixtComp/pyMixtCompBridge.so
       - name: Lint with flake8
         working-directory: pyMixtComp/python
         run: |
