@@ -176,9 +176,11 @@ class MixtComp(BaseEstimator):
         self.n_components = n_components
         self.n_init = n_init
 
-        self.n_core = np.min((cpu_count() - 1, n_init))
-        if n_core is not None:
-            self.n_core = np.min((self.n_core, n_core))
+        self.n_core = 1
+        if n_core is None:
+            self.n_core = np.min((np.max((1, cpu_count() - 1)), n_init))
+        else:
+            self.n_core = np.min((n_init, n_core, cpu_count()))
 
         self.n_burn_in_iter = n_burn_in_iter
         self.n_iter = n_iter
