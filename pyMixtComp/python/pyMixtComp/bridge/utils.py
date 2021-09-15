@@ -165,7 +165,7 @@ def format_data_basic_mode(data, model, dictionary=None):
     return data.to_dict("list"), dictionary
 
 
-def refactor_categorical(data, old_categ, new_categ):
+def _refactor_categorical(data, old_categ, new_categ):
     is_not_series = not isinstance(data, pd.Series)
 
     if is_not_series:
@@ -183,13 +183,13 @@ def format_output_basic_mode(res, dictionary):
     res["algo"]["dictionary"] = dictionary
 
     for var_name in (set(dictionary) - {"z_class"}):
-        res["variable"]["data"][var_name]["completed"] = refactor_categorical(
+        res["variable"]["data"][var_name]["completed"] = _refactor_categorical(
             res["variable"]["data"][var_name]["completed"],
             dictionary[var_name]["new"], dictionary[var_name]["old"])
 
         if "stat" in res["variable"]["data"][var_name]:
             for key in res["variable"]["data"][var_name]["stat"].keys():
-                res["variable"]["data"][var_name]["stat"][key]["modality"] = refactor_categorical(
+                res["variable"]["data"][var_name]["stat"][key]["modality"] = _refactor_categorical(
                     res["variable"]["data"][var_name]["stat"][key]["modality"],
                     dictionary[var_name]["new"], dictionary[var_name]["old"])
 
@@ -200,7 +200,7 @@ def format_output_basic_mode(res, dictionary):
 
     # this will not work for non simple model. It is not a problem because in basic mode only simple models are considered
     if "z_class" in dictionary:
-        res["variable"]["data"]["z_class"]["completed"] = refactor_categorical(
+        res["variable"]["data"]["z_class"]["completed"] = _refactor_categorical(
             res["variable"]["data"]["z_class"]["completed"],
             dictionary["z_class"]["new"], dictionary["z_class"]["old"])
 

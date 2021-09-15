@@ -9,7 +9,7 @@ from pyMixtComp.utils.getter import _get_param_numerical, _get_param_multinomial
                                     _get_param_Func_CS, get_param, get_partition, get_tik
 
 
-class TestUtils(unittest.TestCase):
+class TestUtilsGetter(unittest.TestCase):
     def setUp(self):
         self.res = pickle.load(open("tests/mixtcomp_output.pickle", "rb"))
 

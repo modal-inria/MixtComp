@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model, format_data_basic_mode, \
-    refactor_categorical, format_output_basic_mode
+    _refactor_categorical, format_output_basic_mode
 
 
 class TestUtils(unittest.TestCase):
@@ -157,7 +157,7 @@ class TestUtils(unittest.TestCase):
         new_categ = ["a", "b"]
         old_categ = ["0", "1"]
 
-        out = refactor_categorical(data, old_categ, new_categ)
+        out = _refactor_categorical(data, old_categ, new_categ)
 
         self.assertListEqual(out.to_list(), ["a", "b", "a"])
 
@@ -166,7 +166,7 @@ class TestUtils(unittest.TestCase):
         new_categ = ["a", "b"]
         old_categ = ["0", "1"]
 
-        out = refactor_categorical(data, old_categ, new_categ)
+        out = _refactor_categorical(data, old_categ, new_categ)
 
         self.assertListEqual(list(out), ["a", "b", "a"])
         self.assertIsInstance(out, np.ndarray)
