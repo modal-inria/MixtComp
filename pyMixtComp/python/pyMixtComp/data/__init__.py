@@ -1,1 +1,2 @@
-from .data import *
+# flake8: noqa
+from .data import load_prostate, load_simulated_data, load_canadian_weather
