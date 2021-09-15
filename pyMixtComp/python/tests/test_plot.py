@@ -1,3 +1,4 @@
+import pickle
 import unittest
 
 import numpy as np
@@ -82,6 +83,11 @@ class TestPlot(unittest.TestCase):
         plot_data(self.mod.res_, "mult", class_ids=[1], all=True)
         plot_data(self.mod_basic.res_, "mult", class_ids=["A"], all=True)
 
+    def test_plot_data_functional(self):
+        with open("tests/mixtcomp_output_functional.pickle", "rb") as f:
+            res = pickle.load(f)
+            plot_data(res, "Functional1", class_ids=None, all=False, add_obs=False, add_CI=False)
+
     def test_plot_data_CI_bad_var_name(self):
         with self.assertRaises(ValueError):
             plot_data_CI(self.mod.res_, "gauss2", class_ids=None, all=False)
@@ -111,6 +117,11 @@ class TestPlot(unittest.TestCase):
 
         plot_data_CI(self.mod.res_, "mult", class_ids=[1], all=False)
         plot_data_CI(self.mod_basic.res_, "mult", class_ids=["B"], all=False)
+
+    def test_plot_data_CI_functional(self):
+        with open("tests/mixtcomp_output_functional.pickle", "rb") as f:
+            res = pickle.load(f)
+            plot_data_CI(res, "Functional1", class_ids=[1], all=True, add_obs=True, add_CI=True)
 
     def test_plot_variable_similarity(self):
         plot_variable_similarity(self.mod.res_)

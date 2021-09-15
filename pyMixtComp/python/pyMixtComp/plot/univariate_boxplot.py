@@ -7,8 +7,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from pyMixtComp.plot.functional import extract_CI_Func_CS, plot_functional_data
 
-def plot_data(res, var_name, class_ids=None, all=False):
+
+def plot_data(res, var_name, class_ids=None, all=False, **kwargs):
     """ Plot Data Distribution
 
     Parameters
@@ -21,6 +23,9 @@ def plot_data(res, var_name, class_ids=None, all=False):
         Numbers or names of classes to plot, by default None
     all : bool, optional
         If True add the overall distribution, by default False
+    **kwargs
+        For functional data: add_obs (default=False) adds observations on the plot,
+        add_CI (default=True) adds confidence intervals for means.
 
     Returns
     -------
@@ -41,20 +46,17 @@ def plot_data(res, var_name, class_ids=None, all=False):
     model = res["variable"]["type"][var_name]
 
     if model == "Gaussian":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
-                                           var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
     elif model == "Multinomial":
-        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_ids, all),
-                                             var_name)
+        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_ids, all), var_name)
     elif model == "Poisson":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
-                                           var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
     elif model == "NegativeBinomial":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
-                                           var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
     elif model == "Weibull":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all),
-                                           var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
+    elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 

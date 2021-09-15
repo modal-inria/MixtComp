@@ -9,9 +9,10 @@ from scipy.stats import norm, poisson, nbinom, weibull_min
 import seaborn as sns
 
 from pyMixtComp.plot.univariate_boxplot import barplot_per_class_categorical
+from pyMixtComp.plot.functional import extract_CI_Func_CS, plot_functional_data
 
 
-def plot_data_CI(res, var_name, class_ids=None, all=False):
+def plot_data_CI(res, var_name, class_ids=None, all=False, **kwargs):
     """ Plot Mean and 95%-level confidence intervals per class
 
     Parameters
@@ -24,6 +25,9 @@ def plot_data_CI(res, var_name, class_ids=None, all=False):
         Classes to plot, by default None, all classes are plotted
     all : bool, optional
         If True, it adds the mean and 95%-level confidence interval for all data, by default False
+    **kwargs
+        For functional data: add_obs (default=False) adds observations on the plot,
+        add_CI (default=True) adds confidence intervals for means.
 
     Returns
     -------
@@ -65,6 +69,8 @@ def plot_data_CI(res, var_name, class_ids=None, all=False):
     elif model == "Weibull":
         return plot_CI_numerical(extract_CI_weibull(res, var_name, class_ids, all),
                                  var_name)
+    elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 
