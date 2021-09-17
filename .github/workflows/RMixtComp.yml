@@ -1,4 +1,4 @@
-name: Test RMixtComp
+name: RMixtComp
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Test JMixtComp C++ Library
+name: JMixtComp C++ Library
 on:
   push:
     branches:

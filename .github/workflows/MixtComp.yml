@@ -1,4 +1,4 @@
-name: Test MixtComp C++ Library
+name: MixtComp C++ Library
 on:
   push:
     branches:
