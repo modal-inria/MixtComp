@@ -46,15 +46,14 @@ jobs:
           install.packages('remotes')
         shell: Rscript {0}
 
-      - name: Install dependencies
+      - name: Install RMixtCompIO dependencies
         working-directory: RMixtCompIO
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-
-      - name: Copy files
+      - name: Copy MixtComp files
         working-directory: RMixtCompIO
         run: |
           make clean
@@ -67,13 +66,12 @@ jobs:
         run: Rcpp::compileAttributes()
         shell: Rscript {0}
 
-      - name: Check
+      - name: Check RMixtCompIO
         working-directory: RMixtCompIO
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
-
 
       - name: Show testthat output
         working-directory: RMixtCompIO
@@ -87,3 +85,32 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: RMixtCompIO/check
+
+      - name: Install local RMixtCompIO
+        working-directory: RMixtCompIO
+        run: R CMD INSTALL --no-multiarch --with-keep.source .
+
+      - name: Install RMixtCompUtilities dependencies
+        working-directory: RMixtCompUtilities
+        run: remotes::update_packages(setdiff(local_package_deps(pkgdir = ".", dependencies = TRUE), "RMixtCompIO"))
+        shell: Rscript {0}
+
+      - name: Check RMixtCompUtilities
+        working-directory: RMixtCompUtilities
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        working-directory: RMixtCompUtilities
+        if: always()
+        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: RMixtCompUtilities/check
