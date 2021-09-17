@@ -40,10 +40,13 @@ jobs:
           use-public-rspm: true
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - name: Install dependencies
         working-directory: RMixtCompIO
-        with:
-          extra-packages: rcmdcheck
+        run: |
+          remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
 
       - name: Copy files
         working-directory: RMixtCompIO
