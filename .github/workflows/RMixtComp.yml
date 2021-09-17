@@ -60,8 +60,13 @@ jobs:
         run: Rcpp::compileAttributes()
         shell: Rscript {0}
 
-      - uses: r-lib/actions/check-r-package@v1
+      - name: Check
         working-directory: RMixtCompIO
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
 
       - name: Show testthat output
         working-directory: RMixtCompIO
