@@ -92,7 +92,7 @@ jobs:
 
       - name: Install RMixtCompUtilities dependencies
         working-directory: RMixtCompUtilities
-        run: remotes::update_packages(setdiff(local_package_deps(pkgdir = ".", dependencies = TRUE), "RMixtCompIO"))
+        run: remotes::update_packages(setdiff(remotes::local_package_deps(pkgdir = ".", dependencies = TRUE), "RMixtCompIO"))
         shell: Rscript {0}
 
       - name: Check RMixtCompUtilities
