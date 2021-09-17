@@ -26,7 +26,7 @@
 
 
 
-BOOST_PYTHON_MODULE(pyMixtComp)
+BOOST_PYTHON_MODULE(pyMixtCompBridge)
 {
 	Py_Initialize();
 	boost::python::numpy::initialize();
