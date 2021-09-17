@@ -2,14 +2,30 @@
 
 MixtComp (Mixture Composer) is a model-based clustering package for mixed data originating from the [Modal team](https://modal.lille.inria.fr/wikimodal/doku.php) (Inria Lille).
 
-Mixture models parameters are estimated using a [SEM algorithm](MixtComp/docs/article/SEM.pdf). Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented to manage real, integer and categorical variables, as well as two advanced models ([Func_CS](MixtComp/docs/article/functionalModel.pdf) for functional data and [Rank_ISR](MixtComp/docs/article/rankModel.pdf) for rank data). MixtComp has the ability to natively manage missing data (completely or by interval). 
+Mixture models parameters are estimated using a [SEM algorithm](MixtComp/docs/article/SEM.pdf). Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented to manage real, integer and categorical variables, as well as two advanced models ([Func_CS](MixtComp/docs/article/functionalModel.pdf) for functional data and [Rank_ISR](MixtComp/docs/article/rankModel.pdf) for rank data). MixtComp has the ability to natively manage missing data (completely or by interval).
 
-MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation. It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption. New models will eventually be available from researches, carried out by the Modal team or by other contributors. Currently, central architecture of MixtComp is built and functionality has been field-tested through industry partnerships. 
+MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation. It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption. New models will eventually be available from researches, carried out by the Modal team or by other contributors. Currently, central architecture of MixtComp is built and functionality has been field-tested through industry partnerships.
 
 Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/).
 
 CRAN package: [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RMixtComp)](https://cran.r-project.org/package=RMixtComp)
 [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp?color=blue)](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp)
+
+## Build
+
+master:
+
+![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=master)
+![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=master)
+![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=master)
+![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=master)
+
+staging:
+
+![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=staging)
+![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=staging)
+![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=staging)
+![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=staging)
 
 ## Credits
 
@@ -28,7 +44,7 @@ MixtComp is distributed under the [AGPL 3.0 licence](https://www.gnu.org/license
 * **RMixtComp** Main R package loading *RMixtCompIO* and *RMixtCompUtilities*
 * **RMixtCompIO** R package linking MixtComp C++ library with Rcpp
 * **RMixtCompUtilities** R package containing graphical, formatting and getter functions
-* **RJMixtComp** R package using a JMixtComp executable 
+* **RJMixtComp** R package using a JMixtComp executable
 * **RMixtCompHier** R package containing a hierarchical version of MixtComp
 * **pyMixtComp** Minimal python interface using Boost.Python
 
@@ -58,6 +74,8 @@ Scientific papers about algorithm and models are available in the [article folde
 ## Branches (for MixtComp dev team)
 
 There are two branches tested on the ci server (using the [ci.sh](ci.sh) file):
+
 * **master** this branch is protected, MixtComp must *always* work on it.
 * **staging** this branch is used for short development, testing new features, bug fixes... and its content is regularly pushed to master when tests are OK.
+
 Big features should be developed on a specific branch.

@@ -1,0 +1,28 @@
+name: JMixtComp C++ Library
+on:
+  push:
+    branches:
+      - master
+      - staging
+  pull_request:
+    branches:
+      - master
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MixtComp
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - name: Install MixtComp dependencies
+        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+      - name: Compile JMixtComp
+        working-directory: JMixtComp
+        run: ./buildDebug.sh
+      - name: Test JMixtComp
+        working-directory: JMixtComp
+        run: ./utestDebug.sh
