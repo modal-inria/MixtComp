@@ -1,0 +1,28 @@
+name: Test MixtComp C++ Library
+on:
+  push:
+    branches:
+      - master
+      - staging
+  pull_request:
+    branches:
+      - master
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MixtComp
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - name: Install MixtComp dependencies
+        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+      - name: Compile MixtComp
+        working-directory: MixtComp
+        run: ./buildDebug.sh
+      - name: Test MixtComp
+        working-directory: MixtComp
+        run: ./utestDebug.sh
