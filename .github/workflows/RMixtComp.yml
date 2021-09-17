@@ -114,3 +114,32 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: RMixtCompUtilities/check
+
+      - name: Install local RMixtCompUtilities
+        working-directory: RMixtCompUtilities
+        run: R CMD INSTALL --no-multiarch --with-keep.source .
+
+      - name: Install RMixtComp dependencies
+        working-directory: RMixtComp
+        run: remotes::update_packages(setdiff(remotes::local_package_deps(pkgdir = ".", dependencies = TRUE), c("RMixtCompIO", "RMixtCompUtilities")))
+        shell: Rscript {0}
+
+      - name: Check RMixtComp
+        working-directory: RMixtComp
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        working-directory: RMixtComp
+        if: always()
+        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: RMixtComp/check
