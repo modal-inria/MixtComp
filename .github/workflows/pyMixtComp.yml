@@ -1,4 +1,4 @@
-name: Test pyMixtComp
+name: pyMixtComp
 on:
   push:
     branches:
