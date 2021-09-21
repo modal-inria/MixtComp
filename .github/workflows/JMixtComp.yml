@@ -22,7 +22,7 @@ jobs:
         run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
       - name: Compile JMixtComp
         working-directory: JMixtComp
-        run: ./buildDebug.sh
+        run: ./build.sh Debug
       - name: Test JMixtComp
         working-directory: JMixtComp
-        run: ./utestDebug.sh
+        run: ./utest.sh

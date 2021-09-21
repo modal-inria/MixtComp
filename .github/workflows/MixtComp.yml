@@ -22,7 +22,7 @@ jobs:
         run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
       - name: Compile MixtComp
         working-directory: MixtComp
-        run: ./buildDebug.sh
+        run: ./build.sh Debug
       - name: Test MixtComp
         working-directory: MixtComp
-        run: ./utestDebug.sh
+        run: ./utest.sh
