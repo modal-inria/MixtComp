@@ -26,3 +26,6 @@ jobs:
       - name: Test JMixtComp
         working-directory: JMixtComp
         run: ./utest.sh
+      - name: Run valgring
+        working-directory: JMixtComp
+        run: ./valgrindRun.sh
