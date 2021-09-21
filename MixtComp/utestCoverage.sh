@@ -1,1 +1,1 @@
-cd debug/ && MC_DETERMINISTIC=T make MixtComp_coverage && cd ..
+cd build/ && MC_DETERMINISTIC=T make MixtComp_coverage && cd ..

@@ -1,6 +1,7 @@
 # Compile MixtComp
 
 *MixtComp* uses cmake to generate a makefile. It also requires the following external libraries:
+
 - [Boost](https://www.boost.org/)
 - [Eigen](http://eigen.tuxfamily.org)
 
@@ -10,19 +11,19 @@ Note that if you are installing *RMixtComp* from CRAN, Boost and Eigen are provi
 
 On Debian / Ubuntu, you can install all the dependencies using:
 
-```
+``` bash
 sudo apt install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov genhtml
 ```
 
 ## macOS
 
-The developper tools must be installed, by typing `xcode-select --install` in a terminal. This will provide a C++ compiler and a build toolchain.
+The developer tools must be installed, by typing `xcode-select --install` in a terminal. This will provide a C++ compiler and a build toolchain.
 
-We recommand using Homebrew to manage dependencies. Installation is easy, follow instructions at https://brew.sh/
+We recommand using Homebrew to manage dependencies. Installation is easy, follow instructions at <https://brew.sh/>
 
 The additional libraries can then be installed using:
 
-```
+``` bash
 brew install cmake boost eigen lcov
 ```
 
@@ -32,12 +33,11 @@ To install the necessary tools, user needs to install [cygwin](https://www.cygwi
 
 ## Compilation & tests
 
-Run `./buildDebug.sh` (resp. `./buildRelease.sh`, `./buildCoverage.sh`) to compile MixtComp in Debug (resp. Release, Debug with code coverage) mode.
-Run `./utestDebug.sh` (resp. `./utestRelease.sh`, `./utestCoverage.sh`) to run unit tests in Debug (resp. Release, Debug with code coverage)) mode.
-To clean the debug and release folders, run `./clean.sh`.
+Run `./build.sh` to compile MixtComp in Debug mode. Run `./build.sh Release` or `./build.sh Coverage` to build in release mode or for code coverage. The build is performed in a build folder.
+Run `./utest.sh` to run unit tests.
+To clean the build folder, run `./clean.sh`.
 
-
-# Compilation FLAGS
+### Compilation FLAGS
 
 Those compilation flags activate various behaviours in MixtComp.
 

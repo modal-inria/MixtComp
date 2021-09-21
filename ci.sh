@@ -4,18 +4,18 @@
 
 cd MixtComp
 ./clean.sh
-./buildCoverage.sh
-cd debug/ && MC_DETERMINISTIC=T make MixtComp_coverage && cd ..
+./build.sh Coverage
+cd build/ && MC_DETERMINISTIC=T make MixtComp_coverage && cd ..
 ./valgrindRun.sh
 cd ../JMixtComp
 ./clean.sh
-./buildDebug.sh
-cd debug/ && make runUtestJMC && cd ..
+./build.sh Debug
+cd build/ && make runUtestJMC && cd ..
 ./valgrindRun.sh
 cd ../pyMixtComp
 ./clean.sh
-./buildDebug.sh
-./utestDebug.sh
+./build.sh build
+./utest.sh
 cd ../RMixtCompIO
 make clean
 make updateLib
