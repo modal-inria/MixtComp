@@ -26,6 +26,6 @@ jobs:
       - name: Test MixtComp
         working-directory: MixtComp
         run: ./utest.sh
-      - name: Run valgring
+      - name: Run valgrind
         working-directory: MixtComp
         run: ./valgrindRun.sh
