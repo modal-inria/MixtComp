@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: 'true'
       - name: Install MixtComp dependencies
-        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov valgrind
       - name: Compile MixtComp
         working-directory: MixtComp
         run: ./build.sh Debug
