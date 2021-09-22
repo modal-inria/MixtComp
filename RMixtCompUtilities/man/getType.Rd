@@ -64,6 +64,7 @@ Other getter:
 \code{\link{getBIC}()},
 \code{\link{getCompletedData}()},
 \code{\link{getEmpiricTik}()},
+\code{\link{getMixtureDensity}()},
 \code{\link{getParam}()},
 \code{\link{getPartition}()}
 }

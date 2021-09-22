@@ -134,7 +134,7 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE)
 #' @author Quentin Grimonprez
 #' @family getter
 #' @export
-getPartition <- function(outMixtComp, empiric = TRUE)
+getPartition <- function(outMixtComp, empiric = FALSE)
 {
   if(empiric)
     return(outMixtComp$variable$data$z_class$completed)
@@ -243,7 +243,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
 #' @param log if TRUE, log(tik) are returned
 #'
-#' @return a matrix containing the tik for each individuals (in row) and each class (in column).
+#' @return a matrix containing the tik for each individual (in row) and each class (in column).
 #'
 #' @details 
 #' \emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns an estimation based on the sampled z_i during the algorithm. 
@@ -289,7 +289,8 @@ getEmpiricTik <- function(outMixtComp)
 
 #' @rdname getEmpiricTik
 #' @export
-getTik <- function(outMixtComp, log = TRUE){
+getTik <- function(outMixtComp, log = TRUE)
+{
   logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
                   1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
                   "-")
@@ -299,6 +300,53 @@ getTik <- function(outMixtComp, log = TRUE){
   return(logTik)
 }
 
+#' @title Get the mixture density
+#'
+#' @description Get the mixture density for each individual
+#'
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.
+#'
+#' @return a vector containing the mixture density for each individual.
+#'
+#' @details 
+#' \deqn{d(x_i) = \sum_k\pi_k P(x_i; \theta_k)}
+#'
+#' @examples 
+#' require(RMixtCompIO) # for learning a mixture model
+#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#'                   
+#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
+#'               var2 = list(type = "Poisson", paramStr = ""))
+#' 
+#' algo <- list(
+#'   nClass = 2,
+#'   nInd = 100,
+#'   nbBurnInIter = 100,
+#'   nbIter = 100,
+#'   nbGibbsBurnInIter = 100,
+#'   nbGibbsIter = 100,
+#'   nInitPerClass = 3,
+#'   nSemTry = 20,
+#'   confidenceLevel = 0.95,
+#'   ratioStableCriterion = 0.95,
+#'   nStableCriterion = 10,
+#'   mode = "learn"
+#' )
+#' 
+#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#' 
+#' d <- getMixtureDensity(resLearn)
+#' 
+#' 
+#' @author Quentin Grimonprez
+#' @family getter
+#' @export
+getMixtureDensity <- function(outMixtComp) 
+{
+  logprop <- log(getProportion(outMixtComp))
+  apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(x) sum(exp(x + logprop))) 
+}
 
 
 

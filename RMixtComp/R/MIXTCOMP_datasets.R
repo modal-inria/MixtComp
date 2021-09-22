@@ -64,7 +64,7 @@ NULL
 #' 
 #' @source Titanic People Database, Encyclopedia Titanica, \url{https://www.encyclopedia-titanica.org/titanic-survivors/}
 #' 
-#' \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.xls}
+#' \url{https://www.kaggle.com/c/titanic/data}
 #' 
 #' @examples
 #' \donttest{

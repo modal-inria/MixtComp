@@ -222,8 +222,10 @@
 #' See the associated vignette for more details: \code{RShowDoc("mixtCompObject", package = "RMixtComp")}
 #'
 #' @section MixtCompLearn object:
-#' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
-#' \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
+#' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. 
+#' It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
+#' \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, \emph{totalTime}, the total running time, 
+#' and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
 #'
 #'
 #' @section Hierarchical Mode:
@@ -290,7 +292,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     model <- imputModel(data)
   }else{
     mode <- "expert"
-    model <- RMixtCompUtilities:::formatModel(model)  
+    model <- formatModel(model)  
   }
   
   performHier <- performHierarchical(hierarchicalMode, mode, model)
@@ -303,9 +305,11 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     resLearn <- classicLearn(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
   t2 <- proc.time()
   
+  resLearn$totalTime <- (t2-t1)[3]
+  
   if(verbose)
   {
-    cat(paste0("Total runtime: ", round((t2-t1)[3], 3), "s\n"))
+    cat(paste0("Total runtime: ", round(resLearn$totalTime, 3), "s\n"))
     if(is.null(resLearn$warnLog))
       cat(paste0("Best model according to ", criterion, ": ", resLearn$algo$nClass," clusters.\n"))
     else
@@ -325,14 +329,14 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   if(is.null(model))
     model = getModel(resLearn, with.z_class = FALSE)
   
-  model = RMixtCompUtilities:::formatModel(model)
+  model = formatModel(model)
   
   
   if(resLearn$algo$basicMode)
   {
     dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
   }else{
-    dataList <- RMixtCompUtilities:::formatData(data)
+    dataList <- formatData(data)
   }
   
   
@@ -340,7 +344,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   algo$nClass = checkNClass(nClass, resLearn)
   algo$mode = "predict"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   ## run predict
   if("MixtCompLearn" %in% class(resLearn))
@@ -440,14 +444,14 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
     }
     
   }else{
-    dataList <- RMixtCompUtilities:::formatData(data)
+    dataList <- formatData(data)
     model <- completeModel(model, dataList)
   }
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   indCrit <- ifelse(criterion == "BIC", 1, 2)
   
@@ -509,13 +513,13 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   
   nClass <- max(nClass)
   
-  dataList <- RMixtCompUtilities:::formatData(data)
+  dataList <- formatData(data)
   model <- completeModel(model, dataList)
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
-  algo = RMixtCompUtilities:::completeAlgo(algo)
+  algo = completeAlgo(algo)
   
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
   

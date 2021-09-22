@@ -57,6 +57,7 @@ completedData2 <- getCompletedData(resLearn, var = "var1")
 Other getter: 
 \code{\link{getBIC}()},
 \code{\link{getEmpiricTik}()},
+\code{\link{getMixtureDensity}()},
 \code{\link{getParam}()},
 \code{\link{getPartition}()},
 \code{\link{getType}()}

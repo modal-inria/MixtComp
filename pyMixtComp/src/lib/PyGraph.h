@@ -17,7 +17,7 @@
 /*
  *  Project:    MixtComp
  *  Created on: January 21, 2019
- *  Authors:    Quentin Grimonprez, Vincent Kubicki, Leo Perard
+ *  Authors:    Quentin Grimonprez, Vincent Kubicki
  **/
 
 #ifndef PYMIXTCOMP_SRC_PYGRAPH_H
@@ -107,20 +107,20 @@ private:
 				add_payload(path, currDepth + 1, nextLevel, name, p);
 				currLevel[path[currDepth]] = nextLevel;
 			}else{
-//				boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-				boost::python::dict nextLevel(currLevel[path[currDepth]]);
-//				if(nextLevel.check())// check() works with extract
-//				{
+				boost::python::extract<boost::python::dict> temp(currLevel[path[currDepth]]);
+
+				if(temp.check())
+				{
+					boost::python::dict nextLevel = temp();
 					add_payload(path, currDepth + 1, nextLevel, name, p);
 					currLevel[path[currDepth]] = nextLevel;
-//				}else{
-//					std::cout<<"pas check"<<std::endl;
-//					std::string askedPath;
-//					for (Index i = 0; i < currDepth + 1; ++i) {
-//						askedPath + "/" + path[i];
-//					}
-//					throw(askedPath + " already exists and is not a python object.");
-//				}
+				}else{
+					std::string askedPath;
+					for (Index i = 0; i < currDepth + 1; ++i) {
+						askedPath + "/" + path[i];
+					}
+					throw(askedPath + " already exists and is not a python object.");
+				}
 			}
 		}
 	}

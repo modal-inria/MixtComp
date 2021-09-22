@@ -1,43 +1,35 @@
-# PyMixtComp
+# pyMixtComp
+
+*pyMixtCompBridge* is a C++ library containing the minimal interface of MixtComp for python.
+The *pyMixtComp* python package is the equivalent of RMixtComp.
 
 ## Requirements
 
-*pyMixtComp* requires python and the *numpy* package. See [MixtComp's README](../MixtComp/README.md) for MixtComp's requirements.
+*pyMixtCompBridge* requires python and the *numpy* package. See [MixtComp's README](../MixtComp/README.md) for MixtComp's requirements.
 
+``` bash
+sudo apt install python3-pip
+pip3 install numpy
 ```
-sudo apt install python-pip
-pip install numpy
-```
-
 
 It requires [Boost.Python](https://www.boost.org/doc/libs/1_72_0/libs/python/doc/html/index.html) library.
 
-```
+``` bash
 brew install boost --with-python
 ```
 
 ## Compile PyMixtComp
 
-Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
-Run `./utestDebug.sh` (resp. `./utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
-To clean the debug and release folders, run `./clean.sh`.
+Run `./build.sh` to compile MixtComp in Debug mode. Run `./build.sh Release` for compiling in Release mode.
+The resulting files are located in the build folder.
+Run `./utest.sh` to run unit tests.
+To clean the build folder, run `./clean.sh`.
 
 ## Python library
 
-After compiling, *pyMixtComp* python library can be found at the following location: `debug/lib/pyMixtComp.so` and `release/lib/pyMixtComp.so`. 
+After compiling, *pyMixtCompBridge* library can be found at the following location: `build/lib/pyMixtCompBridge.so`.
 
-## Using Python library
+## Python package
 
-In Python console, run:
-
-```
-import pyMixtComp
-```
-
-It contains the *pmc* function that performs learn and predict. The function uses dictionaries for the different parameters.
-
-*pmc* requires four parameters: four input dictionaries (algo, data, desc and res, see [Data Format](../MixtComp/docs/dataFormat.md)). To perform learning, the *res* parameter must be an empty dictionary. Ine predict mode, *res* is the output dcitionary of a *pmc* run. To have more information about the output format, read the associated [documentation](../MixtComp/docs/objectOutput.md).
-
-## Examples
-
-See the file [here](python/pyMixtComp.py).
+The python package is located in the [python](./python) folder.
+See the [README](./python/README.md) to install the package.

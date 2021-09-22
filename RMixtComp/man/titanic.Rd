@@ -20,7 +20,7 @@ A data.frame with 1309 individuals and 8 variables.
 \source{
 Titanic People Database, Encyclopedia Titanica, \url{https://www.encyclopedia-titanica.org/titanic-survivors/}
 
-\url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.xls}
+\url{https://www.kaggle.com/c/titanic/data}
 }
 \usage{
 data(titanic)

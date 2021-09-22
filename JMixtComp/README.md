@@ -2,13 +2,13 @@
 
 ## Compile JMixtComp
 
-Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
-Run `./utestDebug.sh` (resp. `./utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
-To clean the debug and release folders, run `./clean.sh`.
+Run `./build.sh` to compile MixtComp in Debug mode. Run `./build.sh Release` or `./build.sh Coverage` to build in release mode or for code coverage.  The build is performed in a build folder.
+Run `./utest.sh` to run unit tests .
+To clean the build folder, run `./clean.sh`.
 
 ## Executables
 
-After compiling, *jmc* executables can be found at the following location: `debug/lib/jmc` and `release/lib/jmc`. They allow to run MixtComp in command line with json as format for input and output files.
+After compiling, *jmc* executables can be found at the following location: `build/lib/jmc`. It allows to run MixtComp in command line with json as format for input and output files.
 
 ## Running jmc
 
@@ -26,4 +26,4 @@ jmc algo.json data.json desc.json resLearn.json resPredict.json
 
 ## Examples
 
-Datasets can be found in the [data folder](data) and command lines are avalaible in the [runTestDebug.sh](runTestDebug.sh) and [runTestRelease.sh](runTestRelease.sh) files.
+Datasets can be found in the [data folder](data) and can be used with jmc by running the [runTest.sh](runTest.sh) file.

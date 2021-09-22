@@ -4,7 +4,7 @@
 \alias{getPartition}
 \title{Get the estimated class from MixtComp object}
 \usage{
-getPartition(outMixtComp, empiric = TRUE)
+getPartition(outMixtComp, empiric = FALSE)
 }
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
@@ -51,6 +51,7 @@ Other getter:
 \code{\link{getBIC}()},
 \code{\link{getCompletedData}()},
 \code{\link{getEmpiricTik}()},
+\code{\link{getMixtureDensity}()},
 \code{\link{getParam}()},
 \code{\link{getType}()}
 }

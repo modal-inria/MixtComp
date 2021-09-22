@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -45,7 +45,12 @@ const Real logEpsilon = std::log(epsilon);
 
 const Real epsilonProba = std::numeric_limits<Real>::epsilon();
 
+#if defined MINMODALITY
+const int minModality = MINMODALITY;
+#else
 const int minModality = 1;
+#endif
+
 const int minIndex = 1;
 const Real pi = boost::math::constants::pi<Real>();
 const Real logsqrt2pi = std::log(boost::math::constants::root_two_pi<Real>());

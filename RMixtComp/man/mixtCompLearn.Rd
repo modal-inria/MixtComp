@@ -249,8 +249,10 @@ See the associated vignette for more details: \code{RShowDoc("mixtCompObject", p
 
 \section{MixtCompLearn object}{
 
-The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
-\emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}).
+The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. 
+It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
+\emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, \emph{totalTime}, the total running time, 
+and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}).
 }
 
 \section{Hierarchical Mode}{

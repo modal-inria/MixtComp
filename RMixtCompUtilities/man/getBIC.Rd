@@ -52,6 +52,7 @@ icl <- getICL(resLearn)
 Other getter: 
 \code{\link{getCompletedData}()},
 \code{\link{getEmpiricTik}()},
+\code{\link{getMixtureDensity}()},
 \code{\link{getParam}()},
 \code{\link{getPartition}()},
 \code{\link{getType}()}

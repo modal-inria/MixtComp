@@ -17,7 +17,7 @@
 /*
  *  Project:    MixtComp
  *  Created on: January 21, 2019
- *  Authors:    Quentin Grimonprez, Vincent Kubicki, Leo Perard
+ *  Authors:    Quentin Grimonprez, Vincent Kubicki
  **/
 
 
@@ -58,16 +58,24 @@ void PyGraph::addSubGraph(const std::vector<std::string> &path, Index currDepth,
 	if (currDepth == path.size())
 		currLevel[name] = p.getD();
 	else {
-		boost::python::extract<boost::python::dict &> nextLevel(currLevel[path[currDepth]]);
-		if (!currLevel.has_key(path[currDepth]))
-			nextLevel = boost::python::dict();
-		else if (nextLevel.check()) {
-			std::string askedPath;
-			for (Index i = 0; i < currDepth + 1; ++i)
-				askedPath += "/" + path[i];
-			throw(askedPath + " already exists and is not a python object.");
+		if (!currLevel.has_key(path[currDepth]))  // if next level does not exist, create it
+		{
+			boost::python::dict nextLevel;
+			addSubGraph(path, currDepth + 1, nextLevel, name, p);
 		}
-		addSubGraph(path, currDepth + 1, nextLevel(), name, p);
+		else {
+			boost::python::extract<boost::python::dict> temp(currLevel[path[currDepth]]);
+
+ 			if (temp.check()) {
+				boost::python::dict nextLevel = temp();
+				addSubGraph(path, currDepth + 1, nextLevel, name, p);
+			} else { // if it already exists but is not a dict, throw an exception
+				std::string askedPath;
+				for (Index i = 0; i < currDepth + 1; ++i)
+					askedPath += "/" + path[i];
+				throw(askedPath + " already exists and is not a python object.");
+			}
+		}
 	}
 }
 

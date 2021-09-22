@@ -10,8 +10,6 @@ MixtComp (Mixture Composer, \url{https://github.com/modal-inria/MixtComp}) is a 
 It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption. 
 Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced models (Func_CS and Rank_ISR).
 MixtComp has the ability to natively manage missing data (completely or by interval).
-
-Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
 }
 \details{
 Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predicting the cluster of new samples with a model learnt with \link{mixtCompLearn}. 
