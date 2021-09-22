@@ -3,7 +3,7 @@ import re
 import numpy as np
 import seaborn as sns
 
-from pyMixtComp.utils.criterion import compute_class_similarity, compute_variable_similarity
+from ..utils.criterion import compute_class_similarity, compute_variable_similarity
 
 
 def plot_class_similarity(res):

@@ -8,8 +8,8 @@ import pandas as pd
 from scipy.stats import norm, poisson, nbinom, weibull_min
 import seaborn as sns
 
-from pyMixtComp.plot.univariate_boxplot import barplot_per_class_categorical
-from pyMixtComp.plot.functional import extract_CI_Func_CS, plot_functional_data
+from .univariate_boxplot import barplot_per_class_categorical
+from .functional import extract_CI_Func_CS, plot_functional_data
 
 
 def plot_data_CI(res, var_name, class_ids=None, all=False, **kwargs):

@@ -1,6 +1,6 @@
 import seaborn as sns
 
-from pyMixtComp.utils.criterion import compute_discriminative_power_class, compute_discriminative_power_variable
+from ..utils.criterion import compute_discriminative_power_class, compute_discriminative_power_variable
 
 
 def plot_discriminative_power_variable(res, class_id=None):

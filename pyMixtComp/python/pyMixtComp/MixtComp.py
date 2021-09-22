@@ -7,11 +7,11 @@ from scipy.special import logsumexp
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted, check_scalar
 
-from pyMixtComp.bridge.bridge import multi_run_pmc_pool
-from pyMixtComp.bridge.convert import convert, convert_data_to_dict
-from pyMixtComp.bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model, format_output_basic_mode
-import pyMixtComp.plot as plot
-import pyMixtComp.utils as utils
+from .bridge.bridge import multi_run_pmc_pool
+from .bridge.convert import convert, convert_data_to_dict
+from .bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model, format_output_basic_mode
+from . import plot
+from . import utils
 
 
 class MixtComp(BaseEstimator):

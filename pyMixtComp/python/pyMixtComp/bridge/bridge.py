@@ -5,7 +5,7 @@ from functools import partial
 from multiprocessing import Pool
 import numpy as np
 
-import pyMixtComp.pyMixtCompBridge as pyMixtCompBridge
+from .. import pyMixtCompBridge
 
 
 def run_pmc(i, algo, data, model, param):
