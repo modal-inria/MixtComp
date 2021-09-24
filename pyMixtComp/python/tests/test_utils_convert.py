@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from pyMixtComp.utils.convert import create_functional, convert_functional, refactor_categorical
+from pyMixtComp.utils.convert import create_functional, convert_functional, refactor_categorical, create_rank, convert_rank
 
 
 class TestUtilsConvert(unittest.TestCase):
@@ -91,6 +91,20 @@ class TestUtilsConvert(unittest.TestCase):
 
         self.assertListEqual(list(out), ["a", "b", "a", 2.0])
         self.assertIsInstance(out, np.ndarray)
+
+    def test_convert_rank(self):
+        rank_str = "0, 1, 2, 3"
+        rank = convert_rank(rank_str)
+        self.assertListEqual(rank.tolist(), [0, 1, 2, 3])
+
+        rank_str = "0,1,2,3"
+        rank = convert_rank(rank_str)
+        self.assertListEqual(rank.tolist(), [0, 1, 2, 3])
+
+    def test_create_rank(self):
+        rank = np.array([0, 1, 2, 3])
+        rank_str = create_rank(rank)
+        self.assertEqual(rank_str, "0,1,2,3")
 
 
 if __name__ == "__main__":

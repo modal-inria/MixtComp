@@ -119,3 +119,35 @@ def refactor_categorical(data, old_categores, new_categores):
         data = data.to_numpy()
 
     return data
+
+
+def create_rank(rank_array):
+    """ Convert a rank from array to string
+
+    Parameters
+    ----------
+    rank_array : array
+        Rank in array format (e.g. [3, 2, 0, 1])
+
+    Returns
+    -------
+    str
+        Rank in string format (e.g. "3, 2, 0, 1")
+    """
+    return ",".join(rank_array.astype(str))
+
+
+def convert_rank(rank_str):
+    """ Convert a rank from string to array
+
+    Parameters
+    ----------
+    rank_str : str
+        Rank in string format (e.g. "3, 2, 0, 1")
+
+    Returns
+    -------
+    array
+        Rank in array format (e.g. [3, 2, 0, 1])
+    """
+    return np.array(rank_str.split(",")).astype(int)
