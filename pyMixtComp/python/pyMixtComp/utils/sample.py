@@ -90,3 +90,65 @@ def switch_representation_rank(rank):
 
     return converted_rank
 
+
+def sample_Func_CS(alpha, beta, sd, t, size=1, random_state=None):
+    """ Sample functional data from a Func_CS(alpha, beta, sd)
+
+    Parameters
+    ----------
+    alpha : array
+        alpha parameters
+    beta : array
+        beta parameters
+    sd : array
+        standard deviation for each subregression
+    t : array
+        times values to compute the functional
+    size : int, optional
+        Number of samples to generate, by default 1
+    random_state : Generator, optional
+        Random number generator from numpy, by default None
+
+    Returns
+    -------
+    array
+        array of generated functional data
+    """
+    n_sub = len(sd)
+    n_coeff = int(len(beta) / n_sub)
+
+    data = []
+    for _ in range(size):
+        func = ""
+        for i in range(len(t)):
+            # choose the current subregression
+            log_kappa = alpha[::2] + alpha[1::2] * t[i]
+            kappa = log_to_multi(log_kappa)
+            ind_sub = sample_multinomial(kappa, size=1, random_state=None)[0]
+
+            # mean regression
+            x_loc = beta[(n_coeff * ind_sub):(n_coeff * (ind_sub + 1))].dot(t[i] ** np.arange(0, n_coeff))
+
+            # normal error
+            x = norm.rvs(loc=x_loc, scale=sd[ind_sub], size=1, random_state=random_state)[0]
+
+            func += str(t[i]) + ":" + str(x) + ","
+
+        # we remove the extra ","
+        if len(func) != 0:
+            func = func[:-1]
+
+        data.append(func)
+
+    data = np.array(data)
+
+    return data
+
+
+def log_to_multi(log_in):
+    """ Compute tik using log(proba)"""
+    m = log_in.max()
+    out = np.exp(log_in - m)
+    out /= out.sum()
+
+    return out

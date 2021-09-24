@@ -3,7 +3,10 @@ import unittest
 
 import numpy as np
 
-from pyMixtComp.utils.sample import sample_multinomial, switch_representation_rank, sample_Rank_ISR
+from pyMixtComp.utils.convert import convert_functional
+from pyMixtComp.utils.getter import get_param
+from pyMixtComp.utils.sample import sample_multinomial, switch_representation_rank, sample_Rank_ISR, \
+    log_to_multi, sample_Func_CS
 
 
 class TestUtilsGetter(unittest.TestCase):
@@ -43,6 +46,37 @@ class TestUtilsGetter(unittest.TestCase):
 
         data = sample_Rank_ISR(mu, pi, size=2, random_state=np.random.default_rng(42), convert_to_str=False)
         self.assertListEqual(data.tolist(), [[0, 1, 2, 3], [0, 1, 2, 3]])
+
+    def test_log_to_multi(self):
+        logproba = np.log(np.array([2.5, 2.5]))
+        out = log_to_multi(logproba)
+        self.assertListEqual(out.tolist(), [0.5, 0.5])
+
+        logproba = np.log(np.array([0.5, 1.5]))
+        out = log_to_multi(logproba)
+        self.assertAlmostEqual(np.max(np.abs(out - np.array([0.25, 0.75]))), 0)
+
+    def test_sample_Func_CS(self):
+        param = get_param(self.res, "Functional1")
+        alpha = param["alpha"].iloc[0].values
+        beta = param["beta"].iloc[0].values
+        sd = param["sd"].iloc[0].values
+        t = np.linspace(0, 20, 21)
+
+        out = sample_Func_CS(alpha, beta, sd, t, size=2, random_state=np.random.default_rng(42))
+        self.assertEqual(len(out), 2)
+        self.assertIsInstance(out[0], str)
+        self.assertIsInstance(out[1], str)
+        t0, v0 = convert_functional(out[0])
+        t1, v1 = convert_functional(out[1])
+        self.assertListEqual(t0.tolist(), t.tolist())
+        self.assertListEqual(t1.tolist(), t.tolist())
+        self.assertAlmostEqual(v0[0], 8, places=-1)
+        self.assertAlmostEqual(v0[10], 0, places=-1)
+        self.assertAlmostEqual(v0[-1], 8, places=-1)
+        self.assertAlmostEqual(v1[0], 8, places=-1)
+        self.assertAlmostEqual(v1[10], 0, places=-1)
+        self.assertAlmostEqual(v1[-1], 8, places=-1)
 
 
 if __name__ == "__main__":
