@@ -3,6 +3,78 @@ import pandas as pd
 from scipy.stats import norm, weibull_min, multinomial, poisson, nbinom, uniform
 
 from .convert import create_rank
+from .getter import get_param
+
+
+def sample(res, size, random_state=None):
+    """ Generate random samples from the fitted mixture model.
+
+    Parameters
+    ----------
+    res : dict
+        output of multi_run_pmc_pool
+    size : int
+        number of samples to generate
+    random_state : Generator, optional
+        Random number generator from numpy, by default None
+
+    Returns
+    -------
+    DataFrame
+        Randomly generated sample
+    Series
+        Component labels
+
+    Raises
+    ------
+    NotImplementedError
+        Not yet implemented for model
+    """
+    n_class = res["algo"]["nClass"]
+    var_names = res["variable"]["type"].keys() - {"z_class"}
+
+    dat = pd.DataFrame(columns=var_names, index=range(size))
+
+    proportion = get_param(res, "z_class")
+    z_class = pd.Series(sample_multinomial(proportion["pi"], size, random_state))
+
+    size_k = z_class.value_counts().to_dict()
+    for var_name in var_names:
+        model = res["variable"]["type"][var_name]
+        param = get_param(res, var_name)
+
+        for k in range(n_class):
+            if model == "Gaussian":
+                dat.loc[z_class == k, var_name] = norm.rvs(loc=param["mean"].iloc[k], scale=param["sd"].iloc[k],
+                                                           size=size_k[k], random_state=random_state)
+            elif model == "Multinomial":
+                dat.loc[z_class == k, var_name] = sample_multinomial(p=param.iloc[k], size=size_k[k],
+                                                                     random_state=random_state)
+            elif model == "Poisson":
+                dat.loc[z_class == k, var_name] = poisson.rvs(mu=param["lambda"].iloc[k], size=size_k[k],
+                                                              random_state=random_state)
+            elif model == "NegativeBinomial":
+                dat.loc[z_class == k, var_name] = nbinom.rvs(n=param["n"].iloc[k], p=param["p"].iloc[k],
+                                                             size=size_k[k], random_state=random_state)
+            elif model == "Weibull":
+                dat.loc[z_class == k, var_name] = weibull_min.rvs(c=param["k (shape)"].iloc[k],
+                                                                  scale=param["lambda (scale)"].iloc[k],
+                                                                  size=size_k[k], random_state=random_state)
+            elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
+                all_time_values = np.unique(res["variable"]["data"][var_name]["time"])
+                t = np.linspace(all_time_values.min(), all_time_values.max(), 100)
+                dat.loc[z_class == k, var_name] = sample_Func_CS(param["alpha"].iloc[k].values, param["beta"].iloc[k].values,
+                                                                 param["sd"].iloc[k].values, t, size=size_k[k],
+                                                                 random_state=random_state)
+            elif model == "Rank_ISR":
+                dat.loc[z_class == k, var_name] = sample_Rank_ISR(param["mu"][k], param["pi"].values[k][0], size=size_k[k],
+                                                                  random_state=random_state, convert_to_str=True)
+            else:
+                raise NotImplementedError("Not yet implemented for model " + model)
+
+    return dat, z_class
+
+
 def sample_multinomial(p, size=1, random_state=None):
     return np.where(multinomial.rvs(1, p, size, random_state) == 1)[1]
 

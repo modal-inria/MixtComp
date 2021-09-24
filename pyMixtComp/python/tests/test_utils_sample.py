@@ -2,11 +2,12 @@ import pickle
 import unittest
 
 import numpy as np
+import pandas as pd
 
 from pyMixtComp.utils.convert import convert_functional
 from pyMixtComp.utils.getter import get_param
 from pyMixtComp.utils.sample import sample_multinomial, switch_representation_rank, sample_Rank_ISR, \
-    log_to_multi, sample_Func_CS
+    log_to_multi, sample_Func_CS, sample
 
 
 class TestUtilsGetter(unittest.TestCase):
@@ -77,6 +78,15 @@ class TestUtilsGetter(unittest.TestCase):
         self.assertAlmostEqual(v1[0], 8, places=-1)
         self.assertAlmostEqual(v1[10], 0, places=-1)
         self.assertAlmostEqual(v1[-1], 8, places=-1)
+
+    def test_sample(self):
+        x, z = sample(self.res, 10, random_state=np.random.default_rng(42))
+
+        self.assertIsInstance(x, pd.DataFrame)
+        self.assertIsInstance(z, pd.Series)
+        self.assertEqual(x.shape, (10, 8))
+        self.assertEqual(z.shape, (10,))
+        self.assertListEqual(x.columns.values.tolist(), list(self.res["variable"]["type"].keys() - {"z_class"}))
 
 
 if __name__ == "__main__":

@@ -181,6 +181,19 @@ class TestMixtComp(unittest.TestCase):
         self.assertEqual(mod.score(), mod.res_["mixture"]["lnObservedLikelihood"])
         self.assertEqual(mod.score({"gauss": self.gauss}), mod.res_predict_["mixture"]["lnObservedLikelihood"])
 
+    def test_MixtComp_sample(self):
+        mod = MixtComp(n_components=2)
+
+        mod.fit({"gauss": self.gauss}, model={"gauss": {"type": "Gaussian", "paramStr": ""}})
+
+        x, z = mod.sample(10)
+
+        self.assertIsInstance(x, pd.DataFrame)
+        self.assertIsInstance(z, pd.Series)
+        self.assertEqual(x.shape, (10, 1))
+        self.assertEqual(z.shape, (10,))
+        self.assertListEqual(x.columns.values.tolist(), ["gauss"])
+
 
 if __name__ == "__main__":
     unittest.main()

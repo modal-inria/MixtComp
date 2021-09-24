@@ -5,7 +5,7 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from scipy.special import logsumexp
 from sklearn.base import BaseEstimator
-from sklearn.utils.validation import check_is_fitted, check_scalar
+from sklearn.utils.validation import check_is_fitted, check_scalar, check_random_state
 
 from .bridge.bridge import multi_run_pmc_pool
 from .bridge.convert import convert, convert_data_to_dict
@@ -167,7 +167,7 @@ class MixtComp(BaseEstimator):
     """
     def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
                  n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
-                 ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1, n_core=None):
+                 ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1, n_core=None, random_state=None):
 
         self._check_init(n_components, n_burn_in_iter, n_iter, n_gibbs_burn_in_iter, n_gibbs_iter,
                          n_init_per_class, n_sem_try, confidence_level, ratio_stable_criterion,
@@ -175,6 +175,7 @@ class MixtComp(BaseEstimator):
 
         self.n_components = n_components
         self.n_init = n_init
+        self.random_state = check_random_state(random_state)
 
         self.n_core = 1
         if n_core is None:
@@ -609,3 +610,22 @@ class MixtComp(BaseEstimator):
         """
         check_is_fitted(self, attributes="res_")
         return utils.get_param(self.res_, var_name)
+
+    def sample(self, n_samples=1):
+        """Generate random samples from the fitted mixture model.
+
+        Parameters
+        ----------
+        n_samples : int, default=1
+            Number of samples to generate.
+
+        Returns
+        -------
+        DataFrame
+            Randomly generated sample
+        pd.Series
+            Component labels
+        """
+        check_is_fitted(self, attributes="res_")
+        check_scalar(n_samples, min_val=1, name="n_samples", target_type=int)
+        return utils.sample(self.res_, size=n_samples, random_state=self.random_state)
