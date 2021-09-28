@@ -120,7 +120,11 @@ def get_param(res, var_name):
 
 def _get_param_numerical(param, n_class, col_names):
     """ Intern function to get numerical parameters """
-    index = [re.search("k: (.+?),", x).group(1) for x in param["stat"].index[::len(col_names)]]
+    try:
+        index = [re.search("k: (.+?),", x).group(1) for x in param["stat"].index[::len(col_names)]]
+    except AttributeError:
+        index = [re.search("k: (.+?)", x).group(1) for x in param["stat"].index[::len(col_names)]]
+
     out = param["stat"]["median"].values.reshape(n_class, len(col_names))
     out = pd.DataFrame(out, columns=col_names, index=index)
 

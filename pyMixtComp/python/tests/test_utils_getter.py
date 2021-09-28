@@ -27,6 +27,20 @@ class TestUtilsGetter(unittest.TestCase):
         out = get_param(res, "gauss")
         self.assertDictEqual(out.to_dict(), expected_out.to_dict())
 
+    def test_get_param_numerical_latent_class(self):
+        param = {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6]],
+                                      columns=["median", "q0", "q1"],
+                                      index=["k: 0", "k: 1"])}
+
+        out = _get_param_numerical(param, 2, ["pi"])
+        expected_out = pd.DataFrame([[1], [4]], columns=["pi"], index=["0", "1"])
+        self.assertDictEqual(out.to_dict(), expected_out.to_dict())
+
+        res = {"variable": {"param": {"z_class": param}, "type": {"z_class": "LatentClass"}},
+               "algo": {"nClass": 2}}
+        out = get_param(res, "z_class")
+        self.assertDictEqual(out.to_dict(), expected_out.to_dict())
+
     def test_get_param_numerical_poisson(self):
         param = {"stat": pd.DataFrame([[1, 2, 3], [4, 5, 6]],
                                       columns=["median", "q0", "q1"],
