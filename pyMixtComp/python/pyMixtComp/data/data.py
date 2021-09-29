@@ -3,6 +3,38 @@ import pkg_resources
 import pandas as pd
 
 
+def load_iris():
+    """ Iris data
+
+    The iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width,
+    respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
+
+    Returns
+    -------
+    (DataFrame, dict)
+        Data are returned in a dataFrame with 5 columns.
+        Model is returned as a dict
+
+    References
+    ----------
+    Fisher, R. A. (1936) The use of multiple measurements in taxonomic problems. Annals of Eugenics, 7, Part II, 179–188.
+
+    The data were collected by Anderson, Edgar (1935). The irises of the Gaspe Peninsula, Bulletin of the American
+    Iris Society, 59, 2–5.
+
+    Examples
+    --------
+    >>> import pyMixtComp
+    >>> data, model = pyMixtComp.data.load_iris()
+    """
+    stream = pkg_resources.resource_stream(__name__, "iris.csv")
+    data = pd.read_csv(stream)
+    model = {"sepal length (cm)": "Gaussian", "sepal width (cm)": "Gaussian",
+             "petal length (cm)": "Gaussian", "petal width (cm)": "Gaussian"}
+
+    return data, model
+
+
 def load_prostate():
     """ Prostate cancer data
 
