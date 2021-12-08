@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyMixtComp",
-    version="0.1",
+    version="0.1.1",
     author="Quentin Grimonprez",
     description="Mixture models with heterogeneous data sets and partially missing data management.",
     long_description=open("README.md", "r").read(),

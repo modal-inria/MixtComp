@@ -123,6 +123,11 @@ class TestPlot(unittest.TestCase):
             res = pickle.load(f)
             plot_data_CI(res, "Functional1", class_ids=[1], all=True, add_obs=True, add_CI=True)
 
+    def test_plot_data_CI_functional_diff_time(self):
+        with open("tests/mixtcomp_output_functional_diff_time.pickle", "rb") as f:
+            res = pickle.load(f)
+            plot_data_CI(res, "tempav", all=True, add_obs=True, add_CI=True)
+
     def test_plot_variable_similarity(self):
         plot_variable_similarity(self.mod.res_)
         plot_variable_similarity(self.mod_basic.res_)

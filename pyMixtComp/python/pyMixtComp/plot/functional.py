@@ -35,7 +35,7 @@ def extract_CI_Func_CS(res, var_name, class_ids=None):
     if class_ids is None:
         class_ids = list(range(n_class))
 
-    time_values = np.unique(res["variable"]["data"][var_name]["time"])
+    time_values = np.unique(np.concatenate(res["variable"]["data"][var_name]["time"]))
     time_values.sort()
 
     param = res["variable"]["param"][var_name]
