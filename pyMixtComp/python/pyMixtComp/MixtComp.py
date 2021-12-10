@@ -407,7 +407,7 @@ class MixtComp(BaseEstimator):
         check_is_fitted(self, attributes="res_")
         return plot.plot_tik(self.res_)
 
-    def plot_data_CI(self, var_name, class_ids=None, all=False):
+    def plot_data_CI(self, var_name, class_ids=None, all=False, **kwargs):
         """ Mean and 95%-level confidence intervals per class
 
         Parameters
@@ -418,6 +418,9 @@ class MixtComp(BaseEstimator):
             Classes to plot, by default None, all classes are plotted
         all : bool, optional
             If True, it adds the mean and 95%-level confidence interval for all data, by default False
+        **kwargs
+            For functional data: add_obs (default=False) adds observations on the plot,
+            add_CI (default=True) adds confidence intervals for means.
 
         Returns
         -------
@@ -425,9 +428,9 @@ class MixtComp(BaseEstimator):
             Plot Mean and 95%-level confidence intervals per class
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_data_CI(self.res_, var_name, class_ids, all)
+        return plot.plot_data_CI(self.res_, var_name, class_ids, all, **kwargs)
 
-    def plot_data(self, var_name, class_ids=None, all=False):
+    def plot_data(self, var_name, class_ids=None, all=False, **kwargs):
         """ Boxplot per class
 
         Parameters
@@ -438,6 +441,9 @@ class MixtComp(BaseEstimator):
             Classes to plot, by default None, all classes are plotted
         all : bool, optional
             If True, it adds the mean and 95%-level confidence interval for all data, by default False
+        **kwargs
+            For functional data: add_obs (default=False) adds observations on the plot,
+            add_CI (default=True) adds confidence intervals for means.
 
         Returns
         -------
@@ -445,7 +451,7 @@ class MixtComp(BaseEstimator):
             Boxplot (with 5%-25%-50%-75%-95% quantile) of the data
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_data(self.res_, var_name, class_ids, all)
+        return plot.plot_data(self.res_, var_name, class_ids, all, **kwargs)
 
     def aic(self, X=None):
         """ Akaike information criterion for the current model on the input X.
