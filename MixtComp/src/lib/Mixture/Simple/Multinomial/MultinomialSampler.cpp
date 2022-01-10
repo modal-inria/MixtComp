@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -56,8 +56,9 @@ void MultinomialSampler::samplingStepNoCheck(int i,
     {
       case missing_:
       {
-        sampleVal = multi_.sample(param_.block(z_i * nbModalities, 0,  // position of first element
-                                               nbModalities      , 1)); // dimension of the vector to extract);
+        Vector<Real> paramTemp = param_.block(z_i * nbModalities, 0,  // position of first element
+                                              nbModalities      , 1);
+        sampleVal = multi_.sample(paramTemp); // dimension of the vector to extract);
       }
       break;
 
