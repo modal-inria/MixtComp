@@ -20,9 +20,9 @@ Things can go wrong at various points in the algorithm, for example there can be
 - *checkNbIndPerClass* checks that there is at least one observation in each class (useless ?).
 - *initParam* initialize the parameters for the next step
 - *initParamSubPartition* initialize the parameters by generating a subpopulation, and performing an mStep on it. The (approximate) default number of observation per class is given by the user. A *checkSampleCondition* is performed. This step can fail, hence the test on the size of warnLog which might trigger "continue".
-- *writeParameters* outputs the parameters, which is useful for debug, or to check if the numer of observations per class is correct for initialization.
+- *writeParameters* outputs the parameters, which is useful for debug, or to check if the number of observations per class is correct for initialization.
 - *initializeLatent* performs the initialization of all latent variables, using the parameters previously estimated.
-  - *sampleZProportio*n* initializes tik using the current proportion and samples Z
+  - *sampleZProportion* initializes tik using the current proportion and samples Z
   - *sampleUnobservedAndLatent* samples all latent values using the parameters.
   - *eStepCompleted* computes $t_{ik}$ based on observed initData, if an observation can not be assigned to any class, an error message is returned
   - *sampleZ* assigns classes
@@ -54,6 +54,6 @@ The *GibbsStrategy* is similar to the *SemStrategy*, albeit a bit simpler. In pa
 - Gibbs for run
   - similar to SEM for burn-in, except that storeGibbsRun will record the missing variables and class labels at each iteration, and perform an imputation based on the mean / mode on the last iteration
 
-The *GibbsStrategy* can go wrong, for example if an individual has a 0 probability in every class (there are `nSemTry_`). The difference with `SemStrategy` is that, once initialization has been performed, there can be no error, because parameters have already been estimated, therefor degeneracy is not a problem. This is why `GibbsStrategy::runGibbs` returns `void`, not a `std::string`.
+The *GibbsStrategy* can go wrong, for example if an individual has a 0 probability in every class (there are `nSemTry_`). The difference with `SemStrategy` is that, once initialization has been performed, there can be no error, because parameters have already been estimated, therefore degeneracy is not a problem. This is why `GibbsStrategy::runGibbs` returns `void`, not a `std::string`.
 
 There is a try / catch exception handling, which main purpose is to avoid crashes. In a normal run, it is impossible for `t_{ik}` values to be `nan`. However, errors in implementations in the model can lead to this. To avoid this kind of problems, an exception can be thrown from `MixtureComposer::eStepCompleted`. The program will then end normally, urging the user to contact the maintainer.

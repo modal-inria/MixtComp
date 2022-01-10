@@ -60,7 +60,7 @@ Performs the estimation of the parameters. The MixtComp algorithm guarantees tha
 
 ### void storeSEMRun(Index iteration, Index iterationMax)
 
-During the SEM part of the algorithm, after the burnin, the estimated parameters must be stored at each iteration. The parameters estimated at the end of the SEM run are then deduced from the distribution of parameters obtained during the SEM run. The most common means of estimating are by mode ou median value. This behaviour must be implemented in `DerivedModel`.
+During the SEM part of the algorithm, after the burn-in, the estimated parameters must be stored at each iteration. The parameters estimated at the end of the SEM run are then deduced from the distribution of parameters obtained during the SEM run. The most common means of estimating are by mode ou median value. This behaviour must be implemented in `DerivedModel`.
 
 When `storeSEMRun` is called with `iteration < iterationMax`, the current parameters must be stored.
 
@@ -112,11 +112,11 @@ This method has been implemented for every models currently present in MixtComp.
 
 ### void storeGibbsRun(Index i, Index iteration, Index iterationMax)
 
-During the Gibbs part of the algorithm, after the burnin, the completed latent variables must be stored at each iteration. The distribution of each latent variable in `DerivedModel` is then used to impute the data. The most common means of estimating are by mode or median value. This behaviour must be implemented in `DerivedModel`.
+During the Gibbs part of the algorithm, after the burn-ing, the completed latent variables must be stored at each iteration. The distribution of each latent variable in `DerivedModel` is then used to impute the data. The most common means of estimating are by mode or median value. This behaviour must be implemented in `DerivedModel`.
 
 When `storeGibbsRun` is called with `iteration < iterationMax`, the current latent variable values must be stored.
 
-When `storeGibbsRun` is called with `iteration == iterationMax`, the current atent variable values must be stored. The final parameters must be estimated using the mode / median, and must overwrite the latent values sampled using  `sampleUnobservedAndLatent`.
+When `storeGibbsRun` is called with `iteration == iterationMax`, the current latent variable values must be stored. The final parameters must be estimated using the mode / median, and must overwrite the latent values sampled using  `sampleUnobservedAndLatent`.
 
 ### void initData(Index ind)
 
@@ -138,7 +138,7 @@ The difference with `initData` is that `initializeMarkovChain` is called after p
 
 ### bool sampleApproximationOfObservedProba()
 
-As mentioned in `computeObservedProba`, the observed probability could be 0 even if the observed probability is not 0. `sampleApproximationOfObservedProba` was a proposed solution to differentiate models in which the observed distribution is computed by sampling, and those for which it is computed using closed forms expressions. The idea is that a 0 probability from sampling could not be trusted and a 0 probability from closed form could be trusted. This was not a satisfactory solution, and this method is not used at the moment. The problem is that, no matter the parameters, there can be no 0 probability observations in Rank model for example. And, if the observed probability is 0 for an observation in every classe, MixtComp execution stops. This behaviour is legitimate for example if a particular modality has never been observed in the learning sample for categorical models. It is not legitimate for rank variables.
+As mentioned in `computeObservedProba`, the observed probability could be 0 even if the observed probability is not 0. `sampleApproximationOfObservedProba` was a proposed solution to differentiate models in which the observed distribution is computed by sampling, and those for which it is computed using closed forms expressions. The idea is that a 0 probability from sampling could not be trusted and a 0 probability from closed form could be trusted. This was not a satisfactory solution, and this method is not used at the moment. The problem is that, no matter the parameters, there can be no 0 probability observations in Rank model for example. And, if the observed probability is 0 for an observation in every class, MixtComp execution stops. This behaviour is legitimate for example if a particular modality has never been observed in the learning sample for categorical models. It is not legitimate for rank variables.
 
 ## How to register a model
 
@@ -164,7 +164,7 @@ There is a set of models with very common features:
 - Weibull
 - NegativeBinomial
 
-Each is a template instentiations of `SimpleMixture` for specific `<typename Graph, typename Model>` parameters . They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in a `Vector<Real> param_;`. The differences among them is confined in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
+Each is a template instantiations of `SimpleMixture` for specific `<typename Graph, typename Model>` parameters . They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in a `Vector<Real> param_;`. The differences among them is confined in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
 
 ```cpp
 std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep(classInd);
@@ -175,7 +175,6 @@ The simple models are then defined in different classes. For the Gaussian model,
 
 The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
 
-## Make it avalaible in the R package
+## Make it available in the R package
 
 See the file [howToAddModelInR.md](howToAddModelInR.md).
-

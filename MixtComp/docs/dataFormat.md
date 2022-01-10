@@ -142,7 +142,6 @@ Eight models are available in (R)MixtComp
 | Func_CS             | Functional                   |               | yes             |
 | Func_SharedAlpha_CS | Functional                   |               | yes             |
 
-
 ### Details
 
 #### Gaussian
@@ -191,11 +190,11 @@ f_k(x = j) = \prod_{j=1}^K p_{k,j}^{a_j} \quad \text{with} \quad a_j = \begin{ca
 ```
 
 The hyperparameter *M* does not require to be specified, it can be guess from the data. If tou want to specify it, add `"nModality: M"` in the appropriate field of the description object.
-  
+
 #### Rank_ISR
 
 For ranking data. For a class *k*, the two parameters are the central rank (`\mu_k`) and the probability of making a wrong comparison (`\pi_k`). See the [article](https://hal.inria.fr/hal-00743384) for more details. Ranks have their size *M* as hyperparameter. But it does not require to be specified, it can be guess from the data. If tou want to specify it, add `"nModality: M"` in the appropriate field of the description object.
-  
+
 #### Func_CS and Func_SharedAlpha_CS
 
 For functional data. Between individuals, functional data can have different length and different time values. The model segments every functional and clusters them. The segmentation is performed using polynomial regressions on subpart of functionals. The model requires to indicate the desired number of subregressions *S*, and the number of coefficients *C* used in each subregression, this number corresponds to the polynomial's degree minus 1.
@@ -339,7 +338,7 @@ The format of a rank is: `o_1,..., o_j` where `o_1` is an integer corresponding 
 For example: `4,2,1,3` means that the fourth object is ranked first then the second object is in second position and so on.
 Missing data can be specified by replacing and object by a `?` or a list of potential object, for example: `4, {2 3}, {2 1}, ?` means that
 the object ranked in second position is either the object number 2 or the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.
-A totally missing rank is spedified by a sequence of `?` separated by commas, e.g. `?,?,?,?` for a totally missing rank of length 4.
+A totally missing rank is specified by a sequence of `?` separated by commas, e.g. `?,?,?,?` for a totally missing rank of length 4.
 
 #### JSON rank data
 
@@ -367,7 +366,7 @@ data <- matrix(c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3
 
 The format of a functional data is: `time_1:value_1,..., time_j:value_j`. Between individuals, functional data can have different length and different time values.
 In the case of a functional model, `nSub: S, nCoeff: C` must be indicated in the third row of the descriptor file.
-*S* is the number of subregressions in a functional data and *C* the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Totally missing data are not supported. Time points with missing values must not be included. 
+*S* is the number of subregressions in a functional data and *C* the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Totally missing data are not supported. Time points with missing values must not be included.
 
 For example if you have a time vector `1 2 3 4 5 6 8 12` and a value vector `0.8 0.6 0.88 0.42 0.62 0.75 0.72 0.66` for one individual, the MixtComp format is `1:0.8,2:0.6,3:0.88,4:0.42,5:0.62,6:0.75,8:0.72,12:0.66`.
 

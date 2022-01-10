@@ -20,7 +20,7 @@ Add the new model in the [availableModels function](../../RMixtCompUtilities/R/M
 
 If the model requires some hyperparameters and you want to provide default values, you can add them in the [completeModel function](../../RMixtCompUtilities/R/MIXTCOMP_formatData.R).
 
-Update [plotDataCI function](../../RMixtCompUtilities/R/PLOT_plotUnivariateDistributions.R) with the new model. It requires to add an [extractCI** function](../../RMixtCompUtilities/R/PLOT_extractCIbounds.R) that compute the theorical mean and the confidence interval per class.
+Update [plotDataCI function](../../RMixtCompUtilities/R/PLOT_plotUnivariateDistributions.R) with the new model. It requires to add an [extractCI** function](../../RMixtCompUtilities/R/PLOT_extractCIbounds.R) that compute the theoretical mean and the confidence interval per class.
 
 Update [plotDataBoxplot function](../../RMixtCompUtilities/R/PLOT_plotUnivariateBoxplots.R) with the new model. It plots a boxplot of the data per class.
 

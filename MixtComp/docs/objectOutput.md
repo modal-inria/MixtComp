@@ -1,7 +1,7 @@
 # Overview of output object
 
 Overview of output object with variables named *categorical*, *gaussian*, *rank*, *functional*, *poisson*, *nBinom* and *weibull* with model respectively *Multinomal*, *Gaussian*, *Rank_ISR*, *Func_CS* (or *Func_SharedAlpha_CS*), *Poisson*, *NegativeBinomial* and *Weibull*.
-In case of a successfull run, the output object is a list of list (in R and Json), organized as follows:
+In case of a successful run, the output object is a list of list (in R and Json), organized as follows:
 
 ```text
 output
@@ -71,7 +71,7 @@ output
 
 ## warnLog
 
-In case of an unsuccessfull run, the output object is a list containing an element **warnLog** with all the warnings returned by MixtComp.
+In case of an unsuccessful run, the output object is a list containing an element **warnLog** with all the warnings returned by MixtComp.
 
 ## algo
 
@@ -163,7 +163,7 @@ The *stat* matrix has 2\*nClass rows. For a class *k*, parameters are n (`n_k`) 
 
 - **Weibull**
 
-The *stat* matrix has 2\*nClass rows. For a class *j*, parameters are k (shape) (`k_j`) and lambda (scale) (`\lambda_j`). 
+The *stat* matrix has 2\*nClass rows. For a class *j*, parameters are k (shape) (`k_j`) and lambda (scale) (`\lambda_j`).
 
 - **Multinomial**
 

@@ -20,7 +20,6 @@ in varName, individual i: 0 present an error. a is not recognized as a valid for
 
 **Solution:** Bad data format. Please refer to [Data format](./dataFormat.md).
 
-
 **Error:**
 
 ```text
@@ -28,7 +27,6 @@ in varName, individual i: 0 present an error. a is not recognized as a valid for
 ```
 
 **Solution:** The variable *varName* is not found in data or model. Check variable names in both.
-
 
 ## Initialization problem
 
@@ -38,7 +36,7 @@ in varName, individual i: 0 present an error. a is not recognized as a valid for
 MixtureComposer::initializeLatent, problem with observation i, impossible to initialize latent values. Individual is too different from rest of population and has too many latent variables (for example, missing values).
 ```
 
-**Solution:** It can happen in the case of a *Multinomial* model with a rare modality (modality with a low frequency comparing to the number of individuals). Increasing *nInitPerClass* or refactorizing modalities can solve this problem .
+**Solution:** It can happen in the case of a *Multinomial* model with a rare modality (modality with a low frequency comparing to the number of individuals). Increasing *nInitPerClass* or refactoring modalities can solve this problem .
 
 ## Empty class
 
@@ -52,7 +50,7 @@ Maybe you asked for more classes than the number of observations you provided. O
 **Solution:**
 One class becomes empty during the algorithm.
 The number of classes *nClass* is perhaps too high, decrease it can solve the problem.
-In a (semi-)supervised clustering case, the number of classes *nClass* is perhaprs too high regarding the values given for *z_class*.
+In a (semi-)supervised clustering case, the number of classes *nClass* is perhaps too high regarding the values given for *z_class*.
 
 ## Gaussian model
 
@@ -64,7 +62,7 @@ Gaussian variables must have at least two individuals per class. This is not the
 ```
 
 **Solution:**
-A gaussian variable requires two elements for initialization. If this message occurs, the number of classes *nClass* is too large (need to decrease *nClass*) or there is not enough inviduals for initialization (need to increase *nInitPerClass*).
+A gaussian variable requires two elements for initialization. If this message occurs, the number of classes *nClass* is too large (need to decrease *nClass*) or there is not enough individuals for initialization (need to increase *nInitPerClass*).
 
 **Error:**
 
