@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -177,10 +177,11 @@ TEST(RankISRClass, sampleMu) {
 	ASSERT_TRUE(sampledResult.find(mu) != sampledResult.end());
 }
 
-/** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
+/** Test sampleMu by first generating individuals, then performing sampleMu.
+ * The test checks if the real mu has been sampled at least once. */
 TEST(RankISRClass, mStep) {
 	int nbPos = 5;
-	int nbInd = 100;
+	int nbInd = 200;
 	int nbIterburnIn = 100;
 	Real tolerance = 0.05;
 

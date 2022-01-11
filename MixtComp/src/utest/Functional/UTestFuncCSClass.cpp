@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -90,12 +90,12 @@ TEST(FuncCSClass, optimOneclassOneInd) {
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
 
-	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
+	ASSERT_TRUE(alphaComputed.isApprox(alpha, 0.1));
 }
 
 TEST(FuncCSClass, optimOneclassMultiIndAlphaBetaSd) {
 	Index nTime = 500;
-	Index nInd = 10;
+	Index nInd = 20;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
 	Real xMax = 50.;
@@ -163,9 +163,9 @@ TEST(FuncCSClass, optimOneclassMultiIndAlphaBetaSd) {
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
 
-	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
-	ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));
-	ASSERT_EQ(true, funcClass.sd().isApprox(sd, 0.1));
+	EXPECT_TRUE(alphaComputed.isApprox(alpha, 0.1));
+	EXPECT_TRUE(funcClass.beta().isApprox(beta, 0.1));
+	EXPECT_TRUE(funcClass.sd().isApprox(sd, 0.1));
 }
 
 TEST(FuncCSClass, checkNbDifferentValue) {
@@ -205,5 +205,5 @@ TEST(FuncCSClass, checkNbDifferentValue) {
 	fc.setSize(nSub, nCoeff);
 	bool diffVal = fc.checkNbDifferentValue(setInd);
 
-	ASSERT_EQ(false, diffVal);
+	EXPECT_FALSE(diffVal);
 }
