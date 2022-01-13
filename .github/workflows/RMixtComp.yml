@@ -53,7 +53,7 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
+
       - name: Install RMixtCompIO dependencies
         working-directory: RMixtCompIO
         run: |

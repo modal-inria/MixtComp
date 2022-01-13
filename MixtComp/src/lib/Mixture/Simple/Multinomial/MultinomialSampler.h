@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -34,12 +34,17 @@ namespace mixt
 class MultinomialSampler
 {
   public:
-	MultinomialSampler(AugmentedData<Vector<int> >& augData,
+    MultinomialSampler(AugmentedData<Vector<int> >& augData,
                        const Vector<Real>& param,
                        int nbClass);
 
-    void samplingStepNoCheck(int i,
-                             int z_i);
+    /**
+     * Sample an individual according to a given class
+     * @param i individual for which z must be sampled
+     * @param z_i individual's class
+     */
+    void samplingStepNoCheck(int i, int z_i);
+
   private:
     int nbClass_;
 

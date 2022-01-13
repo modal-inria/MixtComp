@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -65,7 +65,7 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 			if (idModel == "Multinomial") {
 				p_mixture = new SimpleMixture<Graph, Multinomial>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
-			
+
 			else if (idModel == "Gaussian") {
 				p_mixture = new SimpleMixture<Graph, Gaussian>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}

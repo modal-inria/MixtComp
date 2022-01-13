@@ -368,7 +368,7 @@ public:
 	void initData();
 
 	/**
-	 * Initialize the parameters for models that requires it. For example models where the parameters areestimated through an iterative
+	 * Initialize the parameters for models that requires it. For example models where the parameters are estimated through an iterative
 	 * process, either an optimization (functional data model), or a sampling (rank data model).
 	 */
 	void initParam();
