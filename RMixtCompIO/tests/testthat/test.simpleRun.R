@@ -9,10 +9,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Vincent Kubicki
 context("Simple run")
@@ -21,7 +21,7 @@ Sys.setenv(MC_DETERMINISTIC = 42)
 
 test_that("Hard coded simple test", {
   set.seed(42)
-  
+
   algoLearn <- list(
     nClass = 2,
     nInd = 20,
@@ -36,7 +36,7 @@ test_that("Hard coded simple test", {
     nStableCriterion = 10,
     mode = "learn"
   )
-  
+
   dataLearn <- list(
     var1 = c(
       "3.432200",
@@ -61,21 +61,23 @@ test_that("Hard coded simple test", {
       "19.38892"
     )
   )
-  
-  descLearn <- list(var1 = list(type = "Gaussian",
-                                paramStr = ""))
-  
+
+  descLearn <- list(var1 = list(
+    type = "Gaussian",
+    paramStr = ""
+  ))
+
   zLearn <- c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
-  
+
   resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
-  
+
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, zLearn), 0.9)
-  
+
   # confMatSampledLearn <- table(zLearn, partition)
   # print(confMatSampledLearn)
-  
+
   algoPredict <- list(
     nClass = 2,
     nInd = 6,
@@ -90,7 +92,7 @@ test_that("Hard coded simple test", {
     nStableCriterion = 10,
     mode = "predict"
   )
-  
+
   dataPredict <- list(var1 = c(
     "4.838457",
     "19.90595",
@@ -99,27 +101,28 @@ test_that("Hard coded simple test", {
     "5.048325",
     "20.46875"
   ))
-  
-  descPredict <- list(var1 = list(type = "Gaussian",
-                                  paramStr = ""))
-  
+
+  descPredict <- list(var1 = list(
+    type = "Gaussian",
+    paramStr = ""
+  ))
+
   zPredict <- c(1, 2, 1, 2, 1, 2)
-  
+
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
-  
+
   expect_equal(resPredict$warnLog, NULL)
   partition <- resPredict$variable$data$z_class$completed
   expect_gte(rand.index(partition, zPredict), 0.8)
-  
+
   confMatSampledPredict <- table(zPredict, partition)
   print(confMatSampledPredict)
-  
+
   # test with a bad nClass in desc
-  algoPredict$nClass = 3
+  algoPredict$nClass <- 3
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   expect_named(resPredict, "warnLog")
   expect_equal(resPredict$warnLog, "The nClass parameter provides in algo is different from the one in resLearn.\n")
-  
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")

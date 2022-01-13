@@ -9,10 +9,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # gaussian ----------------------------------------------------------------
 
@@ -26,7 +26,7 @@ gaussianParam <- function(name) {
   gaussian$param <- list()
   gaussian$param[[1]] <- list(mean = -5, sd = 1)
   gaussian$param[[2]] <- list(mean = 5, sd = 1)
-  
+
   return(gaussian)
 }
 
@@ -43,7 +43,7 @@ poissonParam <- function(name) {
   poisson$param <- list()
   poisson$param[[1]] <- 1
   poisson$param[[2]] <- 10
-  
+
   return(poisson)
 }
 
@@ -51,7 +51,7 @@ poissonParam <- function(name) {
 poissonParamRandom <- function(name) {
   valMin <- 0.1
   valMax <- 15.0
-  
+
   poisson <- list()
   poisson$name <- name
   poisson$type <- "Poisson"
@@ -60,7 +60,7 @@ poissonParamRandom <- function(name) {
   poisson$param <- list()
   poisson$param[[1]] <- runif(n = 1, min = valMin, max = valMax)
   poisson$param[[2]] <- runif(n = 1, min = valMin, max = valMax)
-  
+
   return(poisson)
 }
 
@@ -73,11 +73,11 @@ categoricalParam1 <- function(name) {
   categorical$name <- name
   categorical$type <- "Multinomial"
   categorical$paramStr <- ""
-  categorical$generator <- categoricalGenerator 
+  categorical$generator <- categoricalGenerator
   categorical$param <- list()
   categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
   categorical$param[[2]] <- c(0.5, 0.3, 0.1, 0.1)
-  
+
   return(categorical)
 }
 
@@ -87,11 +87,11 @@ categoricalParam2 <- function(name) {
   categorical$name <- name
   categorical$type <- "Multinomial"
   categorical$paramStr <- ""
-  categorical$generator <- categoricalGenerator 
+  categorical$generator <- categoricalGenerator
   categorical$param <- list()
   categorical$param[[1]] <- c(0.6, 0.1, 0.1, 0.2)
   categorical$param[[2]] <- c(0.1, 0.05, 0.8, 0.05)
-  
+
   return(categorical)
 }
 
@@ -102,16 +102,16 @@ categoricalParamRandom <- function(name) {
   param1 <- param1 / sum(param1)
   param2 <- runif(4)
   param2 <- param2 / sum(param2)
-  
+
   categorical <- list()
   categorical$name <- name
   categorical$type <- "Multinomial"
   categorical$paramStr <- ""
-  categorical$generator <- categoricalGenerator 
+  categorical$generator <- categoricalGenerator
   categorical$param <- list()
   categorical$param[[1]] <- param1
   categorical$param[[2]] <- param2
-  
+
   return(categorical)
 }
 
@@ -128,7 +128,7 @@ weibullParam <- function(name) {
   weibull$param <- list()
   weibull$param[[1]] <- list(shape = 2.0, scale = 1.0)
   weibull$param[[2]] <- list(shape = 4.0, scale = 3.0)
-  
+
   return(weibull)
 }
 
@@ -144,7 +144,7 @@ nBinomParam <- function(name) {
   nBinom$param <- list()
   nBinom$param[[1]] <- list(n = 3.0, p = 0.7)
   nBinom$param[[2]] <- list(n = 20.0, p = 0.8)
-  
+
   return(nBinom)
 }
 
@@ -158,7 +158,7 @@ nBinomParamRandom <- function(name) {
   nBinom$param <- list()
   nBinom$param[[1]] <- list(n = sum(rbinom(20, 1, 0.5)), p = runif(1, 0.3, 0.8))
   nBinom$param[[2]] <- list(n = sum(rbinom(20, 1, 0.5)), p = runif(1, 0.3, 0.8))
-  
+
   return(nBinom)
 }
 
@@ -171,7 +171,7 @@ rankParam <- function(name) {
   Rank$param <- list()
   Rank$param[[1]] <- list()
   Rank$param[[2]] <- list()
-  
+
   Rank$name <- name
   Rank$type <- "Rank_ISR"
   Rank$paramStr <- ""
@@ -180,6 +180,6 @@ rankParam <- function(name) {
   Rank$param[[1]]$pi <- 0.8
   Rank$param[[2]]$mu <- c(4, 3, 2, 1)
   Rank$param[[2]]$pi <- 0.8
-  
+
   return(Rank)
 }

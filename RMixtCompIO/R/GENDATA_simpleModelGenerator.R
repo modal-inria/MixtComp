@@ -9,10 +9,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # gaussian ----------------------------------------------------------------
 
@@ -21,34 +21,31 @@ gaussianGenerator <- function(present, param) {
   x <- gaussianFullGenerator(param)
 
   xStr <- gaussianHideData(present, x, param)
-  
+
   return(xStr)
 }
 
 # @author Vincent Kubicki
-gaussianFullGenerator <- function(param)
-{
+gaussianFullGenerator <- function(param) {
   rnorm(1, param$mean, param$sd)
 }
 
 # @author Vincent Kubicki
-gaussianHideData <- function(present, x, param)
-{
-  if(!present)
-  {
+gaussianHideData <- function(present, x, param) {
+  if (!present) {
     missType <- sample(4, size = 1)
-    
+
     bounds <- round(sort(rnorm(2, param$mean, param$sd)), 5)
-    
-    
+
+
     x <- switch(missType,
-                "1" = "?",
-                "2" = paste0("[",bounds[1],":",bounds[2],"]"),
-                "3" = paste0("[","-inf",":",bounds[2],"]"),
-                "4" = paste0("[",bounds[1],":","+inf","]"))
-    
+      "1" = "?",
+      "2" = paste0("[", bounds[1], ":", bounds[2], "]"),
+      "3" = paste0("[", "-inf", ":", bounds[2], "]"),
+      "4" = paste0("[", bounds[1], ":", "+inf", "]")
+    )
   }
-  
+
   return(as.character(x))
 }
 
@@ -58,37 +55,35 @@ gaussianHideData <- function(present, x, param)
 # @author Vincent Kubicki
 poissonGenerator <- function(present, param) {
   x <- poissonFullGenerator(param)
-  
+
   xStr <- poissonHideData(present, x, param)
-  
+
   return(xStr)
 }
 
 # @author Vincent Kubicki
-poissonFullGenerator <- function(param)
-{
+poissonFullGenerator <- function(param) {
   rpois(1, lambda = param)
 }
 
 # @author Vincent Kubicki
-poissonHideData <- function(present, x, param)
-{
-  if(!present)
-  {
+poissonHideData <- function(present, x, param) {
+  if (!present) {
     missType <- sample(3, size = 1)
-    
+
     bounds <- round(sort(rpois(2, param)), 5)
-    if(bounds[1] == bounds[2])
-      bounds[2] = bounds[2] + 1
-    
-    
+    if (bounds[1] == bounds[2]) {
+      bounds[2] <- bounds[2] + 1
+    }
+
+
     x <- switch(missType,
-                "1" = "?",
-                "2" = paste0("[",bounds[1],":",bounds[2],"]"),
-                "3" = paste0("[",bounds[1],":","+inf","]"))
-    
+      "1" = "?",
+      "2" = paste0("[", bounds[1], ":", bounds[2], "]"),
+      "3" = paste0("[", bounds[1], ":", "+inf", "]")
+    )
   }
-  
+
   return(as.character(x))
 }
 
@@ -99,35 +94,34 @@ poissonHideData <- function(present, x, param)
 # @author Vincent Kubicki, Quentin Grimonprez
 negativeBinomialGenerator <- function(present, param) {
   x <- negativeBinomialFullGenerator(param)
-  
+
   xStr <- negativeBinomialHideData(present, x, param)
-  
+
   return(xStr)
 }
 
 # @author Vincent Kubicki, Quentin Grimonprez
-negativeBinomialFullGenerator <- function(param)
-{
+negativeBinomialFullGenerator <- function(param) {
   rnbinom(1, size = param$n, prob = param$p)
 }
 
 # @author Vincent Kubicki, Quentin Grimonprez
-negativeBinomialHideData <- function(present, x, param)
-{
-  if(!present) {
+negativeBinomialHideData <- function(present, x, param) {
+  if (!present) {
     missType <- sample(3, size = 1)
-    
+
     bounds <- round(sort(rnbinom(2, size = param$n, prob = param$p)), 5)
-    if(bounds[1] == bounds[2])
-      bounds[2] = bounds[2] + 1
-    
-    x <- switch(
-      missType,
+    if (bounds[1] == bounds[2]) {
+      bounds[2] <- bounds[2] + 1
+    }
+
+    x <- switch(missType,
       "1" = "?",
-      "2" = paste0("[",bounds[1],":","+inf","]"),
-      "3" = paste0("[",bounds[1],":",bounds[2],"]"))
+      "2" = paste0("[", bounds[1], ":", "+inf", "]"),
+      "3" = paste0("[", bounds[1], ":", bounds[2], "]")
+    )
   }
-  
+
   return(as.character(x))
 }
 
@@ -148,18 +142,18 @@ weibullFullGenerator <- function(param) {
 
 # @author Vincent Kubicki
 weibullHideData <- function(present, x, param) {
-  if(!present) {
+  if (!present) {
     missType <- sample(3, size = 1)
-    
+
     bounds <- round(sort(rweibull(2, param$shape, param$scale)), 5)
-    
-    x <- switch(
-      missType,
+
+    x <- switch(missType,
       "1" = "?",
-      "2" = paste0("[",bounds[1],":","+inf","]"),
-      "3" = paste0("[",bounds[1],":",bounds[2],"]"))
+      "2" = paste0("[", bounds[1], ":", "+inf", "]"),
+      "3" = paste0("[", bounds[1], ":", bounds[2], "]")
+    )
   }
-  
+
   return(as.character(x))
 }
 
@@ -170,44 +164,38 @@ weibullHideData <- function(present, x, param) {
 # @author Vincent Kubicki
 categoricalGenerator <- function(present, param) {
   x <- categoricalFullGenerator(param)
-  
+
   xStr <- categoricalHideData(present, x, param)
-  
+
   return(xStr)
 }
 
 # @author Vincent Kubicki
-categoricalFullGenerator <- function(param)
-{
+categoricalFullGenerator <- function(param) {
   which(rmultinom(1, 1, param) == 1)
 }
 
 # @author Vincent Kubicki
-categoricalHideData <- function(present, x, param)
-{
-  if(!present)
-  {
+categoricalHideData <- function(present, x, param) {
+  if (!present) {
     missType <- sample(2, size = 1) # 1: missing, 2: missingInterval
-    
-    if(missType == 1)
-    {
-      x = "?"
-    }else{
+
+    if (missType == 1) {
+      x <- "?"
+    } else {
       nbModalities <- length(param)
-      
-      if(nbModalities <= 2)
-      {
-        x = "?"
-      }else{
-        nbModalitiesToDraw <- max(sample(2:(nbModalities-1), 1), 2)
+
+      if (nbModalities <= 2) {
+        x <- "?"
+      } else {
+        nbModalitiesToDraw <- max(sample(2:(nbModalities - 1), 1), 2)
         modalities <- sort(sample(nbModalities, nbModalitiesToDraw))
-        
-        x <- paste0("{",paste0(modalities, collapse = ","),"}")
+
+        x <- paste0("{", paste0(modalities, collapse = ","), "}")
       }
-      
     }
   }
-  
-  
+
+
   return(as.character(x))
 }

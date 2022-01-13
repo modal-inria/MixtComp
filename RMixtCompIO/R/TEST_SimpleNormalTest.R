@@ -9,10 +9,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # Simple test case for the new IO sytem
 # Sampling law is mixture model with 0.5 0.5 proportions
@@ -20,9 +20,8 @@
 # Second class conditional law is N(20., 2.), rnorm(10, 20., 2.)
 # @author Vincent Kubicki
 simpleNormalTest <- function() {
-  
   Sys.setenv(MC_DETERMINISTIC = 42)
-  
+
   algoLearn <- list(
     nClass = 2,
     nInd = 20,
@@ -37,7 +36,7 @@ simpleNormalTest <- function() {
     ratioStableCriterion = 0.9,
     mode = "learn"
   )
-  
+
   dataLearn <- list(
     var1 = c(
       "3.432200",
@@ -62,24 +61,24 @@ simpleNormalTest <- function() {
       "19.38892"
     )
   )
-  
+
   descLearn <- list(
     var1 = list(
       type = "Gaussian",
       paramStr = ""
     )
   )
-  
+
   zLearn <- c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
-  
+
   resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
-  
+
   # print("learn")
   partition <- resLearn$variable$data$z_class$completed
   # paste0("rand: ", rand.index(partition, zLearn)) # expected 0.9 rand
   # print("contengency: ")
   # print(table(zLearn, partition))
-  
+
   algoPredict <- list(
     nClass = 2,
     nInd = 6,
@@ -94,7 +93,7 @@ simpleNormalTest <- function() {
     ratioStableCriterion = 0.9,
     mode = "predict"
   )
-  
+
   dataPredict <- list(var1 = c(
     "4.838457",
     "19.90595",
@@ -103,22 +102,26 @@ simpleNormalTest <- function() {
     "5.048325",
     "20.46875"
   ))
-  
-  descPredict <- list(var1 = list(type = "Gaussian",
-                                  paramStr = ""))
-  
+
+  descPredict <- list(var1 = list(
+    type = "Gaussian",
+    paramStr = ""
+  ))
+
   zPredict <- c(1, 2, 1, 2, 1, 2)
-  
+
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
-  
+
   # print("predict")
   partitionPred <- resPredict$variable$data$z_class$completed
   # paste0("rand: ", rand.index(partition, zPredict)) # expected 0.9 rand
   # print("contengency: ")
   # print(table(zPredict, partition))
-  
+
   Sys.unsetenv("MC_DETERMINISTIC")
-  
-  return(list(learn = list(rand = rand.index(partition, zLearn), confmat = table(zLearn, partition)),
-              predict = list(rand = rand.index(partitionPred, zPredict), confmat = table(zPredict, partitionPred))))
+
+  return(list(
+    learn = list(rand = rand.index(partition, zLearn), confmat = table(zLearn, partition)),
+    predict = list(rand = rand.index(partitionPred, zPredict), confmat = table(zPredict, partitionPred))
+  ))
 }

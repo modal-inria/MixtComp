@@ -9,28 +9,31 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-getTik <- function(outMixtComp, log = TRUE){
-  logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
-                  1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
-                  "-")
-  if(!log)
+getTik <- function(outMixtComp, log = TRUE) {
+  logTik <- sweep(
+    outMixtComp$mixture$lnProbaGivenClass,
+    1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
+    "-"
+  )
+  if (!log) {
     return(exp(logTik))
-  
+  }
+
   return(logTik)
 }
 
 
-test_that("gaussian model works",{
+test_that("gaussian model works", {
   set.seed(42)
 
   nInd <- 1000
@@ -62,20 +65,21 @@ test_that("gaussian model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("poisson model works",{
+test_that("poisson model works", {
   set.seed(42)
 
   nInd <- 1000
@@ -111,20 +115,21 @@ test_that("poisson model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("NegativeBinomial model works",{
+test_that("NegativeBinomial model works", {
   set.seed(42)
 
   nInd <- 10000
@@ -160,20 +165,21 @@ test_that("NegativeBinomial model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("multinomial model works",{
+test_that("multinomial model works", {
   set.seed(42)
 
   nInd <- 1000
@@ -224,20 +230,21 @@ test_that("multinomial model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("weibull model works",{
+test_that("weibull model works", {
   set.seed(42)
 
   nInd <- 1200
@@ -270,20 +277,21 @@ test_that("weibull model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.8)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("functional model works",{
+test_that("functional model works", {
   set.seed(42)
 
   nInd <- 400
@@ -316,21 +324,22 @@ test_that("functional model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
 
-test_that("functional model with shared alpha works",{
+test_that("functional model with shared alpha works", {
   set.seed(42)
 
   nInd <- 400
@@ -363,20 +372,21 @@ test_that("functional model with shared alpha works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.9)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })
 
-test_that("rank model works",{
+test_that("rank model works", {
   set.seed(42)
 
   nInd <- 1000
@@ -409,15 +419,16 @@ test_that("rank model works",{
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtComp for clustering
 
-  if(!is.null(resLearn$warnLog))
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
+  }
 
   expect_equal(resLearn$warnLog, NULL)
   partition <- resLearn$variable$data$z_class$completed
   expect_gte(rand.index(partition, resGen$z), 0.8)
   empiricTik <- resLearn$variable$data$z_class$stat
-  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik)/resLearn$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - empiricTik) / resLearn$algo$nInd, 0.1)
+
   # confMatSampled <- table(resGen$z, partition)
   # print(confMatSampled)
 })

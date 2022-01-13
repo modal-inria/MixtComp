@@ -9,10 +9,10 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
+
 
 # @author Vincent Kubicki
 functionalGenerator <- function(present, param) {
@@ -20,22 +20,22 @@ functionalGenerator <- function(present, param) {
   nCoeff <- ncol(param$beta)
 
   x <- vector("numeric", param$nTime)
-  
+
   t <- sort(runif(param$nTime, param$tMin, param$tMax))
 
-  for (i in 1:param$nTime) {
+  for (i in seq_len(param$nTime)) {
     logKappa <- param$alpha[, 1] + param$alpha[, 2] * t[i]
-    
+
     kappa <- logToMulti(logKappa)
     indSub <- which(rmultinom(1, 1, kappa) == 1)
-    
-    xExp <- drop(param$beta[indSub, ] %*% t[i]^((1:nCoeff)-1))
-    
+
+    xExp <- drop(param$beta[indSub, ] %*% t[i]^((seq_len(nCoeff)) - 1))
+
     x[i] <- rnorm(1, xExp, param$sigma[indSub])
   }
-  
+
   xStr <- paste(t, x, sep = ":", collapse = ",")
-  
+
   return(xStr)
 }
 
@@ -45,7 +45,7 @@ logToMulti <- function(logIn) {
   multiOut <- logIn - max
   multiOut <- exp(multiOut)
   sum <- sum(multiOut)
-  multiOut <- multiOut / sum;
-  
+  multiOut <- multiOut / sum
+
   return(multiOut)
 }
