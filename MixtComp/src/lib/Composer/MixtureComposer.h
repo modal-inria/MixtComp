@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -49,9 +49,11 @@ public:
 	 */
 	template<typename Graph>
 	MixtureComposer(const Graph& algo) :
-			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
-					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
-					zClassInd_), completedProbabilityCache_(nInd_), initialNIter_(0), lastPartition_(nInd_), nConsecutiveStableIterations_(0) {
+			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")),
+			nVar_(0), confidenceLevel_(algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_),
+			tik_(nInd_, nClass_, 0.), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_),
+			dataStat_(zClassInd_), completedProbabilityCache_(nInd_), initialNIter_(0), lastPartition_(nInd_),
+			nConsecutiveStableIterations_(0) {
 #ifdef MC_VERBOSE
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 #endif
@@ -94,7 +96,7 @@ public:
 
 	/** Compute the proportions and the model parameters given the current tik
 	 *  mixture parameters.
-	 *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
+	 *  @param[out] worstDeg worst degeneracy type encountered among all mixtures for this mStep
 	 **/
 	std::string mStep(const Vector<std::set<Index>>& classInd);
 	std::string mStep();
