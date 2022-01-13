@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -310,7 +310,7 @@ void globalQuantile(const Vector<FunctionCS>& vecInd, Vector<Real>& quantile) {
 	quantile(nQuantile - 1) = globalT(globalNTime - 1);
 
 	for (Index q = 1; q < nQuantile - 1; ++q) {
-		quantile(q) = globalT(q * quantileSize * (globalNTime - 1));
+		quantile(q) = globalT(int(q * quantileSize * (globalNTime - 1)));
 	}
 }
 

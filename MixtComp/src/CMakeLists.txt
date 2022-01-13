@@ -14,7 +14,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
 	include(CodeCoverage)
 	append_coverage_compiler_flags()
-endif() 
+endif()
 
 
 ## Boost
@@ -60,10 +60,10 @@ set(${PROJECT_NAME}_DEFINITIONS -DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE
     CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
 # Expose MixtComp's public includes to other subprojects through cache variable.
-set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} 
-                                 ${EIGEN3_INCLUDE_DIRS} 
-                                 "${CMAKE_CURRENT_SOURCE_DIR}/lib/" 
-                                 "${CMAKE_CURRENT_BINARY_DIR}/optim-src/include" 
+set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
+                                 ${EIGEN3_INCLUDE_DIRS}
+                                 "${CMAKE_CURRENT_SOURCE_DIR}/lib/"
+                                 "${CMAKE_CURRENT_BINARY_DIR}/optim-src/include"
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 
@@ -74,4 +74,4 @@ add_subdirectory(utest EXCLUDE_FROM_ALL)
 ## code coverage only in Coverage mode
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
 	setup_target_for_coverage_lcov(NAME ${PROJECT_NAME}_coverage EXECUTABLE runUtest EXCLUDE "\"/usr*\"" "\"*debug*\"" "\"*release*\"" "\"*utest*\"" "${PROJECT_SOURCE_DIR}/CMakeCCompilerId*")
-endif() 
+endif()

@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -29,7 +29,7 @@
 //#include <iterator>
 
 /**
- * Iterator class for Eigen::Matrix. This file is included from EigenMatrixBaseAddons.h and the Iterator class is therefor not a member of the namespace mixt::.
+ * Iterator class for Eigen::Matrix. This file is included from EigenMatrixBaseAddons.h and the Iterator class is therefore not a member of the namespace mixt::.
  * It is accessible in MixtComp through the derived class mixt::Matrix.
  */
 

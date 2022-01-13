@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -38,7 +38,7 @@ TEST(FuncCSComputation, Vandermonde) {
 	Matrix<Real> expectedVm(nObs, nCoeff);
 	expectedVm << 1., 2., 4., 1., 12., 144.;
 
-	ASSERT_EQ(true, vm.isApprox(expectedVm));
+	EXPECT_TRUE(vm.isApprox(expectedVm));
 }
 
 TEST(FuncCSComputation, regressionNoNoise) {
@@ -72,8 +72,8 @@ TEST(FuncCSComputation, regressionNoNoise) {
 
 	regression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
-	ASSERT_NEAR(0., sdEstimated, epsilon);
+	EXPECT_TRUE(betaEstimated.isApprox(beta, epsilon));
+	EXPECT_NEAR(0., sdEstimated, epsilon);
 }
 
 TEST(FuncCSComputation, regressionNoise) {
@@ -109,8 +109,8 @@ TEST(FuncCSComputation, regressionNoise) {
 
 	regression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-2));
-	ASSERT_NEAR(sd, sdEstimated, 0.01);
+	EXPECT_TRUE(betaEstimated.isApprox(beta, 1e-2));
+	EXPECT_NEAR(sd, sdEstimated, 0.01);
 }
 
 TEST(FuncCSComputation, subRegression) {
@@ -176,8 +176,8 @@ TEST(FuncCSComputation, subRegression) {
 
 	subRegression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-2));
-	ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
+	EXPECT_TRUE(betaEstimated.isApprox(beta, 1e-2));
+	EXPECT_TRUE(sdEstimated.isApprox(sd, 0.01));
 }
 
 TEST(FuncCSComputation, smallTest) {
@@ -238,7 +238,7 @@ TEST(FuncCSComputation, costAndGrad1SubReg) {
 		computedGrad(i) = computedGradVec[i];
 	}
 
-	ASSERT_EQ(true, computedGrad.isApprox(fdGrad, epsilon));
+	ASSERT_TRUE(computedGrad.isApprox(fdGrad, epsilon));
 }
 
 TEST(FuncCSComputation, costAndGrad) {
@@ -292,7 +292,7 @@ TEST(FuncCSComputation, costAndGrad) {
 		computedGrad(i) = computedGradVec[i];
 	}
 
-	ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
+	ASSERT_TRUE(computedGrad.isApprox(fdGrad, 1e-4));
 }
 
 TEST(FuncCSComputation, hessian) {
@@ -364,11 +364,11 @@ TEST(FuncCSComputation, hessian) {
 		}
 	}
 
-	ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
+	ASSERT_TRUE(computedHessian.isApprox(fdHessian, 1e-4));
 }
 
 TEST(FuncCSComputation, optimRealSimpleCase) {
-	Index nTime = 5000;
+	Index nTime = 10000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
 	Real xMax = 100.;
@@ -436,7 +436,7 @@ TEST(FuncCSComputation, optimRealSimpleCase) {
 
 	bool isApprox = estimatedAlpha.isApprox(alpha, 0.1);
 
-	ASSERT_EQ(true, isApprox);
+	ASSERT_TRUE(isApprox);
 }
 
 TEST(FuncCSComputation, removeMissingQuantile) {
@@ -471,5 +471,5 @@ TEST(FuncCSComputation, removeMissingQuantile) {
 	Vector<Real> expectedQuantile(nQuantile);
 	expectedQuantile << -20., -10., 0., 10.;
 
-	ASSERT_EQ(true, computedQuantile.isApprox(expectedQuantile, 0.1));
+	ASSERT_TRUE(computedQuantile.isApprox(expectedQuantile, 0.1));
 }

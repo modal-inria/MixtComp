@@ -55,6 +55,7 @@ add_executable(runUtest
     Statistic/UTestNegativeBinomialStatistic.cpp
     Statistic/UTestWeibullStatistic.cpp
     Statistic/UTestGaussianStatistic.cpp
+    Statistic/UTestMultinomialStatistic.cpp
     Statistic/UTestUniformIntStatistic.cpp
     Statistic/UTestPoissonStatistic.cpp
     Statistic/UTestRNG.cpp
@@ -68,7 +69,7 @@ add_executable(runUtest
     Functional/UTestFuncCSClass.cpp
     Functional/UTestFuncCSMixture.cpp
     Functional/UTestFunctionCSParser.cpp
-    Composer/UTestZClassInd.cpp    
+    Composer/UTestZClassInd.cpp
 )
 
 target_link_libraries(runUtest

@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -125,7 +125,7 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
 /**
  * Newton-Raphson optimization of a R -> R univariate function.
  *
- * @param x a vector to parametrize the fonction evalFunc, for example the observation vector.
+ * @param x a vector to parametrize the function evalFunc, for example the observation vector.
  * @param currN current argument of the function to optimize
  * @param nIt the remaining number of iterations
  * @param evalFunc is a function (x, currN) -> (value, derivative)

@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -77,7 +77,7 @@ TEST(RankISRIndividual, xGenP05) {
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 
-	Vector<RankVal> RankOut(nbPos); // whill store the result of xGen
+	Vector<RankVal> RankOut(nbPos); // will store the result of xGen
 
 	Vector<int> muVec(nbPos); // position -> modality representation
 	muVec << 0, 3, 1, 2;
@@ -141,7 +141,7 @@ TEST(RankISRIndividual, xGenP1) {
 	Vector<MisVal> obsData(nbPos, MisVal(missing_, { }));
 	rank.setObsData(obsData);
 
-	RankVal RankOut(nbPos); // whill store the result of xGen
+	RankVal RankOut(nbPos); // will store the result of xGen
 
 	Vector<int> muVec(nbPos); // position -> modality representation
 	muVec << 0, 3, 1, 2;
@@ -161,7 +161,7 @@ TEST(RankISRIndividual, xGenP1) {
 }
 
 /** Computation of the joint probability p(x, y). Compare the probability obtained through direct computation with
- * the proba obtained during the xGen sampling of x. */
+ * the probability obtained during the xGen sampling of x. */
 TEST(RankISRIndividual, lnCompletedProbability) {
 	int nbPos = 6;
 	int nbSample = 100;

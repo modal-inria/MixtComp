@@ -1,4 +1,4 @@
-name: RMixtComp
+name: RMixtComp with Eigen 3.4
 
 on:
   push:
@@ -59,6 +59,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          install.packages("RcppEigen", repo="https://RcppCore.github.io/drat")
         shell: Rscript {0}
 
       - name: Copy MixtComp files

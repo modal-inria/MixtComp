@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  **/
@@ -197,7 +197,7 @@ void MixtureComposer::eStepCompleted() {
 			listInd += std::to_string(*it) + " ";
 		}
 		warnLog = "An unexpected error has occurred in the computation of the completed probability of the individuals " + listInd
-				+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
+				+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and launch script.";
 		throw(warnLog);
 	}
 
@@ -406,7 +406,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 
 void MixtureComposer::initData() {
 	tik_ = 1. / nClass_;
-	sampleZ(); // since tik are uniform, this sStep corresponds to an uniform initialization of z. It takes into account the supervised / semisupervised constraints
+	sampleZ(); // since tik are uniform, this sStep corresponds to an uniform initialization of z. It takes into account the supervised / semi-supervised constraints
 
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 #pragma omp parallel for
@@ -525,7 +525,7 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 	for (Index j = 0; j < nVar_; ++j) {
 		for (Index h = j; h < nVar_; ++h) {
 			delta(j, h) = std::sqrt(delta(j, h) / nInd_); // Normalisation
-			delta(h, j) = delta(j, h); // symetric matrix
+			delta(h, j) = delta(j, h); // symmetric matrix
 		}
 	}
 
