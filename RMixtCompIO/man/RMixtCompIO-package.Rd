@@ -11,8 +11,6 @@ It has been engineered around the idea of easy and quick integration of all new 
 Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced models (Func_CS and Rank_ISR).
 MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
 This package contains the minimal R interface of the C++ library.
-
-Online SaaS version: \url{https://massiccc.lille.inria.fr/}
 }
 \details{
 The main function is \link{rmcMultiRun} that runs a SEM algorithm to learn a mixture model.

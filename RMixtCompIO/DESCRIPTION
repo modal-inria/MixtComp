@@ -18,7 +18,7 @@ Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a pro
     heterogeneous data sets and partially missing data management.
     It includes models for real, categorical, counting, functional and ranking data.
     This package contains the minimal R interface of the C++ 'MixtComp' library.
-URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
+URL: https://github.com/modal-inria/MixtComp
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: Rcpp, doParallel, foreach
 Suggests: Rmixmod, blockcluster, testthat, RInside, xml2
