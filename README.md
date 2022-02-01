@@ -15,17 +15,17 @@ CRAN package: [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RMixtCom
 
 master:
 
-![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=master)
-![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=master)
-![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=master)
-![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=master)
+[![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=master)](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml?query=branch%3Amaster)
+[![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=master)](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml?query=branch%3Amaster)
+[![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=master)](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml?query=branch%3Amaster)
+[![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=master)](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml?query=branch%3Amaster)
 
 staging:
 
-![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=staging)
-![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=staging)
-![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=staging)
-![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=staging)
+[![MixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml/badge.svg?branch=staging)](https://github.com/modal-inria/MixtComp/actions/workflows/MixtComp.yml?query=branch%3Astaging)
+[![RMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml/badge.svg?branch=staging)](https://github.com/modal-inria/MixtComp/actions/workflows/RMixtComp.yml?query=branch%3Astaging)
+[![JMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml/badge.svg?branch=staging)](https://github.com/modal-inria/MixtComp/actions/workflows/JMixtComp.yml?query=branch%3Astaging)
+[![pyMixtComp](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml/badge.svg?branch=staging)](https://github.com/modal-inria/MixtComp/actions/workflows/pyMixtComp.yml?query=branch%3Astaging)
 
 ## Credits
 
