@@ -244,7 +244,7 @@ public:
 	std::string setZi(Graph& data, Graph& desc) {
 		std::string warnLog;
 
-		if (data.exist_payload( { }, "z_class") & desc.exist_payload( { }, "z_class")) { // z_class was not provided
+		if (data.exist_payload( { }, "z_class") && desc.exist_payload( { }, "z_class")) { // z_class was not provided
 #ifdef MC_VERBOSE
 			std::cout << "MixtureComposer::setZi, class label provided." << std::endl;
 #endif
