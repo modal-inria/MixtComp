@@ -6,7 +6,7 @@ from scipy.optimize import root_scalar
 import seaborn as sns
 
 
-def plot_functional_data(bounds, res, var_name, add_obs=False, add_CI=True, ax=None):
+def plot_functional_data(bounds, res, var_name, add_obs=False, add_ci=True, ax=None):
     """ Plot bounds for functional data"""
     ax = ax or plt.figure().add_subplot(1, 1, 1)
     if add_obs:
@@ -17,7 +17,7 @@ def plot_functional_data(bounds, res, var_name, add_obs=False, add_CI=True, ax=N
     for i in bounds[4]:
         sns.lineplot(x=bounds[0], y=bounds[2][i], label="Class " + str(i), ax=ax)
 
-    if add_CI:
+    if add_ci:
         for i in bounds[4]:
             ax.fill_between(bounds[0], bounds[1][i], bounds[3][i], alpha=0.5)
 

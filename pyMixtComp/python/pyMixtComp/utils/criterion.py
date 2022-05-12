@@ -38,12 +38,12 @@ def compute_discriminative_power_variable(res, class_id=None):
     if class_id is None:
         return 1 - res["mixture"]["IDClass"].sum(axis=0)
     else:
-        K = len(res["mixture"]["IDClass"])
+        k = len(res["mixture"]["IDClass"])
 
-        entropy_KJ = res["mixture"]["IDClass"].loc["k: " + str(class_id)] * np.log(K)
-        entropy_KJ_bar = res["mixture"]["IDClassBar"].loc["k: " + str(class_id)] * np.log(K)
+        entropy_kj = res["mixture"]["IDClass"].loc["k: " + str(class_id)] * np.log(k)
+        entropy_kj_bar = res["mixture"]["IDClassBar"].loc["k: " + str(class_id)] * np.log(k)
 
-        return 1 - (entropy_KJ + entropy_KJ_bar) / np.log(2)
+        return 1 - (entropy_kj + entropy_kj_bar) / np.log(2)
 
 
 def compute_discriminative_power_class(res):

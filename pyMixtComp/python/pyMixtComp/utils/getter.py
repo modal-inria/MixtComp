@@ -94,28 +94,28 @@ def get_param(res, var_name):
     if var_name not in res["variable"]["type"]:
         raise ValueError("Wrong variable names.")
 
-    type = res["variable"]["type"][var_name]
+    model = res["variable"]["type"][var_name]
 
     n_class = res["algo"]["nClass"]
 
-    if type == "Gaussian":
+    if model == "Gaussian":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["mean", "sd"])
-    elif type == "Multinomial":
+    elif model == "Multinomial":
         return _get_param_multinomial(res["variable"]["param"][var_name], n_class)
-    elif type == "Poisson":
+    elif model == "Poisson":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["lambda"])
-    elif type == "Weibull":
+    elif model == "Weibull":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["k (shape)", "lambda (scale)"])
-    elif type == "NegativeBinomial":
+    elif model == "NegativeBinomial":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["n", "p"])
-    elif type == "Rank_ISR":
+    elif model == "Rank_ISR":
         return _get_param_Rank_ISR(res["variable"]["param"][var_name], n_class)
-    elif (type == "Func_CS") | (type == "Func_SharedAlpha_CS"):
+    elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
         return _get_param_Func_CS(res["variable"]["param"][var_name], n_class)
-    elif type == "LatentClass":
+    elif model == "LatentClass":
         return _get_param_numerical(res["variable"]["param"][var_name], n_class, ["pi"])
     else:
-        raise ValueError("Not yet implemented for model " + type)
+        raise ValueError("Not yet implemented for model " + model)
 
 
 def _get_param_numerical(param, n_class, col_names):

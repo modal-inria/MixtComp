@@ -85,7 +85,7 @@ def load_prostate():
 def load_simulated_data():
     """ Simulated data
 
-    Dataa simulated from the different models used in MixtComp.
+    Data simulated from the different models used in MixtComp.
 
     Returns
     -------

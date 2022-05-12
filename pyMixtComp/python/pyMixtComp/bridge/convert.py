@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-def convert_C_matrix(x):
+def convert_c_matrix(x):
     """ Convert a matrix to array or DataFrame
 
     The matrix format used  in c++ is:
@@ -31,7 +31,7 @@ def convert_C_matrix(x):
             return pd.DataFrame(x["data"], columns=x["colNames"], index=x["rowNames"])
 
 
-def convert_C_vector(x):
+def convert_c_vector(x):
     """ Convert a vector to array or Series
 
     The matrix format used  in c++ is:
@@ -68,9 +68,9 @@ def convert(object):
         if isinstance(object[key], dict):
             if "ctype" in object[key].keys():
                 if object[key]["ctype"] == "Matrix":
-                    object[key] = convert_C_matrix(object[key])
+                    object[key] = convert_c_matrix(object[key])
                 elif object[key]["ctype"] == "Vector":
-                    object[key] = convert_C_vector(object[key])
+                    object[key] = convert_c_vector(object[key])
             else:
                 convert(object[key])
 
