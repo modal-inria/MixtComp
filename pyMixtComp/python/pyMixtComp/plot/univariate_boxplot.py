@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from pyMixtComp.plot.functional import extract_CI_Func_CS, plot_functional_data
+from .functional import extract_CI_Func_CS, plot_functional_data
 
 
 def plot_data(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
