@@ -63,7 +63,7 @@ def get_partition(res, empiric=False):
         partition = tik.argmax(axis=1)
         if "dictionary" in res["algo"]:
             if "z_class" in res["algo"]["dictionary"]:
-                label = np.array([re.sub("k: ", "", x) for x in tik.columns])
+                label = np.array([x.replace("k: ", "") for x in tik.columns])
                 partition = label[partition]
 
         return partition
@@ -152,7 +152,7 @@ def _get_param_Func_CS(param, n_class):
 
 
 def _get_param_Rank_ISR(param, n_class):
-    n_modality = int(re.sub("nModality:", "", param["paramStr"]))
+    n_modality = int(param["paramStr"].replace("nModality:", ""))
     mu = np.empty((0, n_modality), dtype=int)
     for value in param["mu"]["stat"].values():
         mu = np.vstack((mu, value["rank"]))

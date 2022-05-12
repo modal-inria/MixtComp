@@ -72,7 +72,7 @@ def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
         return plot_CI_numerical(extract_CI_weibull(res, var_name, class_ids, all),
                                  var_name, ax)
     elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
-        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax, **kwargs)
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax=ax, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 
@@ -97,14 +97,14 @@ def plot_CI_numerical(ci, var_name, ax=None):
 def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
     """ Compute mean and 95% CI of the estimated gaussian distribution """
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in res["mixture"]["IDClass"].index]
+        class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
 
     ci = pd.DataFrame({"mean": theta[:, 0],
                        "lower": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
                        "upper": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.975)},
-                      index=[re.sub("k:", "Class", x) for x in res["mixture"]["IDClass"].index])
+                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
@@ -121,13 +121,13 @@ def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
 def extract_CI_poisson(res, var_name, class_ids=None, all=False):
     """ Compute mean and 95% CI of the estimated poisson distribution """
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in res["mixture"]["IDClass"].index]
+        class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 1)
 
     ci = pd.DataFrame({"mean": theta[:, 0],
                        "lower": poisson(theta[:, 0]).ppf(0.025),
                        "upper": poisson(theta[:, 0]).ppf(0.975)},
-                      index=[re.sub("k:", "Class", x) for x in res["mixture"]["IDClass"].index])
+                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
@@ -143,14 +143,14 @@ def extract_CI_poisson(res, var_name, class_ids=None, all=False):
 def extract_CI_nbinom(res, var_name, class_ids=None, all=False):
     """ Compute mean and 95% CI of the estimated negative binomial distribution """
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in res["mixture"]["IDClass"].index]
+        class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
 
     ci = pd.DataFrame({"mean": nbinom.mean(theta[:, 0], theta[:, 1]),
                        "lower": nbinom(theta[:, 0], theta[:, 1]).ppf(0.025),
                        "upper": nbinom(theta[:, 0], theta[:, 1]).ppf(0.975)},
-                      index=[re.sub("k:", "Class", x) for x in res["mixture"]["IDClass"].index])
+                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
@@ -166,13 +166,13 @@ def extract_CI_nbinom(res, var_name, class_ids=None, all=False):
 def extract_CI_weibull(res, var_name, class_ids=None, all=False):
     """ Compute mean and 95% CI of the estimated weibull distribution """
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in res["mixture"]["IDClass"].index]
+        class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
     ci = pd.DataFrame({"mean": weibull_min(c=theta[:, 0], scale=theta[:, 1]).mean(),
                        "lower": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
                        "upper": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.975)},
-                      index=[re.sub("k:", "Class", x) for x in res["mixture"]["IDClass"].index])
+                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
@@ -187,13 +187,13 @@ def extract_CI_weibull(res, var_name, class_ids=None, all=False):
 def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
     """ Keep labels up to 95% probability """
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in res["mixture"]["IDClass"].index]
+        class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(res["algo"]["nClass"], -1)
 
     theta = pd.DataFrame(theta, columns=[re.sub("k: .*, modality: ", "", x)
                                          for x in res["variable"]["param"][var_name]["stat"]["median"].index[:theta.shape[1]]],
-                         index=[re.sub("k:", "Class", x) for x in res["mixture"]["IDClass"].index])
+                         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
     theta = theta.loc[["Class " + str(id) for id in class_ids]]
 
     if all:

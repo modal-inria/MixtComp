@@ -1,5 +1,3 @@
-import re
-
 import numpy as np
 import pandas as pd
 
@@ -132,7 +130,7 @@ def compute_class_similarity(res):
     for k in range(len(simil)):
         simil[k, :] = 1 - np.sqrt(((tik.values - tik.values[:, [k]]) ** 2).mean(axis=0))
 
-    simil = pd.DataFrame(simil, columns=[re.sub("k: ", "Class ", x) for x in tik.columns],
-                         index=[re.sub("k: ", "Class ", x) for x in tik.columns])
+    simil = pd.DataFrame(simil, columns=[x.replace("k: ", "Class ") for x in tik.columns],
+                         index=[x.replace("k: ", "Class ") for x in tik.columns])
 
     return simil

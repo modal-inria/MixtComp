@@ -96,7 +96,7 @@ def plot_tik(res, ax=None):
 
     order_tik = np.zeros((0, ))
     for k in range(tik.shape[1]):
-        class_id = tik.columns[k].replace("k: ", "", )
+        class_id = tik.columns[k].replace("k: ", "")
         order_tik = np.concatenate(
             (order_tik,
              np.argsort(tik.values[:, k] * (predicted_class == class_id))[::-1][:(predicted_class == class_id).sum()]))

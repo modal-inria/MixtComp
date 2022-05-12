@@ -1,5 +1,4 @@
 from collections import Counter
-import re
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -58,7 +57,7 @@ def plot_data(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
     elif model == "Weibull":
         return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name, ax)
     elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
-        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax, **kwargs)
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax=ax, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 
@@ -109,7 +108,7 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
     tik = res["variable"]["data"]["z_class"]["stat"]
 
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in tik.columns]
+        class_ids = [x.replace("k: ", "") for x in tik.columns]
 
     ordered_indices = obs.argsort()
 
@@ -122,7 +121,7 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
         thresholds[:, i] = obs[ordered_indices[np.argmin(abs(cum_sums - q[i]).values, axis=0)]]
 
     thresholds = pd.DataFrame(thresholds, columns=["q" + str(i) for i in q],
-                              index=[re.sub("k:", "Class", x) for x in tik.columns])
+                              index=[x.replace("k:", "Class") for x in tik.columns])
     thresholds = thresholds.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
@@ -144,7 +143,7 @@ def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False)
     tik = res["variable"]["data"]["z_class"]["stat"]
 
     if class_ids is None:
-        class_ids = [re.sub("k: ", "", x) for x in tik.columns]
+        class_ids = [x.replace("k: ", "") for x in tik.columns]
 
     levels = np.unique(obs)
 
@@ -153,7 +152,7 @@ def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False)
         probas[:, i] = (tik * (obs == levels[i])[:, np.newaxis]).sum() / tik.sum()
 
     probas = pd.DataFrame(probas, columns=levels,
-                          index=[re.sub("k:", "Class", x) for x in tik.columns])
+                          index=[x.replace("k:", "Class") for x in tik.columns])
     probas = probas.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
