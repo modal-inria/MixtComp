@@ -67,7 +67,7 @@ class MixtComp(BaseEstimator):
 
     Data can be provided as:
     - a dict where each key is a variable name and each value is a 1d-array.
-    - a DataFrame where each columns is a variable
+    - a DataFrame where each column is a variable
     - a numpy array
 
     Values can be given as a string in order to provide information about incomplete data.
@@ -224,7 +224,8 @@ class MixtComp(BaseEstimator):
         Parameters
         ----------
         X : dict, array or DataFrame
-            [description]
+            a dict where each key is a variable name and each value is a 1d-array, a DataFrame where each column is a variable
+            or a numpy array
         model : dict, optional
             dict containing the variables to use in the model, by default None.
             Each key corresponds to a variable name (in the case where X is a dict or a DataFrame), and each value to a model.
@@ -311,7 +312,7 @@ class MixtComp(BaseEstimator):
 
         return self.res_predict_["variable"]["data"]["z_class"]["completed"]
 
-    def plot_discriminative_power_variable(self, class_id=None):
+    def plot_discriminative_power_variable(self, class_id=None, ax=None):
         """ Plot the discriminative power of variables
 
         Parameters
@@ -320,6 +321,8 @@ class MixtComp(BaseEstimator):
             Class number (0, ...,  n_components - 1), by default None.
             If None, it returns the discriminative power of variables globally otherwise it returns the discriminative power
             of variables in the given class
+        ax: Axes
+            Matplotlib axis object, by default None
 
         Returns
         -------
@@ -327,32 +330,47 @@ class MixtComp(BaseEstimator):
             Barplot
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_discriminative_power_variable(self.res_, class_id)
+        return plot.plot_discriminative_power_variable(self.res_, class_id, ax)
 
-    def plot_discriminative_power_class(self):
+    def plot_discriminative_power_class(self, ax=None):
         """Plot the discriminative power of classes
 
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
+
         Returns
         -------
         Axes
             barplot
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_discriminative_power_class(self.res_)
+        return plot.plot_discriminative_power_class(self.res_, ax)
 
-    def plot_proportion(self):
+    def plot_proportion(self, ax=None):
         """ Plot a barplot with proportion's mixture
 
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
+
         Returns
         -------
         Axes
             barplot
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_proportion(self.res_)
+        return plot.plot_proportion(self.res_, ax)
 
-    def plot_class_similarity(self):
+    def plot_class_similarity(self, ax=None):
         """ Plot the similarity between classes
+
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
 
         Returns
         -------
@@ -361,18 +379,24 @@ class MixtComp(BaseEstimator):
 
         Notes
         -----
-        The similarities between classes k and g is defined by 1 - Sigma(k,g) where Sigma is:
+        The similarities between classes k and g is defined by :math:`1 - \\Sigma(k,g)` where :math:`\\Sigma` is:
+
         .. math::
-        Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
+            \\Sigma(k,g)^2 = \\frac{1}{n} * \\sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 
         A high value (close to one) means that the classes are highly similar (high overlapping).
         A low value (close to zero) means that the classes are highly different (low overlapping).
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_class_similarity(self.res_)
+        return plot.plot_class_similarity(self.res_, ax)
 
-    def plot_variable_similarity(self):
+    def plot_variable_similarity(self, ax=None):
         """ Plot the similarity between variables
+
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
 
         Returns
         -------
@@ -381,9 +405,10 @@ class MixtComp(BaseEstimator):
 
         Notes
         -----
-        The similarities between variables j and h is defined by Delta(j, h) where Delta is:
+        The similarities between variables j and h is defined by :math:`\\Delta(j, h)` where :math:`\\Delta` is:
+
         .. math::
-        Delta(j,h)^2 = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
+            \\Delta(j,h)^2 = 1 - \\sqrt{(1/n) * \\sum_{i=1}^n \\sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
 
         A high value (close to one) means that the variables provide the same information for the clustering task
         (i.e. similar partitions).
@@ -391,13 +416,18 @@ class MixtComp(BaseEstimator):
         (i.e. different partitions).
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_variable_similarity(self.res_)
+        return plot.plot_variable_similarity(self.res_, ax)
 
-    def plot_tik(self):
+    def plot_tik(self, ax=None):
         """ Heatmap of the tik = P(Z_i=k|x_i)
 
         Observation are sorted according to the hard partition then for each component
         they are sorted by decreasing order of their tik
+
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
 
         Returns
         -------
@@ -405,10 +435,15 @@ class MixtComp(BaseEstimator):
             Heatmap of the tik
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_tik(self.res_)
+        return plot.plot_tik(self.res_, ax)
 
-    def plot_data_CI(self, var_name, class_ids=None, all=False, **kwargs):
+    def plot_data_CI(self, var_name, class_ids=None, all=False, ax=None, **kwargs):
         """ Mean and 95%-level confidence intervals per class
+
+        Parameters
+        ----------
+        ax: Axes
+            Matplotlib axis object, by default None
 
         Parameters
         ----------
@@ -428,9 +463,9 @@ class MixtComp(BaseEstimator):
             Plot Mean and 95%-level confidence intervals per class
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_data_CI(self.res_, var_name, class_ids, all, **kwargs)
+        return plot.plot_data_CI(self.res_, var_name, class_ids, all, ax, **kwargs)
 
-    def plot_data(self, var_name, class_ids=None, all=False, **kwargs):
+    def plot_data(self, var_name, class_ids=None, all=False, ax=None, **kwargs):
         """ Boxplot per class
 
         Parameters
@@ -441,6 +476,8 @@ class MixtComp(BaseEstimator):
             Classes to plot, by default None, all classes are plotted
         all : bool, optional
             If True, it adds the mean and 95%-level confidence interval for all data, by default False
+        ax: Axes
+            Matplotlib axis object, by default None
         **kwargs
             For functional data: add_obs (default=False) adds observations on the plot,
             add_CI (default=True) adds confidence intervals for means.
@@ -451,7 +488,7 @@ class MixtComp(BaseEstimator):
             Boxplot (with 5%-25%-50%-75%-95% quantile) of the data
         """
         check_is_fitted(self, attributes="res_")
-        return plot.plot_data(self.res_, var_name, class_ids, all, **kwargs)
+        return plot.plot_data(self.res_, var_name, class_ids, all, ax, **kwargs)
 
     def aic(self, X=None):
         """ Akaike information criterion for the current model on the input X.

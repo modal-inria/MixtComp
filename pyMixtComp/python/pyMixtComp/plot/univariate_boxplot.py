@@ -10,7 +10,7 @@ import seaborn as sns
 from pyMixtComp.plot.functional import extract_CI_Func_CS, plot_functional_data
 
 
-def plot_data(res, var_name, class_ids=None, all=False, **kwargs):
+def plot_data(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
     """ Plot Data Distribution
 
     Parameters
@@ -23,6 +23,8 @@ def plot_data(res, var_name, class_ids=None, all=False, **kwargs):
         Numbers or names of classes to plot, by default None
     all : bool, optional
         If True add the overall distribution, by default False
+    ax: Axes
+        Matplotlib axis object, by default None
     **kwargs
         For functional data: add_obs (default=False) adds observations on the plot,
         add_CI (default=True) adds confidence intervals for means.
@@ -46,33 +48,33 @@ def plot_data(res, var_name, class_ids=None, all=False, **kwargs):
     model = res["variable"]["type"][var_name]
 
     if model == "Gaussian":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name, ax)
     elif model == "Multinomial":
-        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_ids, all), var_name)
+        return barplot_per_class_categorical(extract_bounds_barplot_categorical(res, var_name, class_ids, all), var_name, ax)
     elif model == "Poisson":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name, ax)
     elif model == "NegativeBinomial":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name, ax)
     elif model == "Weibull":
-        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name)
+        return boxplot_per_class_numerical(extract_bounds_boxplot_numerical(res, var_name, class_ids, all), var_name, ax)
     elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
-        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, **kwargs)
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 
 
-def boxplot_per_class_numerical(bounds, var_name):
+def boxplot_per_class_numerical(bounds, var_name, ax=None):
     """ plot_data part for a numerical variable """
 
     color = sns.color_palette()
-    _, ax = plt.subplots()
+    ax = ax or plt.figure().add_subplot(1, 1, 1)
     i = 0
     for _, row in bounds.iterrows():
         ax.add_patch(patches.Rectangle((row.iloc[1], i), width=row.iloc[3]-row.iloc[1],
                                        height=0.8, fill=True, edgecolor="black", lw=1.5, facecolor=color[i % len(color)]))
-        plt.plot(row.iloc[:2].values, [i + 0.4] * 2, c="black")
-        plt.plot(row.iloc[-2:].values, [i + 0.4] * 2, c="black")
-        plt.plot([row.iloc[2]] * 2, [i, i + 0.8], c="black")
+        ax.plot(row.iloc[:2].values, [i + 0.4] * 2, c="black")
+        ax.plot(row.iloc[-2:].values, [i + 0.4] * 2, c="black")
+        ax.plot([row.iloc[2]] * 2, [i, i + 0.8], c="black")
         i += 1
 
     ax.set_xlabel(var_name)
@@ -80,7 +82,7 @@ def boxplot_per_class_numerical(bounds, var_name):
     plt.yticks([j + 0.4 for j in range(i)], bounds.index.to_list())
 
 
-def barplot_per_class_categorical(bounds, var_name):
+def barplot_per_class_categorical(bounds, var_name, ax=None):
     """ plot_data part for a categorical variable """
 
     bounds2 = pd.DataFrame()
@@ -88,7 +90,8 @@ def barplot_per_class_categorical(bounds, var_name):
     bounds2["Class"] = np.repeat(bounds.index.to_list(), bounds.shape[1])
     bounds2["Category"] = bounds.columns.to_list() * bounds.shape[0]
 
-    ax = sns.barplot(data=bounds2, x="Category", y="Probability", hue="Class")
+    ax = ax or plt.figure().add_subplot(1, 1, 1)
+    sns.barplot(data=bounds2, x="Category", y="Probability", hue="Class", ax=ax)
     ax.set_xlabel(var_name)
 
     return ax

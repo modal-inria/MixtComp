@@ -12,7 +12,7 @@ from .univariate_boxplot import barplot_per_class_categorical
 from .functional import extract_CI_Func_CS, plot_functional_data
 
 
-def plot_data_CI(res, var_name, class_ids=None, all=False, **kwargs):
+def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
     """ Plot Mean and 95%-level confidence intervals per class
 
     Parameters
@@ -25,6 +25,8 @@ def plot_data_CI(res, var_name, class_ids=None, all=False, **kwargs):
         Classes to plot, by default None, all classes are plotted
     all : bool, optional
         If True, it adds the mean and 95%-level confidence interval for all data, by default False
+    ax: Axes
+        Matplotlib axis object, by default None
     **kwargs
         For functional data: add_obs (default=False) adds observations on the plot,
         add_CI (default=True) adds confidence intervals for means.
@@ -56,28 +58,28 @@ def plot_data_CI(res, var_name, class_ids=None, all=False, **kwargs):
 
     if model == "Gaussian":
         return plot_CI_numerical(extract_CI_gaussian(res, var_name, class_ids, all),
-                                 var_name)
+                                 var_name, ax)
     elif model == "Multinomial":
         return barplot_per_class_categorical(extract_CI_multinomial(res, var_name, class_ids, all),
-                                             var_name)
+                                             var_name, ax)
     elif model == "Poisson":
         return plot_CI_numerical(extract_CI_poisson(res, var_name, class_ids, all),
-                                 var_name)
+                                 var_name, ax)
     elif model == "NegativeBinomial":
         return plot_CI_numerical(extract_CI_nbinom(res, var_name, class_ids, all),
-                                 var_name)
+                                 var_name, ax)
     elif model == "Weibull":
         return plot_CI_numerical(extract_CI_weibull(res, var_name, class_ids, all),
-                                 var_name)
+                                 var_name, ax)
     elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
-        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, **kwargs)
+        return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax, **kwargs)
     else:
         raise NotImplementedError("Not yet implemented for model " + model)
 
 
-def plot_CI_numerical(ci, var_name):
+def plot_CI_numerical(ci, var_name, ax=None):
     color = sns.color_palette()
-    _, ax = plt.subplots()
+    ax = ax or plt.figure().add_subplot(1, 1, 1)
     i = 0
     for _, row in ci.iterrows():
         ax.add_patch(patches.Rectangle((row.iloc[1], i), width=row.iloc[2]-row.iloc[1], alpha=0.5,
@@ -87,7 +89,7 @@ def plot_CI_numerical(ci, var_name):
 
     ax.set_xlabel(var_name)
     ax.set_ylabel("Class")
-    plt.yticks([j + 0.4 for j in range(i)], ci.index.to_list())
+    ax.set_yticks([j + 0.4 for j in range(i)], ci.index.to_list())
 
     return ax
 

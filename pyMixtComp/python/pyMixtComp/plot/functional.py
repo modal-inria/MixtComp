@@ -6,9 +6,9 @@ from scipy.optimize import root_scalar
 import seaborn as sns
 
 
-def plot_functional_data(bounds, res, var_name, add_obs=False, add_CI=True):
+def plot_functional_data(bounds, res, var_name, add_obs=False, add_CI=True, ax=None):
     """ Plot bounds for functional data"""
-    _, ax = plt.subplots()
+    ax = ax or plt.figure().add_subplot(1, 1, 1)
     if add_obs:
         for i in range(len(res["variable"]["data"][var_name]["time"])):
             sns.lineplot(x=res["variable"]["data"][var_name]["time"][i], y=res["variable"]["data"][var_name]["data"][i],
