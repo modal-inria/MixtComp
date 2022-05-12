@@ -86,7 +86,7 @@ class TestPlot(unittest.TestCase):
     def test_plot_data_functional(self):
         with open("tests/mixtcomp_output_functional.pickle", "rb") as f:
             res = pickle.load(f)
-            plot_data(res, "Functional1", class_ids=None, all=False, add_obs=False, add_CI=False)
+            plot_data(res, "Functional1", class_ids=None, all=False, add_obs=False, add_ci=False)
 
     def test_plot_data_CI_bad_var_name(self):
         with self.assertRaises(ValueError):
@@ -121,12 +121,12 @@ class TestPlot(unittest.TestCase):
     def test_plot_data_CI_functional(self):
         with open("tests/mixtcomp_output_functional.pickle", "rb") as f:
             res = pickle.load(f)
-            plot_data_CI(res, "Functional1", class_ids=[1], all=True, add_obs=True, add_CI=True)
+            plot_data_CI(res, "Functional1", class_ids=[1], all=True, add_obs=True, add_ci=True)
 
     def test_plot_data_CI_functional_diff_time(self):
         with open("tests/mixtcomp_output_functional_diff_time.pickle", "rb") as f:
             res = pickle.load(f)
-            plot_data_CI(res, "tempav", all=True, add_obs=True, add_CI=True)
+            plot_data_CI(res, "tempav", all=True, add_obs=True, add_ci=True)
 
     def test_plot_variable_similarity(self):
         plot_variable_similarity(self.mod.res_)
