@@ -1,6 +1,6 @@
 # # MixtComp version 4 - july 2019
 # # Copyright (C) Inria - Université de Lille - CNRS
-# 
+#
 # # This program is free software: you can redistribute it and/or modify
 # # it under the terms of the GNU Affero General Public License as
 # # published by the Free Software Foundation, either version 3 of the
@@ -12,18 +12,19 @@
 # #
 # # You should have received a copy of the GNU Affero General Public License
 # # along with this program.  If not, see <https://www.gnu.org/licenses/>
-# 
-# 
+#
+#
 # ###################################################################################
 # #
 # # Functions for ClusVis: see with Matthieu to add it to ClusVis once RMixtComp is on CRAN
 # #
-# 
-# 
+#
+#
 # # @title Run clusvis for MixtComp output
 # #
-# # @description This function estimates the parameters used for visualization of model-based clustering performs with R package ClusVis
-# # To achieve the parameter infernece, it automatically samples probabilities of classification from the model parameters
+# # @description This function estimates the parameters used for visualization of model-based clustering performs with R
+# # package ClusVis.
+# # To achieve the parameter inference, it automatically samples probabilities of classification from the model parameters
 # #
 # #
 # # @param resMixtComp list. It is an object return by MixComp.
@@ -53,7 +54,7 @@
 # # @author Matthieu Marbac
 # # @export
 # clusvisMixtComp <- function(resMixtComp, sample.size = 5000, maxit = 10**3, nbrandomInit = 12, nbcpu = 1, estimateLogTik = FALSE){
-# 
+#
 #   if(estimateLogTik)
 #   {
 #     logtik.estim <- t(replicate(sample.size, rlogtikMixtComp(resMixtComp)))
@@ -61,10 +62,10 @@
 #   }else{
 #     out <- clusvis(getTik(resMixtComp, log = TRUE), prop = resMixtComp$variable$param$z_class$stat[,1], logtik.obs = getTik(resMixtComp, log = TRUE), maxit, nbrandomInit, nbcpu)
 #   }
-# 
+#
 #   return(out)
 # }
-# 
+#
 # ###################################################################################
 # # @name plotComponentClusVis
 # #
@@ -109,7 +110,7 @@
 #   plotDensityClusVisu(visInfo, add.obs = FALSE, positionlegend = "bottomright",
 #                       xlim = range(visInfo$centers[,1])+c(-4,6), ylim = range(visInfo$centers[,2])+c(-6,4))
 # }
-# 
+#
 # ###################################################################################
 # # @rdname plotComponentClusVis
 # # @author Matthieu Marbac
@@ -118,9 +119,9 @@
 #   plotDensityClusVisu(visInfo, add.obs = TRUE, positionlegend = "bottomright",
 #                       xlim = range(visInfo$y[,1])+c(0,2), ylim = range(visInfo$y[,2])+c(-2,0))
 # }
-# 
-# 
-# 
+#
+#
+#
 # # This function returns the log-probabilites of classification for each observation
 # # It takes one input argument (named output) returned by the function rMixtComp
 # # It returns a matrix of the logarithm of the probabilities of classification
@@ -132,9 +133,9 @@
 #   param <- output$variable$param
 #   x <- output$variable$data
 #   logtik <- matrix(0, length(x$z_class$completed), output$algo$nClass)
-#   for (k in 1:output$algo$nClass)  
+#   for (k in 1:output$algo$nClass)
 #     logtik[,k] <- log(param$z_class$stat[k,1])
-# 
+#
 #   for (j in 2:length(x)){
 #     if (output$variable$type[[j]] == "Gaussian"){
 #       for (k in 1:ncol(logtik)){
@@ -164,13 +165,13 @@
 #     } else{
 #       stop("this type of variable is not implemented")
 #     }
-# 
+#
 #   }
 #   logtik <- sweep(logtik, 1, apply(logtik, 1, max), "-")
 #   logtik <- sweep(logtik, 1, log(rowSums(exp(logtik))), "-")
 #   logtik
 # }
-# 
+#
 # # This function returns the log-density per component of a single observation "x"
 # # according to its "type", its parameters "p" for the "g" components
 # # Here, few types of data are allowed: continuous or categorical
@@ -199,7 +200,7 @@
 #   }
 #   dlog
 # }
-# 
+#
 # # This function samples a single observation from the component "z"
 # # for the variable of type "type" and parameters "p".
 # # Here, few types of data are allowed: continuous or categorical
@@ -217,10 +218,10 @@
 #               "Weibull" = rweibull(1, shape = p[1+(z-1)*2], scale = p[2+(z-1)*2]),
 #               stop("this type of variable is not implemented")
 #   )
-# 
+#
 #   x
 # }
-# 
+#
 # # This function generates a sample from the model defined by the object output returned
 # # by the R package Rmixtcomp
 # # @author Matthieu Marbac
@@ -233,7 +234,7 @@
 #   names(x) <- names(output$variable$type)[-1]
 #   x
 # }
-# 
+#
 # # This function generates a sample of the logarithm of probabilities of classification
 # # defined by the model and its parameters given by the object output returned
 # # by the R package Rmixtcomp
@@ -248,4 +249,4 @@
 #   dlog <- dlog - log(sum(exp(dlog)))
 #   return(dlog)
 # }
-# 
+#

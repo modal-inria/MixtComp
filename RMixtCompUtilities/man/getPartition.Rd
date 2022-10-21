@@ -7,9 +7,11 @@
 getPartition(outMixtComp, empiric = FALSE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
-\item{empiric}{if TRUE, use the partition obtained at the end of the gibbs algorithm. If FALSE, use the partition obtained with the observed probabilities.}
+\item{empiric}{if TRUE, use the partition obtained at the end of the gibbs algorithm. If FALSE, use the partition
+obtained with the observed probabilities.}
 }
 \value{
 a vector containing the estimated class for each individual.
@@ -19,11 +21,15 @@ Get the estimated class from MixtComp object
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,

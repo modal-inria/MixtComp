@@ -10,7 +10,8 @@ getBIC(outMixtComp)
 getICL(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 }
 \value{
 value of the criterion
@@ -20,11 +21,15 @@ Get criterion value
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,

@@ -41,17 +41,18 @@
 #' @export
 createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50,
                        nInitPerClass = 50, nSemTry = 20, confidenceLevel = 0.95,
-                       ratioStableCriterion = 0.99, nStableCriterion = 20)
-{
-  list(nbBurnInIter = nbBurnInIter,
-       nbIter = nbIter,
-       nbGibbsBurnInIter = nbGibbsBurnInIter,
-       nbGibbsIter = nbGibbsIter,
-       nInitPerClass = nInitPerClass,
-       nSemTry = nSemTry,
-       confidenceLevel = confidenceLevel,
-       ratioStableCriterion = ratioStableCriterion,
-       nStableCriterion = nStableCriterion)
+                       ratioStableCriterion = 0.99, nStableCriterion = 20) {
+  list(
+    nbBurnInIter = nbBurnInIter,
+    nbIter = nbIter,
+    nbGibbsBurnInIter = nbGibbsBurnInIter,
+    nbGibbsIter = nbGibbsIter,
+    nInitPerClass = nInitPerClass,
+    nSemTry = nSemTry,
+    confidenceLevel = confidenceLevel,
+    ratioStableCriterion = ratioStableCriterion,
+    nStableCriterion = nStableCriterion
+  )
 }
 
 
@@ -83,11 +84,15 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #'
 #' @examples
 #' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#' dataLearn <- list(
+#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#' )
 #'
-#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-#'               var2 = list(type = "Poisson", paramStr = ""))
+#' model <- list(
+#'   var1 = list(type = "Gaussian", paramStr = ""),
+#'   var2 = list(type = "Poisson", paramStr = "")
+#' )
 #'
 #' algo <- list(
 #'   nClass = 2,
@@ -119,12 +124,12 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' @author Matthieu Marbac
 #' @seealso \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 #' @export
-computeDiscrimPowerVar <- function(outMixtComp, class = NULL)
-{
-  if(is.null(class))
-    return(1-colSums(outMixtComp$mixture$IDClass))
-  else
+computeDiscrimPowerVar <- function(outMixtComp, class = NULL) {
+  if (is.null(class)) {
+    return(1 - colSums(outMixtComp$mixture$IDClass))
+  } else {
     return(computeDiscrimPowerVarPerClass(outMixtComp, class))
+  }
 }
 
 
@@ -140,26 +145,26 @@ computeDiscrimPowerVar <- function(outMixtComp, class = NULL)
 # \deqn{C(j)=  - sum_{i=1}^n P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) / (n*\log(2))}
 #
 # @author Quentin Grimonprez
-computeDiscrimPowerVarPerClass <- function(outMixtComp, class)
-{
-  if(length(class) > 1)
+computeDiscrimPowerVarPerClass <- function(outMixtComp, class) {
+  if (length(class) > 1) {
     stop("class must be NULL or an integer between 1 and the number of classes.")
-  if(!(class %in% 1:nrow(outMixtComp$mixture$IDClass)))
+  }
+  if (!(class %in% seq_len(nrow(outMixtComp$mixture$IDClass)))) {
     stop("class must be NULL or an integer between 1 and the number of classes.")
+  }
 
   K <- nrow(outMixtComp$mixture$IDClass)
 
   entropyKJ <- outMixtComp$mixture$IDClass[class, ] * log(K)
   entropyKJbar <- outMixtComp$mixture$IDClassBar[class, ] * log(K)
 
-  1 - (entropyKJ + entropyKJbar)/log(2)
+  1 - (entropyKJ + entropyKJbar) / log(2)
 }
 
 #' @rdname computeDiscrimPowerVar
 #' @export
-computeDiscrimPowerClass <- function(outMixtComp)
-{
-  return(1 -(-colMeans(log(outMixtComp$variable$data$z_class$stat**outMixtComp$variable$data$z_class$stat)) / exp(-1)))
+computeDiscrimPowerClass <- function(outMixtComp) {
+  return(1 - (-colMeans(log(outMixtComp$variable$data$z_class$stat**outMixtComp$variable$data$z_class$stat)) / exp(-1)))
 }
 
 
@@ -183,11 +188,15 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #'
 #' @examples
 #' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+#' dataLearn <- list(
+#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#' )
 #'
-#' model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-#'               var2 = list(type = "Poisson", paramStr = ""))
+#' model <- list(
+#'   var1 = list(type = "Gaussian", paramStr = ""),
+#'   var2 = list(type = "Poisson", paramStr = "")
+#' )
 #'
 #' algo <- list(
 #'   nClass = 2,
@@ -212,8 +221,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' @author Quentin Grimonprez
 #' @seealso \code{\link{heatmapVar}} \code{\link{heatmapClass}}
 #' @export
-computeSimilarityVar <- function(outMixtComp)
-{
+computeSimilarityVar <- function(outMixtComp) {
   simil <- outMixtComp$mixture$delta
 
   return(simil)
@@ -221,15 +229,17 @@ computeSimilarityVar <- function(outMixtComp)
 
 #' @rdname computeSimilarityVar
 #' @export
-computeSimilarityClass <- function(outMixtComp)
-{
-  simil <- 1-sqrt(sapply(1:outMixtComp$algo$nClass,
-                         function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[,k],"-")**2)))
+computeSimilarityClass <- function(outMixtComp) {
+  simil <- 1 - sqrt(sapply(
+    seq_len(outMixtComp$algo$nClass),
+    function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[, k], "-")**2)
+  ))
 
-  if(is.null(outMixtComp$algo$dictionary$z_class))
-    colnames(simil) = rownames(simil) = paste("Class", 1:outMixtComp$algo$nClass)
-  else
-    colnames(simil) = rownames(simil) = outMixtComp$algo$dictionary$z_class$old
+  if (is.null(outMixtComp$algo$dictionary$z_class)) {
+    colnames(simil) <- rownames(simil) <- paste("Class", seq_len(outMixtComp$algo$nClass))
+  } else {
+    colnames(simil) <- rownames(simil) <- outMixtComp$algo$dictionary$z_class$old
+  }
 
   return(simil)
 }
@@ -257,18 +267,54 @@ computeSimilarityClass <- function(outMixtComp)
 #' availableModels()
 #'
 #' @export
-availableModels <- function()
-{
-  data.frame("model" = c("Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial", "Rank_ISR", "Func_CS", "Func_SharedAlpha_CS"),
-             "data type" = c("Real", "Positive real", "Categorical", "Positive integer", "Positive integer", "Rank", "Functional", "Functional"),
-             "format" = c("", "", "Numbers from 1 to number of modalities", "", "", "o1,o2,..,oN", "time1:value1,time2:value2,...,timeN:valueN", "time1:value1,time2:value2,...,timeN:valueN"),
-             "missing formats" = c("?; [a:b]; [-inf:b]; [a:inf]", "?; [a:b]; [a:+inf]", "?; {a,..,b}", "?; [a:b]; [a:+inf]", "?; [a:b]; [a:+inf]", "?,?,?,?; 4,3,?,?; {2 3}, 4,{2 3}, 1", "", ""),
-             "hyperparameter" = c("", "", "", "", "", "", "nSub:a, nCoeff:b", "nSub:a, nCoeff:b"),
-             "comments" = c("", "a,b>=0", "", "a,b>=0", "a,b>=0", "o1,o2,..,oN: o1 is an integer corresponding to the object's number ranked in 1st position",
-                            "nSub = number of subregressions. nCoeff = number of coefficients of each polynomial regression. Between individuals, functionals can have different time values and length.",
-                            "Func_CS with parameter alpha shared between classes: subregressions start and finish at the same time between clusters."),
-             "reference" = c("", "", "", "", "", "https://hal.inria.fr/hal-00743384", "https://arxiv.org/abs/1312.6967", "https://arxiv.org/abs/1312.6967")
-             )
+availableModels <- function() {
+  data.frame(
+    "model" = c(
+      "Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial", "Rank_ISR", "Func_CS", "Func_SharedAlpha_CS"
+    ),
+    "data type" = c(
+      "Real", "Positive real", "Categorical", "Positive integer", "Positive integer", "Rank", "Functional", "Functional"
+    ),
+    "format" = c(
+      "",
+      "",
+      "Numbers from 1 to number of modalities",
+      "",
+      "",
+      "o1,o2,..,oN",
+      "time1:value1,time2:value2,...,timeN:valueN", "time1:value1,time2:value2,...,timeN:valueN"
+    ),
+    "missing formats" = c(
+      "?; [a:b]; [-inf:b]; [a:inf]",
+      "?; [a:b]; [a:+inf]",
+      "?; {a,..,b}",
+      "?; [a:b]; [a:+inf]",
+      "?; [a:b]; [a:+inf]",
+      "?,?,?,?; 4,3,?,?; {2 3}, 4,{2 3}, 1",
+      "",
+      ""
+    ),
+    "hyperparameter" = c("", "", "", "", "", "", "nSub:a, nCoeff:b", "nSub:a, nCoeff:b"),
+    "comments" = c(
+      "",
+      "a,b>=0",
+      "",
+      "a,b>=0",
+      "a,b>=0",
+      "o1,o2,..,oN: o1 is an integer corresponding to the object's number ranked in 1st position",
+      paste(
+        "nSub = number of subregressions. nCoeff = number of coefficients of each polynomial regression.",
+        "Between individuals, functionals can have different time values and length."
+      ),
+      "Func_CS with parameter alpha shared between classes: subregressions start and finish at the same time between clusters."
+    ),
+    "reference" = c(
+      "", "", "", "", "",
+      "https://hal.inria.fr/hal-00743384",
+      "https://arxiv.org/abs/1312.6967",
+      "https://arxiv.org/abs/1312.6967"
+    )
+  )
 }
 
 
@@ -284,15 +330,12 @@ availableModels <- function()
 #
 # @details
 # Some functions such as plotConvergence or plotDataCI will not work on a reduced output
-reduceRMixtCompOutput <- function(outMixtComp, completed = TRUE, log = TRUE)
-{
-  outMixtComp = reduceRMixtCompOutputIntern(outMixtComp, completed, log)
+reduceRMixtCompOutput <- function(outMixtComp, completed = TRUE, log = TRUE) {
+  outMixtComp <- reduceRMixtCompOutputIntern(outMixtComp, completed, log)
 
-  if("MixtCompLearn" %in% class(outMixtComp))
-  {
-    for(i in outMixtComp$nClass)
-    {
-      outMixtComp$res[[i]] = reduceRMixtCompOutputIntern(outMixtComp$res[[i]], completed, log)
+  if ("MixtCompLearn" %in% class(outMixtComp)) {
+    for (i in outMixtComp$nClass) {
+      outMixtComp$res[[i]] <- reduceRMixtCompOutputIntern(outMixtComp$res[[i]], completed, log)
     }
   }
 
@@ -300,33 +343,29 @@ reduceRMixtCompOutput <- function(outMixtComp, completed = TRUE, log = TRUE)
   return(outMixtComp)
 }
 
-reduceRMixtCompOutputIntern <- function(outMixtComp, completed = TRUE, log = TRUE)
-{
-  for(nomVar in names(outMixtComp$variable$param))
-  {
-    if((nomVar != "z_class") & completed)
-    {
-      outMixtComp$variable$data[[nomVar]]$completed = NULL
-      outMixtComp$variable$data[[nomVar]]$data = NULL
-      outMixtComp$variable$data[[nomVar]]$time = NULL
+reduceRMixtCompOutputIntern <- function(outMixtComp, completed = TRUE, log = TRUE) {
+  for (nomVar in names(outMixtComp$variable$param)) {
+    if ((nomVar != "z_class") && completed) {
+      outMixtComp$variable$data[[nomVar]]$completed <- NULL
+      outMixtComp$variable$data[[nomVar]]$data <- NULL
+      outMixtComp$variable$data[[nomVar]]$time <- NULL
     }
 
-    if(log)
-    {
-      if(outMixtComp$variable$type[[nomVar]] %in% c("LatentClass", "Gaussian", "Multinomial", "Poisson", "Weibull", "NegativeBinomial"))
-        outMixtComp$variable$param[[nomVar]]$log = NULL
-
-      if(outMixtComp$variable$type[[nomVar]] %in% "Rank_ISR")
-      {
-        outMixtComp$variable$param[[nomVar]]$mu$log = NULL
-        outMixtComp$variable$param[[nomVar]]$pi$log = NULL
+    if (log) {
+      if (outMixtComp$variable$type[[nomVar]] %in% c(
+        "LatentClass", "Gaussian", "Multinomial", "Poisson", "Weibull", "NegativeBinomial")) {
+        outMixtComp$variable$param[[nomVar]]$log <- NULL
       }
 
-      if(outMixtComp$variable$type[[nomVar]] %in% c("Func_CS", "Func_SharedAlpha_CS"))
-      {
-        outMixtComp$variable$param[[nomVar]]$alpha$log = NULL
-        outMixtComp$variable$param[[nomVar]]$beta$log = NULL
-        outMixtComp$variable$param[[nomVar]]$sd$log = NULL
+      if (outMixtComp$variable$type[[nomVar]] %in% "Rank_ISR") {
+        outMixtComp$variable$param[[nomVar]]$mu$log <- NULL
+        outMixtComp$variable$param[[nomVar]]$pi$log <- NULL
+      }
+
+      if (outMixtComp$variable$type[[nomVar]] %in% c("Func_CS", "Func_SharedAlpha_CS")) {
+        outMixtComp$variable$param[[nomVar]]$alpha$log <- NULL
+        outMixtComp$variable$param[[nomVar]]$beta$log <- NULL
+        outMixtComp$variable$param[[nomVar]]$sd$log <- NULL
       }
     }
   }
@@ -352,13 +391,12 @@ reduceRMixtCompOutputIntern <- function(outMixtComp, completed = TRUE, log = TRU
 # ICL = loglikComp - nbFreeParameters/2*log(n)
 #
 # loglikComp can be not well estimated in some case (functional)
-icl <- function(outMixtComp)
-{
+icl <- function(outMixtComp) {
   loglikObs <- outMixtComp$mixture$lnObservedLikelihood
   nbFree <- outMixtComp$mixture$nbFreeParameters
   n <- outMixtComp$algo$nInd
   logTik <- getTik(outMixtComp)
-  entropy = - sum(exp(logTik) * logTik)
+  entropy <- -sum(exp(logTik) * logTik)
 
-  loglikObs - nbFree/2*log(n) - entropy
+  loglikObs - nbFree / 2 * log(n) - entropy
 }

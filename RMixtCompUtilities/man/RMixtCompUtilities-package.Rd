@@ -5,30 +5,38 @@
 \alias{RMixtCompUtilities-package}
 \title{RMixtCompUtilities}
 \description{
-MixtComp (Mixture Composer, \url{https://github.com/modal-inria/MixtComp}) is a model-based clustering package for mixed data originating from the Modal team (Inria Lille).
+MixtComp (Mixture Composer, \url{https://github.com/modal-inria/MixtComp}) is a model-based clustering package for
+mixed data originating from the Modal team (Inria Lille).
 
-It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption.
-Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced models (Func_CS and Rank_ISR).
-MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
+It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional
+independence assumption.
+Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two
+advanced models (Func_CS and Rank_ISR).
+MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package,
+but its internals are coded in C++ using state of the art libraries for faster computation.
 
 
 Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
 
-This package contains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO} packages. It is recommended to use \code{RMixtComp} (instead of \code{RMixtCompIO}) which is more user-friendly.
+This package contains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO}
+packages. It is recommended to use \code{RMixtComp} (instead of \code{RMixtCompIO}) which is more user-friendly.
 }
 \details{
 \link{createAlgo} gives you default values for required parameters.
 
-\code{convertFunctionalToVector}, \code{createFunctional} and \code{refactorCategorical} functions help to transform data to the required format.
+\code{convertFunctionalToVector}, \code{createFunctional} and \code{refactorCategorical} functions help to transform data
+to the required format.
 
 Getters are available to easily access some results: \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam},
  \link{getTik}, \link{getEmpiricTik}, \link{getPartition}, \link{getType}, \link{getModel}, \link{getVarNames}.
 
 
-You can compute discriminative powers and similarities with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
+You can compute discriminative powers and similarities with functions: \link{computeDiscrimPowerClass},
+\link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 
-Graphics functions are \link{plot.MixtComp}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence},
-\link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}.
+Graphics functions are \link{plot.MixtComp}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar},
+\link{histMisclassif}, \link{plotConvergence},\link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass},
+\link{plotDiscrimVar}, \link{plotProportion}.
 }
 \seealso{
 \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod} packages

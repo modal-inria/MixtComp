@@ -7,29 +7,35 @@
 getCompletedData(outMixtComp, var = NULL, with.z_class = FALSE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
 \item{var}{Name of the variables for which to extract the completed data. Default is NULL (all variables are extracted)}
 
 \item{with.z_class}{if TRUE, z_class is returned with the data.}
 }
 \value{
-a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).
+a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in
+alphabetic order, it may differ from the original order of the data).
 }
 \description{
 Get the completed data from MixtComp object (does not manage functional models)
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
 # add missing values
-dataLearn$var1[12] = "?"
-dataLearn$var2[72] = "?"
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn$var1[12] <- "?"
+dataLearn$var2[72] <- "?"
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,

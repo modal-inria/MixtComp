@@ -7,23 +7,29 @@
 plotConvergence(output, ...)
 }
 \arguments{
-\item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from \emph{RMixtCompIO}}
+\item{output}{object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function
+from \emph{RMixtCompIO}}
 
 \item{...}{graphical parameters}
 }
 \description{
-Plot the evolution of the completed loglikelihood during the SEM algorithm. The vertical line denotes the end of the burn-in phase.
+Plot the evolution of the completed loglikelihood during the SEM algorithm. The vertical line denotes the end of the
+burn-in phase.
 }
 \details{
 This function can be used to check the convergence and choose the parameters nbBurnInIter and nbIter from mcStrategy.
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,

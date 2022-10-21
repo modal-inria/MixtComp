@@ -12,14 +12,14 @@ createFunctional(time, value)
 \item{value}{vector containing the value of the functional}
 }
 \value{
-The functional data formatted to the mixtcomp standard
+The functional data formatted to the MixtComp standard
 }
 \description{
 Create a functional in MixtComp format
 }
 \examples{
 mat <- matrix(c(1, 2, 3, 9, 1, 1.5, 15, 1000), ncol = 2)
-createFunctional(mat[,1], mat[,2])
+createFunctional(mat[, 1], mat[, 2])
 
 }
 \author{

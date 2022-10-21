@@ -35,11 +35,15 @@ The discriminative power of class k is defined by 1 - D(k)
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
 
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,

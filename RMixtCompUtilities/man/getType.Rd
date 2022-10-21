@@ -13,7 +13,8 @@ getModel(outMixtComp, with.z_class = FALSE)
 getVarNames(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
 \item{with.z_class}{if TRUE, the type of z_class is returned.}
 }
@@ -21,15 +22,20 @@ getVarNames(outMixtComp, with.z_class = FALSE)
 a vector containing the type of models, names associated with each individual.
 }
 \description{
-getType returns the type output of a MixtComp object, getModel returns the model object, getVarNames returns the name for each variable
+getType returns the type output of a MixtComp object, getModel returns the model object, getVarNames
+returns the name for each variable
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,
@@ -56,7 +62,6 @@ model <- getModel(resLearn)
 
 # get variable names
 varNames <- getVarNames(resLearn)
-
 
 }
 \seealso{

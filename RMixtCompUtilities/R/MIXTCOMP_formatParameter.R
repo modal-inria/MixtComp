@@ -27,23 +27,24 @@
 #' @author Quentin Grimonprez
 #'
 #' @export
-formatModel <- function(model)
-{
-  if(("matrix" %in% class(model)) || ("data.frame" %in% class(model)))
-  {
-    model = apply(model, 2, function(x) {
+formatModel <- function(model) {
+  if (("matrix" %in% class(model)) || ("data.frame" %in% class(model))) {
+    model <- apply(model, 2, function(x) {
       out <- list(type = as.character(x[1]))
-      if(length(x) >= 2)
-        out$paramStr = as.character(x[2])
+      if (length(x) >= 2) {
+        out$paramStr <- as.character(x[2])
+      }
 
       out
     })
-  }else{
-    model = lapply(model, function(x){
-      if(!is.list(x))
-        x = list(type = as.character(x))
-      if(!("paramStr" %in% names(x)))
-        x$paramStr = ""
+  } else {
+    model <- lapply(model, function(x) {
+      if (!is.list(x)) {
+        x <- list(type = as.character(x))
+      }
+      if (!("paramStr" %in% names(x))) {
+        x$paramStr <- ""
+      }
 
       return(x)
     })
@@ -64,13 +65,11 @@ formatModel <- function(model)
 #' @author Quentin Grimonprez
 #'
 #' @export
-formatData <- function(data)
-{
-  if(is.data.frame(data) || is.matrix(data))
-  {
-    out <- lapply(1:ncol(data), function(i) as.character(data[,i]))
-    names(out) = colnames(data)
-  }else{
+formatData <- function(data) {
+  if (is.data.frame(data) || is.matrix(data)) {
+    out <- lapply(seq_len(ncol(data)), function(i) as.character(data[, i]))
+    names(out) <- colnames(data)
+  } else {
     out <- lapply(data, as.character)
   }
 
@@ -89,8 +88,7 @@ formatData <- function(data)
 #' @author Quentin Grimonprez
 #'
 #' @export
-completeAlgo <- function(algo)
-{
+completeAlgo <- function(algo) {
   algoDefault <- createAlgo()
 
   missingNames <- setdiff(names(algoDefault), names(algo))

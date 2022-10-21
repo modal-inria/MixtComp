@@ -7,7 +7,7 @@
 refactorCategorical(
   data,
   oldCateg = unique(data),
-  newCateg = 1:length(oldCateg)
+  newCateg = seq_along(oldCateg)
 )
 }
 \arguments{

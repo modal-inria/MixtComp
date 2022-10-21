@@ -1,5 +1,5 @@
 # MixtComp version 4 - july 2019
-# Copyright (C) Inria - Université de Lille - CNRS 
+# Copyright (C) Inria - Université de Lille - CNRS
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -9,14 +9,14 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
- 
 
-#' Convert a mixtcomp string into a list of 2 vectors
+
+#' Convert a MixtComp functional string into a list of 2 vectors
 #'
-#' @param x a string containing a fonctional observation (cf example)
+#' @param x a string containing a functional observation (cf example)
 #'
 #' @return a list of 2 vectors: \code{time} and \code{value}
 #'
@@ -25,13 +25,14 @@
 #'
 #' @author Quentin Grimonprez
 #' @export
-convertFunctionalToVector <- function(x){
-  if((x == "") || is.na(x) || is.null(x))
+convertFunctionalToVector <- function(x) {
+  if ((x == "") || is.na(x) || is.null(x)) {
     return(list(time = c(), value = c()))
-  
+  }
+
   mat <- sapply(strsplit(strsplit(as.character(x), ",")[[1]], ":"), as.numeric)
-  
-  return(list(time = mat[1,], value = mat[2,]))
+
+  return(list(time = mat[1, ], value = mat[2, ]))
 }
 
 
@@ -40,19 +41,19 @@ convertFunctionalToVector <- function(x){
 #' @param time vector containing the time of the functional
 #' @param value vector containing the value of the functional
 #'
-#' @return The functional data formatted to the mixtcomp standard
+#' @return The functional data formatted to the MixtComp standard
 #'
 #' @examples
 #' mat <- matrix(c(1, 2, 3, 9, 1, 1.5, 15, 1000), ncol = 2)
-#' createFunctional(mat[,1], mat[,2])
+#' createFunctional(mat[, 1], mat[, 2])
 #'
 #' @author Quentin Grimonprez
 #' @export
-createFunctional <- function(time, value)
-{
+createFunctional <- function(time, value) {
   l <- min(length(time), length(value))
-  if((l != length(time)) | (l != length(value)))
+  if ((l != length(time)) || (l != length(value))) {
     warning("time and value do not have the same length.")
+  }
   toKeep <- !is.na(value[1:l]) & !is.na(time[1:l])
   return(paste(paste(time[1:l][toKeep], value[1:l][toKeep], sep = ":"), collapse = ","))
 }
@@ -73,12 +74,12 @@ createFunctional <- function(time, value)
 #'
 #' @author Quentin Grimonprez
 #' @export
-refactorCategorical <- function(data, oldCateg = unique(data), newCateg = 1:length(oldCateg))
-{
+refactorCategorical <- function(data, oldCateg = unique(data), newCateg = seq_along(oldCateg)) {
   ind <- match(data, oldCateg)
-  
-  if(any(is.na(ind[!is.na(data)])))
+
+  if (any(is.na(ind[!is.na(data)]))) {
     warning("NA produced.")
-  
+  }
+
   return(newCateg[ind])
 }

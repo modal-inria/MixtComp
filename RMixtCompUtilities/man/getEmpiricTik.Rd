@@ -10,7 +10,8 @@ getEmpiricTik(outMixtComp)
 getTik(outMixtComp, log = TRUE)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
 \item{log}{if TRUE, log(tik) are returned}
 }
@@ -21,15 +22,20 @@ a matrix containing the tik for each individual (in row) and each class (in colu
 Get the a posteriori probability to belong to each class for each individual
 }
 \details{
-\emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns an estimation based on the sampled z_i during the algorithm.
+\emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns
+an estimation based on the sampled z_i during the algorithm.
 }
 \examples{
 require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-                  var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
-model <- list(var1 = list(type = "Gaussian", paramStr = ""),
-              var2 = list(type = "Poisson", paramStr = ""))
+dataLearn <- list(
+  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+)
+
+model <- list(
+  var1 = list(type = "Gaussian", paramStr = ""),
+  var2 = list(type = "Poisson", paramStr = "")
+)
 
 algo <- list(
   nClass = 2,
