@@ -4,10 +4,16 @@ on:
     branches:
       - master
       - staging
+    paths:
+      - MixtComp/**
+      - .github/workflows/MixtComp.yml
   pull_request:
     branches:
       - master
       - staging
+    paths:
+      - MixtComp/**
+      - .github/workflows/MixtComp.yml
 
 jobs:
   build:
