@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, weibull_min, multinomial, poisson, nbinom, uniform
+from scipy.stats import multinomial, nbinom, norm, poisson, uniform, weibull_min
 
 from .convert import create_rank
 from .getter import get_param
@@ -31,7 +31,7 @@ def sample(res, size, random_state=None):
         Not yet implemented for model
     """
     n_class = res["algo"]["nClass"]
-    var_names = res["variable"]["type"].keys() - {"z_class"}
+    var_names = list(res["variable"]["type"].keys() - {"z_class"})
 
     dat = pd.DataFrame(columns=var_names, index=range(size))
 
