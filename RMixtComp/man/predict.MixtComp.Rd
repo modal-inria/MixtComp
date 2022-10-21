@@ -24,7 +24,7 @@
 \item{...}{other parameters of \link{mixtCompPredict} function.}
 }
 \value{
-if \code{type = "partition"}, it returns the estimated partition as a vector. If \code{type = "probabilities"}, 
+if \code{type = "partition"}, it returns the estimated partition as a vector. If \code{type = "probabilities"},
 it returns the probabilities to belong to each class (tik) as a matrix.
 }
 \description{

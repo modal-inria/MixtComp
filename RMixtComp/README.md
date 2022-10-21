@@ -36,7 +36,7 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
     ```bash
     Rscript -e "install.packages(c(\"plotly\", \"scales\", \"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
-    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"Rmixmod\", \"blockcluster\", \"knitr\", \"ClusVis\"), repos = \"https://cran.rstudio.com\")"
+    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"Rmixmod\", \"knitr\", \"ClusVis\"), repos = \"https://cran.rstudio.com\")"
     ```
 
     from R:
@@ -44,7 +44,7 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
     ```r
     install.packages(c("plotly", "scales", "BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for testing purpose
-    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "Rmixmod", "blockcluster", "knitr", "ClusVis"), repos = "https://cran.rstudio.com")
+    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "Rmixmod", "knitr", "ClusVis"), repos = "https://cran.rstudio.com")
     ```
 
 3. Install [RMixtCompIO](../RMixtCompIO)
