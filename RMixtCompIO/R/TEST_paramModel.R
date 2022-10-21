@@ -98,9 +98,9 @@ categoricalParam2 <- function(name) {
 # @author Vincent Kubicki
 categoricalParamRandom <- function(name) {
   nbModalities <- 4
-  param1 <- runif(4)
+  param1 <- runif(nbModalities)
   param1 <- param1 / sum(param1)
-  param2 <- runif(4)
+  param2 <- runif(nbModalities)
   param2 <- param2 / sum(param2)
 
   categorical <- list()

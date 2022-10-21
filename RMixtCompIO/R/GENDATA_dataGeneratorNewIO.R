@@ -39,7 +39,7 @@ dataGeneratorNewIO <- function(nbInd, proportionPresent, var) {
   zDis <- rmultinom(nbInd, 1, var$z_class$param) # result as a complete disjunctive table
   z <- vector("integer", nbInd)
 
-  for (i in 1:nbInd) {
+  for (i in seq_len(nbInd)) {
     z[i] <- match(1, zDis[, i])
     nIndClass[z[i]] <- nIndClass[z[i]] + 1
   }
@@ -47,12 +47,12 @@ dataGeneratorNewIO <- function(nbInd, proportionPresent, var) {
   # cat("Number of observation per class: ", nIndClass, "\n")
 
   dataStr <- vector("list", nbVar)
-  for (j in 1:nbVar) {
+  for (j in seq_len(nbVar)) {
     dataStr[[j]] <- vector("character", nbVar)
     names(dataStr)[j] <- var[[j]]$name
   }
 
-  for (i in 1:nbInd) {
+  for (i in seq_len(nbInd)) {
     presentVar <- which(rbinom(nbVar, 1, proportionPresent) == 1) # indices of missing variables for current observation
     if (length(presentVar) == 0) { # no observed variable for the individual
       presentVar <- sample(nbVar, 1) # one variable is forced to be observed
@@ -70,7 +70,7 @@ dataGeneratorNewIO <- function(nbInd, proportionPresent, var) {
   }
 
   descStr <- list()
-  for (j in 1:nbVar) {
+  for (j in seq_len(nbVar)) {
     descStr[[var[[j]]$name]] <- list(type = var[[j]]$type, paramStr = var[[j]]$paramStr)
   }
 

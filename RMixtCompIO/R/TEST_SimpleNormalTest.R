@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 
-# Simple test case for the new IO sytem
+# Simple test case for the new IO system
 # Sampling law is mixture model with 0.5 0.5 proportions
 # First class conditional law is N(5., 1.), rnorm(10, 5., 1.)
 # Second class conditional law is N(20., 2.), rnorm(10, 20., 2.)

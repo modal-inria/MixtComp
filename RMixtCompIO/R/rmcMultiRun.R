@@ -18,33 +18,43 @@ globalVariables("i")
 
 #' @title Learn and predict a Mixture Model
 #'
-#' @description Estimate the parameter of a mixture model or predict the cluster of new samples. It manages heterogeneous data as well as missing and incomplete data.
+#' @description Estimate the parameter of a mixture model or predict the cluster of new samples.
+#' It manages heterogeneous data as well as missing and incomplete data.
 #'
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).
 #' @param resLearn output of \emph{rmcMultiRun} (only for predict mode).
 #' @param model a named list containing models and hyperparameters (see \emph{Details} section).
-#' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
+#' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class,
+#' and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
-#' @param verbose if TRUE, print some informations.
+#' @param verbose if TRUE, print some information.
 #'
 #' @return An object of class MixtComp
 
 #' @details
-#' The \emph{data} object is a list where each element correponds to a variable, each element must be named.
+#' The \emph{data} object is a list where each element corresponds to a variable, each element must be named.
 #' Missing and incomplete data are managed, see section \emph{Data format} for how to format them.
 #'
-#' The \emph{model} object is a named list containing the variables to use in the model. All variables listed in the \emph{model} object must be in the \emph{data} object. \emph{model} can contain less variables than \emph{data}.
-#' An element of the list corresponds to a model which is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-#' For example: \code{model <- list(real1 = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"))}.
+#' The \emph{model} object is a named list containing the variables to use in the model.
+#' All variables listed in the \emph{model} object must be in the \emph{data} object.
+#' \emph{model} can contain less variables than \emph{data}.
+#' An element of the list corresponds to a model which is described by a list of 2 elements:
+#' type containing the model name and paramStr containing the hyperparameters.
+#' For example:
+#' \code{model <- list(real1 = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"))}.
 #'
-#' Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}.
-#' \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression.
+#' Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial},
+#' \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}.
+#' \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional
+#' and the number of coefficients of each subregression.
 #' These hyperparameters are specified by: \emph{nSub: i, nCoeff: k} in the \emph{paramStr} field of the \emph{model} object.
-#' The \emph{Func_SharedAlpha_CS} is a variant of the \emph{Func_CS} model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
+#' The \emph{Func_SharedAlpha_CS} is a variant of the \emph{Func_CS} model with the alpha parameter shared between clusters.
+#' It means that the start and end of each subregression will be the same across the clusters.
 #'
 #'
-#' To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and model objects with \emph{LatentClass} as model in the model object.
+#' To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and model objects
+#' with \emph{LatentClass} as model in the model object.
 #'
 #'
 #' The \emph{algo} object is a list containing the different number of iterations for the algorithm.
@@ -78,7 +88,8 @@ globalVariables("i")
 #' where \emph{a_i} denotes a categorical value.
 #'
 #' - Poisson and NegativeBinomial Data:
-#' Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a \emph{?}. Partial data can be provided through intervals denoted by
+#' Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a \emph{?}.
+#' Partial data can be provided through intervals denoted by
 #' \emph{[a:b]} where \emph{a} and \emph{b} are  positive integers. \emph{b} can be \emph{+inf}.
 #'
 #' - Weibull Data:
@@ -88,23 +99,28 @@ globalVariables("i")
 #'
 #'
 #' - Rank data:
-#' The format of a rank is: \emph{o_1, \dots, o_j} where o_1 is an integer corresponding to the number of the object ranked in 1st position.
+#' The format of a rank is: \emph{o_1, \dots, o_j} where o_1 is an integer corresponding to the number of the object ranked
+#' in 1st position.
 #' For example: 4,2,1,3 means that the fourth object is ranked first then the second object is in second position and so on.
-#' Missing data can be specified by replacing and object by a \emph{?} or a list of potential object, for example: \emph{4, \{2 3\}, \{2 1\}, ?} means that
-#' the object ranked in second position is either the object number 2 or the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.
-#' A totally missing rank is spedified by \emph{?,?,\dots,?}
+#' Missing data can be specified by replacing and object by a \emph{?} or a list of potential object, for example:
+#' \emph{4, \{2 3\}, \{2 1\}, ?} means that the object ranked in second position is either the object number 2 or
+#' the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.
+#' A totally missing rank is specified by \emph{?,?,\dots,?}
 #'
 #' - Functional data:
-#' The format of a fonctional data is: \emph{time_1:value_1,\dots, time_j:value_j}. Between individuals, functional data can have different length and different time.
+#' The format of a functional data is: \emph{time_1:value_1,\dots, time_j:value_j}. Between individuals,
+#' functional data can have different length and different time.
 #' \emph{i} is the number of subregressions in a functional data and \emph{k} the number of coefficients
 #'  of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 #'
 #' - z_class:
-#' To perform a (semi-)supervised clustering, user can add a variable named `z_class` (with eventually some missing values) with "LatentClass" as model.
-#' Missing data are indicated by a \emph{?}. For partial data, a list of possible values can be provided by \emph{{a_1,\dots,a_j}}, where \emph{a_i} denotes a class number.
+#' To perform a (semi-)supervised clustering, user can add a variable named `z_class` (with eventually some missing values)
+#' with "LatentClass" as model. Missing data are indicated by a \emph{?}. For partial data, a list of possible values
+#' can be provided by \emph{{a_1,\dots,a_j}}, where \emph{a_i} denotes a class number.
 #'
 #' @section MixtComp object:
-#' A MixtComp object is a result of a single run of MixtComp algorithm. It is a list containing three elements \emph{mixture}, \emph{variable} and \emph{algo}.
+#' A MixtComp object is a result of a single run of MixtComp algorithm. It is a list containing three elements
+#' \emph{mixture}, \emph{variable} and \emph{algo}.
 #' If MixtComp fails to run, the list contains a single element: warnLog containing error messages.
 #'
 #' The \emph{mixture} element contains
@@ -114,34 +130,44 @@ globalVariables("i")
 #'   \item{nbFreeParameters: number of free parameters of the mixture}
 #'   \item{lnObservedLikelihood: observed loglikelihood}
 #'   \item{lnCompletedLikelihood: completed loglikelihood}
-#'   \item{IDClass: entropy used to compute the discriminative power of variable: -\eqn{\sum_{i=1}^n t_{ikj} log(t_{ikj})/(n * log(K))}}
-#'   \item{IDClassBar: entropy used to compute the discriminative power of variable: -\eqn{\sum_{i=1}^n (1-t_{ikj}) log((1-t_{ikj}))/(n * log(K))}}
+#'   \item{IDClass: entropy used to compute the discriminative power of variable:
+#' -\eqn{\sum_{i=1}^n t_{ikj} log(t_{ikj})/(n * log(K))}}
+#'   \item{IDClassBar: entropy used to compute the discriminative power of variable:
+#' -\eqn{\sum_{i=1}^n (1-t_{ikj}) log((1-t_{ikj}))/(n * log(K))}}
 #'   \item{delta: similarities between variables}
-#'   \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
-#'   \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
+#'   \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period
+#' (can be used to check the convergence and determine the ideal number of iteration)}
+#'   \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period
+#' (can be used to check the convergence and determine the ideal number of iteration)}
 #'   \item{runTime: list containing the total execution time in seconds and the execution time of some subpart.}
 #'   \item{lnProbaGivenClass: log-proportion + log-probability of x_i for each class}
 #' }
 #'
 #'
-#' The \emph{algo} list contains a copy of \emph{algo} parameter with extra elements: nInd, nClass, mode ("learn" or "predict").
+#' The \emph{algo} list contains a copy of \emph{algo} parameter with extra elements:
+#' nInd, nClass, mode ("learn" or "predict").
 #'
 #'
 #' The \emph{variable} list contains 3 lists : \emph{data}, \emph{type} and \emph{param}.
-#' Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
+#' Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for
+#' the class of samples (\emph{z_class}).
 #' The \emph{type} list contains the model used for each variable.
 #'
-#' Each list of the \emph{data} list contains the completed data in the \emph{completed} element and some statistics about them (\emph{stat}).
+#' Each list of the \emph{data} list contains the completed data in the \emph{completed} element and
+#' some statistics about them (\emph{stat}).
 #'
-#' The estimated parameter can be found in the \emph{stat} element in the \emph{param} list (see Section \emph{View of an output object}).
-#' For more details about the parameters of each model, you can refer to \link{rnorm}, \link{rpois}, \link{rweibull}, \link{rnbinom}, \link{rmultinom}, or references in the \emph{References} section.
+#' The estimated parameter can be found in the \emph{stat} element in the \emph{param} list
+#' (see Section \emph{View of an output object}).
+#' For more details about the parameters of each model, you can refer to \link{rnorm}, \link{rpois}, \link{rweibull},
+#' \link{rnbinom}, \link{rmultinom}, or references in the \emph{References} section.
 #'
 #'
 #'
 #'
 #' @section View of a MixtComp object:
-#' Example of output object with variables named "categorical", "gaussian", "rank", "functional", "poisson", "nBinom" and "weibull" with respectively
-#'  \emph{Multinomial}, \emph{Gaussian}, \emph{Rank_ISR}, \emph{Func_CS} (or \emph{Func_SharedAlpha_CS}), \emph{Poisson}, \emph{NegativeBinomial} and \emph{Weibull} as model.
+#' Example of output object with variables named "categorical", "gaussian", "rank", "functional", "poisson", "nBinom"
+#' and "weibull" with respectively \emph{Multinomial}, \emph{Gaussian}, \emph{Rank_ISR}, \emph{Func_CS}
+#' (or \emph{Func_SharedAlpha_CS}), \emph{Poisson}, \emph{NegativeBinomial} and \emph{Weibull} as model.
 #'
 #' \tabular{lll}{
 #' output  \cr
@@ -281,10 +307,12 @@ rmcMultiRun <- function(algo, data, model, resLearn = list(), nRun = 1, nCore = 
 
     # c++ index starts at 0, we add 1
     varNames <- names(resTemp$variable$data)
-    for (name in varNames)
-    {
+    for (name in varNames) {
       if (!is.null(resTemp$variable$data[[name]]$stat)) {
-        resTemp$variable$data[[name]]$stat <- correctIndexCompletedStat(resTemp$variable$data[[name]]$stat, resTemp$variable$type[[name]])
+        resTemp$variable$data[[name]]$stat <- correctIndexCompletedStat(
+          resTemp$variable$data[[name]]$stat,
+          resTemp$variable$type[[name]]
+        )
       }
     }
 

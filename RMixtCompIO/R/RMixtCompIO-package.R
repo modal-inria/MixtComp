@@ -27,9 +27,12 @@
 #' @description
 #' MixtComp (Mixture Composer) is a model-based clustering package for mixed data originating from the Modal team (Inria Lille).
 #'
-#' It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption.
-#' Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced models (Func_CS and Rank_ISR).
-#' MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation.
+#' It has been engineered around the idea of easy and quick integration of all new univariate models,
+#' under the conditional independence assumption.
+#' Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two advanced
+#' models (Func_CS and Rank_ISR).
+#' MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package,
+#' but its internals are coded in C++ using state of the art libraries for faster computation.
 #' This package contains the minimal R interface of the C++ library.
 #'
 #'
