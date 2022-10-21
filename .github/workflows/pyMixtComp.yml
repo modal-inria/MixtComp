@@ -15,15 +15,15 @@ jobs:
 
     steps:
       - name: Checkout MixtComp
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: 'true'
       - name: Install MixtComp dependencies
         run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
       - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: '3.8'
       - name: Install Tests dependencies
         run: pip install pytest flake8
       - name: Install Other Python Dependencies
