@@ -13,11 +13,11 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
 Copyright: Inria - Université de Lille - CNRS
 License: AGPL-3
 Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
-    heterogeneous data sets and partially missing data management. This package contains graphical, getter and some utility 
+    heterogeneous data sets and partially missing data management. This package contains graphical, getter and some utility
     functions to facilitate the analysis of 'MixtComp' output.
 URL: https://github.com/modal-inria/MixtComp, https://massiccc.lille.inria.fr/
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: plotly, ggplot2, scales
-Suggests: testthat, xml2, RMixtCompIO (>= 4.0.4), Rmixmod, blockcluster
-RoxygenNote: 7.1.1
+Suggests: testthat, xml2, RMixtCompIO (>= 4.0.4), Rmixmod
+RoxygenNote: 7.2.1
 Encoding: UTF-8

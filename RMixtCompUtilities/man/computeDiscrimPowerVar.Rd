@@ -12,13 +12,13 @@ computeDiscrimPowerClass(outMixtComp)
 \arguments{
 \item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
-\item{class}{NULL or a number of classes. If NULL, return the discrimative power of variables globally otherwise return the discrimative power of variables in the given class}
+\item{class}{NULL or a number of classes. If NULL, return the discriminative power of variables globally otherwise return the discriminative power of variables in the given class}
 }
 \value{
 the discriminative power
 }
 \description{
-Compute the discriminative power of each variable or classe
+Compute the discriminative power of each variable or class
 }
 \details{
 The discriminative power of variable j is defined by 1 - C(j)
@@ -27,7 +27,7 @@ The discriminative power of variable j is defined by 1 - C(j)
 A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
 
 The discriminative power of variable j in class k is defined by 1 - C(j)
-\deqn{C(j)=  - sum_{i=1}^n P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) / (n*\log(2))}
+\deqn{C(j)=  - sum_{i=1}^n (P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) + P(Z_i=k|x_{ij}) \log(P(Z_i=k|x_{ij}))) / (n*\log(2))}
 
 
 The discriminative power of class k is defined by 1 - D(k)
@@ -37,7 +37,7 @@ The discriminative power of class k is defined by 1 - D(k)
 require(RMixtCompIO) # for learning a mixture model
 dataLearn <- list(var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
                   var2 = as.character(c(rnorm(50, 2), rpois(50, 8))))
-                  
+
 model <- list(var1 = list(type = "Gaussian", paramStr = ""),
               var2 = list(type = "Poisson", paramStr = ""))
 

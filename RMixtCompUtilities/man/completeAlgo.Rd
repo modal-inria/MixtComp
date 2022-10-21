@@ -2,9 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_formatParameter.R
 \name{completeAlgo}
 \alias{completeAlgo}
-\title{Add the missing element to algo parameter
-
-Add the missing element to algo parameter with default values}
+\title{Add the missing element to algo parameter}
 \usage{
 completeAlgo(algo)
 }
@@ -15,8 +13,6 @@ completeAlgo(algo)
 algo parameter with all required elements (see \link{createAlgo} function)
 }
 \description{
-Add the missing element to algo parameter
-
 Add the missing element to algo parameter with default values
 }
 \author{

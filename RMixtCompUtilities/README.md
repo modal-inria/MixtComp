@@ -1,6 +1,6 @@
 # RMixtCompUtilities
 
-*RMixtCompUtilities* contains graphical, setter, summary functions for facilitating the analysis of MixtComp's output. It is used by [RMixtComp](../RMixtComp). 
+*RMixtCompUtilities* contains graphical, setter, summary functions for facilitating the analysis of MixtComp's output. It is used by [RMixtComp](../RMixtComp).
 
 You can download it from CRAN in an R console:
 
@@ -22,25 +22,25 @@ R must be installed, along with the following packages from the CRAN: *plotly*, 
 
 2. Install required R packages
 
-    Packages are required from Ubuntu repositories: 
-    
+    Packages are required from Ubuntu repositories:
+
     ```
     sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev
     ```
-    
+
     Install required R packages from terminal:
-    
+
     ```
     Rscript -e "install.packages(c(\"plotly\", \"scales\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
-    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"RMixtCompIO\", \"Rmixmod\", \"blockcluster\"), repos = \"https://cran.rstudio.com\")"
+    Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"RMixtCompIO\", \"Rmixmod\"), repos = \"https://cran.rstudio.com\")"
     ```
     from R:
-    
+
     ```
     install.packages(c("plotly", "scales"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for dev/testing purpose
-    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "RMixtCompIO", "Rmixmod", "blockcluster"), repos = "https://cran.rstudio.com")
+    install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "RMixtCompIO", "Rmixmod"), repos = "https://cran.rstudio.com")
     ```
 
 ### Windows
@@ -71,11 +71,11 @@ library(devtools)
 load_all()
 test_dir("tests/testthat/")
 ```
-or 
+or
 ```
-library(methods); 
-library(devtools); 
-options(testthat.output_file = "RMCUttest.xml"); 
+library(methods);
+library(devtools);
+options(testthat.output_file = "RMCUttest.xml");
 test(".", reporter = JunitReporter)
 ```
 but it requires the *xml2* package and generates a xml report file named *RMCUttest.xml*.
@@ -86,4 +86,3 @@ Rscript -e 'library(methods); library(devtools); options(testthat.output_file = 
 ```
 
 In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing `CRTL + SHIFT + T` or tests are run during a R CMD check `CRTL + SHIFT + E`.
-
