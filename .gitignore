@@ -21,6 +21,7 @@
 .metadata/*
 MixtComp/log
 MixtComp/build
+MixtComp/src/build
 MixtComp/report.xml
 pyMixtComp/build
 pyMixtComp/reportPy.xml

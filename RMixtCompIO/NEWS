@@ -1,3 +1,8 @@
+v 4.0.8 2022-10-18
+- correct bitwise-instead-of-logical warnings
+- remove blockcluster as suggested package
+
+
 v 4.0.7 2022-01-13
 - manage eigen 3.4.0
 - lint package
