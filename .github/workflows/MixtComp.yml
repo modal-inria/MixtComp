@@ -5,15 +5,19 @@ on:
       - master
       - staging
     paths:
-      - MixtComp/**
-      - .github/workflows/MixtComp.yml
+      - 'MixtComp/**'
+      - '!MixtComp/docs/**'
+      - '.github/workflows/MixtComp.yml'
+      - '!**/README.md'
   pull_request:
     branches:
       - master
       - staging
     paths:
-      - MixtComp/**
-      - .github/workflows/MixtComp.yml
+      - 'MixtComp/**'
+      - '!MixtComp/docs/**'
+      - '.github/workflows/MixtComp.yml'
+      - '!**/README.md'
 
 jobs:
   build:
