@@ -6,30 +6,31 @@
 \title{Prostate Cancer Data}
 \format{
 A list containing of 2 elements \emph{data} and \emph{model}.
-\emph{data} contains 506 individuals described by 12 variables: 
+\emph{data} contains 506 individuals described by 12 variables:
 \itemize{
-  \item Age: Age (Continuous) 
-  \item HG: Index of tumour stage and histolic grade (Continuous) 
-  \item Wt: Weight (Continuous) 
-  \item AP: Serum prostatic acid phosphatase C (Continuous) 
-  \item SBP: Systolic blood pressure (Continuous) 
-  \item PF: Performance rating (Categorical) 
-  \item DBP: Diastolic blood pressure (Continuous) 
+  \item Age: Age (Continuous)
+  \item HG: Index of tumour stage and histolic grade (Continuous)
+  \item Wt: Weight (Continuous)
+  \item AP: Serum prostatic acid phosphatase C (Continuous)
+  \item SBP: Systolic blood pressure (Continuous)
+  \item PF: Performance rating (Categorical)
+  \item DBP: Diastolic blood pressure (Continuous)
   \item HX: Cardiovascular disease history (Categorical)
-  \item SG: Serum haemoglobin (Continuous) 
+  \item SG: Serum haemoglobin (Continuous)
   \item BM: Bone metastasis (Categorical)
   \item SZ: Size of primary tumour (Continuous)
   \item EKG: Electrocardiogram code (Categorical)
 }
 }
 \source{
-Yakovlev, Goot and Osipova (1994), The choice of cancer treatment based on covariate information. Statist. Med., 13: 1575-1581. doi:10.1002/sim.4780131508
+Yakovlev, Goot and Osipova (1994), The choice of cancer treatment based on covariate information.
+Statist. Med., 13: 1575-1581. doi:10.1002/sim.4780131508
 }
 \usage{
 data(prostate)
 }
 \description{
-This data set was obtained from a randomized clinical trial comparing four treatments for n = 506 patients 
+This data set was obtained from a randomized clinical trial comparing four treatments for n = 506 patients
 with prostatic cancer grouped on clinical criteria into two Stages 3 and 4 of the disease.
 }
 \examples{
@@ -39,15 +40,16 @@ data(prostate)
 algo <- createAlgo(nInitPerClass = 50)
 
 # run clustering
-resLearn <- mixtCompLearn(prostate$data, prostate$model, algo, nClass = 2:5, criterion = "ICL",
-                          nRun = 3, nCore = 1)
+resLearn <- mixtCompLearn(prostate$data, prostate$model, algo,
+    nClass = 2:5, criterion = "ICL",
+    nRun = 3, nCore = 1
+)
 
 summary(resLearn)
 
-plot(resLearn) 
-
+plot(resLearn)
 }
-  
+
 }
 \seealso{
 Other data: 

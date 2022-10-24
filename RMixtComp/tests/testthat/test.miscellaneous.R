@@ -20,15 +20,20 @@ context("Miscellaneous")
 
 
 test_that("extractMixtCompObject works", {
-  resLearn <- list(algo = list(nClass = 2), nClass = 2:5, 
-                   res = list(list(algo = list(nClass = 2)),
-                              list(algo = list(nClass = 3)),
-                              list(algo = list(nClass = 4)),
-                              list(algo = list(nClass = 5))))
-  class(resLearn) = c("MixtCompLearn", "MixtComp")
-  for(i in seq_along(resLearn$res))
-    class(resLearn$res[[i]]) = "MixtComp"
-  
+  resLearn <- list(
+    algo = list(nClass = 2), nClass = 2:5,
+    res = list(
+      list(algo = list(nClass = 2)),
+      list(algo = list(nClass = 3)),
+      list(algo = list(nClass = 4)),
+      list(algo = list(nClass = 5))
+    )
+  )
+  class(resLearn) <- c("MixtCompLearn", "MixtComp")
+  for (i in seq_along(resLearn$res)) {
+    class(resLearn$res[[i]]) <- "MixtComp"
+  }
+
   out <- extractMixtCompObject(resLearn, 2)
   expect_equal(class(out), "MixtComp")
   expect_equal(out$algo$nClass, 2)
@@ -41,4 +46,3 @@ test_that("extractMixtCompObject works", {
   expect_error(extractMixtCompObject(resLearn, 2:3))
   expect_error(extractMixtCompObject(5))
 })
-

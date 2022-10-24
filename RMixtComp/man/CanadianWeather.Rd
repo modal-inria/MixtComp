@@ -7,7 +7,7 @@
 \format{
 A list containing 5 elements:
 \itemize{
-  \item tempav: a matrix of dimensions (365, 35) giving the average temperature in degrees celcius for each day of the year.
+  \item tempav: a matrix of dimensions (365, 35) giving the average temperature in degrees celsius for each day of the year.
   \item precav: a matrix of dimensions (365, 35) giving the average rainfall in millimeters for each day of the year.
   \item time: sequence from 1 to 365.
   \item coordinates: a matrix giving 'N.latitude' and 'W.longitude' for each place.
@@ -23,21 +23,30 @@ Ramsay, James O., and Silverman, Bernard W. (2002), Applied Functional Data Anal
 data(CanadianWeather)
 }
 \description{
-Daily temperature and precipitation at 35 different locations in Canada averaged over 1960 to 1994. Data from \code{fda} package.
+Daily temperature and precipitation at 35 different locations in Canada averaged over 1960 to 1994.
+Data from \code{fda} package.
 }
 \examples{
 \donttest{
 data(CanadianWeather)
 
 # convert functional to MixtComp format
-dat <- list(tempav = apply(CanadianWeather$tempav, 2, 
-                           function(x) createFunctional(CanadianWeather$time, x)), 
-            precav = apply(CanadianWeather$precav, 2, 
-                           function(x) createFunctional(CanadianWeather$time, x)))
+dat <- list(
+    tempav = apply(
+        CanadianWeather$tempav, 2,
+        function(x) createFunctional(CanadianWeather$time, x)
+    ),
+    precav = apply(
+        CanadianWeather$precav, 2,
+        function(x) createFunctional(CanadianWeather$time, x)
+    )
+)
 
 # create model with 4 subregressions ans 2 coefficients per regression
-model <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
-              precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"))
+model <- list(
+    tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
+    precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2")
+)
 
 # create algo
 algo <- createAlgo()
@@ -47,13 +56,12 @@ resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRu
 
 summary(resLearn)
 
-plot(resLearn) 
+plot(resLearn)
 
 getPartition(resLearn)
 getTik(resLearn, log = FALSE)
-
 }
-  
+
 }
 \seealso{
 Other data: 

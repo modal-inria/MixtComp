@@ -1,5 +1,5 @@
 # MixtComp version 4 - july 2019
-# Copyright (C) Inria - Université de Lille - CNRS 
+# Copyright (C) Inria - Université de Lille - CNRS
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
 
@@ -17,14 +17,14 @@
 # @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
 
-# These tests are skipped on cran to keep elapsed time < 10min
+# These tests are skipped on CRAN to keep elapsed time < 10min
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
 test_that("run cluster/predict R object", {
   skip_on_cran()
   set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  
+
   var <- list()
   var$z_class <- RMixtCompIO:::zParam()
   var$Poisson1 <- RMixtCompIO:::poissonParam("Poisson1")
@@ -35,9 +35,9 @@ test_that("run cluster/predict R object", {
   var$Functional1 <- RMixtCompIO:::functionalInterPolyParam("Functional1")
   var$functionalSharedAlpha1 <- RMixtCompIO:::functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
   var$Rank1 <- RMixtCompIO:::rankParam("Rank1")
-  
+
   resGenLearn <- RMixtCompIO:::dataGeneratorNewIO(200, 0.9, var)
-  
+
   algoLearn <- list(
     nClass = 2,
     nInd = 200,
@@ -52,20 +52,21 @@ test_that("run cluster/predict R object", {
     nStableCriterion = 10,
     mode = "learn"
   )
-  
+
   dataLearn <- resGenLearn$data
   desc <- resGenLearn$desc
-  
+
   resLearn <- RMixtCompIO:::rmc(algoLearn, dataLearn, desc, list()) # run RMixtComp for clustering
-  
-  if(!is.null(resLearn$warnLog))
+
+  if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
-  
+  }
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(RMixtCompIO:::rand.index(getPartition(resLearn), resGenLearn$z), 0.9)
-  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
-  
-  
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn)) / resLearn$algo$nInd, 0.1)
+
+
   # test that getter functions do not return warnings
   expect_warning(getPartition(resLearn), regexp = NA)
   expect_warning(getBIC(resLearn), regexp = NA)
@@ -75,7 +76,9 @@ test_that("run cluster/predict R object", {
   expect_warning(getPartition(resLearn), regexp = NA)
   expect_warning(getCompletedData(resLearn), regexp = NA)
   expect_equal(dim(getCompletedData(resLearn)), c(200, 6))
-  expect_equivalent(getType(resLearn), setdiff(sapply(desc, function(x){x$type}), "LatentClass"))
+  expect_equivalent(getType(resLearn), setdiff(sapply(desc, function(x) {
+    x$type
+  }), "LatentClass"))
   expect_equivalent(getVarNames(resLearn), setdiff(names(desc), "z_class"))
   expect_warning(getTik(resLearn), regexp = NA)
   expect_equal(dim(getEmpiricTik(resLearn)), c(algoLearn$nInd, algoLearn$nClass))
@@ -84,28 +87,32 @@ test_that("run cluster/predict R object", {
   expect_warning(disc <- computeDiscrimPowerClass(resLearn), regexp = NA)
   expect_equal(length(disc), algoLearn$nClass)
   expect_warning(disc <- computeDiscrimPowerVar(resLearn), regexp = NA)
-  expect_equal(length(disc), length(desc)-1)
+  expect_equal(length(disc), length(desc) - 1)
   expect_warning(disc <- computeSimilarityClass(resLearn), regexp = NA)
   expect_equal(dim(disc), rep(algoLearn$nClass, 2))
   expect_warning(disc <- computeSimilarityVar(resLearn), regexp = NA)
-  expect_equal(dim(disc), rep(length(desc)-1, 2))
-  for(name in getVarNames(resLearn))
+  expect_equal(dim(disc), rep(length(desc) - 1, 2))
+  for (name in getVarNames(resLearn)) {
     expect_warning(getParam(resLearn, name), regexp = NA)
+  }
   expect_warning(model <- getModel(resLearn), regexp = NA)
-  expect_equal(model, list(Poisson1 = list(type = "Poisson", paramStr = ""),
-                           Gaussian1 = list(type = "Gaussian", paramStr = ""),
-                           Categorical1 = list(type = "Multinomial", paramStr = "nModality: 4"),
-                           nBinom1 = list(type = "NegativeBinomial", paramStr = ""),
-                           Weibull1 = list(type = "Weibull", paramStr = ""),
-                           Functional1 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
-                           functionalSharedAlpha1 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2"),
-                           Rank1 = list(type = "Rank_ISR", paramStr = "nModality: 4")))
-  
+  expect_equal(model, list(
+    Poisson1 = list(type = "Poisson", paramStr = ""),
+    Gaussian1 = list(type = "Gaussian", paramStr = ""),
+    Categorical1 = list(type = "Multinomial", paramStr = "nModality: 4"),
+    nBinom1 = list(type = "NegativeBinomial", paramStr = ""),
+    Weibull1 = list(type = "Weibull", paramStr = ""),
+    Functional1 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
+    functionalSharedAlpha1 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2"),
+    Rank1 = list(type = "Rank_ISR", paramStr = "nModality: 4")
+  ))
+
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
-  w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading
-  if(length(w) > 0)
+  w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly")) # the first call generates warnings due to packages loading
+  if (length(w) > 0) {
     expect_match(w, "replacing previous", all = TRUE)
+  }
   expect_warning(plotDiscrimVar(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(plotDiscrimClass(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(plotDiscrimVar(resLearn, pkg = "ggplot2"), regexp = NA)
@@ -117,18 +124,16 @@ test_that("run cluster/predict R object", {
   expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
-  
-  for(name in getVarNames(resLearn))
-  {
+
+  for (name in getVarNames(resLearn)) {
     expect_warning(plotParamConvergence(resLearn, name), regexp = NA)
-    
-    if(resLearn$variable$type[[name]] != "Rank_ISR")
-    {
+
+    if (resLearn$variable$type[[name]] != "Rank_ISR") {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
       expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"), regexp = NA)
       expect_warning(plotDataBoxplot(resLearn, name, pkg = "ggplot2"), regexp = NA)
-    }else{
+    } else {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
       expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
       expect_warning(plotDataBoxplot(resLearn, name, pkg = "plotly"))
@@ -137,13 +142,13 @@ test_that("run cluster/predict R object", {
   }
   expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
-  class(resLearn) = "MixtComp"
+  class(resLearn) <- "MixtComp"
   expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   unlink("Rplots.pdf")
-  
+
   resGenPredict <- RMixtCompIO:::dataGeneratorNewIO(200, 0.95, var)
-  
+
   algoPredict <- list(
     nClass = 2,
     nInd = 200,
@@ -158,17 +163,17 @@ test_that("run cluster/predict R object", {
     nStableCriterion = 10,
     mode = "predict"
   )
-  
+
   dataPredict <- resGenPredict$data
-  
+
   resPredict <- RMixtCompIO:::rmc(algoPredict, dataPredict, desc, resLearn)
-  
+
   expect_equal(resPredict$warnLog, NULL)
-  if(!is.null(resPredict$warnLog))
+  if (!is.null(resPredict$warnLog)) {
     print(resPredict$warnLog)
+  }
   expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), resGenPredict$z), 0.85)
-  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
-  
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict)) / resPredict$algo$nInd, 0.1)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")

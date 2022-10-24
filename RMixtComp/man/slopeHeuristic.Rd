@@ -18,8 +18,8 @@ the values of the slope heuristic
 Criterion to choose the number of clusters
 }
 \details{
-The slope heuristic criterion is: LL_k - 2 C * D_k, with LL_k the loglikelihood for k classes, D_k the number of free parameters for k classes, 
-C is the slope of the linear regression between D_k and LL_k for (k> K0)
+The slope heuristic criterion is: LL_k - 2 C * D_k, with LL_k the loglikelihood for k classes, D_k the number of
+free parameters for k classes, C is the slope of the linear regression between D_k and LL_k for (k> K0)
 }
 \examples{
 \donttest{
@@ -35,17 +35,19 @@ dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
 dat$pclass <- refactorCategorical(dat$pclass, c("1st", "2nd", "3rd"), c(1, 2, 3))
 
 # replace all NA by ?
-dat[is.na(dat)] = "?" 
+dat[is.na(dat)] <- "?"
 
 # create model
-model <- list(pclass = "Multinomial",
-              survived = "Multinomial",
-              sex = "Multinomial",
-              age = "Gaussian",
-              sibsp = "Poisson",
-              parch = "Poisson",
-              fare = "Gaussian",
-              embarked = "Multinomial")
+model <- list(
+  pclass = "Multinomial",
+  survived = "Multinomial",
+  sex = "Multinomial",
+  age = "Gaussian",
+  sibsp = "Poisson",
+  parch = "Poisson",
+  fare = "Gaussian",
+  embarked = "Multinomial"
+)
 
 # create algo
 algo <- createAlgo()
@@ -54,12 +56,13 @@ algo <- createAlgo()
 resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:25, criterion = "ICL", nRun = 3, nCore = 1)
 
 out <- slopeHeuristic(resLearn, K0 = 6)
+}
 
 }
-  
-}
 \references{
-Cathy Maugis, Bertrand Michel.  Slope heuristics for variable selection and clustering via Gaussian mixtures. [Research Report] RR-6550, INRIA. 2008. inria-00284620v2
+Cathy Maugis, Bertrand Michel.  Slope heuristics for variable selection and clustering via Gaussian mixtures.
+[Research Report] RR-6550, INRIA. 2008. inria-00284620v2
+
 Jean-Patrick Baudry, Cathy Maugis, Bertrand Michel. Slope Heuristics: Overview and Implementation. 2010. hal-00461639
 }
 \author{

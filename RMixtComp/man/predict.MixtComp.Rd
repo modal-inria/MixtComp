@@ -15,11 +15,14 @@
 \arguments{
 \item{object}{output of \link{mixtCompLearn} function.}
 
-\item{newdata}{a data.frame, a matrix or a named list containing the data (see \emph{Details} and \emph{Data format} sections in \link{mixtCompLearn} documentation). If \code{NULL}, use the data in \code{object}.}
+\item{newdata}{a data.frame, a matrix or a named list containing the data (see \emph{Details} and \emph{Data format}
+sections in \link{mixtCompLearn} documentation). If \code{NULL}, use the data in \code{object}.}
 
-\item{type}{if "partition", returns the estimated partition. If "probabilities", returns the probabilities to belong to each class (tik).}
+\item{type}{if "partition", returns the estimated partition. If "probabilities", returns the probabilities to belong to
+each class (tik).}
 
-\item{nClass}{the number of classes of the mixture model to use from \code{object}. If \code{NULL}, uses the number maximizing the criterion.}
+\item{nClass}{the number of classes of the mixture model to use from \code{object}. If \code{NULL}, uses the number
+maximizing the criterion.}
 
 \item{...}{other parameters of \link{mixtCompPredict} function.}
 }
@@ -31,13 +34,16 @@ it returns the probabilities to belong to each class (tik) as a matrix.
 Predict the cluster of new samples.
 }
 \details{
-This function is based on the generic method "predict". For a more complete output, use \link{mixtCompPredict} function.
+This function is based on the generic method "predict". For a more complete output, use \link{mixtCompPredict}
+function.
 }
 \examples{
 data(iris)
 
-model <- list(Sepal.Length = "Gaussian", Sepal.Width = "Gaussian",
-              Petal.Length = "Gaussian", Petal.Width = "Gaussian")
+model <- list(
+  Sepal.Length = "Gaussian", Sepal.Width = "Gaussian",
+  Petal.Length = "Gaussian", Petal.Width = "Gaussian"
+)
 
 resLearn <- mixtCompLearn(iris[-c(1, 51, 101), ], model = model, nClass = 1:3, nRun = 1)
 

@@ -7,9 +7,12 @@
 \format{
 A list containing three elements: \emph{dataLearn}, \emph{dataPredict} and \emph{model}.
 \itemize{
-  \item \emph{dataLearn} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 200 individuals and 9 variables.
-  \item \emph{dataPredict} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 100 individuals and 8 variables.
-  \item \emph{model} is a list containing the model lists used for clustering \emph{model$unsupervised} and classification \emph{model$supervised}.
+  \item \emph{dataLearn} is a list containing the data in the three accepted format (list, data.frame and matrix).
+Data consists of 200 individuals and 9 variables.
+  \item \emph{dataPredict} is a list containing the data in the three accepted format (list, data.frame and matrix).
+Data consists of 100 individuals and 8 variables.
+  \item \emph{model} is a list containing the model lists used for clustering \emph{model$unsupervised}
+and classification \emph{model$supervised}.
 }
 }
 \usage{
@@ -21,7 +24,7 @@ Simulated Heterogeneous data
 \examples{
 data(simData)
 str(simData)
-  
+
 }
 \seealso{
 Other data: 

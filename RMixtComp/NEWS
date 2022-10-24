@@ -1,4 +1,5 @@
 - remove blockcluster from suggested packages
+- lint
 
 v4.1.3 2021-03-29
 - add crit param to plotCrit function

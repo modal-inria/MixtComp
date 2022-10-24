@@ -12,7 +12,7 @@ A data.frame with 1309 individuals and 8 variables.
   \item sex: male or female (factor)
   \item age: age in years
   \item sibsp: number of siblings/spouses aboard the Titanic
-  \item parch: number of parents/children aboard the Titanic 
+  \item parch: number of parents/children aboard the Titanic
   \item fare: ticket price in pounds
   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton (factor)
 }
@@ -44,17 +44,19 @@ dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
 dat$pclass <- refactorCategorical(dat$pclass, c("1st", "2nd", "3rd"), c(1, 2, 3))
 
 # replace all NA by ?
-dat[is.na(dat)] = "?" 
+dat[is.na(dat)] <- "?"
 
 # create model
-model <- list(pclass = "Multinomial",
-              survived = "Multinomial",
-              sex = "Multinomial",
-              age = "Gaussian",
-              sibsp = "Poisson",
-              parch = "Poisson",
-              fare = "Gaussian",
-              embarked = "Multinomial")
+model <- list(
+    pclass = "Multinomial",
+    survived = "Multinomial",
+    sex = "Multinomial",
+    age = "Gaussian",
+    sibsp = "Poisson",
+    parch = "Poisson",
+    fare = "Gaussian",
+    embarked = "Multinomial"
+)
 
 # create algo
 algo <- createAlgo()
@@ -63,7 +65,7 @@ algo <- createAlgo()
 resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nRun = 3, nCore = 1)
 summary(resLearn)
 
-plot(resLearn) 
+plot(resLearn)
 
 
 ## Use standard data.frame and R format because titanic contains only standard variables.
@@ -74,9 +76,8 @@ resLearn <- mixtCompLearn(titanic, nClass = 2:15, nRun = 3, nCore = 1)
 
 # imputed model
 getType(resLearn)
-
 }
-  
+
 }
 \seealso{
 Other data: 

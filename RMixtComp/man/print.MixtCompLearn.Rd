@@ -27,7 +27,6 @@ resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 print(resLearn)
 print(resLearn, nClass = 3)
 
-
 }
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}

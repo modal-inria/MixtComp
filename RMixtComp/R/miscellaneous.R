@@ -17,38 +17,43 @@
 #' Extract a MixtComp object
 #'
 #' Extract a MixtComp object from a MixtCompLearn object
-#' 
+#'
 #' @param object \link{mixtCompLearn} output
 #' @param K number of classes of the model to extract
-#' 
+#'
 #' @return a \code{MixtComp} object containing the clustering model with K classes
-#' 
-#' @examples 
+#'
+#' @examples
 #' # run clustering
-#' resLearn <- mixtCompLearn(data.frame(x = rnorm(500)), nClass = 1:3, criterion = "ICL",
-#'                          nRun = 1, nCore = 1)
-#'                          
+#' resLearn <- mixtCompLearn(data.frame(x = rnorm(500)),
+#'   nClass = 1:3, criterion = "ICL",
+#'   nRun = 1, nCore = 1
+#' )
+#'
 #' # extract the model with 2 classes
-#' clustModel <- extractMixtCompObject(resLearn, K = 2)                       
-#' 
+#' clustModel <- extractMixtCompObject(resLearn, K = 2)
+#'
 #' @author Quentin Grimonprez
-#' 
+#'
 #' @export
-extractMixtCompObject <- function(object, K)
-{
-  if(!("MixtCompLearn" %in% class(object)))
+extractMixtCompObject <- function(object, K) {
+  if (!("MixtCompLearn" %in% class(object))) {
     stop("object must be a MixtCompLearn object.")
-  
-  if(missing(K))
-    K = object$algo$nClass
-  
-  if(length(K) > 1)
+  }
+
+  if (missing(K)) {
+    K <- object$algo$nClass
+  }
+
+  if (length(K) > 1) {
     stop("K must be an integer.")
+  }
 
   ind <- which(object$nClass == K)
-  
-  if(length(ind) == 0)
+
+  if (length(ind) == 0) {
     stop("K is not a value from object$nClass.")
-  
+  }
+
   return(object$res[[ind]])
 }

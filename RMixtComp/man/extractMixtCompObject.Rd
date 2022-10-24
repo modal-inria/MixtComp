@@ -19,11 +19,13 @@ Extract a MixtComp object from a MixtCompLearn object
 }
 \examples{
 # run clustering
-resLearn <- mixtCompLearn(data.frame(x = rnorm(500)), nClass = 1:3, criterion = "ICL",
-                         nRun = 1, nCore = 1)
-                         
+resLearn <- mixtCompLearn(data.frame(x = rnorm(500)),
+  nClass = 1:3, criterion = "ICL",
+  nRun = 1, nCore = 1
+)
+
 # extract the model with 2 classes
-clustModel <- extractMixtCompObject(resLearn, K = 2)                       
+clustModel <- extractMixtCompObject(resLearn, K = 2)
 
 }
 \author{
