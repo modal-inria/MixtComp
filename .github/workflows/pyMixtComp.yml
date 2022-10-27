@@ -44,10 +44,10 @@ jobs:
         run: |
           brew install cmake boost eigen lcov
           brew install boost-python3
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.9'
       - name: Install Tests dependencies
         run: pip install pytest flake8
       - name: Install Other Python Dependencies
