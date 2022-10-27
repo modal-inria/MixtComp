@@ -23,7 +23,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout MixtComp
@@ -31,7 +36,14 @@ jobs:
         with:
           submodules: 'true'
       - name: Install MixtComp dependencies
-        run: sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+      - name: Install MixtComp dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake boost eigen lcov
+          brew install boost-python3
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
