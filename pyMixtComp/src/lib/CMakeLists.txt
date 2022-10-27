@@ -19,5 +19,5 @@ target_link_libraries(pyMixtCompBridge
   ${PYTHON_LIBRARIES})
 
 # don't prepend wrapper library name with lib
-set_target_properties(pyMixtCompBridge PROPERTIES PREFIX "")
+set_target_properties(pyMixtCompBridge PROPERTIES PREFIX "" SUFFIX ".so")
 
