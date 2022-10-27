@@ -5,13 +5,12 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from scipy.special import logsumexp
 from sklearn.base import BaseEstimator
-from sklearn.utils.validation import check_is_fitted, check_scalar, check_random_state
+from sklearn.utils.validation import check_is_fitted, check_random_state, check_scalar
 
+from . import plot, utils
 from .bridge.bridge import multi_run_pmc_pool
 from .bridge.convert import convert, convert_data_to_dict
-from .bridge.utils import create_algo, format_data_basic_mode, format_model, impute_model, format_output_basic_mode
-from . import plot
-from . import utils
+from .bridge.utils import create_algo, format_data_basic_mode, format_model, format_output_basic_mode, impute_model
 
 
 class MixtComp(BaseEstimator):

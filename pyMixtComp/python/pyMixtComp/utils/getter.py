@@ -48,7 +48,7 @@ def get_partition(res, empiric=False):
     res : dict
         output of multi_run_pmc_pool
     empiric : bool, optional
-        If True, the component labels are the ones estimated during the Gibbas algorithm. Otherwise, they are estimated using
+        If True, the component labels are the ones estimated during the Gibbs algorithm. Otherwise, they are estimated using
         posterior probabilities.
 
     Returns

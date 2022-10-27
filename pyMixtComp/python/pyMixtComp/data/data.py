@@ -1,6 +1,5 @@
-import pkg_resources
-
 import pandas as pd
+import pkg_resources
 
 
 def load_iris():
@@ -119,7 +118,7 @@ def load_canadian_weather():
     -------
     DataFrame, dict
         Data are returned in a dataFrame with 2 columns: tempav (average temperature in degrees celsius
-        for each day of the year) and precav (average rainfall in millimetres for each day of the year).
+        for each day of the year) and precav (average rainfall in millimeters for each day of the year).
         Model is returned as a dict
 
     References

@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm
-from scipy.optimize import root_scalar
-
 import seaborn as sns
+from scipy.optimize import root_scalar
+from scipy.stats import norm
 
 
 def plot_functional_data(bounds, res, var_name, add_obs=False, add_ci=True, ax=None):

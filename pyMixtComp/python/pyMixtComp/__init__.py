@@ -1,6 +1,4 @@
 # flake8: noqa
-from .MixtComp import MixtComp
-from . import data
-from . import utils
-from . import plot
+from . import data, plot, utils
 from ._version import __version__
+from .MixtComp import MixtComp

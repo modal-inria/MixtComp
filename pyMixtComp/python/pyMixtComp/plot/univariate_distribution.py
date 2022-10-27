@@ -1,15 +1,15 @@
-from collections import Counter
 import re
+from collections import Counter
 
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, poisson, nbinom, weibull_min
 import seaborn as sns
+from scipy.stats import nbinom, norm, poisson, weibull_min
 
-from .univariate_boxplot import barplot_per_class_categorical
 from .functional import extract_CI_Func_CS, plot_functional_data
+from .univariate_boxplot import barplot_per_class_categorical
 
 
 def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
@@ -109,11 +109,11 @@ def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
-        ci = ci.append(pd.DataFrame(
-            [[np.mean(res["variable"]["data"][var_name]["completed"]),
-             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-             np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)]],
-            columns=["mean", "lower", "upper"], index=["all"]))
+        ci.loc["all", ci.columns] = [
+            np.mean(res["variable"]["data"][var_name]["completed"]),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+        ]
 
     return ci
 
@@ -131,11 +131,11 @@ def extract_CI_poisson(res, var_name, class_ids=None, all=False):
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
-        ci = ci.append(pd.DataFrame(
-            [[np.mean(res["variable"]["data"][var_name]["completed"]),
-             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-             np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)]],
-            columns=["mean", "lower", "upper"], index=["all"]))
+        ci.loc["all", ci.columns] = [
+            np.mean(res["variable"]["data"][var_name]["completed"]),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+        ]
 
     return ci
 
@@ -154,17 +154,17 @@ def extract_CI_nbinom(res, var_name, class_ids=None, all=False):
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
-        ci = ci.append(pd.DataFrame(
-            [[np.mean(res["variable"]["data"][var_name]["completed"]),
-              np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-              np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)]],
-            columns=["mean", "lower", "upper"], index=["all"]))
+        ci.loc["all", ci.columns] = [
+            np.mean(res["variable"]["data"][var_name]["completed"]),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+        ]
 
     return ci
 
 
 def extract_CI_weibull(res, var_name, class_ids=None, all=False):
-    """ Compute mean and 95% CI of the estimated weibull distribution """
+    """ Compute mean and 95% CI of the estimated Weibull distribution """
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
@@ -177,11 +177,13 @@ def extract_CI_weibull(res, var_name, class_ids=None, all=False):
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
-        ci = ci.append(pd.DataFrame(
-            [[np.mean(res["variable"]["data"][var_name]["completed"]),
-              np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-              np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)]],
-            columns=["mean", "lower", "upper"], index=["all"]))
+        ci.loc["all", ci.columns] = [
+            np.mean(res["variable"]["data"][var_name]["completed"]),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+        ]
+
+    return ci
 
 
 def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
@@ -202,7 +204,7 @@ def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
         for i, key in zip(range(len(freq.keys())), freq.keys()):
             ind[0, i] = freq[key]
         ind /= ind.sum()
-        theta = theta.append(pd.DataFrame(ind, columns=[str(k) for k in freq.keys()], index=["all"]))
+        theta.loc["all", theta.columns] = ind
 
     for k in range(len(theta)):
         ordered_indices = theta.iloc[k].values.argsort()[::-1]

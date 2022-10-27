@@ -3,10 +3,16 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from pyMixtComp.utils.getter import (
+    _get_param_Func_CS,
+    _get_param_multinomial,
+    _get_param_numerical,
+    _get_param_Rank_ISR,
+    get_param,
+    get_partition,
+    get_tik,
+)
 from scipy.special import logsumexp
-
-from pyMixtComp.utils.getter import _get_param_numerical, _get_param_multinomial, _get_param_Rank_ISR, \
-                                    _get_param_Func_CS, get_param, get_partition, get_tik
 
 
 class TestUtilsGetter(unittest.TestCase):

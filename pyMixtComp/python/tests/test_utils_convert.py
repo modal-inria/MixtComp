@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from pyMixtComp.utils.convert import create_functional, convert_functional, refactor_categorical, create_rank, convert_rank
+from pyMixtComp.utils.convert import convert_functional, convert_rank, create_functional, create_rank, refactor_categorical
 
 
 class TestUtilsConvert(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestUtilsConvert(unittest.TestCase):
         func = create_functional(np.array(times), np.array(values))
         self.assertEqual(func, "")
 
-        func = create_functional(pd.Series(times), pd.Series(values))
+        func = create_functional(pd.Series(times, dtype=float), pd.Series(values, dtype=float))
         self.assertEqual(func, "")
 
     def test_create_functional(self):
@@ -29,7 +29,7 @@ class TestUtilsConvert(unittest.TestCase):
         func = create_functional(np.array(times), np.array(values))
         self.assertEqual(func, "1.0:4,2.0:5,3.0:6")
 
-        func = create_functional(pd.Series(times), pd.Series(values))
+        func = create_functional(pd.Series(times, dtype=float), pd.Series(values, dtype=int))
         self.assertEqual(func, "1.0:4,2.0:5,3.0:6")
 
     def test_create_functional_missing_values(self):
@@ -41,7 +41,7 @@ class TestUtilsConvert(unittest.TestCase):
         func = create_functional(np.array(times), np.array(values))
         self.assertEqual(func, "1.0:4,2.0:5,5.0:8")
 
-        func = create_functional(pd.Series(times), pd.Series(values))
+        func = create_functional(pd.Series(times, dtype=float), pd.Series(values, dtype=float))
         self.assertEqual(func, "1.0:4.0,2.0:5.0,5.0:8.0")
 
     def test_convert_functional_empty(self):

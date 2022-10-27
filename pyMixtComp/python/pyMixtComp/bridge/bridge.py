@@ -3,6 +3,7 @@ Run the c++ executable with python parameters
 """
 from functools import partial
 from multiprocessing import Pool
+
 import numpy as np
 
 from .. import pyMixtCompBridge

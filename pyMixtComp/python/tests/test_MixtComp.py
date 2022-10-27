@@ -1,11 +1,10 @@
-from multiprocessing import cpu_count
 import unittest
+from multiprocessing import cpu_count
 
 import numpy as np
 import pandas as pd
-from sklearn.exceptions import NotFittedError
-
 from pyMixtComp.MixtComp import MixtComp
+from sklearn.exceptions import NotFittedError
 
 
 class TestMixtComp(unittest.TestCase):

@@ -3,11 +3,16 @@ import unittest
 
 import numpy as np
 import pandas as pd
-
 from pyMixtComp.utils.convert import convert_functional
 from pyMixtComp.utils.getter import get_param
-from pyMixtComp.utils.sample import sample_multinomial, switch_representation_rank, sample_Rank_ISR, \
-    log_to_multi, sample_Func_CS, sample
+from pyMixtComp.utils.sample import (
+    log_to_multi,
+    sample,
+    sample_Func_CS,
+    sample_multinomial,
+    sample_Rank_ISR,
+    switch_representation_rank,
+)
 
 
 class TestUtilsGetter(unittest.TestCase):

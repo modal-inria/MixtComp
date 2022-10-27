@@ -3,9 +3,15 @@ import unittest
 
 import numpy as np
 import pandas as pd
-
-from pyMixtComp.bridge.utils import create_algo, format_model, impute_model, _impute_model, format_data_basic_mode, \
-    _refactor_categorical, format_output_basic_mode
+from pyMixtComp.bridge.utils import (
+    _impute_model,
+    _refactor_categorical,
+    create_algo,
+    format_data_basic_mode,
+    format_model,
+    format_output_basic_mode,
+    impute_model,
+)
 
 
 class TestUtils(unittest.TestCase):

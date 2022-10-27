@@ -2,8 +2,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
-
-from pyMixtComp.bridge.convert import convert_c_matrix, convert_c_vector, convert, convert_data_to_dict
+from pyMixtComp.bridge.convert import convert, convert_c_matrix, convert_c_vector, convert_data_to_dict
 
 
 class TestBridge(unittest.TestCase):

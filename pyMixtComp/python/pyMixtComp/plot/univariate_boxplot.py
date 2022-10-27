@@ -1,7 +1,7 @@
 from collections import Counter
 
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -125,8 +125,7 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
     thresholds = thresholds.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
-        thresholds = thresholds.append(pd.DataFrame(np.quantile(obs, q).reshape(1, -1),
-                                                    columns=thresholds.columns, index=["all"]))
+        thresholds.loc["all", ["q" + str(i) for i in q]] = np.quantile(obs, q).reshape(1, -1)
 
     return thresholds
 
@@ -161,6 +160,6 @@ def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False)
         for i in range(len(levels)):
             ind[0, i] = freq[levels[i]]
         ind /= ind.sum()
-        probas = probas.append(pd.DataFrame(ind, columns=probas.columns, index=["all"]))
+        probas.loc["all", levels] = ind
 
     return probas
