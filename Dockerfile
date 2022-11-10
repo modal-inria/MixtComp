@@ -46,9 +46,11 @@ RUN cp ../build/lib/pyMixtCompBridge.so pyMixtComp/pyMixtCompBridge.so
 RUN pip install -e .
 
 # Test if installation is ok
+WORKDIR /MixtComp
 RUN python -c "from pyMixtComp import MixtComp"
 
 # Test with pytest 
+WORKDIR /MixtComp/pyMixtComp/python
 RUN pytest ./tests
 
 # command to run on container start
