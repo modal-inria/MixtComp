@@ -7,6 +7,8 @@ Mixture models with heterogeneous data sets and partially missing data managemen
 
 ### docker
 
+In the root directoy of the project (where the Dockerfile is located), run:
+
 Build image:
 ``` bash
 make build
