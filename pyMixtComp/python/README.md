@@ -5,6 +5,19 @@ Mixture models with heterogeneous data sets and partially missing data managemen
 
 ## Installation
 
+### docker
+
+Build image:
+``` bash
+make build
+```
+Start a jupyter server with a notebook
+``` bash
+make notebook
+```
+
+### Compilation
+
 First, compile the C++ library:
 
 ``` bash
