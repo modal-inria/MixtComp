@@ -51,3 +51,4 @@ RMixtCompHier.Rcheck
 RemoteSystemsTempFiles
 __pycache__
 *.egg-info
+.venv
