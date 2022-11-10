@@ -23,6 +23,7 @@ MixtComp/log
 MixtComp/build
 MixtComp/src/build
 MixtComp/report.xml
+pyMixtComp/python/build
 pyMixtComp/build
 pyMixtComp/reportPy.xml
 JMixtComp/data/*/learn/resLearn.json
