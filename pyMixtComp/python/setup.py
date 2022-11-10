@@ -1,6 +1,16 @@
 from setuptools import setup
 
 import re
+import sys
+
+# to ensure that we error out properly for people with outdated setuptools
+# and/or pip.
+py_min_version = (3, 9)  # minimal supported python version
+
+if sys.version_info < py_min_version:
+    error = f""" Python {py_min_version} or above is required. You are using Python {sys.version_info[:3]}."""
+
+
 VERSIONFILE = "pyMixtComp/_version.py"
 verstrline = open(VERSIONFILE, "rt").read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
@@ -20,11 +30,21 @@ setup(
     keywords=["clustering", "mixture model", "heterogeneous", "missing data"],
     classifiers=[
         "Programming Language :: C++",
-        "Programming Language :: Python",
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         "Topic :: Scientific/Engineering :: Artificial Intelligence"
     ],
     packages=["pyMixtComp"],
     include_package_data=True,
     package_data={"pyMixtComp": ["pyMixtCompBridge.so"], "": ["data/*.csv"]},
-    install_requires=["numpy", "pandas", "scikit-learn", "seaborn", "matplotlib", "scipy"],
+    python_requires='>={}'.format('.'.join(str(n) for n in py_min_version)),
+    install_requires=[
+        "numpy==1.23.4",
+        "pandas==1.5.1",
+        "scikit-learn==1.1.3",
+        "scipy==1.9.3",
+        "matplotlib==3.6.2",
+        "seaborn==0.12.1",
+        ],
 )
