@@ -43,7 +43,10 @@ WORKDIR /MixtComp/pyMixtComp/python
 RUN cp ../build/lib/pyMixtCompBridge.so pyMixtComp/pyMixtCompBridge.so
 
 # Install PyMixtComp
-RUN pip install .
+RUN pip install -e .
+
+# Test if installation is ok
+RUN python -c "from pyMixtComp import MixtComp"
 
 # Test with pytest 
 RUN pytest ./tests
