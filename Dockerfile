@@ -2,7 +2,7 @@
 FROM python:3.9-slim-bullseye
 
 # set the working directory in the container
-WORKDIR /pyMixtComp
+WORKDIR /MixtComp
 
 # Checkout MixtComp
 COPY . .
@@ -27,17 +27,18 @@ RUN sudo apt-get -y install git
 RUN pip install pytest flake8
 
 # Install Other Python Dependencies
-RUN pip install -r python/requirements.txt
+RUN pip install -r pyMixtComp/python/requirements.txt
 
 # Install Jupyter
 RUN pip install jupyterlab
 
+WORKDIR /MixtComp/pyMixtComp
 # Compile PyMixtCompBridge
 RUN ./build.sh
 # Test PyMixtCompBridge
 RUN ./utest.sh
 
-WORKDIR /python
+WORKDIR /MixtComp/pyMixtComp/python
 # Copy PyMixtCompBridge.so
 RUN cp ../build/lib/pyMixtCompBridge.so pyMixtComp/pyMixtCompBridge.so
 
