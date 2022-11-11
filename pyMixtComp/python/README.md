@@ -17,6 +17,13 @@ Start a jupyter server with a notebook
 ``` bash
 make notebook
 ```
+**NOTE**: User-defined data or code must be located in the notebooks folder to be synced with the image. If the user prefers to mount another folder, it can be easily changed through `Maekfile`:
+
+``` makefile
+notebook notebook-dev:
+	docker run -it --mount src="${CURDIR}/pyMixtComp/python/notebooks",target=/MixtComp/pyMixtComp/python/notebooks,type=bind $(ERASEARGS) $(MEMARGS) $(DARGS) $(PROJECT)
+```
+DON'T mount pyMixtComp folder, as it will not sync the share library correctly.
 
 ### Compilation
 

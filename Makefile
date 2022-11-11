@@ -53,4 +53,4 @@ notebook notebook-dev: DARGS?=-v ${CURDIR}/pyMixtComp/python -p $(PORT):8888
 notebook notebook-dev:
 # docker run $(ERASEARGS) $(MEMARGS) $(DARGS) $(PROJECT)
 # docker run -v ${CURDIR}/pyMixtComp/python/data:/pyMixtComp/python/data $(ERASEARGS) $(MEMARGS) $(DARGS) $(PROJECT)
-	docker run -it --mount src="${CURDIR}/pyMixtComp",target="/MixtComp/pyMixtComp",type=bind $(ERASEARGS) $(MEMARGS) $(DARGS) $(PROJECT)
+	docker run -it --mount src="${CURDIR}/pyMixtComp/python/notebooks",target=/MixtComp/pyMixtComp/python/notebooks,type=bind $(ERASEARGS) $(MEMARGS) $(DARGS) $(PROJECT)
