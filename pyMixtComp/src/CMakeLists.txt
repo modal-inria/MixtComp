@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # boost
 find_package(Boost 1.58 COMPONENTS python numpy REQUIRED)
+add_definitions(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # python
