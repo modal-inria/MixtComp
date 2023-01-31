@@ -1,10 +1,10 @@
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project(pyMixtComp)
 
-# C++11
-set(CMAKE_CXX_STANDARD 11)
+# C++ standard
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # boost
