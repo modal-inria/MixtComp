@@ -26,6 +26,7 @@
 #include <iostream>
 #include <ctime>
 #include <boost/random.hpp>
+#include <boost/range/algorithm/random_shuffle.hpp>
 #include <Various/Constants.h>
 #include "../LinAlg/LinAlg.h"
 #include "../IO/IO.h"
@@ -66,7 +67,7 @@ public:
 
 	template<typename T>
 	void shuffle(T& data) {
-		std::random_shuffle(data.begin(), data.end(), g_);
+		boost::range::detail::random_shuffle(data.begin(), data.end(), g_);
 	}
 
 	template<typename T>
