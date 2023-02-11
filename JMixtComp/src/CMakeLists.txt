@@ -1,14 +1,14 @@
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project(JMixtComp)
 
-# C++11
-set(CMAKE_CXX_STANDARD 11)
+# C++ standard
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Compile MixtComp
-add_subdirectory(../../MixtComp/src MixtComp) 
+add_subdirectory(../../MixtComp/src MixtComp)
 
 # add MixtComp's include directories and definitions
 include_directories(${MixtComp_INCLUDE_DIRS})
@@ -25,9 +25,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
 
 # add json interface code
-add_subdirectory(lib) 
+add_subdirectory(lib)
 
 # add test
-add_subdirectory(utest EXCLUDE_FROM_ALL) 
-
-
+add_subdirectory(utest EXCLUDE_FROM_ALL)

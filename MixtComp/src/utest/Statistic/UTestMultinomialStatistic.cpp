@@ -42,24 +42,20 @@ TEST(MultinomialStatistic, sample) {
     }
 }
 
-TEST(MultinomialStatistic, sampleCallBlock) {
+TEST(MultinomialStatistic, sampleCallRow) {
 	MultinomialStatistic multi;
 
-	Vector<Real> param(8);
+	Matrix<Real> param(2, 4);
     param << 0., 0.5, 0.3, 0.2, 0.2, 0.3, 0.4, 0.1;
-
-	int nbModalities = 4;
-	int z_i = 1;
 
     Vector<Real> proba(4, 0);
     for (int i = 0; i < 10000; ++i) {
-		proba(multi.sample(param.block(z_i * nbModalities, 0,  // position of first element
-                                       nbModalities      , 1))) += 1.;
+		proba(multi.sample(param.row(1))) += 1.;
 	}
 	proba /= 10000.;
 
     for (Index i = 0; i < proba.size(); ++i) {
-        EXPECT_NEAR(proba(i), param(4 + i), 0.02);
+        EXPECT_NEAR(proba(i), param(1, i), 0.02);
     }
 }
 

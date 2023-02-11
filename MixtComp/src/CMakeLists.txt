@@ -1,11 +1,12 @@
-project (MixtComp CXX)
+cmake_policy(SET CMP0048 NEW)
+project (MixtComp LANGUAGES CXX VERSION 4.0)
+cmake_minimum_required (VERSION 3.8)
 
-cmake_minimum_required (VERSION 3.5)
+# C++ standard and clangd support
 
-# C++11
-
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ## add current path as module path to load code coverage module
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
