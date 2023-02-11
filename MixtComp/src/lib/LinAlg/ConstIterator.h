@@ -28,15 +28,18 @@
 //#include <iostream>
 //#include <iterator>
 
-class ConstIterator: public std::iterator<std::random_access_iterator_tag,
+class ConstIterator : public std::iterator<std::random_access_iterator_tag,
 		Scalar, int, Scalar*, Scalar&> {
 public:
-	ConstIterator(int i, int j, const Derived& mat) :
-			i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
+	ConstIterator(int i, int j, const Derived& mat)
+	: i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
 	}
 
-	ConstIterator(const Iterator& it) :
-			i_(it.i_), j_(it.j_), rows_(it.rows_), p_mat_(it.p_mat_) {
+	ConstIterator(const Iterator& it)
+	: i_(it.i_),
+	  j_(it.j_),
+	  rows_(it.rows_),
+	  p_mat_(it.p_mat_) {
 	}
 
 	ConstIterator operator+(int i) {
@@ -47,12 +50,12 @@ public:
 		return ConstIterator(iP, jP, *p_mat_);
 	}
 
-	ConstIterator& operator+=(int i) {
+	ConstIterator operator+=(int i) {
 		posToIn(pos() + i, i_, j_);
 		return *this;
 	}
 
-	ConstIterator& operator-=(int i) {
+	ConstIterator operator-=(int i) {
 		posToIn(pos() - i, i_, j_);
 		return *this;
 	}
@@ -140,7 +143,8 @@ public:
 		return *this;
 	}
 
-	const ConstIterator& operator++(int) {
+	const ConstIterator operator++(int) {
+		ConstIterator temp(*this);
 		if (i_ < rows_ - 1) // row increment
 				{
 			++i_;
@@ -149,7 +153,7 @@ public:
 			i_ = 0;
 			++j_;
 		}
-		return *this;
+		return temp;
 	}
 
 	const ConstIterator& operator--() {
