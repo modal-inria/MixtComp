@@ -53,6 +53,11 @@ public:
 		return *this;
 	}
 
+	Iterator& operator-=(int i) {
+		posToIn(pos() - i, i_, j_);
+		return *this;
+	}
+
 	Iterator operator-(int i) {
 		int posP, iP, jP;
 		posP = pos();

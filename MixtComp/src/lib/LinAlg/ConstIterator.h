@@ -52,6 +52,11 @@ public:
 		return *this;
 	}
 
+	ConstIterator& operator-=(int i) {
+		posToIn(pos() - i, i_, j_);
+		return *this;
+	}
+
 	ConstIterator operator-(int i) {
 		int posP, iP, jP;
 		posP = pos();
