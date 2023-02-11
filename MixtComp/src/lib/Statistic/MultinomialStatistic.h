@@ -49,7 +49,7 @@ std::uniform_real_distribution<Real> uni_;
 public:
 	MultinomialStatistic()
 	: rng_(seed(this)),
-	uni_(0.0, 1.0) {}
+	  uni_(0.0, 1.0) {}
 
 	/** Sample a value from a binomial law with  */
 	int sampleBinomial(Real proportion) {

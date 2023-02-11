@@ -138,6 +138,18 @@ public:
 		return *this;
 	}
 
+		Iterator& operator++(int) {
+		if (i_ < rows_ - 1) // row increment
+				{
+			++i_;
+		} else // column increment
+		{
+			i_ = 0;
+			++j_;
+		}
+		return *this;
+	}
+
 	Iterator& operator--() {
 		if (i_ > 0) {
 			--i_;

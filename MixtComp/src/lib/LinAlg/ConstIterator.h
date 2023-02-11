@@ -140,6 +140,18 @@ public:
 		return *this;
 	}
 
+	const ConstIterator& operator++(int) {
+		if (i_ < rows_ - 1) // row increment
+				{
+			++i_;
+		} else // column increment
+		{
+			i_ = 0;
+			++j_;
+		}
+		return *this;
+	}
+
 	const ConstIterator& operator--() {
 		if (i_ > 0) {
 			--i_;
