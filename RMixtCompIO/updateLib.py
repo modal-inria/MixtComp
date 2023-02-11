@@ -1,7 +1,7 @@
 #! /usr/local/bin/python3
 
 # MixtComp version 4 - july 2019
-# Copyright (C) Inria - Université de Lille - CNRS 
+# Copyright (C) Inria - Université de Lille - CNRS
 
 import glob
 import subprocess
@@ -32,7 +32,7 @@ makevarsStr = r'''# MixtComp version 4  - july 2019
 %s
 
 PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"EigenMatrixBaseAddons.h\" -Ioptim/include
-CXX_STD = CXX11
+CXX_STD = CXX17
 
 PKG_LIBS = $(LIB_OFILES)
 
