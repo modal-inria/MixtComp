@@ -36,9 +36,15 @@
  * mixt::Matrix.
  */
 
-class Iterator : public std::iterator<std::random_access_iterator_tag, Scalar,
-                                      int, Scalar *, Scalar &> {
+class Iterator {
 public:
+  // iterator traits
+  using iterator_category = std::random_access_iterator_tag;
+  using value_type = Scalar;
+  using difference_type = int;
+  using pointer = Scalar*;
+  using reference = Scalar&;
+
   Iterator(int i, int j, Derived &mat)
       : i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {}
 
