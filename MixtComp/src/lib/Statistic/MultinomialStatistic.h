@@ -25,22 +25,35 @@
 
 #include <iostream>
 #include <ctime>
-#include <boost/random.hpp>
-#include <boost/range/algorithm/random_shuffle.hpp>
+#include <random>
 #include <Various/Constants.h>
 #include "../LinAlg/LinAlg.h"
 #include "../IO/IO.h"
+#include "Statistic/RNG.h"
 
 namespace mixt {
 
 class MultinomialStatistic {
 
+private:
+/** Random number generator */
+std::mt19937 rng_;
+
+std::uniform_real_distribution<Real> uni_;
+
+// std::random_number_generator<std::mt19937> g_;
+
+// boost::variate_generator<boost::random::mt19937&,
+// 		boost::random::uniform_real_distribution<> > generator_;
+
 public:
-	MultinomialStatistic();
+	MultinomialStatistic()
+	: rng_(seed(this)),
+	uni_(0.0, 1.0) {}
 
 	/** Sample a value from a binomial law with  */
 	int sampleBinomial(Real proportion) {
-		if (generator_() < proportion) {
+		if (uni_(rng_) < proportion) {
 			return 1;
 		} else {
 			return 0;
@@ -50,7 +63,7 @@ public:
 	/** Sample a value from a multinomial law with coefficient of modalities provided */
 	template<typename T>
 	int sample(const T& proportion) {
-		Real x = generator_();
+		Real x = uni_(rng_);
 
 		Real cumProb = 0.; // cumulative probability
 		int index = 0;
@@ -67,7 +80,7 @@ public:
 
 	template<typename T>
 	void shuffle(T& data) {
-		boost::range::detail::random_shuffle(data.begin(), data.end(), g_);
+		std::shuffle(data.begin(), data.end(), rng_);
 	}
 
 	template<typename T>
@@ -87,18 +100,6 @@ public:
 	 * @return integer uniformly sampled from [low:high]
 	 */
 	int sampleInt(int low, int high);
-
-private:
-	/** Random number generator */
-	boost::random::mt19937 rng_;
-
-	boost::random::uniform_real_distribution<> uni_;
-
-	boost::random_number_generator<boost::mt19937> g_;
-
-	boost::variate_generator<boost::random::mt19937&,
-			boost::random::uniform_real_distribution<> > generator_;
-
 };
 
 } // namespace mixt
