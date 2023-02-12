@@ -46,11 +46,22 @@ public:
 	using pointer = Scalar *;
 	using reference = Scalar &;
 
+	int i_;
+	int j_;
+	int rows_;
+	Derived *p_mat_;
+
 	Iterator(int i, int j, Derived &mat)
 		: i_(i),
 		  j_(j),
 		  rows_(mat.rows()),
 		  p_mat_(&mat) {}
+
+	Iterator(const Iterator &other)
+		: i_(other.i_),
+		  j_(other.j_),
+		  rows_(other.rows_),
+		  p_mat_(other.p_mat_) {}
 
 	Iterator operator+(int i) {
 		int posP, iP, jP;
@@ -60,12 +71,12 @@ public:
 		return Iterator(iP, jP, *p_mat_);
 	}
 
-	Iterator &operator+=(int i) {
+	Iterator operator+=(int i) {
 		posToIn(pos() + i, i_, j_);
 		return *this;
 	}
 
-	Iterator &operator-=(int i) {
+	Iterator operator-=(int i) {
 		posToIn(pos() - i, i_, j_);
 		return *this;
 	}
@@ -146,7 +157,8 @@ public:
 		return *this;
 	}
 
-	Iterator &operator++(int) {
+	Iterator operator++(int) {
+		Iterator temp(*this);
 		if (i_ < rows_ - 1) // row increment
 		{
 			++i_;
@@ -155,10 +167,10 @@ public:
 			i_ = 0;
 			++j_;
 		}
-		return *this;
+		return temp;
 	}
 
-	Iterator &operator--() {
+	Iterator operator--() {
 		if (i_ > 0) {
 			--i_;
 		} else {
@@ -167,11 +179,6 @@ public:
 		}
 		return *this;
 	}
-
-	int i_;
-	int j_;
-	int rows_;
-	Derived *p_mat_;
 
 	void posToIn(int pos, int &i, int &j) const {
 		std::div_t divresult;

@@ -28,8 +28,6 @@
 //#include <iostream>
 //#include <iterator>
 
-// #include <iterator>
-
 class ConstIterator {
 
 public:
@@ -39,6 +37,11 @@ public:
 	using difference_type = int;
 	using pointer = Scalar *;
 	using reference = Scalar &;
+
+	int i_;
+	int j_;
+	int rows_;
+	const Derived *p_mat_;
 
 	ConstIterator(int i, int j, const Derived &mat)
 		: i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
@@ -174,11 +177,6 @@ public:
 		}
 		return *this;
 	}
-
-	int i_;
-	int j_;
-	int rows_;
-	const Derived *p_mat_;
 
 	void posToIn(int pos, int &i, int &j) const {
 		std::div_t divresult;
