@@ -27,7 +27,7 @@
 // http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
 
 //#include <iostream>
-//#include <iterator>
+#include <iterator>
 
 /**
  * Iterator class for Eigen::Matrix. This file is included from
