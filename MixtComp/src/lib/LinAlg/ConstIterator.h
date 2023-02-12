@@ -31,6 +31,7 @@
 #include <iterator>
 
 class ConstIterator {
+
 public:
 	// iterator traits
 	using iterator_category = std::random_access_iterator_tag;
