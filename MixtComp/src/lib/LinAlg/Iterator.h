@@ -145,7 +145,7 @@ public:
 
 	Scalar *operator->() const { return &(*p_mat_)(i_, j_); }
 
-	Iterator &operator++() {
+	Iterator operator++() {
 		if (i_ < rows_ - 1) // row increment
 		{
 			++i_;
