@@ -1,0 +1,14 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# https://llvm.org/docs/CodingStandards.html
+
+BasedOnStyle: LLVM
+
+AccessModifierOffset: -4
+AllowShortIfStatementsOnASingleLine: false
+ColumnLimit: 0
+FixNamespaceComments: false
+IndentCaseLabels: false
+IndentWidth: 4
+NamespaceIndentation: All
+TabWidth: 4
+UseTab: Always

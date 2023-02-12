@@ -29,7 +29,7 @@ brew install cmake boost eigen lcov
 
 ## Windows
 
-To install the necessary tools, user needs to install [cygwin](https://www.cygwin.com/). gcc, cmake, boost and eigen must be installed through the cygwin packages installer.
+To install the necessary tools, user needs to install [cygwin](https://www.cygwin.com/). gcc, cmake, boost and eigen must be installed through the cygwin packages installer. Note: WSL might be a better solution, but does it allows to compare with CRAN builds for example ?
 
 ## Compilation & tests
 
