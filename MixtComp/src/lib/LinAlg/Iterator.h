@@ -90,9 +90,7 @@ public:
 			return true;
 		} else if (j_ > it.j_) {
 			return false;
-		} else if (i_ < it.i_) // in this case, j_ == it.j_, hence comparison must
-							   // be done on i_
-		{
+		} else if (i_ < it.i_) { // in this case, j_ == it.j_, hence comparison must be done on i_
 			return true;
 		}
 
@@ -111,9 +109,7 @@ public:
 			return true;
 		} else if (j_ > it.j_) {
 			return false;
-		} else if (i_ > it.i_) // in this case, j_ == it.j_, hence comparison must
-							   // be done on i_
-		{
+		} else if (i_ > it.i_) { // in this case, j_ == it.j_, hence comparison must be done on i_
 			return true;
 		}
 
