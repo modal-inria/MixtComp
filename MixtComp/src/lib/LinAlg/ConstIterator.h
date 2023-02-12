@@ -47,7 +47,7 @@ public:
 		: i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
 	}
 
-	ConstIterator(Iterator &other)
+	ConstIterator(const Iterator &other)
 		: i_(other.i_),
 		  j_(other.j_),
 		  rows_(other.rows_),
