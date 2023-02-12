@@ -47,13 +47,6 @@ public:
 		: i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
 	}
 
-	ConstIterator(const Iterator &it)
-		: i_(it.i_),
-		  j_(it.j_),
-		  rows_(it.rows_),
-		  p_mat_(it.p_mat_) {
-	}
-
 	ConstIterator operator+(int i) {
 		int posP, iP, jP;
 		posP = pos();

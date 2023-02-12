@@ -57,12 +57,6 @@ public:
 		  rows_(mat.rows()),
 		  p_mat_(&mat) {}
 
-	Iterator(const Iterator &other)
-		: i_(other.i_),
-		  j_(other.j_),
-		  rows_(other.rows_),
-		  p_mat_(other.p_mat_) {}
-
 	Iterator operator+(int i) {
 		int posP, iP, jP;
 		posP = pos();
