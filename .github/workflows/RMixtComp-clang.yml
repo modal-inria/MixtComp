@@ -1,4 +1,4 @@
-name: RMixtComp with Eigen 3.4
+name: RMixtComp with clang16
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - 'RMixtComp/**'
       - 'RMixtCompIO/**'
       - 'RMixtCompUtilities/**'
-      - '.github/workflows/RMixtComp-eigen34.yml'
+      - '.github/workflows/RMixtComp-clang.yml'
       - '!**/README.md'
   pull_request:
     branches:
@@ -23,25 +23,17 @@ on:
       - 'RMixtComp/**'
       - 'RMixtCompIO/**'
       - 'RMixtCompUtilities/**'
-      - '.github/workflows/RMixtComp-eigen34.yml'
+      - '.github/workflows/RMixtComp-clang.yml'
       - '!**/README.md'
 
 jobs:
   R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/r-hub/containers/atlas:latest
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: ubuntu-latest,   r: 'release'}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
 
     steps:
       - uses: actions/checkout@v3
@@ -49,10 +41,6 @@ jobs:
           submodules: 'true'
 
       - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -74,7 +62,6 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          install.packages("RcppEigen", repo="https://RcppCore.github.io/drat")
         shell: Rscript {0}
 
       - name: Copy MixtComp files
