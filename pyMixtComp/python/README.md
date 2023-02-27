@@ -11,13 +11,8 @@ First, compile the C++ library:
 ./build.sh
 ```
 
-Then, install the requirements:
-
-``` bash
-pip3 install -r requirements.txt
-```
-
-And finally the python package:
+The python package uses [poetry](https://python-poetry.org/docs/#installation) as build system.
+Install pyMixtComp using pip:
 
 ``` bash
 pip3 install .
@@ -34,7 +29,7 @@ pip3 install pytest
 Run tests:
 
 ``` bash
-pytest-3 .
+pytest .
 ```
 
 ## Examples

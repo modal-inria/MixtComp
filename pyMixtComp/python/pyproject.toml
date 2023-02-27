@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "pyMixtComp"
+version = "0.1.1"
+description = "Mixture models with heterogeneous data sets and partially missing data management."
+authors = [
+    "Vincent Kubicki",
+    "Christophe Biernacki",
+    "Quentin Grimonprez <quentingrim@yahoo.fr>",
+    "Matthieu Marbac-Lourdelle",
+    "Étienne Goffinet",
+    "Serge Iovleff",
+]
+
+maintainers = [
+    "Quentin Grimonprez <quentingrim@yahoo.fr>",
+]
+
+include = ["pyMixtComp/pyMixtCompBridge.so"]
+
+packages = [
+    {include = "pyMixtComp"}
+]
+
+keywords=["clustering", "mixture model", "heterogeneous", "missing data"]
+
+readme = "README.md"
+
+# see https://pypi.org/classifiers/
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Programming Language :: C++",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+repository = "https://github.com/modal-inria/MixtComp"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+numpy = "^1.20"
+pandas = "^1.2"
+scipy = "^1.6.2"
+scikit-learn = "^1.0"
+seaborn = "^0.9.1"
+matplotlib = "^3.3"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^7.16"
+
+[tool.poetry.build]
+generate-setup-file = false
+
+[build-system]
+requires = ["poetry-core>=1.2.0"]
+build-backend = "poetry.core.masonry.api"
