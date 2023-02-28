@@ -1,4 +1,7 @@
+v 4.0.9 2023-02-11
 - lint
+- change c++ standard from c++11 to c++17
+- correct c++ error with clang16
 
 v 4.0.8 2022-10-18
 - correct bitwise-instead-of-logical warnings

@@ -1,5 +1,5 @@
 # MixtComp version 4 - july 2019
-# Copyright (C) Inria - Université de Lille - CNRS 
+# Copyright (C) Inria - Université de Lille - CNRS
 
 # Note that this Makefile will not be available on CRAN. Make commands should not be called from configure or cleanup scripts.
 
