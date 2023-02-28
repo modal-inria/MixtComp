@@ -6,8 +6,6 @@ Mixture models parameters are estimated using a [SEM algorithm](MixtComp/docs/ar
 
 MixtComp is used as an R package, but its internals are coded in C++ using state of the art libraries for faster computation. It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional independence assumption. New models will eventually be available from researches, carried out by the Modal team or by other contributors. Currently, central architecture of MixtComp is built and functionality has been field-tested through industry partnerships.
 
-Online version (not up-to-date): [MASSICCC](https://massiccc.lille.inria.fr/).
-
 CRAN package: [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RMixtComp)](https://cran.r-project.org/package=RMixtComp)
 [![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp?color=blue)](http://cranlogs.r-pkg.org/badges/grand-total/RMixtComp)
 
@@ -54,28 +52,30 @@ A description of the links between packages and external libraries can be found 
 
 * [Compile MixtComp](MixtComp/README.md)
 * [Install RMixtComp](RMixtComp/README.md)
+* [Run MixtComp in command line](JMixtComp/README.md)
 * [Data format](MixtComp/docs/dataFormat.md)
 * [Output object](MixtComp/docs/objectOutput.md)
+* [Solutions to common errors](MixtComp/docs/error.md)
 * [Algorithm description](MixtComp/docs/algoDesc.md)
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
-* [Solutions to common errors](MixtComp/docs/error.md)
-* [Run MixtComp in command line](JMixtComp/README.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
 
 Scientific papers about algorithm and models are available in the [article folder](MixtComp/docs/article/).
 
-## Other tools (for MixtComp dev team)
+## Examples
 
-* [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
+* See <https://github.com/vandaele/mixtcomp-notebook> for RMixtComp examples.
+* See [pyMixtComp/python/notebooks](pyMixtComp/python/notebooks) for pyMixtComp examples.
+
+## Other tools
+
 * [Mailing-list](https://sympa.inria.fr/sympa/info/mixtcomp-dev)
-* [Continuous integration server](https://ci.inria.fr/mixtcomp/)
+* [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
 
-## Branches (for MixtComp dev team)
+## Branches
 
-There are two branches tested on the ci server (using the [ci.sh](ci.sh) file):
+There are two branches tested with github actions
 
 * **master** this branch is protected, MixtComp must *always* work on it.
 * **staging** this branch is used for short development, testing new features, bug fixes... and its content is regularly pushed to master when tests are OK.
-
-Big features should be developed on a specific branch.
