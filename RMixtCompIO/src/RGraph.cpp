@@ -92,7 +92,7 @@ Rcpp::List RGraph::addSubGraph(const std::vector<std::string>& path, Index currD
 		} else if (TYPEOF(currLevel[path[currDepth]]) != VECSXP) { // if it already exists but is not a json object, throw an exception
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
-				askedPath + "/" + path[i];
+			  askedPath = askedPath + "/" + path[i];
 			}
 			throw(askedPath + " already exists and is not an R list.");
 		}

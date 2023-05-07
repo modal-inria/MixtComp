@@ -57,7 +57,7 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
 
 
-## Build and install
+## Install
 
 Run in the current location (./RMixtCompIO/ folder):
 
@@ -68,11 +68,50 @@ make all
 
 The target *updateLib* copies the MixtComp library C++ folder from [MixtComp/src/lib](../MixtComp/src/lib) folder to [src/lib folder](src/lib).
 
+## Build
+
+```bash
+R CMD build RMixtCompIO
+```
+
+It generates a tar.gz file
+
+
+## Check
+
+```bash
+R CMD check --as-cran RMixtCompIO
+```
+
+or you can build the package before
+
+```bash
+R CMD check --as-cran RMixtCompIO_*.tar.gz
+```
+
+### Windows
+
+If you do not have windows, build the source and upload the tar.gz at <https://win-builder.r-project.org/upload.aspx>
+
+### Custom linux configuration
+
+To check on (almost) the same linux configuration as the CRAN, you can use the following procedure: <https://r-hub.github.io/containers/local.html>
+
+1) Install [Docker](https://docs.docker.com/engine/install/ubuntu/)
+1) Create a `check` folder and put the tar.gz package inside
+1) Run
+
+```bash
+docker run -v `pwd`/check:/check ghcr.io/r-hub/containers/gcc13:latest r-check
+```
+
+See <https://r-hub.github.io/containers/containers.html> for available containers (`clang16`, `clang-asan`, ...)
+
 ## Testing procedures
 
 ### Test the R package
 
-Tests are implemented in the `tests/testthat` folder of RMixtComp. They require the *testthat* package.
+Tests are implemented in the `tests/testthat` folder of RMixtCompIO. They require the *testthat* package.
 
 You can run tests via R:
 
