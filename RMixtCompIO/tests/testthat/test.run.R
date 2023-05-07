@@ -143,7 +143,7 @@ test_that("NegativeBinomial model works", {
   var$nBinom3 <- nBinomParamRandom("nBinom3")
   var$nBinom4 <- nBinomParamRandom("nBinom4")
 
-  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
+  resGen <- dataGeneratorNewIO(nInd, 0.95, var)
 
   algo <- list(
     nClass = 2,
