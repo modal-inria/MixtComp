@@ -1,3 +1,7 @@
+v 4.0.10 2023-05-07
+- fix cpp warnings
+- update negative binomial test
+
 v 4.0.9 2023-02-11
 - lint
 - change c++ standard from c++11 to c++17
@@ -6,7 +10,6 @@ v 4.0.9 2023-02-11
 v 4.0.8 2022-10-18
 - correct bitwise-instead-of-logical warnings
 - remove blockcluster as suggested package
-
 
 v 4.0.7 2022-01-13
 - manage eigen 3.4.0
