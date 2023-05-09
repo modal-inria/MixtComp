@@ -1,8 +1,8 @@
 Package: RMixtCompIO
 Type: Package
 Title: Minimal Interface of the C++ 'MixtComp' Library for Mixture Models with Heterogeneous and (Partially) Missing Data
-Version: 4.0.9
-Date: 2023-02-11
+Version: 4.0.10
+Date: 2023-05-07
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentingrim@yahoo.fr"),
