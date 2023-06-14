@@ -1,5 +1,8 @@
+v4.1.5 2023-06-14
+- getter fucntions manage errored mixtComp run
 - remove blockcluster from suggested packages
 - lint
+- change maintainer
 
 v4.1.4 2020-11-12
 - export formatData, completeAlgo and formatModel functions to avoir using RMixtCompUtilities::: in RMixtComp
