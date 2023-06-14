@@ -15,9 +15,6 @@ advanced models (Func_CS and Rank_ISR).
 MixtComp has the ability to natively manage missing data (completely or by interval). MixtComp is used as an R package,
 but its internals are coded in C++ using state of the art libraries for faster computation.
 
-
-Online SaaS version (not up-to-date): \url{https://massiccc.lille.inria.fr/}
-
 This package contains plots, getters and format functions to simplify the use of \code{RMixtComp} and \code{RMixtCompIO}
 packages. It is recommended to use \code{RMixtComp} (instead of \code{RMixtCompIO}) which is more user-friendly.
 }
