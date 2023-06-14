@@ -67,38 +67,44 @@
 #' @family getter
 #' @export
 getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE) {
-  if (is.null(var)) {
-    var <- getVarNames(outMixtComp, with.z_class)
-  }
-
-  mcVar <- getVarNames(outMixtComp, with.z_class = TRUE)
-  if (any(!(var %in% mcVar))) {
-    stop("some elements of var are not in outMixtComp")
-  }
-
-  completedData <- do.call(cbind, lapply(
-    var,
-    function(x) {
-      if ("completed" %in% names(outMixtComp$variable$data[[x]])) {
-        if (outMixtComp$variable$type[[x]] != "Rank_ISR") {
-          df <- data.frame(outMixtComp$variable$data[[x]]$completed)
-        } else {
-          df <- data.frame(apply(outMixtComp$variable$data[[x]]$completed, 1, function(x) {
-            paste(x, collapse = ",")
-          }))
-        }
-        names(df) <- x
-
-        return(df)
-      } else {
-        return(data.frame()[seq_len(outMixtComp$algo$nInd), ])
-      }
+  if ("variable" %in% names(outMixtComp)) {
+    if (is.null(var)) {
+      var <- getVarNames(outMixtComp, with.z_class)
     }
-  ))
 
-  rownames(completedData) <- NULL
+    mcVar <- getVarNames(outMixtComp, with.z_class = TRUE)
+    if (any(!(var %in% mcVar))) {
+      stop("some elements of var are not in outMixtComp")
+    }
 
-  return(completedData)
+    completedData <- do.call(cbind, lapply(
+      var,
+      function(x) {
+        if ("completed" %in% names(outMixtComp$variable$data[[x]])) {
+          if (outMixtComp$variable$type[[x]] != "Rank_ISR") {
+            df <- data.frame(outMixtComp$variable$data[[x]]$completed)
+          } else {
+            df <- data.frame(apply(outMixtComp$variable$data[[x]]$completed, 1, function(x) {
+              paste(x, collapse = ",")
+            }))
+          }
+          names(df) <- x
+
+          return(df)
+        } else {
+          return(data.frame()[seq_len(outMixtComp$algo$nInd), ])
+        }
+      }
+    ))
+
+    rownames(completedData) <- NULL
+
+    return(completedData)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
+  }
 }
 
 
@@ -150,16 +156,21 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE) {
 #' @family getter
 #' @export
 getPartition <- function(outMixtComp, empiric = FALSE) {
-  if (empiric) {
-    return(outMixtComp$variable$data$z_class$completed)
+  if ("variable" %in% names(outMixtComp)) {
+    if (empiric) {
+      return(outMixtComp$variable$data$z_class$completed)
+    }
+
+    tik <- getTik(outMixtComp)
+    tik[is.na(tik)] <- -Inf
+    part <- apply(tik, 1, which.max)
+
+    return(part)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
   }
-
-
-  tik <- getTik(outMixtComp)
-  tik[is.na(tik)] <- -Inf
-  part <- apply(tik, 1, which.max)
-
-  return(part)
 }
 
 
@@ -219,42 +230,62 @@ getPartition <- function(outMixtComp, empiric = FALSE) {
 #' @family getter
 #' @export
 getType <- function(outMixtComp, with.z_class = FALSE) {
-  type <- unlist(outMixtComp$variable$type)
+  if ("variable" %in% names(outMixtComp)) {
+    type <- unlist(outMixtComp$variable$type)
 
-  if (!with.z_class) {
-    type <- type[-which(names(type) == "z_class")]
+    if (!with.z_class) {
+      type <- type[-which(names(type) == "z_class")]
+    }
+
+    return(type)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
   }
-
-  return(type)
 }
 
 #' @rdname getType
 #' @export
 getModel <- function(outMixtComp, with.z_class = FALSE) {
-  model <- outMixtComp$variable$type
 
-  if (!with.z_class) {
-    model <- model[-which(names(model) == "z_class")]
+  if ("variable" %in% names(outMixtComp)) {
+    model <- outMixtComp$variable$type
+
+    if (!with.z_class) {
+      model <- model[-which(names(model) == "z_class")]
+    }
+
+    for (varName in names(model)) {
+      model[[varName]] <- list(type = model[[varName]], paramStr = outMixtComp$variable$param[[varName]]$paramStr)
+    }
+
+    return(model)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
   }
 
-  for (varName in names(model)) {
-    model[[varName]] <- list(type = model[[varName]], paramStr = outMixtComp$variable$param[[varName]]$paramStr)
-  }
-
-  return(model)
 }
 
 
 #' @rdname getType
 #' @export
 getVarNames <- function(outMixtComp, with.z_class = FALSE) {
-  varNames <- names(outMixtComp$variable$type)
+  if ("variable" %in% names(outMixtComp)) {
+    varNames <- names(outMixtComp$variable$type)
 
-  if (!with.z_class) {
-    varNames <- varNames[varNames != "z_class"]
+    if (!with.z_class) {
+      varNames <- varNames[varNames != "z_class"]
+    }
+
+    return(varNames)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
   }
-
-  return(varNames)
 }
 
 #' @title Get the tik
@@ -310,22 +341,32 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE) {
 #' @family getter
 #' @export
 getEmpiricTik <- function(outMixtComp) {
-  return(outMixtComp$variable$data$z_class$stat)
+  if ("variable" %in% names(outMixtComp)) {
+    return(outMixtComp$variable$data$z_class$stat)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+    return(c())
+  }
 }
 
 #' @rdname getEmpiricTik
 #' @export
 getTik <- function(outMixtComp, log = TRUE) {
-  logTik <- sweep(
-    outMixtComp$mixture$lnProbaGivenClass,
-    1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
-    "-"
-  )
-  if (!log) {
-    return(exp(logTik))
-  }
+  if ("mixture" %in% names(outMixtComp)) {
+    logTik <- sweep(
+      outMixtComp$mixture$lnProbaGivenClass,
+      1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
+      "-"
+    )
+    if (!log) {
+      return(exp(logTik))
+    }
 
-  return(logTik)
+    return(logTik)
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+    return(c())
+  }
 }
 
 #' @title Get the mixture density
@@ -375,8 +416,15 @@ getTik <- function(outMixtComp, log = TRUE) {
 #' @family getter
 #' @export
 getMixtureDensity <- function(outMixtComp) {
-  logprop <- log(getProportion(outMixtComp))
-  apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(x) sum(exp(x + logprop)))
+  if ("mixture" %in% names(outMixtComp)) {
+    logprop <- log(getProportion(outMixtComp))
+    return(apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(x) sum(exp(x + logprop))))
+  } else {
+    warning("The given MixtComp object only contains failed runs.")
+
+    return(c())
+  }
+
 }
 
 
@@ -430,6 +478,7 @@ getMixtureDensity <- function(outMixtComp) {
 #' @export
 getBIC <- function(outMixtComp) {
   if (is.null(outMixtComp$mixture$BIC)) {
+    warning("The given MixtComp object only contains failed runs.")
     return(NaN)
   }
 
@@ -440,6 +489,7 @@ getBIC <- function(outMixtComp) {
 #' @export
 getICL <- function(outMixtComp) {
   if (is.null(outMixtComp$mixture$ICL)) {
+    warning("The given MixtComp object only contains failed runs.")
     return(NaN)
   }
 

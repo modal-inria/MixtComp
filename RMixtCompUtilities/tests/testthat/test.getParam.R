@@ -125,3 +125,57 @@ test_that("getParamFunc_CS works well", {
   expect_equal(rownames(paramFormatted$beta), c("k: 1", "k: 2"))
   expect_equal(rownames(paramFormatted$sd), c("k: 1", "k: 2"))
 })
+
+failedResLearn <- list(
+  "warnLog" = "something"
+)
+
+test_that("getCompletedData works with failed event", {
+  expect_warning(comp <- getCompletedData(failedResLearn))
+  expect_equal(comp, c())
+})
+
+test_that("getPartition works with failed event", {
+  expect_warning(partition <- getPartition(failedResLearn))
+  expect_equal(partition, c())
+})
+
+test_that("getType works with failed event", {
+  expect_warning(type <- getType(failedResLearn))
+  expect_equal(type, c())
+})
+
+test_that("getModel works with failed event", {
+  expect_warning(model <- getModel(failedResLearn))
+  expect_equal(model, c())
+})
+
+test_that("getVarNames works with failed event", {
+  expect_warning(varNames <- getVarNames(failedResLearn))
+  expect_equal(varNames, c())
+})
+
+test_that("getEmpiricTik works with failed event", {
+  expect_warning(tik <- getEmpiricTik(failedResLearn))
+  expect_equal(tik, c())
+})
+
+test_that("getTik works with failed event", {
+  expect_warning(tik <- getTik(failedResLearn))
+  expect_equal(tik, c())
+})
+
+test_that("getMixtureDensity works with failed event", {
+  expect_warning(dens <- getMixtureDensity(failedResLearn))
+  expect_equal(dens, c())
+})
+
+test_that("getBIC works with failed event", {
+  expect_warning(crit <- getBIC(failedResLearn))
+  expect_equal(crit, NaN)
+})
+
+test_that("getICL works with failed event", {
+  expect_warning(crit <- getICL(failedResLearn))
+  expect_equal(crit, NaN)
+})
