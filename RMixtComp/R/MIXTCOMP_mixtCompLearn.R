@@ -395,8 +395,10 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
 
   ## run predict
   if ("MixtCompLearn" %in% class(resLearn)) {
-    resPredict <- rmcMultiRun(algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]],
-                              nRun, nCore, verbose)
+    resPredict <- rmcMultiRun(
+      algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]],
+      nRun, nCore, verbose
+    )
   } else {
     resPredict <- rmcMultiRun(algo, dataList, model, resLearn, nRun, nCore, verbose)
   }

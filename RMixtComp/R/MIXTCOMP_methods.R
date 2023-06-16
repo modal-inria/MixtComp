@@ -130,12 +130,14 @@ plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, nClass = NULL, pkg = c("ggp
 
     if (!is.null(nClass) && (nClass[1] %in% x$nClass)) {
       p2 <- plot(
-        x$res[[which(x$nClass == nClass[1])]], nVarMaxToPlot = nVarMaxToPlot, nClass = nClass,
+        x$res[[which(x$nClass == nClass[1])]],
+        nVarMaxToPlot = nVarMaxToPlot, nClass = nClass,
         pkg = pkg, plotData = plotData, ...
       )
     } else {
       p2 <- plot(
-        x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot = nVarMaxToPlot, nClass = nClass,
+        x$res[[which(x$nClass == x$algo$nClass)]],
+        nVarMaxToPlot = nVarMaxToPlot, nClass = nClass,
         pkg = pkg, plotData = plotData, ...
       )
     }
