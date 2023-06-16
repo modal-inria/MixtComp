@@ -43,11 +43,13 @@ Datasets with running examples are provided: \link{titanic}, \link{CanadianWeath
 
 
 Documentation about input and output format is available: \code{vignette("dataFormat")} and
-\code{vignette("mixtCompOutput")}.
+\code{vignette("mixtCompObject")}.
+
+MixtComp examples: \code{vignette("MixtComp")} or online \url{https://github.com/vandaele/mixtcomp-notebook}.
+
+Using ClusVis with RMixtComp: \code{vignette("dataFormat")}.
 }
 \examples{
-
-
 data(simData)
 
 # define the algorithm's parameters: you can use createAlgo function

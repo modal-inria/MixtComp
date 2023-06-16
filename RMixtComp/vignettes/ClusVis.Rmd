@@ -2,7 +2,7 @@
 title: "Using ClusVis with RMixtComp Output for Visualization"
 author: "Quentin Grimonprez"
 date: "`r Sys.Date()`"
-output: 
+output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
@@ -23,7 +23,7 @@ Sys.setenv(MC_DETERMINISTIC = 2)
 ## ClusVis
 
 [ClusVis](https://cran.r-project.org/package=ClusVis) is an R package that performs a gaussian-based visualization of gaussian and non-gaussian Model-Based Clustering.
-This visualization is based on the probabilities of classification. See this [preprint](https://hal.archives-ouvertes.fr/hal-01949155v1/document) for more details about the method. It allows to visualize clusters as bivariate spherical gaussian.
+This visualization is based on the probabilities of classification. See this [preprint](https://hal.science/hal-01949155v1/document) for more details about the method. It allows to visualize clusters as bivariate spherical gaussian.
 
 
 ## ClusVis and RMixtComp

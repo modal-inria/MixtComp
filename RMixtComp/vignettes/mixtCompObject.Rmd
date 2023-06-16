@@ -2,11 +2,11 @@
 title: "Overview of MixtComp Object"
 author: "Quentin Grimonprez"
 date: "`r Sys.Date()`"
-output: 
+output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{MixtComp Object}
+  %\VignetteIndexEntry{Overview of MixtComp Object}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
