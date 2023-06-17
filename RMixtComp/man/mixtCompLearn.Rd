@@ -54,7 +54,7 @@ and the best according to observed likelihood is kept.}
 }
 \value{
 An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp
-for \emph{mixtCompPredict}.
+for \emph{mixtCompPredict} (see details section).
 }
 \description{
 Estimate the parameter of a mixture model or predict the cluster of new samples.

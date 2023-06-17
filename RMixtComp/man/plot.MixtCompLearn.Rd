@@ -26,6 +26,9 @@
 
 \item{...}{extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}}
 }
+\value{
+\code{ggplot2} or \code{plotly} object
+}
 \description{
 Plot of a \emph{MixtCompLearn} object
 }

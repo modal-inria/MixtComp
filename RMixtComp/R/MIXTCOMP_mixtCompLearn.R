@@ -34,7 +34,7 @@
 #' @param verbose if TRUE, print some information.
 #'
 #' @return An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp
-#' for \emph{mixtCompPredict}.
+#' for \emph{mixtCompPredict} (see details section).
 #'
 #' @details
 #' The \emph{data} object can be a matrix, a data.frame or a list.

@@ -13,6 +13,9 @@
 
 \item{...}{Not used.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Summary of a \emph{MixtCompLearn} object
 }

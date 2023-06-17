@@ -15,10 +15,14 @@
 
 #' Plot BIC and ICL
 #'
+#' Plot BIC and ICL with regards to the number of classes
+#'
 #' @param output \emph{MixtCompLearn} object
 #' @param crit criterion to plot (can be "BIC", "ICL" or  c("BIC", "ICL") (default))
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
+#'
+#' @return \code{ggplot2} or \code{plotly} object
 #'
 #' @examples
 #' data(iris)

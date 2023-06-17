@@ -22,6 +22,7 @@
 #' @param nClass number of classes of the model to print
 #' @param ... Not used.
 #'
+#' @return No return value, called for side effects
 #'
 #' @method summary MixtCompLearn
 #'
@@ -63,6 +64,8 @@ summary.MixtCompLearn <- function(object, nClass = NULL, ...) {
 #' @param nClass number of classes of the model to print
 #' @param ... Not used.
 #'
+#' @return No return value, called for side effects
+#'
 #' @examples
 #' data(iris)
 #'
@@ -103,6 +106,8 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...) {
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param plotData "CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}
 #' @param ... extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}
+#'
+#' @return \code{ggplot2} or \code{plotly} object
 #'
 #' @examples
 #' data(iris)
