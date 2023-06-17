@@ -12,14 +12,14 @@ Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Julien", "Vandaele", role = c("ctb", "cre"), email = "julien.vandaele@inria.fr"))
 Copyright: Inria - Université de Lille - CNRS
 License: AGPL-3
-Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a project to build mixture models with
-    heterogeneous data sets and partially missing data management.
+Description: Mixture Composer (Biernacki (2015) <https://inria.hal.science/hal-01253393v1>) is a project to perform clustering using mixture models with
+    heterogeneous data and partially missing data. Mixture models are fitted using a SEM algorithm.
     It includes 8 models for real, categorical, counting, functional and ranking data.
 URL: https://github.com/modal-inria/MixtComp
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: RMixtCompIO(>= 4.0.4), ggplot2, plotly, scales
 Depends: RMixtCompUtilities (>= 4.1.4)
 Suggests: testthat, xml2, Rmixmod, knitr, ClusVis, rmarkdown
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 VignetteBuilder: knitr

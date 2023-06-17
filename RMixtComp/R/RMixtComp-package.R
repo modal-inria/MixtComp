@@ -29,12 +29,14 @@
 #' @name RMixtComp-package
 #' @description
 #' MixtComp (Mixture Composer, \url{https://github.com/modal-inria/MixtComp}) is a model-based clustering package
-#' for mixed data.
+#' for mixed data. It used mixture models (McLachlan and Peel, 2010) fitted using a SEM algorithm (Celeux et al., 1995) to cluster the data.
 #'
 #' It has been engineered around the idea of easy and quick integration of all new univariate models, under the conditional
 #' independence assumption.
+#'
 #' Five basic models (Gaussian, Multinomial, Poisson, Weibull, NegativeBinomial) are implemented, as well as two
-#' advanced models (Func_CS and Rank_ISR).
+#' advanced models: Func_CS for functional data (Same et al., 2011) and Rank_ISR for ranking data (Jacques and Biernacki, 2014).
+#'
 #' MixtComp has the ability to natively manage missing data (completely or by interval).
 #'
 #'
@@ -104,6 +106,17 @@
 #'
 #' partitionPred <- getPartition(resPred)
 #' print(resPred)
+#'
+#' @references
+#' C. Biernacki. MixtComp software: Model-based clustering/imputation with mixed data, missing data and uncertain data. MISSDATA 2015, Jun 2015, Rennes, France. hal-01253393
+#'
+#' G. McLachlan, D. Peel (2000). Finite Mixture Models. Wiley Series in Probability and Statistics, 1st edition. John Wiley & Sons. doi:10.1002/0471721182.
+#'
+#' G. Celeux, D. Chauveau, J. Diebolt. On Stochastic Versions of the EM Algorithm. [Research Report] RR-2514, INRIA. 1995. inria-00074164
+#'
+#' A. Same, F. Chamroukhi, G. Govaert, P. Aknin. (2011). Model-based clustering and segmentation of time series with change in regime. Adv. Data Analysis and Classification. 5. 301-321. 10.1007/s11634-011-0096-5.
+#'
+#' J. Jacques, C. Biernacki. (2014). Model-based clustering for multivariate partial ranking data. Journal of Statistical Planning and Inference. 149. 10.1016/j.jspi.2014.02.011.
 #'
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}} \code{\link{RMixtCompUtilities-package}},
 #' \code{\link{RMixtCompIO-package}}. Other clustering packages: \code{Rmixmod}
