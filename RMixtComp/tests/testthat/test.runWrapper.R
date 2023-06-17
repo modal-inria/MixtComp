@@ -64,7 +64,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   )
 
 
-  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn, nCore = 1), regexp = NA)
 
   if (!is.null(resPredict$warnLog)) {
     print(resPredict$warnLog)
@@ -98,7 +98,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   dat$categ1[c(1, 10)] <- NA
   dat$categ2[c(2, 11)] <- NA
 
-  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2, nCore = 1), regexp = NA)
 
   if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
@@ -138,7 +138,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
 
 
 
-  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn, nCore = 1), regexp = NA)
 
   if (!is.null(resPredict$warnLog)) {
     print(resPredict$warnLog)
@@ -170,7 +170,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   dat$categ1 <- NULL
   dat$categ2 <- NULL
 
-  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2, nCore = 1), regexp = NA)
 
   if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
@@ -185,7 +185,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
 
 
   dat$z_class <- NULL
-  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn, nCore = 1), regexp = NA)
   expect_gte(RMixtCompIO:::rand.index(getPartition(resPredict), rep(1:2, each = 150)), 0.95)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list())
@@ -198,7 +198,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
 
   names(iris)[5] <- "z_class"
 
-  expect_warning(resLearn <- mixtCompLearn(iris, nClass = 3), regexp = NA)
+  expect_warning(resLearn <- mixtCompLearn(iris, nClass = 3, nCore = 1), regexp = NA)
 
   if (!is.null(resLearn$warnLog)) {
     print(resLearn$warnLog)
@@ -223,7 +223,7 @@ test_that("plot in basic mode + predict works with z_class as character", {
   expect_equal(resLearn$variable$data$z_class$completed, as.character(iris$z_class))
   expect_equal(rownames(resLearn$variable$param$z_class$stat), c("k: setosa", "k: versicolor", "k: virginica"))
 
-  expect_warning(resPredict <- mixtCompPredict(iris[, 1:4], resLearn = resLearn), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(iris[, 1:4], resLearn = resLearn, nCore = 1), regexp = NA)
 
   if (!is.null(resPredict$warnLog)) {
     print(resPredict$warnLog)
@@ -344,7 +344,7 @@ test_that("mixtCompLearn works + mixtCompPredict + predict", {
   }
 
 
-  expect_warning(resPredict <- mixtCompPredict(data, desc, resLearn = resLearn, verbose = FALSE), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(data, desc, resLearn = resLearn, verbose = FALSE, nCore = 1), regexp = NA)
   expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict)) / resPredict$algo$nInd, 0.1)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
@@ -479,7 +479,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   expect_warning(print(resLearn), regexp = NA)
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
 
-  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3, verbose = TRUE, nCore = 1), regexp = NA)
 
   if (!is.null(resPredict$warnLog)) {
     print(resPredict$warnLog)
@@ -598,7 +598,7 @@ test_that("mixtCompLearn works in hierarchicalMode", {
 
 
   expect_warning(
-    resPredict <- mixtCompPredict(simData$dataPredict$matrix, model, algo, resLearn, nClass = 2, verbose = TRUE),
+    resPredict <- mixtCompPredict(simData$dataPredict$matrix, model, algo, resLearn, nClass = 2, verbose = TRUE, nCore = 1),
     regexp = NA
   )
   if (!is.null(resPredict$warnLog)) {

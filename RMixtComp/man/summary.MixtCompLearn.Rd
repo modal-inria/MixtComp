@@ -23,7 +23,7 @@ Summary of a \emph{MixtCompLearn} object
 data(iris)
 
 # run RMixtComp in unsupervised clustering mode and in basic mode
-resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4, nCore = 1)
 
 summary(resLearn)
 summary(resLearn, nClass = 3)

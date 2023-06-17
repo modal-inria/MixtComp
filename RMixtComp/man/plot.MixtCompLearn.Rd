@@ -36,7 +36,7 @@ Plot of a \emph{MixtCompLearn} object
 data(iris)
 
 # run RMixtComp in unsupervised clustering mode and in basic mode
-resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4, nCore = 1)
 
 plot(resLearn)
 plot(resLearn, nClass = 3, plotData = "Boxplot")

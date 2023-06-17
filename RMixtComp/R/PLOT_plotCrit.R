@@ -37,7 +37,7 @@
 #' )
 #'
 #' # run RMixtComp in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(iris, model, algo, nClass = 1:4)
+#' res <- mixtCompLearn(iris, model, algo, nClass = 1:4, nCore = 1)
 #'
 #' # plot
 #' plotCrit(res)

@@ -30,7 +30,7 @@
 #' data(iris)
 #'
 #' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4, nCore = 1)
 #'
 #' summary(resLearn)
 #' summary(resLearn, nClass = 3)
@@ -70,7 +70,7 @@ summary.MixtCompLearn <- function(object, nClass = NULL, ...) {
 #' data(iris)
 #'
 #' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4, nCore = 1)
 #'
 #' print(resLearn)
 #' print(resLearn, nClass = 3)
@@ -113,7 +113,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...) {
 #' data(iris)
 #'
 #' # run RMixtComp in unsupervised clustering mode and in basic mode
-#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4, nCore = 1)
 #'
 #' plot(resLearn)
 #' plot(resLearn, nClass = 3, plotData = "Boxplot")

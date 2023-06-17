@@ -53,7 +53,7 @@
 #                    nInitPerClass = 10,
 #                    nSemTry = 20)
 #
-# res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4)
+# res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4, nCore = 1)
 # }
 #
 # @author Quentin Grimonprez

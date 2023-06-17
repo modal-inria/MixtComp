@@ -99,7 +99,7 @@
 #' # run RMixtComp for predicting
 #' resPred <- mixtCompPredict(
 #'     simData$dataPredict$matrix, simData$model$unsupervised[1:3], algo,
-#'     resLearn
+#'     resLearn, nCore = 1
 #' )
 #'
 #' partitionPred <- getPartition(resPred)
