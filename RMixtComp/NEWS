@@ -1,3 +1,8 @@
+v4.1.4 2023-06-17
+- add references
+- add missing return value in documentation
+- change maintainer
+- correct vignette URL and index entries
 - remove blockcluster from suggested packages
 - lint
 
