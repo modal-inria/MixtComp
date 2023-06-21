@@ -57,7 +57,7 @@ add_subdirectory(lib)
 
 
 # Expose MixtComp's definitions to other subprojects through cache variable.
-set(${PROJECT_NAME}_DEFINITIONS -DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/EigenMatrixBaseAddons.h\"
+set(${PROJECT_NAME}_DEFINITIONS -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/EigenMatrixBaseAddons.h\"
     CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
 # Expose MixtComp's public includes to other subprojects through cache variable.
