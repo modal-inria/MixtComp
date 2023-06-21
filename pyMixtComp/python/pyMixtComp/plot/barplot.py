@@ -5,7 +5,7 @@ from ..utils.criterion import compute_discriminative_power_class, compute_discri
 
 
 def plot_discriminative_power_variable(res, class_id=None, ax=None):
-    """ Plot the discriminative power of variables
+    """Plot the discriminative power of variables
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ def plot_discriminative_power_class(res, ax=None):
 
 
 def plot_proportion(res, ax=None):
-    """ Plot the class proportion
+    """Plot the class proportion
 
     Parameters
     ----------
@@ -79,7 +79,7 @@ def plot_proportion(res, ax=None):
 
 
 def _barplot(heights, title, xlabel, ylabel, ax=None):
-    """ Common functions for plotting barplot
+    """Common functions for plotting barplot
 
     Parameters
     ----------

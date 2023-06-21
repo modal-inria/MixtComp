@@ -10,7 +10,7 @@ from .functional import extract_CI_Func_CS, plot_functional_data
 
 
 def plot_data(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
-    """ Plot Data Distribution
+    """Plot Data Distribution
 
     Parameters
     ----------
@@ -63,14 +63,23 @@ def plot_data(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
 
 
 def boxplot_per_class_numerical(bounds, var_name, ax=None):
-    """ plot_data part for a numerical variable """
+    """plot_data part for a numerical variable"""
 
     color = sns.color_palette()
     ax = ax or plt.figure().add_subplot(1, 1, 1)
     i = 0
     for _, row in bounds.iterrows():
-        ax.add_patch(patches.Rectangle((row.iloc[1], i), width=row.iloc[3]-row.iloc[1],
-                                       height=0.8, fill=True, edgecolor="black", lw=1.5, facecolor=color[i % len(color)]))
+        ax.add_patch(
+            patches.Rectangle(
+                (row.iloc[1], i),
+                width=row.iloc[3] - row.iloc[1],
+                height=0.8,
+                fill=True,
+                edgecolor="black",
+                lw=1.5,
+                facecolor=color[i % len(color)],
+            )
+        )
         ax.plot(row.iloc[:2].values, [i + 0.4] * 2, c="black")
         ax.plot(row.iloc[-2:].values, [i + 0.4] * 2, c="black")
         ax.plot([row.iloc[2]] * 2, [i, i + 0.8], c="black")
@@ -82,7 +91,7 @@ def boxplot_per_class_numerical(bounds, var_name, ax=None):
 
 
 def barplot_per_class_categorical(bounds, var_name, ax=None):
-    """ plot_data part for a categorical variable """
+    """plot_data part for a categorical variable"""
 
     bounds2 = pd.DataFrame()
     bounds2["Probability"] = bounds.values.flatten()
@@ -97,7 +106,7 @@ def barplot_per_class_categorical(bounds, var_name, ax=None):
 
 
 def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
-    """ Compute quantiles for boxplot for boxplot_per_class_numerical
+    """Compute quantiles for boxplot for boxplot_per_class_numerical
 
     Returns
     -------
@@ -115,13 +124,14 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
     cum_sums = tik.iloc[ordered_indices].cumsum()
     cum_sums /= cum_sums.iloc[-1]
 
-    q = [.05, .25, .5, .75, .95]
+    q = [0.05, 0.25, 0.5, 0.75, 0.95]
     thresholds = np.zeros((res["algo"]["nClass"], len(q)))
     for i in range(len(q)):
         thresholds[:, i] = obs[ordered_indices[np.argmin(abs(cum_sums - q[i]).values, axis=0)]]
 
-    thresholds = pd.DataFrame(thresholds, columns=["q" + str(i) for i in q],
-                              index=[x.replace("k:", "Class") for x in tik.columns])
+    thresholds = pd.DataFrame(
+        thresholds, columns=["q" + str(i) for i in q], index=[x.replace("k:", "Class") for x in tik.columns]
+    )
     thresholds = thresholds.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
@@ -131,7 +141,7 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
 
 
 def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False):
-    """ Compute the proportion of every label in every class
+    """Compute the proportion of every label in every class
 
     Returns
     -------
@@ -150,8 +160,7 @@ def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False)
     for i in range(len(levels)):
         probas[:, i] = (tik * (obs == levels[i])[:, np.newaxis]).sum() / tik.sum()
 
-    probas = pd.DataFrame(probas, columns=levels,
-                          index=[x.replace("k:", "Class") for x in tik.columns])
+    probas = pd.DataFrame(probas, columns=levels, index=[x.replace("k:", "Class") for x in tik.columns])
     probas = probas.loc[["Class " + str(id) for id in class_ids]]
 
     if all:

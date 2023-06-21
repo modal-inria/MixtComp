@@ -6,7 +6,7 @@ from ..utils.criterion import compute_class_similarity, compute_variable_similar
 
 
 def plot_class_similarity(res, ax=None):
-    """ Plot the similarity between classes
+    """Plot the similarity between classes
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ def plot_class_similarity(res, ax=None):
 
 
 def plot_variable_similarity(res, ax=None):
-    """ Plot the similarity between variables
+    """Plot the similarity between variables
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def plot_variable_similarity(res, ax=None):
 
 
 def plot_tik(res, ax=None):
-    """ Heatmap of the tik = P(Z_i=k|x_i)
+    """Heatmap of the tik = P(Z_i=k|x_i)
 
     Observation are sorted according to the hard partition then for each component
     they are sorted by decreasing order of their tik
@@ -94,15 +94,18 @@ def plot_tik(res, ax=None):
     tik = res["variable"]["data"]["z_class"]["stat"]
     predicted_class = res["variable"]["data"]["z_class"]["completed"].astype(str)
 
-    order_tik = np.zeros((0, ))
+    order_tik = np.zeros((0,))
     for k in range(tik.shape[1]):
         class_id = tik.columns[k].replace("k: ", "")
         order_tik = np.concatenate(
-            (order_tik,
-             np.argsort(tik.values[:, k] * (predicted_class == class_id))[::-1][:(predicted_class == class_id).sum()]))
+            (
+                order_tik,
+                np.argsort(tik.values[:, k] * (predicted_class == class_id))[::-1][: (predicted_class == class_id).sum()],
+            )
+        )
 
     ax = ax or plt.figure().add_subplot(1, 1, 1)
-    sns.heatmap(data=tik.iloc[order_tik, ], vmin=0, vmax=1, annot=False, cmap="coolwarm", ax=ax)
+    sns.heatmap(data=tik.iloc[order_tik, :], vmin=0, vmax=1, annot=False, cmap="coolwarm", ax=ax)
     ax.set_title("Probabilities of classification")
 
     return ax

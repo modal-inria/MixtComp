@@ -10,12 +10,11 @@ from .. import pyMixtCompBridge
 
 
 def run_pmc(i, algo, data, model, param):
-
     return pyMixtCompBridge.pmc(algo, data, model, param)
 
 
 def multi_run_pmc_pool(algo, data, model, param, n_run, n_core):
-    """ Run pmc multiple times
+    """Run pmc multiple times
 
     The best model according to the observed loglikelihood is kept
 
@@ -38,7 +37,7 @@ def multi_run_pmc_pool(algo, data, model, param, n_run, n_core):
     run_pmc_i = partial(run_pmc, algo=algo, data=data, model=model, param=param)
     out = p.map(run_pmc_i, range(n_run))
 
-    loglikelihood = np.full((n_run, ), -np.inf)
+    loglikelihood = np.full((n_run,), -np.inf)
     for i in range(n_run):
         if "warnLog" not in out[i].keys():
             loglikelihood[i] = out[i]["mixture"]["lnObservedLikelihood"]

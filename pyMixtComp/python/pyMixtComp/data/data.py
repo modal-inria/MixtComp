@@ -3,7 +3,7 @@ import pkg_resources
 
 
 def load_iris():
-    """ Iris data
+    """Iris data
 
     The iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width,
     respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
@@ -28,14 +28,18 @@ def load_iris():
     """
     stream = pkg_resources.resource_stream(__name__, "iris.csv")
     data = pd.read_csv(stream)
-    model = {"sepal length (cm)": "Gaussian", "sepal width (cm)": "Gaussian",
-             "petal length (cm)": "Gaussian", "petal width (cm)": "Gaussian"}
+    model = {
+        "sepal length (cm)": "Gaussian",
+        "sepal width (cm)": "Gaussian",
+        "petal length (cm)": "Gaussian",
+        "petal width (cm)": "Gaussian",
+    }
 
     return data, model
 
 
 def load_prostate():
-    """ Prostate cancer data
+    """Prostate cancer data
 
     This data set was obtained from a randomized clinical trial comparing four treatments for n = 506 patients
     with prostatic cancer grouped on clinical criteria into two Stages 3 and 4 of the disease.
@@ -74,15 +78,26 @@ def load_prostate():
     """
     stream = pkg_resources.resource_stream(__name__, "prostate.csv")
     data = pd.read_csv(stream, dtype=object)
-    model = {"Age": "Gaussian", "Wt": "Gaussian", "PF": "Multinomial", "HX": "Multinomial",
-             "SBP": "Gaussian", "DBP": "Gaussian", "EKG": "Multinomial", "HG": "Gaussian",
-             "SZ": "Gaussian", "SG": "Gaussian", "AP": "Gaussian", "BM": "Multinomial"}
+    model = {
+        "Age": "Gaussian",
+        "Wt": "Gaussian",
+        "PF": "Multinomial",
+        "HX": "Multinomial",
+        "SBP": "Gaussian",
+        "DBP": "Gaussian",
+        "EKG": "Multinomial",
+        "HG": "Gaussian",
+        "SZ": "Gaussian",
+        "SG": "Gaussian",
+        "AP": "Gaussian",
+        "BM": "Multinomial",
+    }
 
     return data, model
 
 
 def load_simulated_data():
-    """ Simulated data
+    """Simulated data
 
     Data simulated from the different models used in MixtComp.
 
@@ -99,17 +114,22 @@ def load_simulated_data():
     """
     stream = pkg_resources.resource_stream(__name__, "simulated_data.csv")
     data = pd.read_csv(stream, dtype=object)
-    model = {"Poisson1": "Poisson", "Gaussian1": "Gaussian", "Categorical1": "Multinomial",
-             "nBinom1": "NegativeBinomial", "Weibull1": "Weibull",
-             "Functional1": {"type": "Func_CS", "paramStr": "nSub: 2, nCoeff: 2"},
-             "FunctionalSharedAlpha1": {"type": "Func_SharedAlpha_CS", "paramStr": "nSub: 2, nCoeff: 2"},
-             "Rank1": "Rank_ISR"}
+    model = {
+        "Poisson1": "Poisson",
+        "Gaussian1": "Gaussian",
+        "Categorical1": "Multinomial",
+        "nBinom1": "NegativeBinomial",
+        "Weibull1": "Weibull",
+        "Functional1": {"type": "Func_CS", "paramStr": "nSub: 2, nCoeff: 2"},
+        "FunctionalSharedAlpha1": {"type": "Func_SharedAlpha_CS", "paramStr": "nSub: 2, nCoeff: 2"},
+        "Rank1": "Rank_ISR",
+    }
 
     return data, model
 
 
 def load_canadian_weather():
-    """ Canadian average annual weather cycle
+    """Canadian average annual weather cycle
 
     Daily temperature and precipitation at 35 different locations in Canada averaged over 1960 to 1994.
     Data from fda R package.
@@ -133,7 +153,9 @@ def load_canadian_weather():
     """
     stream = pkg_resources.resource_stream(__name__, "canadian_weather.csv")
     data = pd.read_csv(stream, dtype=object)
-    model = {"tempav": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"},
-             "precav": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"}}
+    model = {
+        "tempav": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"},
+        "precav": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"},
+    }
 
     return data, model

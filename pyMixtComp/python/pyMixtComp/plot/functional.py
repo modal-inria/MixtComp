@@ -6,12 +6,18 @@ from scipy.stats import norm
 
 
 def plot_functional_data(bounds, res, var_name, add_obs=False, add_ci=True, ax=None):
-    """ Plot bounds for functional data"""
+    """Plot bounds for functional data"""
     ax = ax or plt.figure().add_subplot(1, 1, 1)
     if add_obs:
         for i in range(len(res["variable"]["data"][var_name]["time"])):
-            sns.lineplot(x=res["variable"]["data"][var_name]["time"][i], y=res["variable"]["data"][var_name]["data"][i],
-                         linewidth=2, alpha=0.5, color="black", ax=ax)
+            sns.lineplot(
+                x=res["variable"]["data"][var_name]["time"][i],
+                y=res["variable"]["data"][var_name]["data"][i],
+                linewidth=2,
+                alpha=0.5,
+                color="black",
+                ax=ax,
+            )
 
     for i in bounds[4]:
         sns.lineplot(x=bounds[0], y=bounds[2][i], label="Class " + str(i), ax=ax)
@@ -28,7 +34,7 @@ def plot_functional_data(bounds, res, var_name, add_obs=False, add_ci=True, ax=N
 
 
 def extract_CI_Func_CS(res, var_name, class_ids=None):
-    """ Compute mean and 95% CI for functional model"""
+    """Compute mean and 95% CI for functional model"""
     n_class = res["algo"]["nClass"]
 
     if class_ids is None:
@@ -43,10 +49,10 @@ def extract_CI_Func_CS(res, var_name, class_ids=None):
     n_coeff = int(len(param["beta"]["stat"]) / n_class / n_sub)
 
     alpha = param["alpha"]["stat"]["median"].values.reshape(-1, 2)
-    alpha = [alpha[(g * n_sub):((g+1) * n_sub)] for g in range(n_class)]
+    alpha = [alpha[(g * n_sub) : ((g + 1) * n_sub)] for g in range(n_class)]
 
     beta = param["beta"]["stat"]["median"].values.reshape(-1, n_coeff)
-    beta = [beta[(g * n_sub):((g+1) * n_sub)] for g in range(n_class)]
+    beta = [beta[(g * n_sub) : ((g + 1) * n_sub)] for g in range(n_class)]
     sigma = param["sd"]["stat"]["median"].values.reshape(n_class, n_sub)
 
     inf_curves, mean_curves, sup_curves = compute_functional_bounds(time_values, alpha, beta, sigma, class_ids)
@@ -55,7 +61,7 @@ def extract_CI_Func_CS(res, var_name, class_ids=None):
 
 
 def compute_functional_bounds(time_values, alpha, beta, sigma, class_ids):
-    """ Compute lower, mean and upper curve for each class """
+    """Compute lower, mean and upper curve for each class"""
     n_class = len(alpha)
     func_mean = np.empty((n_class, len(time_values)))
     func_lower = np.empty((n_class, len(time_values)))
@@ -85,7 +91,7 @@ def _compute_functional_weights(t, alpha):
 def _compute_functional_trends(t, beta):
     trends = 0
     for i in range(beta.shape[1]):
-        trends += beta[:, i] * t ** i
+        trends += beta[:, i] * t**i
 
     return trends
 
@@ -96,7 +102,7 @@ def objective_functional(x, pi, mu, s, threshold):
 
 
 def _compute_functional_bound(weights, means, sigma, bound):
-    """ estimate the quantile at level bound for functional model"""
+    """estimate the quantile at level bound for functional model"""
     bracket = np.array([norm.ppf(bound - 0.001, means, sigma), norm.ppf(bound + 0.001, means, sigma)])
     bracket = [bracket.min(), bracket.max()]
 

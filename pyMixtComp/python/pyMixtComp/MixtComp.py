@@ -14,7 +14,7 @@ from .bridge.utils import create_algo, format_data_basic_mode, format_model, for
 
 
 class MixtComp(BaseEstimator):
-    """ Mixture model
+    """Mixture model
 
     Estimate the parameter of a mixture model or predict the cluster of new samples.
     It manages heterogeneous data as well as missing and incomplete data.
@@ -164,13 +164,37 @@ class MixtComp(BaseEstimator):
 
     >>> mod.predict(data[-50:], model)
     """
-    def __init__(self, n_components, n_burn_in_iter=50, n_iter=50, n_gibbs_burn_in_iter=50, n_gibbs_iter=50,
-                 n_init_per_class=50, n_sem_try=20, confidence_level=0.95,
-                 ratio_stable_criterion=0.99, n_stable_criterion=20, n_init=1, n_core=None, random_state=None):
 
-        self._check_init(n_components, n_burn_in_iter, n_iter, n_gibbs_burn_in_iter, n_gibbs_iter,
-                         n_init_per_class, n_sem_try, confidence_level, ratio_stable_criterion,
-                         n_stable_criterion, n_init, n_core)
+    def __init__(
+        self,
+        n_components,
+        n_burn_in_iter=50,
+        n_iter=50,
+        n_gibbs_burn_in_iter=50,
+        n_gibbs_iter=50,
+        n_init_per_class=50,
+        n_sem_try=20,
+        confidence_level=0.95,
+        ratio_stable_criterion=0.99,
+        n_stable_criterion=20,
+        n_init=1,
+        n_core=None,
+        random_state=None,
+    ):
+        self._check_init(
+            n_components,
+            n_burn_in_iter,
+            n_iter,
+            n_gibbs_burn_in_iter,
+            n_gibbs_iter,
+            n_init_per_class,
+            n_sem_try,
+            confidence_level,
+            ratio_stable_criterion,
+            n_stable_criterion,
+            n_init,
+            n_core,
+        )
 
         self.n_components = n_components
         self.n_init = n_init
@@ -192,9 +216,21 @@ class MixtComp(BaseEstimator):
         self.ratio_stable_criterion = ratio_stable_criterion
         self.n_stable_criterion = n_stable_criterion
 
-    def _check_init(self, n_components, n_burn_in_iter, n_iter, n_gibbs_burn_in_iter, n_gibbs_iter,
-                    n_init_per_class, n_sem_try, confidence_level, ratio_stable_criterion,
-                    n_stable_criterion, n_init, n_core):
+    def _check_init(
+        self,
+        n_components,
+        n_burn_in_iter,
+        n_iter,
+        n_gibbs_burn_in_iter,
+        n_gibbs_iter,
+        n_init_per_class,
+        n_sem_try,
+        confidence_level,
+        ratio_stable_criterion,
+        n_stable_criterion,
+        n_init,
+        n_core,
+    ):
         check_scalar(n_components, min_val=1, name="n_components", target_type=int)
         check_scalar(n_burn_in_iter, min_val=1, name="n_burn_in_iter", target_type=int)
         check_scalar(n_iter, min_val=1, name="n_iter", target_type=int)
@@ -218,7 +254,7 @@ class MixtComp(BaseEstimator):
             raise TypeError("model must be a dict with variable names as key.")
 
     def fit(self, X, model=None):
-        """ Estimate model parameters with the SEM algorithm.
+        """Estimate model parameters with the SEM algorithm.
 
         Parameters
         ----------
@@ -249,7 +285,7 @@ class MixtComp(BaseEstimator):
         self._check_X(X)
         self._check_model(model)
 
-        self._basic_mode = (model is None)
+        self._basic_mode = model is None
 
         if self._basic_mode:
             model = impute_model(X)
@@ -312,7 +348,7 @@ class MixtComp(BaseEstimator):
         return self.res_predict_["variable"]["data"]["z_class"]["completed"]
 
     def plot_discriminative_power_variable(self, class_id=None, ax=None):
-        """ Plot the discriminative power of variables
+        """Plot the discriminative power of variables
 
         Parameters
         ----------
@@ -348,7 +384,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_discriminative_power_class(self.res_, ax)
 
     def plot_proportion(self, ax=None):
-        """ Plot a barplot with proportion's mixture
+        """Plot a barplot with proportion's mixture
 
         Parameters
         ----------
@@ -364,7 +400,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_proportion(self.res_, ax)
 
     def plot_class_similarity(self, ax=None):
-        """ Plot the similarity between classes
+        """Plot the similarity between classes
 
         Parameters
         ----------
@@ -390,7 +426,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_class_similarity(self.res_, ax)
 
     def plot_variable_similarity(self, ax=None):
-        """ Plot the similarity between variables
+        """Plot the similarity between variables
 
         Parameters
         ----------
@@ -418,7 +454,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_variable_similarity(self.res_, ax)
 
     def plot_tik(self, ax=None):
-        """ Heatmap of the tik = P(Z_i=k|x_i)
+        """Heatmap of the tik = P(Z_i=k|x_i)
 
         Observation are sorted according to the hard partition then for each component
         they are sorted by decreasing order of their tik
@@ -437,7 +473,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_tik(self.res_, ax)
 
     def plot_data_CI(self, var_name, class_ids=None, all=False, ax=None, **kwargs):
-        """ Mean and 95%-level confidence intervals per class
+        """Mean and 95%-level confidence intervals per class
 
         Parameters
         ----------
@@ -465,7 +501,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_data_CI(self.res_, var_name, class_ids, all, ax, **kwargs)
 
     def plot_data(self, var_name, class_ids=None, all=False, ax=None, **kwargs):
-        """ Boxplot per class
+        """Boxplot per class
 
         Parameters
         ----------
@@ -490,7 +526,7 @@ class MixtComp(BaseEstimator):
         return plot.plot_data(self.res_, var_name, class_ids, all, ax, **kwargs)
 
     def aic(self, X=None):
-        """ Akaike information criterion for the current model on the input X.
+        """Akaike information criterion for the current model on the input X.
 
         Parameters
         ----------
@@ -510,7 +546,7 @@ class MixtComp(BaseEstimator):
             return self.res_predict_["mixture"]["lnObservedLikelihood"] - self.res_predict_["mixture"]["nbFreeParameters"]
 
     def bic(self, X=None):
-        """ Bayesian information criterion for the current model on the input X.
+        """Bayesian information criterion for the current model on the input X.
 
         Parameters
         ----------
@@ -530,7 +566,7 @@ class MixtComp(BaseEstimator):
             return self.res_predict_["mixture"]["BIC"]
 
     def icl(self, X=None):
-        """ Integrated Complete-data Likelihood for the current model on the input X.
+        """Integrated Complete-data Likelihood for the current model on the input X.
 
         Parameters
         ----------
@@ -638,7 +674,7 @@ class MixtComp(BaseEstimator):
             return self.res_predict_["mixture"]["lnObservedLikelihood"]
 
     def get_param(self, var_name):
-        """ Get the estimated parameters
+        """Get the estimated parameters
 
         Parameters
         ----------

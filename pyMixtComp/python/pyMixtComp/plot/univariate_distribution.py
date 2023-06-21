@@ -13,7 +13,7 @@ from .univariate_boxplot import barplot_per_class_categorical
 
 
 def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
-    """ Plot Mean and 95%-level confidence intervals per class
+    """Plot Mean and 95%-level confidence intervals per class
 
     Parameters
     ----------
@@ -57,20 +57,15 @@ def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
     model = res["variable"]["type"][var_name]
 
     if model == "Gaussian":
-        return plot_CI_numerical(extract_CI_gaussian(res, var_name, class_ids, all),
-                                 var_name, ax)
+        return plot_CI_numerical(extract_CI_gaussian(res, var_name, class_ids, all), var_name, ax)
     elif model == "Multinomial":
-        return barplot_per_class_categorical(extract_CI_multinomial(res, var_name, class_ids, all),
-                                             var_name, ax)
+        return barplot_per_class_categorical(extract_CI_multinomial(res, var_name, class_ids, all), var_name, ax)
     elif model == "Poisson":
-        return plot_CI_numerical(extract_CI_poisson(res, var_name, class_ids, all),
-                                 var_name, ax)
+        return plot_CI_numerical(extract_CI_poisson(res, var_name, class_ids, all), var_name, ax)
     elif model == "NegativeBinomial":
-        return plot_CI_numerical(extract_CI_nbinom(res, var_name, class_ids, all),
-                                 var_name, ax)
+        return plot_CI_numerical(extract_CI_nbinom(res, var_name, class_ids, all), var_name, ax)
     elif model == "Weibull":
-        return plot_CI_numerical(extract_CI_weibull(res, var_name, class_ids, all),
-                                 var_name, ax)
+        return plot_CI_numerical(extract_CI_weibull(res, var_name, class_ids, all), var_name, ax)
     elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
         return plot_functional_data(extract_CI_Func_CS(res, var_name, class_ids), res, var_name, ax=ax, **kwargs)
     else:
@@ -82,8 +77,18 @@ def plot_CI_numerical(ci, var_name, ax=None):
     ax = ax or plt.figure().add_subplot(1, 1, 1)
     i = 0
     for _, row in ci.iterrows():
-        ax.add_patch(patches.Rectangle((row.iloc[1], i), width=row.iloc[2]-row.iloc[1], alpha=0.5,
-                                       height=0.8, fill=True, edgecolor="black", lw=1.5, facecolor=color[i % len(color)]))
+        ax.add_patch(
+            patches.Rectangle(
+                (row.iloc[1], i),
+                width=row.iloc[2] - row.iloc[1],
+                alpha=0.5,
+                height=0.8,
+                fill=True,
+                edgecolor="black",
+                lw=1.5,
+                facecolor=color[i % len(color)],
+            )
+        )
         plt.scatter([row.iloc[0]], [i + 0.4], c="black", s=10, axes=ax)
         i += 1
 
@@ -95,16 +100,20 @@ def plot_CI_numerical(ci, var_name, ax=None):
 
 
 def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
-    """ Compute mean and 95% CI of the estimated gaussian distribution """
+    """Compute mean and 95% CI of the estimated gaussian distribution"""
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
 
-    ci = pd.DataFrame({"mean": theta[:, 0],
-                       "lower": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
-                       "upper": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.975)},
-                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
+    ci = pd.DataFrame(
+        {
+            "mean": theta[:, 0],
+            "lower": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
+            "upper": norm(loc=theta[:, 0], scale=theta[:, 1]).ppf(0.975),
+        },
+        index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
+    )
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
@@ -112,67 +121,75 @@ def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975),
         ]
 
     return ci
 
 
 def extract_CI_poisson(res, var_name, class_ids=None, all=False):
-    """ Compute mean and 95% CI of the estimated poisson distribution """
+    """Compute mean and 95% CI of the estimated poisson distribution"""
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 1)
 
-    ci = pd.DataFrame({"mean": theta[:, 0],
-                       "lower": poisson(theta[:, 0]).ppf(0.025),
-                       "upper": poisson(theta[:, 0]).ppf(0.975)},
-                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
+    ci = pd.DataFrame(
+        {"mean": theta[:, 0], "lower": poisson(theta[:, 0]).ppf(0.025), "upper": poisson(theta[:, 0]).ppf(0.975)},
+        index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
+    )
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975),
         ]
 
     return ci
 
 
 def extract_CI_nbinom(res, var_name, class_ids=None, all=False):
-    """ Compute mean and 95% CI of the estimated negative binomial distribution """
+    """Compute mean and 95% CI of the estimated negative binomial distribution"""
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
 
-    ci = pd.DataFrame({"mean": nbinom.mean(theta[:, 0], theta[:, 1]),
-                       "lower": nbinom(theta[:, 0], theta[:, 1]).ppf(0.025),
-                       "upper": nbinom(theta[:, 0], theta[:, 1]).ppf(0.975)},
-                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
+    ci = pd.DataFrame(
+        {
+            "mean": nbinom.mean(theta[:, 0], theta[:, 1]),
+            "lower": nbinom(theta[:, 0], theta[:, 1]).ppf(0.025),
+            "upper": nbinom(theta[:, 0], theta[:, 1]).ppf(0.975),
+        },
+        index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
+    )
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
     if all:
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975),
         ]
 
     return ci
 
 
 def extract_CI_weibull(res, var_name, class_ids=None, all=False):
-    """ Compute mean and 95% CI of the estimated Weibull distribution """
+    """Compute mean and 95% CI of the estimated Weibull distribution"""
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(-1, 2)
-    ci = pd.DataFrame({"mean": weibull_min(c=theta[:, 0], scale=theta[:, 1]).mean(),
-                       "lower": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
-                       "upper": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.975)},
-                      index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
+    ci = pd.DataFrame(
+        {
+            "mean": weibull_min(c=theta[:, 0], scale=theta[:, 1]).mean(),
+            "lower": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.025),
+            "upper": weibull_min(c=theta[:, 0], scale=theta[:, 1]).ppf(0.975),
+        },
+        index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
+    )
 
     ci = ci.loc[["Class " + str(id) for id in class_ids]]
 
@@ -180,22 +197,27 @@ def extract_CI_weibull(res, var_name, class_ids=None, all=False):
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
             np.quantile(res["variable"]["data"][var_name]["completed"], 0.025),
-            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975)
+            np.quantile(res["variable"]["data"][var_name]["completed"], 0.975),
         ]
 
     return ci
 
 
 def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
-    """ Keep labels up to 95% probability """
+    """Keep labels up to 95% probability"""
     if class_ids is None:
         class_ids = [x.replace("k: ", "") for x in res["mixture"]["IDClass"].index]
 
     theta = res["variable"]["param"][var_name]["stat"]["median"].values.reshape(res["algo"]["nClass"], -1)
 
-    theta = pd.DataFrame(theta, columns=[re.sub("k: .*, modality: ", "", x)
-                                         for x in res["variable"]["param"][var_name]["stat"]["median"].index[:theta.shape[1]]],
-                         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index])
+    theta = pd.DataFrame(
+        theta,
+        columns=[
+            re.sub("k: .*, modality: ", "", x)
+            for x in res["variable"]["param"][var_name]["stat"]["median"].index[: theta.shape[1]]
+        ],
+        index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
+    )
     theta = theta.loc[["Class " + str(id) for id in class_ids]]
 
     if all:
@@ -208,7 +230,7 @@ def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
 
     for k in range(len(theta)):
         ordered_indices = theta.iloc[k].values.argsort()[::-1]
-        remove = ordered_indices[(np.where(theta.iloc[k][ordered_indices].cumsum() > 0.95)[0][0] + 1):]
+        remove = ordered_indices[(np.where(theta.iloc[k][ordered_indices].cumsum() > 0.95)[0][0] + 1) :]
         theta.iloc[k, remove] = 0
 
     return theta
