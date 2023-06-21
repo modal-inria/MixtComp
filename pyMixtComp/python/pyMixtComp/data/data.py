@@ -1,5 +1,6 @@
+import importlib.resources as pkg_resources
+
 import pandas as pd
-import pkg_resources
 
 
 def load_iris():
@@ -26,7 +27,7 @@ def load_iris():
     >>> import pyMixtComp
     >>> data, model = pyMixtComp.data.load_iris()
     """
-    stream = pkg_resources.resource_stream(__name__, "iris.csv")
+    stream = pkg_resources.open_text(__package__, "iris.csv")
     data = pd.read_csv(stream)
     model = {
         "sepal length (cm)": "Gaussian",
@@ -76,7 +77,7 @@ def load_prostate():
     >>> import pyMixtComp
     >>> data, model = pyMixtComp.data.load_prostate()
     """
-    stream = pkg_resources.resource_stream(__name__, "prostate.csv")
+    stream = pkg_resources.open_text(__package__, "prostate.csv")
     data = pd.read_csv(stream, dtype=object)
     model = {
         "Age": "Gaussian",
@@ -112,7 +113,7 @@ def load_simulated_data():
     >>> import pyMixtComp
     >>> data, model = pyMixtComp.data.load_prostate()
     """
-    stream = pkg_resources.resource_stream(__name__, "simulated_data.csv")
+    stream = pkg_resources.open_text(__package__, "simulated_data.csv")
     data = pd.read_csv(stream, dtype=object)
     model = {
         "Poisson1": "Poisson",
@@ -151,7 +152,7 @@ def load_canadian_weather():
     >>> import pyMixtComp
     >>> data, model = pyMixtComp.data.load_canadian_weather()
     """
-    stream = pkg_resources.resource_stream(__name__, "canadian_weather.csv")
+    stream = pkg_resources.open_text(__package__, "canadian_weather.csv")
     data = pd.read_csv(stream, dtype=object)
     model = {
         "tempav": {"type": "Func_CS", "paramStr": "nSub: 4, nCoeff: 2"},
