@@ -1,0 +1,68 @@
+name: RMixtComp with clang16
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+    paths:
+      - 'MixtComp/**'
+      - '!MixtComp/docs/**'
+      - 'RMixtComp/**'
+      - 'RMixtCompIO/**'
+      - 'RMixtCompUtilities/**'
+      - '.github/workflows/RMixtComp-clang.yml'
+      - '!**/README.md'
+  pull_request:
+    branches:
+      - master
+      - staging
+    paths:
+      - 'MixtComp/**'
+      - '!MixtComp/docs/**'
+      - 'RMixtComp/**'
+      - 'RMixtCompIO/**'
+      - 'RMixtCompUtilities/**'
+      - '.github/workflows/RMixtComp-clang.yml'
+      - '!**/README.md'
+
+jobs:
+  R-CMD-check:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/r-hub/containers/clang16:latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --recursive
+
+      - uses: r-lib/actions/setup-r@v2
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install dependencies
+        run: |
+          R -q -e 'pak::pkg_install(c("deps::.", "any::rcmdcheck"), dependencies = TRUE)'
+
+      - name: Copy MixtComp files
+        working-directory: RMixtCompIO
+        run: |
+          make clean
+          make updateLib
+
+      - name: Compile Rcpp Attributes for RMixtCompIO
+        working-directory: RMixtCompIO
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+        run: Rcpp::compileAttributes()
+        shell: Rscript {0}
+
+
+      - uses: r-lib/actions/check-r-package@v2
