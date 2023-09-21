@@ -20,35 +20,36 @@ Get the mixture density for each individual
 \deqn{d(x_i) = \sum_k\pi_k P(x_i; \theta_k)}
 }
 \examples{
-require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(
-  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-)
+if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+  dataLearn <- list(
+    var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+    var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+  )
 
-model <- list(
-  var1 = list(type = "Gaussian", paramStr = ""),
-  var2 = list(type = "Poisson", paramStr = "")
-)
+  model <- list(
+    var1 = list(type = "Gaussian", paramStr = ""),
+    var2 = list(type = "Poisson", paramStr = "")
+  )
 
-algo <- list(
-  nClass = 2,
-  nInd = 100,
-  nbBurnInIter = 100,
-  nbIter = 100,
-  nbGibbsBurnInIter = 100,
-  nbGibbsIter = 100,
-  nInitPerClass = 3,
-  nSemTry = 20,
-  confidenceLevel = 0.95,
-  ratioStableCriterion = 0.95,
-  nStableCriterion = 10,
-  mode = "learn"
-)
+  algo <- list(
+    nClass = 2,
+    nInd = 100,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 3,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    ratioStableCriterion = 0.95,
+    nStableCriterion = 10,
+    mode = "learn"
+  )
 
-resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+  resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
-d <- getMixtureDensity(resLearn)
+  d <- getMixtureDensity(resLearn)
+}
 
 }
 \seealso{

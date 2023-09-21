@@ -27,41 +27,42 @@
 #' alphabetic order, it may differ from the original order of the data).
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' # add missing values
-#' dataLearn$var1[12] <- "?"
-#' dataLearn$var2[72] <- "?"
+#'   # add missing values
+#'   dataLearn$var1[12] <- "?"
+#'   dataLearn$var2[72] <- "?"
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' # get completedData
-#' completedData <- getCompletedData(resLearn)
-#' completedData2 <- getCompletedData(resLearn, var = "var1")
+#'   # get completedData
+#'   completedData <- getCompletedData(resLearn)
+#'   completedData2 <- getCompletedData(resLearn, var = "var1")
+#' }
 #'
 #' @author Quentin Grimonprez
 #' @family getter
@@ -121,36 +122,37 @@ getCompletedData <- function(outMixtComp, var = NULL, with.z_class = FALSE) {
 #' @return a vector containing the estimated class for each individual.
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' # get class
-#' estimatedClass <- getPartition(resLearn)
+#'   # get class
+#'   estimatedClass <- getPartition(resLearn)
+#' }
 #'
 #' @author Quentin Grimonprez
 #' @family getter
@@ -189,42 +191,43 @@ getPartition <- function(outMixtComp, empiric = FALSE) {
 #' @return a vector containing the type of models, names associated with each individual.
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' # get type
-#' type <- getType(resLearn)
+#'   # get type
+#'   type <- getType(resLearn)
 #'
-#' # get model object
-#' model <- getModel(resLearn)
+#'   # get model object
+#'   model <- getModel(resLearn)
 #'
-#' # get variable names
-#' varNames <- getVarNames(resLearn)
+#'   # get variable names
+#'   varNames <- getVarNames(resLearn)
+#' }
 #'
 #' @author Quentin Grimonprez
 #' @family getter
@@ -303,37 +306,38 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE) {
 #' an estimation based on the sampled z_i during the algorithm.
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' # get tik
-#' tikEmp <- getEmpiricTik(resLearn)
-#' tik <- getTik(resLearn, log = FALSE)
+#'   # get tik
+#'   tikEmp <- getEmpiricTik(resLearn)
+#'   tik <- getTik(resLearn, log = FALSE)
+#' }
 #'
 #' @seealso \code{\link{heatmapTikSorted}}
 #'
@@ -382,35 +386,36 @@ getTik <- function(outMixtComp, log = TRUE) {
 #' \deqn{d(x_i) = \sum_k\pi_k P(x_i; \theta_k)}
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' d <- getMixtureDensity(resLearn)
+#'   d <- getMixtureDensity(resLearn)
+#' }
 #'
 #' @author Quentin Grimonprez
 #' @family getter
@@ -441,37 +446,38 @@ getMixtureDensity <- function(outMixtComp) {
 #' @return value of the criterion
 #'
 #' @examples
-#' require(RMixtCompIO) # for learning a mixture model
-#' dataLearn <- list(
-#'   var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-#'   var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-#' )
+#' if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+#'   dataLearn <- list(
+#'     var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+#'     var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+#'   )
 #'
-#' model <- list(
-#'   var1 = list(type = "Gaussian", paramStr = ""),
-#'   var2 = list(type = "Poisson", paramStr = "")
-#' )
+#'   model <- list(
+#'     var1 = list(type = "Gaussian", paramStr = ""),
+#'     var2 = list(type = "Poisson", paramStr = "")
+#'   )
 #'
-#' algo <- list(
-#'   nClass = 2,
-#'   nInd = 100,
-#'   nbBurnInIter = 100,
-#'   nbIter = 100,
-#'   nbGibbsBurnInIter = 100,
-#'   nbGibbsIter = 100,
-#'   nInitPerClass = 3,
-#'   nSemTry = 20,
-#'   confidenceLevel = 0.95,
-#'   ratioStableCriterion = 0.95,
-#'   nStableCriterion = 10,
-#'   mode = "learn"
-#' )
+#'   algo <- list(
+#'     nClass = 2,
+#'     nInd = 100,
+#'     nbBurnInIter = 100,
+#'     nbIter = 100,
+#'     nbGibbsBurnInIter = 100,
+#'     nbGibbsIter = 100,
+#'     nInitPerClass = 3,
+#'     nSemTry = 20,
+#'     confidenceLevel = 0.95,
+#'     ratioStableCriterion = 0.95,
+#'     nStableCriterion = 10,
+#'     mode = "learn"
+#'   )
 #'
-#' resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
-#' # get criterion
-#' bic <- getBIC(resLearn)
-#' icl <- getICL(resLearn)
+#'   # get criterion
+#'   bic <- getBIC(resLearn)
+#'   icl <- getICL(resLearn)
+#' }
 #'
 #' @author Quentin Grimonprez
 #' @family getter

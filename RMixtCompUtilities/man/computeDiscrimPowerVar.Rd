@@ -10,9 +10,11 @@ computeDiscrimPowerVar(outMixtComp, class = NULL)
 computeDiscrimPowerClass(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or \code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \code{mixtCompLearn} or
+\code{mixtCompPredict} functions from \code{RMixtComp} package or \code{rmcMultiRun} from \code{RMixtCompIO} package.}
 
-\item{class}{NULL or a number of classes. If NULL, return the discriminative power of variables globally otherwise return the discriminative power of variables in the given class}
+\item{class}{NULL or a number of classes. If NULL, return the discriminative power of variables globally otherwise
+return the discriminative power of variables in the given class}
 }
 \value{
 the discriminative power
@@ -24,7 +26,8 @@ Compute the discriminative power of each variable or class
 The discriminative power of variable j is defined by 1 - C(j)
 \deqn{C(j)=  - \sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) \log(P(Z_i=k|x_{ij})) / (n*\log(K))}
 
-A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
+A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that
+the variable is poorly discriminating.
 
 The discriminative power of variable j in class k is defined by 1 - C(j)
 \deqn{C(j)=  - sum_{i=1}^n (P(Z_i!=k|x_{ij}) \log(P(Z_i!=k|x_{ij})) + P(Z_i=k|x_{ij}) \log(P(Z_i=k|x_{ij}))) / (n*\log(2))}
@@ -34,43 +37,44 @@ The discriminative power of class k is defined by 1 - D(k)
 \deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 }
 \examples{
-require(RMixtCompIO) # for learning a mixture model
-dataLearn <- list(
-  var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
-  var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
-)
+if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
+  dataLearn <- list(
+    var1 = as.character(c(rnorm(50, -2, 0.8), rnorm(50, 2, 0.8))),
+    var2 = as.character(c(rnorm(50, 2), rpois(50, 8)))
+  )
 
-model <- list(
-  var1 = list(type = "Gaussian", paramStr = ""),
-  var2 = list(type = "Poisson", paramStr = "")
-)
+  model <- list(
+    var1 = list(type = "Gaussian", paramStr = ""),
+    var2 = list(type = "Poisson", paramStr = "")
+  )
 
-algo <- list(
-  nClass = 2,
-  nInd = 100,
-  nbBurnInIter = 100,
-  nbIter = 100,
-  nbGibbsBurnInIter = 100,
-  nbGibbsIter = 100,
-  nInitPerClass = 3,
-  nSemTry = 20,
-  confidenceLevel = 0.95,
-  ratioStableCriterion = 0.95,
-  nStableCriterion = 10,
-  mode = "learn"
-)
+  algo <- list(
+    nClass = 2,
+    nInd = 100,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 3,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    ratioStableCriterion = 0.95,
+    nStableCriterion = 10,
+    mode = "learn"
+  )
 
-resLearn <- rmcMultiRun(algo, dataLearn, model, nRun = 3)
+  resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
 
-discVar <- computeDiscrimPowerVar(resLearn)
-discVarInClass1 <- computeDiscrimPowerVar(resLearn, class = 1)
-discClass <- computeDiscrimPowerClass(resLearn)
+  discVar <- computeDiscrimPowerVar(resLearn)
+  discVarInClass1 <- computeDiscrimPowerVar(resLearn, class = 1)
+  discClass <- computeDiscrimPowerClass(resLearn)
 
-# graphic representation of discriminant variables
-plotDiscrimVar(resLearn)
-# graphic representation of discriminant classes
-plotDiscrimClass(resLearn)
+  # graphic representation of discriminant variables
+  plotDiscrimVar(resLearn)
+  # graphic representation of discriminant classes
+  plotDiscrimClass(resLearn)
+}
 
 }
 \seealso{
