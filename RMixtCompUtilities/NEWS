@@ -1,5 +1,8 @@
+v4.1.6 2023-09-25
+- use requireNamespace instead of require in examples
+
 v4.1.5 2023-06-14
-- getter fucntions manage errored mixtComp run
+- getter functions manage errored mixtComp run
 - remove blockcluster from suggested packages
 - lint
 - change maintainer

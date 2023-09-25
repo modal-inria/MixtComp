@@ -1,8 +1,8 @@
 Package: RMixtCompUtilities
 Type: Package
 Title: Utility Functions for 'MixtComp' Outputs
-Version: 4.1.5
-Date: 2023-06-14
+Version: 4.1.6
+Date: 2023-09-21
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentingrim@yahoo.fr"),
