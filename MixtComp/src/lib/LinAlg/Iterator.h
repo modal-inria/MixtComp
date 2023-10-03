@@ -57,7 +57,7 @@ public:
 		  rows_(mat.rows()),
 		  p_mat_(&mat) {}
 
-	Iterator operator+(int i) {
+	Iterator operator+(int i) const {
 		int posP, iP, jP;
 		posP = pos();
 		posP += i;
@@ -75,7 +75,7 @@ public:
 		return *this;
 	}
 
-	Iterator operator-(int i) {
+	Iterator operator-(int i) const {
 		int posP, iP, jP;
 		posP = pos();
 		posP -= i;
@@ -83,9 +83,9 @@ public:
 		return Iterator(iP, jP, *p_mat_);
 	}
 
-	int operator-(const Iterator &it) { return pos() - it.pos(); }
+	int operator-(const Iterator &it) const { return pos() - it.pos(); }
 
-	bool operator<(const Iterator &it) {
+	bool operator<(const Iterator &it) const {
 		if (j_ < it.j_) {
 			return true;
 		} else if (j_ > it.j_) {
@@ -97,14 +97,14 @@ public:
 		return false;
 	}
 
-	bool operator==(const Iterator &it) {
+	bool operator==(const Iterator &it) const {
 		if (i_ == it.i_ && j_ == it.j_)
 			return true;
 		else
 			return false;
 	}
 
-	bool operator>(const Iterator &it) {
+	bool operator>(const Iterator &it) const {
 		if (j_ > it.j_) {
 			return true;
 		} else if (j_ > it.j_) {
@@ -116,7 +116,7 @@ public:
 		return false;
 	}
 
-	bool operator>=(const Iterator &it) {
+	bool operator>=(const Iterator &it) const {
 		if (!(*this < it)) {
 			return true;
 		}
@@ -124,7 +124,7 @@ public:
 		return false;
 	}
 
-	bool operator!=(const Iterator &it) {
+	bool operator!=(const Iterator &it) const {
 		if (i_ != it.i_ || j_ != it.j_)
 			return true;
 		else
