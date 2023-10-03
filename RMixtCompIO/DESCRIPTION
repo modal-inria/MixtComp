@@ -1,8 +1,8 @@
 Package: RMixtCompIO
 Type: Package
 Title: Minimal Interface of the C++ 'MixtComp' Library for Mixture Models with Heterogeneous and (Partially) Missing Data
-Version: 4.0.10
-Date: 2023-05-07
+Version: 4.0.11
+Date: 2023-10-03
 Authors@R: c(person("Vincent", "Kubicki", role = "aut"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = c("aut", "cre"), email = "quentingrim@yahoo.fr"),
@@ -21,7 +21,7 @@ Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a pro
 URL: https://github.com/modal-inria/MixtComp
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: Rcpp, doParallel, foreach
-Suggests: Rmixmod, testthat, RInside, xml2
+Suggests: Rmixmod, testthat, xml2
 LinkingTo: Rcpp, RcppEigen, BH
 RoxygenNote: 7.2.3
 Encoding: UTF-8
