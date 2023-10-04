@@ -24,7 +24,7 @@
 #define CONFINTDATASTAT_H
 
 #include <Data/AugmentedData.h>
-#include "../LinAlg/LinAlg.h"
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

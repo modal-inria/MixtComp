@@ -21,10 +21,10 @@
  **/
 
 #include <boost/algorithm/string.hpp>
-#include <Mixture/Rank/RankISRParser.h>
 
-#include "../../IO/MisValParser.h"
-#include "../../IO/IO.h"
+#include <IO/IO.h>
+#include <IO/MisValParser.h>
+#include <Mixture/Rank/RankISRParser.h>
 
 namespace mixt {
 

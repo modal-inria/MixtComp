@@ -29,7 +29,7 @@
 #include <regex>
 #include <set>
 
-#include "../Various/Enum.h"
+#include <Various/Enum.h>
 
 namespace mixt {
 

@@ -27,11 +27,12 @@
 #include <limits>
 #include <utility>
 #include <vector>
-#include "../Various/Constants.h"
-#include "../Statistic/UniformStatistic.h"
-#include "../Statistic/UniformIntStatistic.h"
-#include "../Statistic/MultinomialStatistic.h"
-#include "../Various/Enum.h"
+
+#include <Statistic/MultinomialStatistic.h>
+#include <Statistic/UniformStatistic.h>
+#include <Statistic/UniformIntStatistic.h>
+#include <Various/Constants.h>
+#include <Various/Enum.h>
 
 
 namespace mixt {

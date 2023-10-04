@@ -23,11 +23,11 @@
 #ifndef GAUSSIAN_H
 #define GAUSSIAN_H
 
-#include <LinAlg/LinAlg.h>
 #include <vector>
 #include <set>
 
-#include "Data/ConfIntDataStat.h"
+#include <LinAlg/LinAlg.h>
+#include <Data/ConfIntDataStat.h>
 #include "GaussianLikelihood.h"
 #include "GaussianSampler.h"
 
@@ -63,8 +63,7 @@ public:
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition(
-			const Vector<std::set<Index>>& classInd) const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
 	void initParam();
 

@@ -23,9 +23,9 @@
 #ifndef GAUSSIANLIKELIHOOD_H
 #define GAUSSIANLIKELIHOOD_H
 
+#include <Data/AugmentedData.h>
 #include <LinAlg/LinAlg.h>
-#include "../../../Data/AugmentedData.h"
-#include "../../../Statistic/GaussianStatistic.h"
+#include <Statistic/GaussianStatistic.h>
 
 namespace mixt
 {

@@ -20,12 +20,13 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <iostream>
+
 #include <IO/IO.h>
 #include <LinAlg/Maths.h>
 #include <Mixture/Functional/FuncCSClass.h>
 #include <Mixture/Functional/FuncCSComputation.h>
-#include <iostream>
-#include "Statistic/Statistic.h"
+#include <Statistic/Statistic.h>
 
 namespace mixt {
 

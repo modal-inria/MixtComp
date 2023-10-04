@@ -20,15 +20,14 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <cmath>
+
 #include <Data/AugmentedData.h>
 #include <IO/IO.h>
 #include <LinAlg/LinAlg.h>
 #include <LinAlg/Maths.h>
 #include <Various/Constants.h>
-#include <cmath>
-
-#include "Various/Enum.h"
-
+#include <Various/Enum.h>
 #include "Gaussian.h"
 
 namespace mixt {

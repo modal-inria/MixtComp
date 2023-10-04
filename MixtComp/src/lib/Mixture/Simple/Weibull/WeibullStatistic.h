@@ -23,8 +23,9 @@
 #ifndef WEIBULLSTATISTIC_H
 #define WEIBULLSTATISTIC_H
 
-#include "../../../Statistic/UniformStatistic.h"
 #include <boost/random/mersenne_twister.hpp>
+
+#include <Statistic/UniformStatistic.h>
 #include <LinAlg/LinAlg.h>
 
 namespace mixt {

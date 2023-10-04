@@ -23,8 +23,8 @@
 #ifndef MULTINOMIALLIKELIHOOD_H
 #define MULTINOMIALLIKELIHOOD_H
 
-#include "../../../Data/AugmentedData.h"
-#include "../../../LinAlg/LinAlg.h"
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

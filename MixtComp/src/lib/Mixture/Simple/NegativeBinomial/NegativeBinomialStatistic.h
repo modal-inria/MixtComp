@@ -23,8 +23,8 @@
 #ifndef NEGATIVEBINOMIALSTATISTIC_H
 #define NEGATIVEBINOMIALSTATISTIC_H
 
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Statistic/UniformStatistic.h"
+#include <LinAlg/LinAlg.h>
+#include <Statistic/UniformStatistic.h>
 
 #include <boost/random/mersenne_twister.hpp>
 

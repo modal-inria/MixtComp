@@ -23,8 +23,8 @@
 #ifndef POISSONSAMPLER_H
 #define POISSONSAMPLER_H
 
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Data/AugmentedData.h"
+#include <LinAlg/LinAlg.h>
+#include <Data/AugmentedData.h>
 #include "PoissonStatistic.h"
 
 namespace mixt

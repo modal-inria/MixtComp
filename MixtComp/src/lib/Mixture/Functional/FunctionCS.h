@@ -24,7 +24,7 @@
 #define FUNCTION
 
 #include <LinAlg/LinAlg.h>
-#include "Statistic/Statistic.h"
+#include <Statistic/Statistic.h>
 #include "FuncCSComputation.h"
 
 namespace mixt {

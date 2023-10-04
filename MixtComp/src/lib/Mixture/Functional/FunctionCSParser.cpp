@@ -23,7 +23,7 @@
 #include <boost/algorithm/string.hpp>
 #include <regex>
 
-#include "../../IO/MisValParser.h"
+#include <IO/MisValParser.h>
 #include "FunctionCSParser.h"
 
 namespace mixt {

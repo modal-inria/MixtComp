@@ -23,11 +23,11 @@
 #ifndef POISSON_H
 #define POISSON_H
 
-#include <Data/AugmentedData.h>
 #include <vector>
 #include <set>
 
-#include "Data/ConfIntDataStat.h"
+#include <Data/AugmentedData.h>
+#include <Data/ConfIntDataStat.h>
 #include "PoissonLikelihood.h"
 #include "PoissonSampler.h"
 

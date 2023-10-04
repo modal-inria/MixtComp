@@ -24,7 +24,7 @@
 #define NEGATIVEBINOMIALLIKELIHOOD_H
 
 #include <LinAlg/LinAlg.h>
-#include "../../../Data/AugmentedData.h"
+#include <Data/AugmentedData.h>
 #include "NegativeBinomialStatistic.h"
 
 namespace mixt

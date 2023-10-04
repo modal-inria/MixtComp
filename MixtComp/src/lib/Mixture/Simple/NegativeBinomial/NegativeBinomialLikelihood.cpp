@@ -21,8 +21,8 @@
  **/
 
 #include "NegativeBinomialLikelihood.h"
-#include "../../../Various/Enum.h"
-#include "../../../LinAlg/LinAlg.h"
+#include <Various/Enum.h>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt
 {

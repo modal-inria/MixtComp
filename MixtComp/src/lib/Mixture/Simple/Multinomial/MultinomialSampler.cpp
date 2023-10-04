@@ -22,7 +22,7 @@
 
 #include <Mixture/IMixture.h>
 #include <Mixture/Simple/Multinomial/MultinomialSampler.h>
-#include "../../../Various/Constants.h"
+#include <Various/Constants.h>
 
 namespace mixt
 {

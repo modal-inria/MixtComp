@@ -24,9 +24,9 @@
 #ifndef GAUSSIANSAMPLER_H
 #define GAUSSIANSAMPLER_H
 
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Data/AugmentedData.h"
-#include "../../../Statistic/GaussianStatistic.h"
+#include <Data/AugmentedData.h>
+#include <LinAlg/LinAlg.h>
+#include <Statistic/GaussianStatistic.h>
 
 
 namespace mixt

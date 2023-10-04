@@ -24,8 +24,9 @@
 #define POISSONSTATISTIC_H
 
 #include <boost/random/mersenne_twister.hpp>
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Statistic/UniformStatistic.h"
+
+#include <LinAlg/LinAlg.h>
+#include <Statistic/UniformStatistic.h>
 
 namespace mixt {
 

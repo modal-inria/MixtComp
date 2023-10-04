@@ -29,6 +29,7 @@
 
 namespace mixt {
 
+/** Convert string to a given Type*/
 template<typename Type>
 Type str2type(const std::string& s) {
 	std::istringstream i(s);
@@ -37,6 +38,7 @@ Type str2type(const std::string& s) {
 	return x;
 }
 
+/** Convert Type element to string*/
 template<typename Type>
 std::string type2str(const Type& value) {
 	std::ostringstream oss;
@@ -44,6 +46,7 @@ std::string type2str(const Type& value) {
 	return oss.str();
 }
 
+/** Write data matrix to csv file*/
 template<typename Type>
 void writeDataCsv(std::string fileName, const Type& data) {
 #ifdef MC_VERBOSE

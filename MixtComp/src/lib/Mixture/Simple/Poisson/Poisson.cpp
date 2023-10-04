@@ -21,9 +21,9 @@
  **/
 
 #include "Poisson.h"
-#include "../../../IO/IO.h"
-#include "../../../Various/Constants.h"
-#include "../../../Various/Enum.h"
+#include <IO/IO.h>
+#include <Various/Constants.h>
+#include <Various/Enum.h>
 
 namespace mixt {
 

@@ -23,8 +23,8 @@
 #ifndef UNIFORMSTATISTIC_H
 #define UNIFORMSTATISTIC_H
 
-#include "../LinAlg/LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt
 {

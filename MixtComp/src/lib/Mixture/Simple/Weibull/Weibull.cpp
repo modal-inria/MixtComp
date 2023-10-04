@@ -20,12 +20,12 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <LinAlg/Maths.h>
-#include <Various/Constants.h>
 #include <cmath>
 #include <iostream>
 
-#include "Various/Enum.h"
+#include <LinAlg/Maths.h>
+#include <Various/Constants.h>
+#include <Various/Enum.h>
 #include "Weibull.h"
 
 namespace mixt {

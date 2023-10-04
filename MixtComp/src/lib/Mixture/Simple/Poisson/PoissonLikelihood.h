@@ -23,8 +23,8 @@
 #ifndef POISSONLIKELIHOOD_H
 #define POISSONLIKELIHOOD_H
 
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Data/AugmentedData.h"
+#include <LinAlg/LinAlg.h>
+#include <Data/AugmentedData.h>
 #include "PoissonStatistic.h"
 
 namespace mixt

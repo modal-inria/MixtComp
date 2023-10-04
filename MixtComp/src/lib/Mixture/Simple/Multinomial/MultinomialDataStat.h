@@ -24,7 +24,7 @@
 #define MULTINOMIALDATASTAT_H
 
 #include <LinAlg/LinAlg.h>
-#include "../../../Data/AugmentedData.h"
+#include <Data/AugmentedData.h>
 
 namespace mixt {
 

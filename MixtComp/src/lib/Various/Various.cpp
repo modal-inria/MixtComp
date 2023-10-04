@@ -22,7 +22,7 @@
 
 #include <Various/Constants.h>
 #include <Various/Various.h>
-#include "../LinAlg/LinAlg.h"
+#include <LinAlg/LinAlg.h>
 #include <iostream>
 #include <fstream>
 

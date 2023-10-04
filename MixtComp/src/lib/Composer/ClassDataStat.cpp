@@ -22,7 +22,7 @@
 
 #include "ClassDataStat.h"
 
-#include "../Various/Constants.h"
+#include <Various/Constants.h>
 
 namespace mixt {
 

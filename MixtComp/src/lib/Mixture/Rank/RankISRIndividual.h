@@ -23,14 +23,14 @@
 #ifndef RANKISRINDIVIDUAL_H
 #define RANKISRINDIVIDUAL_H
 
-#include <Mixture/Rank/RankVal.h>
 #include <list>
 #include <map>
 #include <set>
 
-#include "../../LinAlg/LinAlg.h"
-#include "../../Various/Enum.h"
-#include "../../Statistic/Statistic.h"
+#include <LinAlg/LinAlg.h>
+#include <Mixture/Rank/RankVal.h>
+#include <Statistic/Statistic.h>
+#include <Various/Enum.h>
 
 namespace mixt {
 

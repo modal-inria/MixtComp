@@ -26,10 +26,11 @@
 #include <iostream>
 #include <ctime>
 #include <random>
+
 #include <Various/Constants.h>
-#include "../LinAlg/LinAlg.h"
-#include "../IO/IO.h"
-#include "Statistic/RNG.h"
+#include <LinAlg/LinAlg.h>
+#include <IO/IO.h>
+#include <Statistic/RNG.h>
 
 namespace mixt {
 

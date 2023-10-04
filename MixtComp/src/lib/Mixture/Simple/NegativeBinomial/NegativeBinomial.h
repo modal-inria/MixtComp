@@ -26,8 +26,8 @@
 #include <vector>
 #include <set>
 
-#include "../../../Data/AugmentedData.h"
-#include "../../../Data/ConfIntDataStat.h"
+#include <Data/AugmentedData.h>
+#include <Data/ConfIntDataStat.h>
 #include "NegativeBinomialLikelihood.h"
 #include "NegativeBinomialSampler.h"
 

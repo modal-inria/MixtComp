@@ -26,7 +26,7 @@
 #include <boost/random.hpp>
 #include <Statistic/ExponentialStatistic.h>
 #include <Statistic/UniformStatistic.h>
-#include "../LinAlg/LinAlg.h"
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

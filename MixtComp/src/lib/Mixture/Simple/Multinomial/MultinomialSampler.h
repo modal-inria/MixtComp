@@ -24,9 +24,9 @@
 #ifndef MULTINOMIALSAMPLER_H
 #define MULTINOMIALSAMPLER_H
 
-#include "../../../LinAlg/LinAlg.h"
-#include "../../../Data/AugmentedData.h"
-#include "../../../Statistic/MultinomialStatistic.h"
+#include <LinAlg/LinAlg.h>
+#include <Data/AugmentedData.h>
+#include <Statistic/MultinomialStatistic.h>
 
 namespace mixt
 {

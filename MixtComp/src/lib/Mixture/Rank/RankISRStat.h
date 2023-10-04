@@ -23,10 +23,10 @@
 #ifndef RANKISRSTAT_H
 #define RANKISRSTAT_H
 
-#include <Mixture/Rank/RankVal.h>
 #include <list>
 
-#include "../../LinAlg/LinAlg.h"
+#include <Mixture/Rank/RankVal.h>
+#include <LinAlg/LinAlg.h>
 
 namespace mixt {
 

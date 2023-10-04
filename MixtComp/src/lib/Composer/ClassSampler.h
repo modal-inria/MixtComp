@@ -24,9 +24,9 @@
 #define LIB_COMPOSER_CLASSSAMPLER_H
 
 #include <Composer/ZClassInd.h>
-#include "../LinAlg/LinAlg.h"
-#include "../Data/AugmentedData.h"
-#include "../Statistic/MultinomialStatistic.h"
+#include <LinAlg/LinAlg.h>
+#include <Data/AugmentedData.h>
+#include <Statistic/MultinomialStatistic.h>
 
 namespace mixt
 {

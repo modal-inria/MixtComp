@@ -23,7 +23,7 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-#include "../LinAlg/LinAlg.h" // for the definition of Real type
+#include <LinAlg/LinAlg.h> // for the definition of Real type
 
 namespace mixt {
 

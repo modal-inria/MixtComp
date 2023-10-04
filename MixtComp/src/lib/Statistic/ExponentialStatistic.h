@@ -23,7 +23,7 @@
 #ifndef EXPONENTIALSTATISTIC_H
 #define EXPONENTIALSTATISTIC_H
 
-#include "../LinAlg/LinAlg.h"
+#include <LinAlg/LinAlg.h>
 #include <boost/random/mersenne_twister.hpp>
 
 namespace mixt
