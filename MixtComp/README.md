@@ -19,7 +19,7 @@ sudo apt install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
 
 The developer tools must be installed, by typing `xcode-select --install` in a terminal. This will provide a C++ compiler and a build toolchain.
 
-We recommand using Homebrew to manage dependencies. Installation is easy, follow instructions at <https://brew.sh/>
+We recommend using Homebrew to manage dependencies. Installation is easy, follow instructions at <https://brew.sh/>
 
 The additional libraries can then be installed using:
 

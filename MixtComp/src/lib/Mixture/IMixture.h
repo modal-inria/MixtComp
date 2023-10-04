@@ -31,12 +31,19 @@
 
 namespace mixt {
 
+/**
+ * Base class for all mixtures implemented in this folder.
+ */
 class IMixture {
 public:
 	/**
 	 * Constructor with identification character
 	 *
 	 * @param idName Identification string of the mixture provided by the framework
+	 * @param modelType model name ("Gaussian", "Func_CS"...)
+	 * @param nClass number of cluster
+	 * @param nInd number of individuals
+	 *
 	 * */
 	IMixture(const std::string& idName, const std::string& modelType, Index nClass, Index nInd) :
 			idName_(idName), modelType_(modelType), nClass_(nClass), nInd_(nInd) {
@@ -65,6 +72,7 @@ public:
 	 * checkSampleCondition to speed-up the process.
 	 *
 	 * @param ind index of the individual which data must be sampled
+	 * @param k class number whose parameters are to be used to sample data
 	 * */
 	virtual void sampleUnobservedAndLatent(Index ind, Index k) = 0;
 
@@ -72,12 +80,19 @@ public:
 	/**
 	 * Check if conditions on data are verified. For example, for a multinomial model one must check that each modality
 	 * is present at least one time in each class. This is invoked to avoid degeneracy.
+	 *
+	 * @param classInd A vector containing in each element a vector of the indices of individuals
+	 * that belong to this class (see ZClassInd class).
+	 *
 	 * @return 0 if condition not verified and 1 if condition verified
 	 * */
 	virtual std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const = 0;
 
 	/**
 	 * Maximum-Likelihood estimation of the mixture parameters
+	 *
+	 * @param classInd A vector containing in each element a vector of the indices of individuals
+	 * that belong to this class (see ZClassInd class.
 	 *
 	 * @return empty string if mStep successful, or a detailed description of the eventual error
 	 * */
@@ -95,7 +110,7 @@ public:
 	/**
 	 * Storage of mixture parameters during SEM run phase
 	 *
-	 * @param i individual
+	 * @param i individual index
 	 * @param iteration Gibbs iteration
 	 * @param iterationMax maximum number of iterations
 	 * */
@@ -104,8 +119,8 @@ public:
 	/**
 	 * Computation of completed likelihood
 	 *
-	 * @param i individual
-	 * @param k class
+	 * @param i individual index
+	 * @param k class number
 	 * @return value of the completed likelihood in log scale
 	 * */
 	virtual Real lnCompletedProbability(Index i, Index k) const = 0;
@@ -113,8 +128,8 @@ public:
 	/**
 	 * Computation of observed likelihood
 	 *
-	 * @param i individual
-	 * @param k class
+	 * @param ind individual index
+	 * @param k class number
 	 * @return value of the observed likelihood in log scale
 	 * */
 	virtual Real lnObservedProbability(Index ind, Index k) const = 0;
@@ -145,6 +160,8 @@ public:
 	/**
 	 * Initialization of missing / latent data priori to any parameter knowledge. In prediction parameters are known at
 	 * initialization, and a samplingStep is used.
+	 *
+     * @param ind individual index
 	 */
 	virtual void initData(Index ind) = 0;
 
@@ -160,10 +177,14 @@ public:
 	/**
 	 * Compute and cache the empirical observed distribution for the models that need it.
 	 * This is currently the case for the BOS and ISR algorithms.
-	 * */
+	 */
 	virtual void computeObservedProba() = 0;
 
-	/** Initialize the Markov Chain for models that contains one for their latent variables. */
+	/** Initialize the Markov Chain for models that contains one for their latent variables.
+	 *
+	 * @param i individual index
+	 * @param k class number
+	 */
 	virtual void initializeMarkovChain(Index i, Index k) = 0;
 
 	/**
@@ -172,6 +193,7 @@ public:
 	 * of the observed probability.
 	 */
 	virtual bool sampleApproximationOfObservedProba() = 0;
+
 protected:
 	/** Id name of the mixture */
 	std::string idName_;
@@ -179,7 +201,10 @@ protected:
 	/** Type of the model */
 	std::string modelType_;
 
+	/** Number of classes */
 	Index nClass_;
+
+	/** Number of individuals */
 	Index nInd_;
 };
 

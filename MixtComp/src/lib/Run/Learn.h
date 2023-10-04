@@ -33,6 +33,7 @@ namespace mixt {
 
 /**
  * The learn algorithm is encapsulated in this function.
+ * A SEM is used to estimate the parameters. Then a Gibbs to impute data, partition,...
  */
 template<typename Graph>
 void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) {

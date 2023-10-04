@@ -30,9 +30,11 @@
 
 namespace mixt {
 /**
- *  A SemStrategy is based on the following paradigm:
+ *  A GibbsStrategy is based on the following paradigm:
  *  - perform nbBurnIn iterations of the algo
  *  - perform a long run
+ *
+ *  The goal is to impute missing data and latent variables with parameters estimated from a SEM. *
  **/
 template<typename Graph>
 class GibbsStrategy {

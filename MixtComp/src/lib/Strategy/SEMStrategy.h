@@ -40,6 +40,11 @@ namespace mixt {
  *  A SemStrategy is based on the following paradigm:
  *  - perform nbBurnIn iterations of the algo
  *  - perform a long run
+ *
+ *  An iteration consists of:
+ *  - E step: compute tik
+ *  - S step: sample unobserved and latent variables
+ *  - M step: parameters update
  **/
 template<typename Graph>
 class SemStrategy {

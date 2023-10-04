@@ -23,7 +23,8 @@
 #ifndef CONSTITERATOR_H
 #define CONSTITERATOR_H
 
-// reference on what needs to be implemented for STL iterators: http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
+// reference on what needs to be implemented for STL iterators:
+// http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
 
 //#include <iostream>
 //#include <iterator>

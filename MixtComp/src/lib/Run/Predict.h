@@ -33,7 +33,8 @@
 namespace mixt {
 
 /**
- * The learn algorithm is encapsulated in this function.
+ * The predict algorithm is encapsulated in this function.
+ * All parameters are known. We run a gibbs to impute missing data, estimate the partition,...
  */
 template<typename Graph>
 void predict(const Graph& algo, const Graph& data, const Graph& desc, const Graph& param, Graph& out) {
