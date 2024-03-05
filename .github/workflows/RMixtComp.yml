@@ -43,7 +43,7 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'true'
 
@@ -65,7 +65,7 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'writeLines(c(remotes::system_requirements("ubuntu", "20.04", "RMixtCompIO"), remotes::system_requirements("ubuntu", "20.04", package="curl")))')
+          done < <(Rscript -e 'writeLines(c(remotes::system_requirements("ubuntu", "22.04", "RMixtCompIO"), remotes::system_requirements("ubuntu", "22.04", package="curl")))')
 
       - name: Install RMixtCompIO dependencies
         working-directory: RMixtCompIO
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: RMixtCompIO/check
@@ -131,7 +131,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: RMixtCompUtilities/check
@@ -160,7 +160,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: RMixtComp/check
