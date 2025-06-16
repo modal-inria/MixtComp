@@ -1,3 +1,8 @@
+v4.1.5 2025-06-15
+- fix missing packages in \link
+- remove ClusVis from suggested package
+- replace ClusVis rmd vignette with ClusVic html vignette
+
 v4.1.4 2023-06-17
 - add references
 - add missing return value in documentation
