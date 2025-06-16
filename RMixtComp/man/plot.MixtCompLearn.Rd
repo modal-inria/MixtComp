@@ -22,9 +22,9 @@
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
-\item{plotData}{"CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}}
+\item{plotData}{"CI" or "Boxplot". If "CI", uses \link[RMixtCompUtilities]{plotDataCI} function. If "Boxplot", uses \link[RMixtCompUtilities]{plotDataBoxplot}}
 
-\item{...}{extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}}
+\item{...}{extra parameter for \link[RMixtCompUtilities]{plotDataCI} or \link[RMixtCompUtilities]{plotDataBoxplot}}
 }
 \value{
 \code{ggplot2} or \code{plotly} object

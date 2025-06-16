@@ -104,8 +104,8 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...) {
 #' @param nVarMaxToPlot number of variables to display
 #' @param nClass number of classes of the model to plot
 #' @param pkg "ggplot2" or "plotly". Package used to plot
-#' @param plotData "CI" or "Boxplot". If "CI", uses \link{plotDataCI} function. If "Boxplot", uses \link{plotDataBoxplot}
-#' @param ... extra parameter for \link{plotDataCI} or \link{plotDataBoxplot}
+#' @param plotData "CI" or "Boxplot". If "CI", uses \link[RMixtCompUtilities]{plotDataCI} function. If "Boxplot", uses \link[RMixtCompUtilities]{plotDataBoxplot}
+#' @param ... extra parameter for \link[RMixtCompUtilities]{plotDataCI} or \link[RMixtCompUtilities]{plotDataBoxplot}
 #'
 #' @return \code{ggplot2} or \code{plotly} object
 #'

@@ -33,7 +33,7 @@ mixtCompPredict(
 
 \item{model}{a named list containing models and hyperparameters (see \emph{Details} section).}
 
-\item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details} or \link{createAlgo}).}
+\item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details} or \link[RMixtCompUtilities]{createAlgo}).}
 
 \item{nClass}{the number of classes of the mixture model. Can be a vector for \emph{mixtCompLearn} only.}
 
@@ -80,7 +80,7 @@ If the model is NULL, data are supposed to be provided in data.frame or list wit
 Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable
 and "Poisson" for integer variable.
 A summary of available models (and associated hyperparameters and missing format) can be accessed by calling
-the \link{availableModels} function.
+the \link[RMixtCompUtilities]{availableModels} function.
 
 Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial},
 \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}.
@@ -96,7 +96,7 @@ To perform a (semi-)supervised clustering, user can add a variable named \emph{z
 
 
 The \emph{algo} object is a list containing the different number of iterations for the algorithm.
-This list can be generated using the \link{createAlgo} function.
+This list can be generated using the \link[RMixtCompUtilities]{createAlgo} function.
 The algorithm is decomposed in a burn-in phase and a normal phase.
 Estimates from the burn-in phase are not shown in output.
 \itemize{
@@ -175,7 +175,7 @@ The \emph{mixture} element contains
 -\eqn{\sum_{i=1}^n t_{ikj} log(t_{ikj})/(n * log(K))}}
   \item{IDClassBar: entropy used to compute the discriminative power of variable:
 -\eqn{\sum_{i=1}^n (1-t_{ikj}) log((1-t_{ikj}))/(n * log(K))}}
-  \item{delta: similarities between variables (see \link{heatmapVar})}
+  \item{delta: similarities between variables (see \link[RMixtCompUtilities]{heatmapVar})}
   \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period
 (can be used to check the convergence and determine the ideal number of iteration)}
   \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period

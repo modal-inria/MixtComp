@@ -32,20 +32,20 @@ data(CanadianWeather)
 
 # convert functional to MixtComp format
 dat <- list(
-    tempav = apply(
-        CanadianWeather$tempav, 2,
-        function(x) createFunctional(CanadianWeather$time, x)
-    ),
-    precav = apply(
-        CanadianWeather$precav, 2,
-        function(x) createFunctional(CanadianWeather$time, x)
-    )
+  tempav = apply(
+    CanadianWeather$tempav, 2,
+    function(x) createFunctional(CanadianWeather$time, x)
+  ),
+  precav = apply(
+    CanadianWeather$precav, 2,
+    function(x) createFunctional(CanadianWeather$time, x)
+  )
 )
 
 # create model with 4 subregressions ans 2 coefficients per regression
 model <- list(
-    tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
-    precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2")
+  tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
+  precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2")
 )
 
 # create algo

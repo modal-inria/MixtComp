@@ -48,14 +48,14 @@ dat[is.na(dat)] <- "?"
 
 # create model
 model <- list(
-    pclass = "Multinomial",
-    survived = "Multinomial",
-    sex = "Multinomial",
-    age = "Gaussian",
-    sibsp = "Poisson",
-    parch = "Poisson",
-    fare = "Gaussian",
-    embarked = "Multinomial"
+  pclass = "Multinomial",
+  survived = "Multinomial",
+  sex = "Multinomial",
+  age = "Gaussian",
+  sibsp = "Poisson",
+  parch = "Poisson",
+  fare = "Gaussian",
+  embarked = "Multinomial"
 )
 
 # create algo

@@ -89,14 +89,14 @@ NULL
 #'
 #' # create model
 #' model <- list(
-#'     pclass = "Multinomial",
-#'     survived = "Multinomial",
-#'     sex = "Multinomial",
-#'     age = "Gaussian",
-#'     sibsp = "Poisson",
-#'     parch = "Poisson",
-#'     fare = "Gaussian",
-#'     embarked = "Multinomial"
+#'   pclass = "Multinomial",
+#'   survived = "Multinomial",
+#'   sex = "Multinomial",
+#'   age = "Gaussian",
+#'   sibsp = "Poisson",
+#'   parch = "Poisson",
+#'   fare = "Gaussian",
+#'   embarked = "Multinomial"
 #' )
 #'
 #' # create algo
@@ -154,20 +154,20 @@ NULL
 #'
 #' # convert functional to MixtComp format
 #' dat <- list(
-#'     tempav = apply(
-#'         CanadianWeather$tempav, 2,
-#'         function(x) createFunctional(CanadianWeather$time, x)
-#'     ),
-#'     precav = apply(
-#'         CanadianWeather$precav, 2,
-#'         function(x) createFunctional(CanadianWeather$time, x)
-#'     )
+#'   tempav = apply(
+#'     CanadianWeather$tempav, 2,
+#'     function(x) createFunctional(CanadianWeather$time, x)
+#'   ),
+#'   precav = apply(
+#'     CanadianWeather$precav, 2,
+#'     function(x) createFunctional(CanadianWeather$time, x)
+#'   )
 #' )
 #'
 #' # create model with 4 subregressions ans 2 coefficients per regression
 #' model <- list(
-#'     tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
-#'     precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2")
+#'   tempav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2"),
+#'   precav = list(type = "Func_CS", paramStr = "nSub: 4, nCoeff: 2")
 #' )
 #'
 #' # create algo
@@ -229,8 +229,8 @@ NULL
 #'
 #' # run clustering
 #' resLearn <- mixtCompLearn(prostate$data, prostate$model, algo,
-#'     nClass = 2:5, criterion = "ICL",
-#'     nRun = 3, nCore = 1
+#'   nClass = 2:5, criterion = "ICL",
+#'   nRun = 3, nCore = 1
 #' )
 #'
 #' summary(resLearn)

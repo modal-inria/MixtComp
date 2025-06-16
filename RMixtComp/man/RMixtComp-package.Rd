@@ -2,6 +2,7 @@
 % Please edit documentation in R/RMixtComp-package.R
 \docType{package}
 \name{RMixtComp-package}
+\alias{RMixtComp}
 \alias{RMixtComp-package}
 \title{RMixtComp}
 \description{
@@ -19,27 +20,27 @@ MixtComp has the ability to natively manage missing data (completely or by inter
 \details{
 Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predicting the cluster of new samples
 with a model learnt with \link{mixtCompLearn}.
-\link{createAlgo} gives you default values for required parameters.
+\link[RMixtCompUtilities]{createAlgo} gives you default values for required parameters.
 
 Read the help page of \link{mixtCompLearn} for available models and data format. A summary of these information can be
-accessed with the function \link{availableModels}.
+accessed with the function \link[RMixtCompUtilities]{availableModels}.
 
-All utility functions (getters, graphical) are in the \code{\link{RMixtCompUtilities-package}} package.
+All utility functions (getters, graphical) are in the \code{\link[RMixtCompUtilities]{RMixtCompUtilities-package}} package.
 
 In order to have an overview of the output, you can use \link{print.MixtCompLearn}, \link{summary.MixtCompLearn} and
 \link{plot.MixtCompLearn} functions,
 
-Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC},
-\link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getProportion}, \link{getTik}, \link{getEmpiricTik},
-\link{getPartition}, \link{getType}, \link{getModel}, \link{getVarNames}.
+Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link[RMixtCompUtilities]{getBIC},
+\link[RMixtCompUtilities]{getICL}, \link[RMixtCompUtilities]{getCompletedData}, \link[RMixtCompUtilities]{getParam}, \link[RMixtCompUtilities]{getProportion}, \link[RMixtCompUtilities]{getTik}, \link[RMixtCompUtilities]{getEmpiricTik},
+\link[RMixtCompUtilities]{getPartition}, \link[RMixtCompUtilities]{getType}, \link[RMixtCompUtilities]{getModel}, \link[RMixtCompUtilities]{getVarNames}.
 
 
-You can compute discriminative powers and similarities with functions: \link{computeDiscrimPowerClass},
-\link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
+You can compute discriminative powers and similarities with functions: \link[RMixtCompUtilities]{computeDiscrimPowerClass},
+\link[RMixtCompUtilities]{computeDiscrimPowerVar}, \link[RMixtCompUtilities]{computeSimilarityClass}, \link[RMixtCompUtilities]{computeSimilarityVar}.
 
-Graphics functions are \link{plot.MixtComp}, \link{plot.MixtCompLearn}, \link{heatmapClass}, \link{heatmapTikSorted},
-\link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence}, \link{plotDataBoxplot}, \link{plotDataCI},
-\link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
+Graphics functions are \link[RMixtCompUtilities]{plot.MixtComp}, \link{plot.MixtCompLearn}, \link[RMixtCompUtilities]{heatmapClass}, \link[RMixtCompUtilities]{heatmapTikSorted},
+\link[RMixtCompUtilities]{heatmapVar}, \link[RMixtCompUtilities]{histMisclassif}, \link[RMixtCompUtilities]{plotConvergence}, \link[RMixtCompUtilities]{plotDataBoxplot}, \link[RMixtCompUtilities]{plotDataCI},
+\link[RMixtCompUtilities]{plotDiscrimClass}, \link[RMixtCompUtilities]{plotDiscrimVar}, \link[RMixtCompUtilities]{plotProportion}, \link{plotCrit}.
 
 Datasets with running examples are provided: \link{titanic}, \link{CanadianWeather}, \link{prostate}, \link{simData}.
 
@@ -49,25 +50,25 @@ Documentation about input and output format is available: \code{vignette("dataFo
 
 MixtComp examples: \code{vignette("MixtComp")} or online \url{https://github.com/vandaele/mixtcomp-notebook}.
 
-Using ClusVis with RMixtComp: \code{vignette("dataFormat")}.
+Using ClusVis with RMixtComp: \code{vignette("ClusVis")}.
 }
 \examples{
 data(simData)
 
 # define the algorithm's parameters: you can use createAlgo function
 algo <- list(
-    nbBurnInIter = 50,
-    nbIter = 50,
-    nbGibbsBurnInIter = 50,
-    nbGibbsIter = 50,
-    nInitPerClass = 20,
-    nSemTry = 20,
-    confidenceLevel = 0.95
+  nbBurnInIter = 50,
+  nbIter = 50,
+  nbGibbsBurnInIter = 50,
+  nbGibbsIter = 50,
+  nInitPerClass = 20,
+  nSemTry = 20,
+  confidenceLevel = 0.95
 )
 
 # run RMixtComp for learning using only 3 variables
 resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised[1:3], algo,
-    nClass = 1:2, nRun = 2, nCore = 1
+  nClass = 1:2, nRun = 2, nCore = 1
 )
 
 summary(resLearn)
@@ -75,8 +76,9 @@ plot(resLearn)
 
 # run RMixtComp for predicting
 resPred <- mixtCompPredict(
-    simData$dataPredict$matrix, simData$model$unsupervised[1:3], algo,
-    resLearn, nCore = 1
+  simData$dataPredict$matrix, simData$model$unsupervised[1:3], algo,
+  resLearn,
+  nCore = 1
 )
 
 partitionPred <- getPartition(resPred)
@@ -95,7 +97,25 @@ A. Same, F. Chamroukhi, G. Govaert, P. Aknin. (2011). Model-based clustering and
 J. Jacques, C. Biernacki. (2014). Model-based clustering for multivariate partial ranking data. Journal of Statistical Planning and Inference. 149. 10.1016/j.jspi.2014.02.011.
 }
 \seealso{
-\code{\link{mixtCompLearn}} \code{\link{availableModels}} \code{\link{RMixtCompUtilities-package}},
-\code{\link{RMixtCompIO-package}}. Other clustering packages: \code{Rmixmod}
+\code{\link{mixtCompLearn}} \code{\link[RMixtCompUtilities]{availableModels}} \code{\link[RMixtCompUtilities]{RMixtCompUtilities-package}},
+\code{\link[RMixtCompIO]{RMixtCompIO-package}}. Other clustering packages: \code{Rmixmod}
+}
+\author{
+\strong{Maintainer}: Quentin Grimonprez \email{quentingrim@yahoo.fr}
+
+Authors:
+\itemize{
+  \item Vincent Kubicki
+  \item Christophe Biernacki
+}
+
+Other contributors:
+\itemize{
+  \item Matthieu Marbac-Lourdelle [contributor]
+  \item Étienne Goffinet [contributor]
+  \item Serge Iovleff [contributor]
+  \item Julien Vandaele \email{julien.vandaele@inria.fr} [contributor]
+}
+
 }
 \keyword{package}
