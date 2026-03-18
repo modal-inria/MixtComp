@@ -59,7 +59,7 @@ if (requireNamespace("RMixtCompIO", quietly = TRUE)) {
     mode = "learn"
   )
 
-  resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+  resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 
   # plot
   plotDiscrimVar(resLearn)
