@@ -17,7 +17,7 @@
 #' Histogram of the misclassification probabilities
 #'
 #' @details Missclassification probability of observation i is denoted err_i
-#' err_i = 1 - max_{k={1,\ldots,K}} P(Z_i=k|x_i)
+#' err_i = 1 - max_{k=1,\ldots,K} P(Z_i=k|x_i)
 #' Histograms of err_i's can be plotted for a specific class, all classes or every class
 #'
 #' @param output object returned by \emph{mixtCompLearn} function from \emph{RMixtComp} or \emph{rmcMultiRun} function from

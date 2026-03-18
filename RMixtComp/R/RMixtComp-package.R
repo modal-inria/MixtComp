@@ -25,7 +25,6 @@
 #' @importFrom stats cov var
 #'
 #' @title RMixtComp
-#' @docType package
 #' @aliases RMixtComp-package
 #' @name RMixtComp-package
 #' @description

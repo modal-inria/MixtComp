@@ -21,7 +21,6 @@
 #' @importFrom stats rbinom rmultinom rnbinom rnorm rpois runif rweibull
 #'
 #' @title RMixtCompIO
-#' @docType package
 #' @aliases RMixtCompIO-package
 #' @name RMixtCompIO-package
 #' @description
@@ -82,4 +81,4 @@
 #' @seealso \code{\link{rmcMultiRun}}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
 #'
 #' @keywords package
-NULL
+"_PACKAGE"

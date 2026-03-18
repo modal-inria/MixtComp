@@ -26,7 +26,6 @@
 #' @importFrom utils head
 #'
 #' @title RMixtCompUtilities
-#' @docType package
 #' @aliases RMixtCompUtilities-package
 #' @name RMixtCompUtilities-package
 #' @description
@@ -64,4 +63,4 @@
 #' @seealso \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod} packages
 #'
 #' @keywords package
-NULL
+"_PACKAGE"

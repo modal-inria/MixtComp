@@ -2,6 +2,7 @@
 % Please edit documentation in R/RMixtCompUtilities-package.R
 \docType{package}
 \name{RMixtCompUtilities-package}
+\alias{RMixtCompUtilities}
 \alias{RMixtCompUtilities-package}
 \title{RMixtCompUtilities}
 \description{
@@ -37,5 +38,23 @@ Graphics functions are \link{plot.MixtComp}, \link{heatmapClass}, \link{heatmapT
 }
 \seealso{
 \code{RMixtComp} \code{RMixtCompIO} \code{Rmixmod} packages
+}
+\author{
+\strong{Maintainer}: Quentin Grimonprez \email{quentingrim@yahoo.fr}
+
+Authors:
+\itemize{
+  \item Vincent Kubicki
+  \item Christophe Biernacki
+  \item Matthieu Marbac-Lourdelle
+}
+
+Other contributors:
+\itemize{
+  \item Étienne Goffinet [contributor]
+  \item Serge Iovleff [contributor]
+  \item Julien Vandaele \email{julien.vandaele@inria.fr} [contributor]
+}
+
 }
 \keyword{package}
