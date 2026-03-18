@@ -79,10 +79,10 @@ plotlyCrit <- function(crit, nClass, ...) {
 ggplotCrit <- function(crit, nClass) {
   df <- data.frame(class = nClass, value = as.vector(t(crit)), Criterion = rep(rownames(crit), each = length(nClass)))
 
-  p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
+  p <- ggplot(data = df, aes(x = .data[["class"]], y = .data[["value"]], col = .data[["Criterion"]])) +
     labs(title = "Criterion", x = "Number of classes", y = "value") +
     geom_line() +
-    geom_point(aes_string(shape = "Criterion"), size = 2) +
+    geom_point(aes(shape = .data[["Criterion"]]), size = 2) +
     scale_x_continuous(breaks = pretty_breaks()(nClass))
   p
 }
