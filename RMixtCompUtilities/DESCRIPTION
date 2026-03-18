@@ -19,5 +19,5 @@ URL: https://github.com/modal-inria/MixtComp
 BugReports: https://github.com/modal-inria/MixtComp/issues
 Imports: plotly, ggplot2, scales
 Suggests: testthat, xml2, RMixtCompIO (>= 4.0.4), Rmixmod
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Encoding: UTF-8

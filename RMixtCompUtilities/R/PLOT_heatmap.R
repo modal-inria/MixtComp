@@ -51,7 +51,7 @@
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   heatmapVar(resLearn)
@@ -146,7 +146,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...) {
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   heatmapClass(resLearn)
@@ -254,7 +254,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...) {
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   heatmapTikSorted(resLearn)
@@ -327,7 +327,8 @@ heatmapTikSorted <- function(output, pkg = c("ggplot2", "plotly"), ...) {
 
 # @author Quentin Grimonprez
 ggheatmap <- function(
-    dat, xname, yname = seq_len(nrow(dat)), main, xlab = "", ylab = "", legendName = "Value", addValues = FALSE) {
+  dat, xname, yname = seq_len(nrow(dat)), main, xlab = "", ylab = "", legendName = "Value", addValues = FALSE
+) {
   meltedX <- data.frame(
     ind = factor(rep(yname, ncol(dat)), levels = yname),
     key = factor(rep(xname, each = nrow(dat)), levels = xname),
@@ -335,7 +336,7 @@ ggheatmap <- function(
     roundedValue = round(as.numeric(dat), 2)
   )
 
-  p <- ggplot(data = meltedX, aes_string(x = "key", y = "ind", fill = "value")) +
+  p <- ggplot(data = meltedX, aes(x = .data[["key"]], y = .data[["ind"]], fill = .data[["value"]])) +
     geom_tile() +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -350,7 +351,7 @@ ggheatmap <- function(
   }
 
   if (addValues) {
-    p <- p + geom_text(aes_string(label = "roundedValue"), color = "red", size = 4)
+    p <- p + geom_text(aes(label = .data[["roundedValue"]]), color = "red", size = 4)
   }
 
   return(p)
