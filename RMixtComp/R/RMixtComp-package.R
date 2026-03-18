@@ -19,6 +19,7 @@
 #' @importFrom graphics plot
 #' @importFrom utils head
 #' @importFrom ggplot2 ggplot aes labs geom_point geom_line scale_x_continuous
+#' @importFrom rlang .data
 #' @importFrom plotly plot_ly add_trace layout %>%
 #' @importFrom scales pretty_breaks
 #' @importFrom stats cov var
