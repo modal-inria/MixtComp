@@ -187,6 +187,12 @@ public:
 	int pos() const {
 		return j_ * rows_ + i_;
 	}
+
+	const Scalar &operator[](difference_type n) const {
+		int iP, jP;
+		posToIn(pos() + n, iP, jP);
+		return (*p_mat_)(iP, jP);
+	}
 };
 
 #endif // CONSTITERATOR_H

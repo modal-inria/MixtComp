@@ -170,6 +170,7 @@ public:
 		return *this;
 	}
 
+
 	void posToIn(int pos, int &i, int &j) const {
 		std::div_t divresult;
 		divresult = std::div(pos, rows_);
@@ -179,6 +180,12 @@ public:
 	}
 
 	int pos() const { return j_ * rows_ + i_; }
+
+	reference operator[](difference_type n) const {
+		int iP, jP;
+		posToIn(pos() + n, iP, jP);
+		return (*p_mat_)(iP, jP);
+	}
 };
 
 #endif // ITERATOR_H
