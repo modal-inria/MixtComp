@@ -133,8 +133,8 @@ ggplotBoxplotperClass <- function(bounds, var, labels) {
     geom_rect(
       data = df,
       mapping = aes(
-        xmin = .data[["`quantil. 0.25`"]],
-        xmax = .data[["`quantil. 0.75`"]],
+        xmin = .data[["quantil. 0.25"]],
+        xmax = .data[["quantil. 0.75"]],
         ymin = .data[["classlo"]],
         ymax = .data[["classup"]],
         fill = .data[["class"]]
@@ -145,8 +145,8 @@ ggplotBoxplotperClass <- function(bounds, var, labels) {
     geom_rect(
       data = df,
       mapping = aes(
-        xmin = .data[["`quantil. 0.5`"]],
-        xmax = .data[["`quantil. 0.5`"]],
+        xmin = .data[["quantil. 0.5"]],
+        xmax = .data[["quantil. 0.5"]],
         ymin = .data[["classlo"]],
         ymax = .data[["classup"]]
       ),
@@ -156,8 +156,8 @@ ggplotBoxplotperClass <- function(bounds, var, labels) {
     geom_rect(
       data = df,
       mapping = aes(
-        xmin = .data[["`quantil. 0.05`"]],
-        xmax = .data[["`quantil. 0.25`"]],
+        xmin = .data[["quantil. 0.05"]],
+        xmax = .data[["quantil. 0.25"]],
         ymin = .data[["classmid"]],
         ymax = .data[["classmid"]]
       ),
@@ -166,14 +166,14 @@ ggplotBoxplotperClass <- function(bounds, var, labels) {
     geom_rect(
       data = df,
       mapping = aes(
-        xmin = .data[["`quantil. 0.75`"]],
-        xmax = .data[["`quantil. 0.95`"]],
+        xmin = .data[["quantil. 0.75"]],
+        xmax = .data[["quantil. 0.95"]],
         ymin = .data[["classmid"]],
         ymax = .data[["classmid"]]
       ),
       color = "black"
     ) +
-    labs(title = paste0("Boxplot per class for variable ", var), x = var, y = element_blank()) +
+    labs(title = paste0("Boxplot per class for variable ", var), x = var, y = "") +
     theme(legend.position = "none") +
     scale_y_continuous(breaks = seq_len(nrow(df)), labels = df$class) +
     scale_fill_discrete(name = "Class", drop = FALSE)
