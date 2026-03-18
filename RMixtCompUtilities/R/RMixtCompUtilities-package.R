@@ -18,7 +18,7 @@
 #' @importFrom stats optimize pnorm qnbinom qnorm qpois qweibull uniroot
 #' @importFrom grDevices n2mfrow
 #' @importFrom graphics axis lines plot abline legend matplot par title
-#' @importFrom ggplot2 ggplot aes aes_string ylim labs theme theme_minimal element_text element_blank
+#' @importFrom ggplot2 ggplot aes aes ylim labs theme theme_minimal element_text element_blank
 #' @importFrom ggplot2 geom_tile geom_text geom_bar geom_point geom_rect geom_ribbon geom_line geom_histogram
 #' @importFrom ggplot2 scale_fill_gradient scale_fill_manual position_dodge scale_color_discrete
 #' @importFrom ggplot2 scale_y_continuous scale_fill_discrete

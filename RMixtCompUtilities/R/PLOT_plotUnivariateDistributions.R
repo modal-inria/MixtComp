@@ -61,7 +61,7 @@
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   plotDataCI(resLearn, "var1")
@@ -217,11 +217,17 @@ ggplotCINumericData <- function(data, var, class, grl, labels = class) {
     lower = data$lower,
     uppers = data$uppers
   )
-  p <- ggplot(df, aes_string(x = "mean", y = "class")) +
+  p <- ggplot(df, aes(x = .data[["mean"]], y = .data[["class"]])) +
     geom_point() +
     geom_rect(
       data = df,
-      mapping = aes_string(xmin = "lower", xmax = "uppers", ymin = "classlo", ymax = "classup", fill = "class"),
+      mapping = aes(
+        xmin = .data[["lower"]],
+        xmax = .data[["uppers"]],
+        ymin = .data[["classlo"]],
+        ymax = .data[["classup"]],
+        fill = .data[["class"]]
+      ),
       color = "black",
       alpha = 0.5
     ) +
@@ -322,7 +328,7 @@ ggplotCategoricalData <- function(data, var, class, grl, labels) {
     categ = rep(data$levels, nrow(data$probs)),
     class = rep(labelClass, each = length(data$levels))
   )
-  p <- ggplot(data = df, aes_string(x = "categ", y = "value", fill = "class")) +
+  p <- ggplot(data = df, aes(x = .data[["categ"]], y = .data[["value"]], fill = .data[["class"]])) +
     geom_bar(stat = "identity", position = position_dodge()) +
     labs(title = "Distribution per class", x = var, y = "Probability") +
     scale_fill_discrete(name = "Class", drop = FALSE)
@@ -480,7 +486,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
   if (add.obs) {
     for (i in seq_along(output$variable$data[[var]]$time)) {
       df2 <- data.frame(time = output$variable$data[[var]]$time[[i]], value = output$variable$data[[var]]$data[[i]])
-      p <- p + geom_line(aes_string(y = "value", x = "time"), data = df2, stat = "identity", size = 0.5, alpha = 0.5)
+      p <- p + geom_line(data = df2, aes(y = .data[["value"]], x = .data[["time"]]), stat = "identity", linewidth = 0.5, alpha = 0.5)
     }
   }
 
@@ -489,7 +495,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
   if (add.CI) {
     for (i in seq_len(nrow(data$inf))) {
       df2 <- data.frame(inf = data$inf[i, ], sup = data$sup[i, ], time = data$time)
-      p <- p + geom_ribbon(data = df2, aes_string(x = "time", ymin = "inf", ymax = "sup"), alpha = 0.3)
+      p <- p + geom_ribbon(data = df2, aes(x = .data[["time"]], ymin = .data[["inf"]], ymax = .data[["sup"]]), alpha = 0.3)
     }
   }
 
@@ -500,7 +506,12 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
     Class = factor(rep(paste("Class", classToPlot), each = length(df$time)), levels = paste("Class", seq_len(nClass)))
   )
 
-  p <- p + geom_line(data = df2, mapping = aes_string(x = "time", y = "mean", group = "Class", colour = "Class"), size = 1.5)
+  p <- p + geom_line(data = df2, mapping = aes(
+    x = .data[["time"]],
+    y = .data[["mean"]],
+    group = .data[["Class"]],
+    colour = .data[["Class"]]
+  ), linewidth = 1.5)
 
   p <- p +
     labs(title = "Mean curves and 95%-level confidence intervals per class", x = "Time", y = var) +

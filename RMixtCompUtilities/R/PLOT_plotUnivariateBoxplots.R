@@ -60,7 +60,7 @@
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   plotDataBoxplot(resLearn, "var1")
@@ -132,26 +132,45 @@ ggplotBoxplotperClass <- function(bounds, var, labels) {
   p <- ggplot() +
     geom_rect(
       data = df,
-      mapping = aes_string(
-        xmin = "`quantil. 0.25`", xmax = "`quantil. 0.75`", ymin = "classlo", ymax = "classup", fill = "class"
+      mapping = aes(
+        xmin = .data[["`quantil. 0.25`"]],
+        xmax = .data[["`quantil. 0.75`"]],
+        ymin = .data[["classlo"]],
+        ymax = .data[["classup"]],
+        fill = .data[["class"]]
       ),
       color = "black",
       alpha = 0.5
     ) +
     geom_rect(
       data = df,
-      mapping = aes_string(xmin = "`quantil. 0.5`", xmax = "`quantil. 0.5`", ymin = "classlo", ymax = "classup"),
+      mapping = aes(
+        xmin = .data[["`quantil. 0.5`"]],
+        xmax = .data[["`quantil. 0.5`"]],
+        ymin = .data[["classlo"]],
+        ymax = .data[["classup"]]
+      ),
       color = "black",
-      size = 1
+      linewidth = 1
     ) +
     geom_rect(
       data = df,
-      mapping = aes_string(xmin = "`quantil. 0.05`", xmax = "`quantil. 0.25`", ymin = "classmid", ymax = "classmid"),
+      mapping = aes(
+        xmin = .data[["`quantil. 0.05`"]],
+        xmax = .data[["`quantil. 0.25`"]],
+        ymin = .data[["classmid"]],
+        ymax = .data[["classmid"]]
+      ),
       color = "black"
     ) +
     geom_rect(
       data = df,
-      mapping = aes_string(xmin = "`quantil. 0.75`", xmax = "`quantil. 0.95`", ymin = "classmid", ymax = "classmid"),
+      mapping = aes(
+        xmin = .data[["`quantil. 0.75`"]],
+        xmax = .data[["`quantil. 0.95`"]],
+        ymin = .data[["classmid"]],
+        ymax = .data[["classmid"]]
+      ),
       color = "black"
     ) +
     labs(title = paste0("Boxplot per class for variable ", var), x = var, y = element_blank()) +

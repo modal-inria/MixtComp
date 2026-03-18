@@ -54,7 +54,7 @@
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   plotDiscrimVar(resLearn)
@@ -139,7 +139,7 @@ plotDiscrimVar <- function(output, class = NULL, ylim = c(0, 1), pkg = c("ggplot
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   plotDiscrimClass(resLearn)
 #' }
@@ -211,7 +211,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   plotProportion(resLearn)
@@ -272,9 +272,9 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
 # @author Matthieu Marbac
 ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), col.text = "white") {
   df <- data.frame(var = factor(label, levels = label), discrim = value, roundedDiscrim = round(value, 2))
-  ggplot(data = df, aes_string(x = "var", y = "discrim")) +
+  ggplot(data = df, aes(x = .data[["var"]], y = .data[["discrim"]])) +
     geom_bar(stat = "identity") +
-    geom_text(aes_string(label = "roundedDiscrim"), vjust = -0.5, color = col.text, size = 5) +
+    geom_text(aes(label = .data[["roundedDiscrim"]]), vjust = -0.5, color = col.text, size = 5) +
     theme_minimal() +
     ylim(ylim[1], ylim[2]) +
     labs(title = main, x = xlab, y = ylab) +

@@ -52,7 +52,7 @@
 #'     mode = "learn"
 #'   )
 #'
-#'   resLearn <-RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
+#'   resLearn <- RMixtCompIO::rmcMultiRun(algo, dataLearn, model, nRun = 3)
 #'
 #'   # plot
 #'   histMisclassif(resLearn)
@@ -148,7 +148,7 @@ gghistMisclassif <- function(z, misclassifrisk, classNames) {
   p <- list()
 
   # general
-  p$general <- ggplot(df, aes(x = misclassifrisk, y = ..count.. / sum(..count..))) +
+  p$general <- ggplot(df, aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..))) +
     geom_histogram(position = "identity", binwidth = 0.05, colour = "black", alpha = 0.8) +
     labs(
       title = "Misclassification risk",
@@ -157,7 +157,7 @@ gghistMisclassif <- function(z, misclassifrisk, classNames) {
     )
 
   # each
-  p$each <- ggplot(df, aes(x = misclassifrisk, y = ..count.. / sum(..count..), fill = class)) +
+  p$each <- ggplot(df, aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..), fill = .data[["class"]])) +
     geom_histogram(position = "dodge", binwidth = 0.05) +
     labs(
       title = "Misclassification risk",
@@ -168,7 +168,9 @@ gghistMisclassif <- function(z, misclassifrisk, classNames) {
   # class by class
   for (i in seq_len(G)) {
     p[[paste0("class.", classNames[i])]] <- ggplot(
-      subset(df, class == classNames[i]), aes(x = misclassifrisk, y = ..count.. / sum(..count..)), fill = class
+      subset(df, class == classNames[i]),
+      aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..)),
+      fill = .data[["class"]]
     ) +
       geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") +
       labs(
