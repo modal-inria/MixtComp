@@ -1,8 +1,6 @@
-cmake_policy(SET CMP0048 NEW) # enable modern project behavior
-cmake_policy(SET CMP0167 NEW) # Suppress FindBoost warnings
+cmake_minimum_required (VERSION 3.10...3.30)
 
 project (MixtComp LANGUAGES CXX VERSION 4.0)
-cmake_minimum_required (VERSION 3.10)
 
 # C++ standard and clangd support
 
