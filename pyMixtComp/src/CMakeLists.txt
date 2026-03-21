@@ -1,7 +1,4 @@
-cmake_policy(SET CMP0148 NEW) # Suppress FindPythonInterp/Libs warnings
-cmake_policy(SET CMP0167 NEW) # Suppress FindBoost warnings
-
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10...3.30)
 
 project(pyMixtComp)
 
