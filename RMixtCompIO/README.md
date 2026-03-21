@@ -1,10 +1,10 @@
 # RMixtCompIO
 
-*RMixtCompIO* is the minimal R interface of the MixtComp C++ library. It is recommended to use [RMixtComp](../RMixtComp) which is more versatile and convenient to use. The version number of *RMixtCompIO* follows that of MixtComp C++ library. 
+*RMixtCompIO* is the minimal R interface of the MixtComp C++ library. It is recommended to use [RMixtComp](../RMixtComp) which is more versatile and convenient to use. The version number of *RMixtCompIO* follows that of MixtComp C++ library.
 
 You can download it from CRAN in an R console:
 
-```
+```r
 install.packages("RMixtCompIO", repos = "https://cran.rstudio.com")
 ```
 
@@ -14,7 +14,7 @@ install.packages("RMixtCompIO", repos = "https://cran.rstudio.com")
 
 The C++ library *CppNumericalSolvers* is required in the *src* folder. It is available via a git submodule. Run in a terminal:
 
-```
+```sh
 git submodule init
 git submodule update
 ```
@@ -25,28 +25,29 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 
 1. Install R from terminal or download it from [R-project](https://www.r-project.org/):
 
-    ```
+    ```sh
     sudo apt install r-base
     ```
 
 2. Install required R packages
 
-    Packages are required from Ubuntu repositories: 
-    
-    ```
+    Packages are required from Ubuntu repositories:
+
+    ```sh
     sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev
     ```
-    
+
     Install required R packages from terminal:
-    
-    ```
+
+    ```sh
     Rscript -e "install.packages(c(\"BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
     # OPTIONAL: for testing purpose
     Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\", \"Rmixmod\", \"blockcluster\"), repos = \"https://cran.rstudio.com\")"
     ```
+
     from R:
-    
-    ```
+
+    ```r
     install.packages(c("BH", "RcppEigen", "doParallel", "foreach"), repos = "https://cran.rstudio.com")
     # OPTIONAL: for testing purpose
     install.packages(c("testthat", "RInside", "xml2", "devtools", "roxygen2", "Rmixmod", "blockcluster"), repos = "https://cran.rstudio.com")
@@ -56,12 +57,11 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 
 Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
 
-
 ## Install
 
 Run in the current location (./RMixtCompIO/ folder):
 
-```
+```sh
 make updateLib
 make all
 ```
@@ -70,26 +70,25 @@ The target *updateLib* copies the MixtComp library C++ folder from [MixtComp/src
 
 ## Build
 
-```bash
+```sh
 R CMD build RMixtCompIO
 ```
 
 It generates a tar.gz file
 
-
 ## Check
 
-```bash
+```sh
 R CMD check --as-cran RMixtCompIO
 ```
 
 or you can build the package before
 
-```bash
+```sh
 R CMD check --as-cran RMixtCompIO_*.tar.gz
 ```
 
-### Windows
+### Check on Windows
 
 If you do not have windows, build the source and upload the tar.gz at <https://win-builder.r-project.org/upload.aspx>
 
@@ -101,11 +100,11 @@ To check on (almost) the same linux configuration as the CRAN, you can use the f
 1) Create a `check` folder and put the tar.gz package inside
 1) Run
 
-```bash
-docker run -v `pwd`/check:/check ghcr.io/r-hub/containers/gcc13:latest r-check
+```sh
+docker run -v `pwd`/check:/check ghcr.io/r-hub/containers/gcc16:latest r-check
 ```
 
-See <https://r-hub.github.io/containers/containers.html> for available containers (`clang16`, `clang-asan`, ...)
+See <https://r-hub.github.io/containers/containers.html> for available containers (`clang22`, `clang-asan`, ...)
 
 ## Testing procedures
 
@@ -115,30 +114,32 @@ Tests are implemented in the `tests/testthat` folder of RMixtCompIO. They requir
 
 You can run tests via R:
 
-```
+```r
 library(RMixtCompIO)
 library(testthat)
 library(devtools)
 load_all()
 test_dir("tests/testthat/")
 ```
-or 
-```
-library(methods); 
-library(devtools); 
-options(testthat.output_file = "RMCIOtest.xml"); 
+
+or
+
+```r
+library(methods);
+library(devtools);
+options(testthat.output_file = "RMCIOtest.xml");
 test(".", reporter = JunitReporter)
 ```
+
 but it requires the *xml2* package and generates a xml report file named *RMCIOtest.xml*.
 
 Via shell:
-```
+
+```sh
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCIOtest.xml"); test(".", reporter = JunitReporter)'
 ```
 
-In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing `CRTL + SHIFT + T` or tests are run during a R CMD check `CRTL + SHIFT + E`.
-
-
+In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd> or tests are run during a R CMD check <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>E</kbd>.
 
 ### Write new tests
 
