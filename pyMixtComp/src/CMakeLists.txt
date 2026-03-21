@@ -1,5 +1,7 @@
+cmake_policy(SET CMP0148 NEW) # Suppress FindPythonInterp/Libs warnings
+cmake_policy(SET CMP0167 NEW) # Suppress FindBoost warnings
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 
 project(pyMixtComp)
 
@@ -12,10 +14,8 @@ find_package(Boost 1.58 COMPONENTS python numpy REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # python
-find_package(PythonInterp 3.6)
-find_package(PythonLibs 3.6 REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-
+find_package(Python3 3.6 COMPONENTS Interpreter Development REQUIRED)
+include_directories(${Python3_INCLUDE_DIRS})
 
 # Compile MixtComp
 add_compile_options("-DMINMODALITY=0")
