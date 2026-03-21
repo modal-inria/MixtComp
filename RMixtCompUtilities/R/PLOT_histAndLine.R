@@ -137,9 +137,6 @@ plotlyhistMisclassif <- function(z, misclassifrisk, classNames, ...) {
   histerrors
 }
 
-# to avoid note during R CMD check
-globalVariables("..count..")
-
 # @author Quentin Grimonprez
 gghistMisclassif <- function(z, misclassifrisk, classNames) {
   df <- data.frame(class = factor(z, levels = classNames), misclassifrisk = misclassifrisk)
@@ -148,7 +145,7 @@ gghistMisclassif <- function(z, misclassifrisk, classNames) {
   p <- list()
 
   # general
-  p$general <- ggplot(df, aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..))) +
+  p$general <- ggplot(df, aes(x = .data[["misclassifrisk"]], y = after_stat(!!str2lang("count")) / sum(after_stat(!!str2lang("count"))))) +
     geom_histogram(position = "identity", binwidth = 0.05, colour = "black", alpha = 0.8) +
     labs(
       title = "Misclassification risk",

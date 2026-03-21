@@ -21,7 +21,7 @@
 #' @importFrom ggplot2 ggplot aes aes ylim labs theme theme_minimal element_text element_blank
 #' @importFrom ggplot2 geom_tile geom_text geom_bar geom_point geom_rect geom_ribbon geom_line geom_histogram
 #' @importFrom ggplot2 scale_fill_gradient scale_fill_manual position_dodge scale_color_discrete
-#' @importFrom ggplot2 scale_y_continuous scale_fill_discrete
+#' @importFrom ggplot2 scale_y_continuous scale_fill_discrete after_stat
 #' @importFrom rlang .data
 #' @importFrom utils head
 #'
