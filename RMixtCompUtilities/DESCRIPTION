@@ -17,7 +17,7 @@ Description: Mixture Composer <https://github.com/modal-inria/MixtComp> is a pro
     functions to facilitate the analysis of 'MixtComp' output.
 URL: https://github.com/modal-inria/MixtComp
 BugReports: https://github.com/modal-inria/MixtComp/issues
-Imports: plotly, ggplot2, scales
+Imports: plotly, ggplot2, scales, rlang
 Suggests: testthat, xml2, RMixtCompIO (>= 4.0.4), Rmixmod
 RoxygenNote: 7.3.3
 Encoding: UTF-8
