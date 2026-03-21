@@ -2,6 +2,7 @@
 % Please edit documentation in R/RMixtCompIO-package.R
 \docType{package}
 \name{RMixtCompIO-package}
+\alias{RMixtCompIO}
 \alias{RMixtCompIO-package}
 \title{RMixtCompIO}
 \description{
@@ -61,5 +62,25 @@ resPredict <- rmcMultiRun(algo, dataPredict, model, resLearn)
 }
 \seealso{
 \code{\link{rmcMultiRun}}. Other clustering packages: \code{Rmixmod}, \code{blockcluster}
+}
+\author{
+\strong{Maintainer}: Quentin Grimonprez \email{quentingrim@yahoo.fr}
+
+Authors:
+\itemize{
+  \item Vincent Kubicki
+  \item Christophe Biernacki
+}
+
+Other contributors:
+\itemize{
+  \item Serge Iovleff [contributor]
+  \item Matthieu Marbac-Lourdelle [contributor]
+  \item Étienne Goffinet [contributor]
+  \item Patrick Wieschollek (for CppOptimizationLibrary) [contributor]
+  \item Tobias Wood (for CppOptimizationLibrary) [contributor]
+  \item Julien Vandaele \email{julien.vandaele@inria.fr} [contributor]
+}
+
 }
 \keyword{package}
