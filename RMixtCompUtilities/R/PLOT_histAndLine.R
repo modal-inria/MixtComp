@@ -169,8 +169,7 @@ gghistMisclassif <- function(z, misclassifrisk, classNames) {
   for (i in seq_len(G)) {
     p[[paste0("class.", classNames[i])]] <- ggplot(
       subset(df, class == classNames[i]),
-      aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..)),
-      fill = .data[["class"]]
+      aes(x = .data[["misclassifrisk"]], y = ..count.. / sum(..count..), fill = .data[["class"]]),
     ) +
       geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") +
       labs(
