@@ -35,19 +35,22 @@ jobs:
         uses: actions/checkout@v6
         with:
           submodules: 'true'
+      - name: Install Specific CMake version
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.28.3'
       - name: Install MixtComp dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install cmake libboost-all-dev libeigen3-dev libxml2-dev lcov
+          sudo apt-get install libboost-all-dev libeigen3-dev libxml2-dev lcov
       - name: Install MixtComp dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install cmake boost eigen lcov
-          brew install boost-python3
-      - name: Set up Python 3.10
+          brew install boost eigen@3 lcov boost-python3
+      - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       - name: Install Tests dependencies
         run: pip install pytest flake8
       - name: Install Other Python Dependencies
@@ -56,6 +59,8 @@ jobs:
       - name: Compile PyMixtCompBridge
         working-directory: pyMixtComp
         run: ./build.sh
+        env:
+          CMAKE_PREFIX_PATH: ${{ env.CMAKE_PREFIX_PATH }}:/opt/homebrew/opt/eigen@3
       - name: Test PyMixtCompBridge
         working-directory: pyMixtComp
         run: ./utest.sh
