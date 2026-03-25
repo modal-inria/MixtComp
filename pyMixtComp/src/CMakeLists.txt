@@ -11,7 +11,7 @@ find_package(Boost 1.58 COMPONENTS python numpy REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # python
-find_package(Python3 3.6 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python3 3.10 COMPONENTS Interpreter Development REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 
 # Compile MixtComp
