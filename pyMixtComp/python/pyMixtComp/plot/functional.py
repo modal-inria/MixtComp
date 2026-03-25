@@ -20,7 +20,7 @@ def plot_functional_data(bounds, res, var_name, add_obs=False, add_ci=True, ax=N
             )
 
     for i in bounds[4]:
-        sns.lineplot(x=bounds[0], y=bounds[2][i], label="Class " + str(i), ax=ax)
+        sns.lineplot(x=bounds[0], y=bounds[2][i], label=f"Class {i}", ax=ax)
 
     if add_ci:
         for i in bounds[4]:

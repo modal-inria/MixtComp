@@ -44,12 +44,12 @@ def plot_data_CI(res, var_name, class_ids=None, all=False, ax=None, **kwargs):
         The plot function associated with the model of var_name does not exist
     """
     if not isinstance(all, bool):
-        raise TypeError("all mus be a boolean.")
+        raise TypeError("all must be a boolean.")
     if not isinstance(var_name, str):
-        raise TypeError("var_name mus be a string.")
+        raise TypeError("var_name must be a string.")
 
     if var_name not in res["variable"]["type"].keys():
-        raise ValueError(var_name + " variable does not exist in the mixture model.")
+        raise ValueError(f"{var_name} variable does not exist in the mixture model.")
 
     if isinstance(class_ids, int) | isinstance(class_ids, str):
         class_ids = [class_ids]
@@ -115,7 +115,7 @@ def extract_CI_gaussian(res, var_name, class_ids=None, all=False):
         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
     )
 
-    ci = ci.loc[["Class " + str(id) for id in class_ids]]
+    ci = ci.loc[[f"Class {id}" for id in class_ids]]
 
     if all:
         ci.loc["all", ci.columns] = [
@@ -138,7 +138,7 @@ def extract_CI_poisson(res, var_name, class_ids=None, all=False):
         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
     )
 
-    ci = ci.loc[["Class " + str(id) for id in class_ids]]
+    ci = ci.loc[[f"Class {id}" for id in class_ids]]
     if all:
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
@@ -165,7 +165,7 @@ def extract_CI_nbinom(res, var_name, class_ids=None, all=False):
         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
     )
 
-    ci = ci.loc[["Class " + str(id) for id in class_ids]]
+    ci = ci.loc[[f"Class {id}" for id in class_ids]]
     if all:
         ci.loc["all", ci.columns] = [
             np.mean(res["variable"]["data"][var_name]["completed"]),
@@ -191,7 +191,7 @@ def extract_CI_weibull(res, var_name, class_ids=None, all=False):
         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
     )
 
-    ci = ci.loc[["Class " + str(id) for id in class_ids]]
+    ci = ci.loc[[f"Class {id}" for id in class_ids]]
 
     if all:
         ci.loc["all", ci.columns] = [
@@ -218,7 +218,7 @@ def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
         ],
         index=[x.replace("k:", "Class") for x in res["mixture"]["IDClass"].index],
     )
-    theta = theta.loc[["Class " + str(id) for id in class_ids]]
+    theta = theta.loc[[f"Class {id}" for id in class_ids]]
 
     if all:
         freq = Counter(res["variable"]["data"][var_name]["completed"])
@@ -230,7 +230,7 @@ def extract_CI_multinomial(res, var_name, class_ids=None, all=False):
 
     for k in range(len(theta)):
         ordered_indices = theta.iloc[k].values.argsort()[::-1]
-        remove = ordered_indices[(np.where(theta.iloc[k][ordered_indices].cumsum() > 0.95)[0][0] + 1) :]
+        remove = ordered_indices[(np.where(theta.iloc[k].iloc[ordered_indices].cumsum() > 0.95)[0][0] + 1) :]
         theta.iloc[k, remove] = 0
 
     return theta

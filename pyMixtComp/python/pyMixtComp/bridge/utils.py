@@ -73,7 +73,7 @@ def impute_model(data):
         A dict with where every key has the form `{"type": "model", "paramStr": "param"}`
     """
     if isinstance(data, np.ndarray):
-        var_names = ["var" + str(i) for i in range(data.shape[1])]
+        var_names = [f"var{i}" for i in range(data.shape[1])]
         var_types = [data.dtype] * data.shape[1]
 
     if isinstance(data, pd.DataFrame):
@@ -113,18 +113,18 @@ def _impute_model(var_name, var_type):
     """
     if pd.api.types.is_float_dtype(var_type):
         return "Gaussian"
-    elif pd.api.types.is_int64_dtype(var_type):
+    elif pd.api.types.is_integer_dtype(var_type):
         if var_name == "z_class":
             return "LatentClass"
         else:
             return "Poisson"
-    elif pd.api.types.is_string_dtype(var_type) or pd.api.types.is_categorical_dtype(var_type):
+    elif pd.api.types.is_string_dtype(var_type) or isinstance(var_type, pd.CategoricalDtype):
         if var_name == "z_class":
             return "LatentClass"
         else:
             return "Multinomial"
     else:
-        raise TypeError("Cannot impute the model for variable ", var_name, ". Please provide the model parameter.")
+        raise TypeError(f"Cannot impute the model for variable {var_name}. Please provide the model parameter.")
 
 
 def format_data_basic_mode(data, model, dictionary=None):
@@ -138,7 +138,7 @@ def format_data_basic_mode(data, model, dictionary=None):
 
     for var_name in model.keys():
         if model[var_name]["type"] in ["Multinomial", "LatentClass"]:
-            if not pd.api.types.is_int64_dtype(data[var_name].dtype):
+            if not pd.api.types.is_integer_dtype(data[var_name].dtype):
                 data[var_name] = data[var_name].astype("category")
 
                 if create_dict:
@@ -150,7 +150,7 @@ def format_data_basic_mode(data, model, dictionary=None):
                         "new": [str(i) for i in range(len(old_categ))],
                     }
                 elif var_name not in dictionary.keys():
-                    raise ValueError("No dictionary given for variable " + var_name)
+                    raise ValueError(f"No dictionary given for variable {var_name}")
 
                 data[var_name] = data[var_name].cat.rename_categories(
                     dict(zip(dictionary[var_name]["old"], dictionary[var_name]["new"]))
@@ -159,11 +159,13 @@ def format_data_basic_mode(data, model, dictionary=None):
                 data[var_name] = data[var_name].cat.add_categories("?")
                 data[var_name] = data[var_name].fillna("?")
             else:
-                data.loc[data[var_name].isna(), var_name] = "?"
+                mask_na = data[var_name].isna()
                 data[var_name] = data[var_name].astype("str")
+                data.loc[mask_na, var_name] = "?"
         else:
-            data.loc[data[var_name].isna(), var_name] = "?"
+            mask_na = data[var_name].isna()
             data[var_name] = data[var_name].astype("str")
+            data.loc[mask_na, var_name] = "?"
 
     return data.to_dict("list"), dictionary
 

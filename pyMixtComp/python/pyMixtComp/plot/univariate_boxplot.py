@@ -129,13 +129,11 @@ def extract_bounds_boxplot_numerical(res, var_name, class_ids=None, all=False):
     for i in range(len(q)):
         thresholds[:, i] = obs[ordered_indices[np.argmin(abs(cum_sums - q[i]).values, axis=0)]]
 
-    thresholds = pd.DataFrame(
-        thresholds, columns=["q" + str(i) for i in q], index=[x.replace("k:", "Class") for x in tik.columns]
-    )
-    thresholds = thresholds.loc[["Class " + str(id) for id in class_ids]]
+    thresholds = pd.DataFrame(thresholds, columns=[f"q{i}" for i in q], index=[x.replace("k:", "Class") for x in tik.columns])
+    thresholds = thresholds.loc[[f"Class {id}" for id in class_ids]]
 
     if all:
-        thresholds.loc["all", ["q" + str(i) for i in q]] = np.quantile(obs, q).reshape(1, -1)
+        thresholds.loc["all", [f"q{i}" for i in q]] = np.quantile(obs, q).reshape(1, -1)
 
     return thresholds
 
@@ -161,7 +159,7 @@ def extract_bounds_barplot_categorical(res, var_name, class_ids=None, all=False)
         probas[:, i] = (tik * (obs == levels[i])[:, np.newaxis]).sum() / tik.sum()
 
     probas = pd.DataFrame(probas, columns=levels, index=[x.replace("k:", "Class") for x in tik.columns])
-    probas = probas.loc[["Class " + str(id) for id in class_ids]]
+    probas = probas.loc[[f"Class {id}" for id in class_ids]]
 
     if all:
         freq = Counter(obs)

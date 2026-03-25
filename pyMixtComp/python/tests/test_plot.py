@@ -4,7 +4,6 @@ import unittest
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
 from pyMixtComp.MixtComp import MixtComp
 from pyMixtComp.plot.barplot import plot_discriminative_power_class, plot_discriminative_power_variable, plot_proportion
 from pyMixtComp.plot.heatmap import plot_class_similarity, plot_tik, plot_variable_similarity
@@ -18,8 +17,9 @@ class TestPlot(unittest.TestCase):
 
         self.gauss = np.concatenate((rng.normal(-2, 0.5, 70), rng.normal(2, 0.5, 30)), axis=None)
         self.mult = np.where(
-                         np.concatenate((rng.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70),
-                                         rng.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30))) == 1)[1]
+            np.concatenate((rng.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70), rng.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30)))
+            == 1
+        )[1]
         self.mult_basic = self.mult.copy().astype("str")
         self.mult_basic[self.mult_basic == "0"] = "a"
         self.mult_basic[self.mult_basic == "1"] = "b"
@@ -30,8 +30,9 @@ class TestPlot(unittest.TestCase):
         self.data = {"gauss": self.gauss, "mult": self.mult}
 
         self.mod = MixtComp(n_components=2)
-        self.mod.fit(self.data, {"gauss": {"type": "Gaussian", "paramStr": ""},
-                                 "mult": {"type": "Multinomial", "paramStr": ""}})
+        self.mod.fit(
+            self.data, {"gauss": {"type": "Gaussian", "paramStr": ""}, "mult": {"type": "Multinomial", "paramStr": ""}}
+        )
 
         self.mod_basic = MixtComp(n_components=2)
         self.mod_basic.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic, "z_class": self.z_class}))

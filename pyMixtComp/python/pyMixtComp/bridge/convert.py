@@ -1,6 +1,7 @@
 """
 Functions to convert c++ outputs to python
 """
+
 import numpy as np
 import pandas as pd
 
@@ -91,7 +92,7 @@ def convert_data_to_dict(X):
     if isinstance(X, np.ndarray):
         d = {}
         for i in range(X.shape[1]):
-            d["var" + str(i)] = X[:, i].astype("str")
+            d[f"var{i}"] = X[:, i].astype("str")
 
         return d
 
