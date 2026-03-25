@@ -28,7 +28,7 @@ def plot_discriminative_power_variable(res, class_id=None, ax=None):
 
     title = "Discriminative level of variables"
     if class_id is not None:
-        title += " in class " + str(class_id)
+        title += f" in class {class_id}"
 
     ax = _barplot(discrim_power, title, "Variables", "Discriminative power", ax=ax)
     return ax

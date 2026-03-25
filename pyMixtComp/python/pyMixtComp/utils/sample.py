@@ -7,7 +7,7 @@ from .getter import get_param
 
 
 def sample(res, size, random_state=None):
-    """ Generate random samples from the fitted mixture model.
+    """Generate random samples from the fitted mixture model.
 
     Parameters
     ----------
@@ -45,32 +45,45 @@ def sample(res, size, random_state=None):
 
         for k in range(n_class):
             if model == "Gaussian":
-                dat.loc[z_class == k, var_name] = norm.rvs(loc=param["mean"].iloc[k], scale=param["sd"].iloc[k],
-                                                           size=size_k[k], random_state=random_state)
+                dat.loc[z_class == k, var_name] = norm.rvs(
+                    loc=param["mean"].iloc[k], scale=param["sd"].iloc[k], size=size_k[k], random_state=random_state
+                )
             elif model == "Multinomial":
-                dat.loc[z_class == k, var_name] = sample_multinomial(p=param.iloc[k], size=size_k[k],
-                                                                     random_state=random_state)
+                dat.loc[z_class == k, var_name] = sample_multinomial(
+                    p=param.iloc[k], size=size_k[k], random_state=random_state
+                )
             elif model == "Poisson":
-                dat.loc[z_class == k, var_name] = poisson.rvs(mu=param["lambda"].iloc[k], size=size_k[k],
-                                                              random_state=random_state)
+                dat.loc[z_class == k, var_name] = poisson.rvs(
+                    mu=param["lambda"].iloc[k], size=size_k[k], random_state=random_state
+                )
             elif model == "NegativeBinomial":
-                dat.loc[z_class == k, var_name] = nbinom.rvs(n=param["n"].iloc[k], p=param["p"].iloc[k],
-                                                             size=size_k[k], random_state=random_state)
+                dat.loc[z_class == k, var_name] = nbinom.rvs(
+                    n=param["n"].iloc[k], p=param["p"].iloc[k], size=size_k[k], random_state=random_state
+                )
             elif model == "Weibull":
-                dat.loc[z_class == k, var_name] = weibull_min.rvs(c=param["k (shape)"].iloc[k],
-                                                                  scale=param["lambda (scale)"].iloc[k],
-                                                                  size=size_k[k], random_state=random_state)
+                dat.loc[z_class == k, var_name] = weibull_min.rvs(
+                    c=param["k (shape)"].iloc[k],
+                    scale=param["lambda (scale)"].iloc[k],
+                    size=size_k[k],
+                    random_state=random_state,
+                )
             elif (model == "Func_CS") | (model == "Func_SharedAlpha_CS"):
                 all_time_values = np.unique(res["variable"]["data"][var_name]["time"])
                 t = np.linspace(all_time_values.min(), all_time_values.max(), 100)
-                dat.loc[z_class == k, var_name] = sample_Func_CS(param["alpha"].iloc[k].values, param["beta"].iloc[k].values,
-                                                                 param["sd"].iloc[k].values, t, size=size_k[k],
-                                                                 random_state=random_state)
+                dat.loc[z_class == k, var_name] = sample_Func_CS(
+                    param["alpha"].iloc[k].values,
+                    param["beta"].iloc[k].values,
+                    param["sd"].iloc[k].values,
+                    t,
+                    size=size_k[k],
+                    random_state=random_state,
+                )
             elif model == "Rank_ISR":
-                dat.loc[z_class == k, var_name] = sample_Rank_ISR(param["mu"][k], param["pi"].values[k][0], size=size_k[k],
-                                                                  random_state=random_state, convert_to_str=True)
+                dat.loc[z_class == k, var_name] = sample_Rank_ISR(
+                    param["mu"][k], param["pi"].values[k][0], size=size_k[k], random_state=random_state, convert_to_str=True
+                )
             else:
-                raise NotImplementedError("Not yet implemented for model " + model)
+                raise NotImplementedError(f"Not yet implemented for model {model}")
 
     return dat, z_class
 
@@ -80,7 +93,7 @@ def sample_multinomial(p, size=1, random_state=None):
 
 
 def sample_Rank_ISR(mu, pi, size=1, random_state=None, convert_to_str=True):
-    """ Sample ranks from an ISR(mu, pi)
+    """Sample ranks from an ISR(mu, pi)
 
     Parameters
     ----------
@@ -143,7 +156,7 @@ def sample_Rank_ISR(mu, pi, size=1, random_state=None, convert_to_str=True):
 
 
 def switch_representation_rank(rank):
-    """ Switch rank from ordering to ranking representation or vice-versa
+    """Switch rank from ordering to ranking representation or vice-versa
 
     Parameters
     ----------
@@ -164,7 +177,7 @@ def switch_representation_rank(rank):
 
 
 def sample_Func_CS(alpha, beta, sd, t, size=1, random_state=None):
-    """ Sample functional data from a Func_CS(alpha, beta, sd)
+    """Sample functional data from a Func_CS(alpha, beta, sd)
 
     Parameters
     ----------
@@ -199,12 +212,12 @@ def sample_Func_CS(alpha, beta, sd, t, size=1, random_state=None):
             ind_sub = sample_multinomial(kappa, size=1, random_state=None)[0]
 
             # mean regression
-            x_loc = beta[(n_coeff * ind_sub):(n_coeff * (ind_sub + 1))].dot(t[i] ** np.arange(0, n_coeff))
+            x_loc = beta[(n_coeff * ind_sub) : (n_coeff * (ind_sub + 1))].dot(t[i] ** np.arange(0, n_coeff))
 
             # normal error
             x = norm.rvs(loc=x_loc, scale=sd[ind_sub], size=1, random_state=random_state)[0]
 
-            func += str(t[i]) + ":" + str(x) + ","
+            func += f"{t[i]}:{x},"
 
         # we remove the extra ","
         if len(func) != 0:
@@ -218,7 +231,7 @@ def sample_Func_CS(alpha, beta, sd, t, size=1, random_state=None):
 
 
 def log_to_multi(log_in):
-    """ Compute tik using log(proba)"""
+    """Compute tik using log(proba)"""
     m = log_in.max()
     out = np.exp(log_in - m)
     out /= out.sum()

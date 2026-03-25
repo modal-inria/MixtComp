@@ -6,7 +6,7 @@ from scipy.special import logsumexp
 
 
 def get_tik(res, log=False, empiric=False):
-    """ Get the posterior probability of each component given the data
+    """Get the posterior probability of each component given the data
 
     Parameters
     ----------
@@ -41,7 +41,7 @@ def get_tik(res, log=False, empiric=False):
 
 
 def get_partition(res, empiric=False):
-    """ Get component labels.
+    """Get component labels.
 
     Parameters
     ----------
@@ -70,7 +70,7 @@ def get_partition(res, empiric=False):
 
 
 def get_param(res, var_name):
-    """ Get the estimated parameters
+    """Get the estimated parameters
 
     Parameters
     ----------
@@ -119,11 +119,11 @@ def get_param(res, var_name):
 
 
 def _get_param_numerical(param, n_class, col_names):
-    """ Intern function to get numerical parameters """
+    """Intern function to get numerical parameters"""
     try:
-        index = [re.search("k: (.+?),", x).group(1) for x in param["stat"].index[::len(col_names)]]
+        index = [re.search(r"k: (.+?),", x).group(1) for x in param["stat"].index[:: len(col_names)]]
     except AttributeError:
-        index = [re.search("k: (.+?)", x).group(1) for x in param["stat"].index[::len(col_names)]]
+        index = [re.search(r"k: (.+?)", x).group(1) for x in param["stat"].index[:: len(col_names)]]
 
     out = param["stat"]["median"].values.reshape(n_class, len(col_names))
     out = pd.DataFrame(out, columns=col_names, index=index)
@@ -132,23 +132,28 @@ def _get_param_numerical(param, n_class, col_names):
 
 
 def _get_param_multinomial(param, n_class):
-    """ Intern function to get multinomial parameters """
+    """Intern function to get multinomial parameters"""
     n_modalities = int(param["stat"].shape[0] / n_class)
 
-    modalities = [re.sub("k: .*, modality: ", "", x) for x in param["stat"].index[:n_modalities]]
+    modalities = [re.sub(r"k: .*, modality: ", "", x) for x in param["stat"].index[:n_modalities]]
     return _get_param_numerical(param, n_class, modalities)
 
 
 def _get_param_Func_CS(param, n_class):
-    n_sub = int(re.search("nSub:(.+?),", param["paramStr"]).group(1))
-    n_coeff = int(re.search("nCoeff:(.+?)$", param["paramStr"]).group(1))
+    n_sub = int(re.search(r"nSub:(.+?),", param["paramStr"]).group(1))
+    n_coeff = int(re.search(r"nCoeff:(.+?)$", param["paramStr"]).group(1))
 
-    return {"alpha": _get_param_numerical(param["alpha"], n_class,
-                                          ["s: " + str(i) + str(j) for i in range(n_sub) for j in [", alpha0", ", alpha1"]]),
-            "beta": _get_param_numerical(
-                param["beta"], n_class,
-                ["s: " + str(i) + str(j) for i in range(n_sub) for j in [", c: " + str(i) for i in range(n_coeff)]]),
-            "sd": _get_param_numerical(param["sd"], n_class, ["s: " + str(i) for i in range(n_sub)])}
+    return {
+        "alpha": _get_param_numerical(
+            param["alpha"], n_class, [f"s: {i}{j}" for i in range(n_sub) for j in [", alpha0", ", alpha1"]]
+        ),
+        "beta": _get_param_numerical(
+            param["beta"],
+            n_class,
+            [f"s: {i}{j}" for i in range(n_sub) for j in [f", c: {i}" for i in range(n_coeff)]],
+        ),
+        "sd": _get_param_numerical(param["sd"], n_class, [f"s: {i}" for i in range(n_sub)]),
+    }
 
 
 def _get_param_Rank_ISR(param, n_class):

@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def create_functional(times, values):
-    """ Create a functional in MixtComp format
+    """Create a functional in MixtComp format
 
     Parameters
     ----------
@@ -37,7 +37,7 @@ def create_functional(times, values):
     func = ""
     for i in range(len(times)):
         if (times[i] is not None) and (not np.isnan(times[i])) and (values[i] is not None) and (not np.isnan(values[i])):
-            func += str(times[i]) + ":" + str(values[i]) + ","
+            func += f"{times[i]}:{values[i]},"
 
     # remove the trailing comma
     if len(func) > 0:
@@ -47,7 +47,7 @@ def create_functional(times, values):
 
 
 def convert_functional(functional):
-    """ Convert a MixtComp functional (string) into a tuple of 2 arrays
+    """Convert a MixtComp functional (string) into a tuple of 2 arrays
 
     Parameters
     ----------
@@ -75,7 +75,7 @@ def convert_functional(functional):
     """
     if not isinstance(functional, str):
         raise TypeError("functional must be a string.")
-    if (functional == ""):
+    if functional == "":
         return np.array([]), np.array([])
 
     out = np.array([x.split(":") for x in functional.split(",")]).astype(float)
@@ -83,16 +83,16 @@ def convert_functional(functional):
     return out[:, 0], out[:, 1]
 
 
-def refactor_categorical(data, old_categores, new_categores):
-    """ Rename a categorical variable
+def refactor_categorical(data, old_categories, new_categories):
+    """Rename a categorical variable
 
     Parameters
     ----------
     data : array, list or Series
         array with categorical variables to rename
-    old_categores : list or array
+    old_categories : list or array
         array containing categories to change
-    new_categores : list or array
+    new_categories : list or array
         array containing new categorical values
 
     Returns
@@ -113,7 +113,7 @@ def refactor_categorical(data, old_categores, new_categores):
     if is_not_series:
         data = pd.Series(data)
     data = data.astype("category")
-    data = data.cat.rename_categories(dict(zip(old_categores, new_categores)))
+    data = data.cat.rename_categories(dict(zip(old_categories, new_categories)))
 
     if is_not_series:
         data = data.to_numpy()
@@ -122,7 +122,7 @@ def refactor_categorical(data, old_categores, new_categores):
 
 
 def create_rank(rank_array):
-    """ Convert a rank from array to string
+    """Convert a rank from array to string
 
     Parameters
     ----------
@@ -138,7 +138,7 @@ def create_rank(rank_array):
 
 
 def convert_rank(rank_str):
-    """ Convert a rank from string to array
+    """Convert a rank from string to array
 
     Parameters
     ----------

@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def compute_discriminative_power_variable(res, class_id=None):
-    """ Compute the discriminative power of variables
+    """Compute the discriminative power of variables
 
     Parameters
     ----------
@@ -40,14 +40,14 @@ def compute_discriminative_power_variable(res, class_id=None):
     else:
         k = len(res["mixture"]["IDClass"])
 
-        entropy_kj = res["mixture"]["IDClass"].loc["k: " + str(class_id)] * np.log(k)
-        entropy_kj_bar = res["mixture"]["IDClassBar"].loc["k: " + str(class_id)] * np.log(k)
+        entropy_kj = res["mixture"]["IDClass"].loc[f"k: {class_id}"] * np.log(k)
+        entropy_kj_bar = res["mixture"]["IDClassBar"].loc[f"k: {class_id}"] * np.log(k)
 
         return 1 - (entropy_kj + entropy_kj_bar) / np.log(2)
 
 
 def compute_discriminative_power_class(res):
-    """ Compute the discriminative power of classes
+    """Compute the discriminative power of classes
 
     Parameters
     ----------
@@ -70,11 +70,11 @@ def compute_discriminative_power_class(res):
     A low value (close to zero) means that the class is poorly discriminating.
     """
     tik = res["variable"]["data"]["z_class"]["stat"]
-    return 1 + np.log(tik ** tik).mean(axis=0)/np.exp(-1)
+    return 1 + np.log(tik**tik).mean(axis=0) / np.exp(-1)
 
 
 def compute_variable_similarity(res):
-    """ Compute the similarity between variables
+    """Compute the similarity between variables
 
     Parameters
     ----------
@@ -102,7 +102,7 @@ def compute_variable_similarity(res):
 
 
 def compute_class_similarity(res):
-    """ Compute the similarity between classes
+    """Compute the similarity between classes
 
     Parameters
     ----------
@@ -130,7 +130,10 @@ def compute_class_similarity(res):
     for k in range(len(simil)):
         simil[k, :] = 1 - np.sqrt(((tik.values - tik.values[:, [k]]) ** 2).mean(axis=0))
 
-    simil = pd.DataFrame(simil, columns=[x.replace("k: ", "Class ") for x in tik.columns],
-                         index=[x.replace("k: ", "Class ") for x in tik.columns])
+    simil = pd.DataFrame(
+        simil,
+        columns=[x.replace("k: ", "Class ") for x in tik.columns],
+        index=[x.replace("k: ", "Class ") for x in tik.columns],
+    )
 
     return simil
