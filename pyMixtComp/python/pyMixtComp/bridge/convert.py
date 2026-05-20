@@ -9,7 +9,7 @@ import pandas as pd
 def convert_c_matrix(x):
     """Convert a matrix to array or DataFrame
 
-    The matrix format used  in c++ is:
+    The matrix format used in c++ is:
     `{"data": np.array([[1.73245393e-06], [1.49653391e-07]]), "rowNames": [],
      "colNames": [], "ctype": "Matrix", "dtype": "Real", "ncol": 1, "nrow": 2}`
 
@@ -35,7 +35,7 @@ def convert_c_matrix(x):
 def convert_c_vector(x):
     """Convert a vector to array or Series
 
-    The matrix format used  in c++ is:
+    The matrix format used in c++ is:
     `{"data": np.array([-127.17314741, -127.17314741, -127.17314741]),
       "rowNames": [], "nrow": 3, "dtype": "Real", "ctype": "Vector"}`
 

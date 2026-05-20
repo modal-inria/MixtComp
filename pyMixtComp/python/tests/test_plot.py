@@ -4,6 +4,7 @@ import unittest
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 from pyMixtComp.MixtComp import MixtComp
 from pyMixtComp.plot.barplot import plot_discriminative_power_class, plot_discriminative_power_variable, plot_proportion
 from pyMixtComp.plot.heatmap import plot_class_similarity, plot_tik, plot_variable_similarity
@@ -169,7 +170,7 @@ class TestPlot(unittest.TestCase):
 
     def test_plot_data_CI_functional_diff_time(self):
         with open("tests/mixtcomp_output_functional_diff_time.pickle", "rb") as f:
-            res = pickle.load(f)
+            res = pickle.load(f)  # TODO does not work
             plot_data_CI(res, "tempav", all=True, add_obs=True, add_ci=True)
             plt.close()
 

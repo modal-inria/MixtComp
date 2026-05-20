@@ -3,8 +3,9 @@ from multiprocessing import cpu_count
 
 import numpy as np
 import pandas as pd
-from pyMixtComp.MixtComp import MixtComp
 from sklearn.exceptions import NotFittedError
+
+from pyMixtComp.MixtComp import MixtComp
 
 
 class TestMixtComp(unittest.TestCase):
@@ -13,8 +14,9 @@ class TestMixtComp(unittest.TestCase):
 
         self.gauss = np.concatenate((rng.normal(-2, 0.5, 70), rng.normal(2, 0.5, 30)), axis=None)
         self.mult = np.where(
-                         np.concatenate((rng.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70),
-                                         rng.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30))) == 1)[1]
+            np.concatenate((rng.multinomial(1, [0.25, 0.25, 0.25, 0.25], 70), rng.multinomial(1, [0.5, 0.1, 0.1, 0.3], 30)))
+            == 1
+        )[1]
         self.mult_basic = self.mult.copy().astype("str")
         self.mult_basic[self.mult_basic == "0"] = "a"
         self.mult_basic[self.mult_basic == "1"] = "b"
@@ -22,9 +24,20 @@ class TestMixtComp(unittest.TestCase):
         self.mult_basic[self.mult_basic == "3"] = "d"
 
     def test_MixtComp_init(self):
-        mod = MixtComp(n_components=2, n_burn_in_iter=10, n_iter=15, n_gibbs_burn_in_iter=20, n_gibbs_iter=25,
-                       n_init_per_class=30, n_sem_try=35, confidence_level=0.9,
-                       ratio_stable_criterion=0.95, n_stable_criterion=40, n_init=3, n_core=2)
+        mod = MixtComp(
+            n_components=2,
+            n_burn_in_iter=10,
+            n_iter=15,
+            n_gibbs_burn_in_iter=20,
+            n_gibbs_iter=25,
+            n_init_per_class=30,
+            n_sem_try=35,
+            confidence_level=0.9,
+            ratio_stable_criterion=0.95,
+            n_stable_criterion=40,
+            n_init=3,
+            n_core=2,
+        )
         self.assertEqual(mod.n_components, 2)
         self.assertEqual(mod.n_init, 3)
         if cpu_count() > 1:
@@ -47,8 +60,17 @@ class TestMixtComp(unittest.TestCase):
         with self.assertRaises(TypeError):
             MixtComp(n_components=["ss"])
 
-        for param in ["n_burn_in_iter", "n_iter", "n_gibbs_burn_in_iter", "n_gibbs_iter", "n_init_per_class", "n_sem_try",
-                      "n_stable_criterion", "n_init", "n_core"]:
+        for param in [
+            "n_burn_in_iter",
+            "n_iter",
+            "n_gibbs_burn_in_iter",
+            "n_gibbs_iter",
+            "n_init_per_class",
+            "n_sem_try",
+            "n_stable_criterion",
+            "n_init",
+            "n_core",
+        ]:
             with self.assertRaises(ValueError):
                 MixtComp(n_components=1, **{param: -5})
             with self.assertRaises(TypeError):
@@ -101,8 +123,9 @@ class TestMixtComp(unittest.TestCase):
 
         mod.fit(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
         self.assertEqual(mod._basic_mode, True)
-        self.assertDictEqual(mod.model_, {"gauss": {"type": "Gaussian", "paramStr": ""},
-                                          "mult": {"type": "Multinomial", "paramStr": ""}})
+        self.assertDictEqual(
+            mod.model_, {"gauss": {"type": "Gaussian", "paramStr": ""}, "mult": {"type": "Multinomial", "paramStr": ""}}
+        )
         self.assertIsInstance(mod.res_, dict)
 
         mod.predict(pd.DataFrame({"gauss": self.gauss, "mult": self.mult_basic}))
@@ -167,8 +190,9 @@ class TestMixtComp(unittest.TestCase):
         icl = mod.icl({"gauss": self.gauss})
         self.assertEqual(icl, mod.res_predict_["mixture"]["ICL"])
         aic = mod.aic({"gauss": self.gauss})
-        self.assertEqual(aic,
-                         mod.res_predict_["mixture"]["lnObservedLikelihood"] - mod.res_predict_["mixture"]["nbFreeParameters"])
+        self.assertEqual(
+            aic, mod.res_predict_["mixture"]["lnObservedLikelihood"] - mod.res_predict_["mixture"]["nbFreeParameters"]
+        )
 
     def test_MixtComp_score(self):
         mod = MixtComp(n_components=2)
