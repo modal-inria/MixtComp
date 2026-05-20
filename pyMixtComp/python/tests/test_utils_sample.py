@@ -3,6 +3,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+
 from pyMixtComp.utils.convert import convert_functional
 from pyMixtComp.utils.getter import get_param
 from pyMixtComp.utils.sample import (

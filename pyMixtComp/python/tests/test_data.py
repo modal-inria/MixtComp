@@ -1,6 +1,7 @@
 import unittest
 
 import pandas as pd
+
 from pyMixtComp.data import load_canadian_weather, load_iris, load_prostate, load_simulated_data
 
 

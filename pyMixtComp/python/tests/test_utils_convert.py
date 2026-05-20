@@ -7,7 +7,6 @@ from pyMixtComp.utils.convert import convert_functional, convert_rank, create_fu
 
 
 class TestUtilsConvert(unittest.TestCase):
-
     def test_create_functional_empty(self):
         times = []
         values = []
@@ -21,7 +20,7 @@ class TestUtilsConvert(unittest.TestCase):
         self.assertEqual(func, "")
 
     def test_create_functional(self):
-        times = [1., 2., 3.]
+        times = [1.0, 2.0, 3.0]
         values = [4, 5, 6]
         func = create_functional(times, values)
         self.assertEqual(func, "1.0:4,2.0:5,3.0:6")
@@ -33,7 +32,7 @@ class TestUtilsConvert(unittest.TestCase):
         self.assertEqual(func, "1.0:4,2.0:5,3.0:6")
 
     def test_create_functional_missing_values(self):
-        times = [1., 2., np.nan, 4., 5.]
+        times = [1.0, 2.0, np.nan, 4.0, 5.0]
         values = [4, 5, 6, None, 8]
         func = create_functional(times, values)
         self.assertEqual(func, "1.0:4,2.0:5,5.0:8")
@@ -53,8 +52,8 @@ class TestUtilsConvert(unittest.TestCase):
     def test_convert_functional(self):
         func = "1.0:4,2.0:5,3.0:6"
         times, values = convert_functional(func)
-        self.assertListEqual(times.tolist(), [1., 2., 3.])
-        self.assertListEqual(values.tolist(), [4., 5., 6.])
+        self.assertListEqual(times.tolist(), [1.0, 2.0, 3.0])
+        self.assertListEqual(values.tolist(), [4.0, 5.0, 6.0])
 
     def test_refactor_categorical(self):
         data = [0.0, 1.0, 0.0]

@@ -201,7 +201,7 @@ def format_output_basic_mode(res, dictionary):
                 )
 
         res["variable"]["param"][var_name]["stat"].index = [
-            re.sub("[0-9]*$", "", x) + d
+            re.sub(r"[0-9]*$", "", x) + d
             for x, d in zip(
                 res["variable"]["param"][var_name]["stat"].index, dictionary[var_name]["old"] * res["algo"]["nClass"]
             )
@@ -216,12 +216,12 @@ def format_output_basic_mode(res, dictionary):
         )
 
         res["variable"]["data"]["z_class"]["stat"].columns = [
-            re.sub("[0-9]*$", "", x) + d
+            re.sub(r"[0-9]*$", "", x) + d
             for x, d in zip(res["variable"]["data"]["z_class"]["stat"].columns, dictionary["z_class"]["old"])
         ]
 
         res["mixture"]["IDClass"].index = [
-            re.sub("[0-9]*$", "", x) + d for x, d in zip(res["mixture"]["IDClass"].index, dictionary["z_class"]["old"])
+            re.sub(r"[0-9]*$", "", x) + d for x, d in zip(res["mixture"]["IDClass"].index, dictionary["z_class"]["old"])
         ]
 
         res["mixture"]["IDClassBar"].index = res["mixture"]["IDClass"].index
@@ -231,7 +231,7 @@ def format_output_basic_mode(res, dictionary):
             n_param_per_class = int(len(res["variable"]["param"][var_name]["stat"].index) / res["algo"]["nClass"])
             row_names = res["variable"]["param"][var_name]["stat"].index
             row_names = [
-                re.sub("k: [0-9]*", "k: " + d, x)
+                re.sub(r"k: [0-9]*", f"k: {d}", x)
                 for x, d in zip(row_names, np.repeat(dictionary["z_class"]["old"], n_param_per_class))
             ]
 
